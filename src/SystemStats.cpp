@@ -5,21 +5,11 @@
 
 #include "SystemStats.h"
 
-/*
-Interesting sysctl variables:
- vm.memory_pressure
- vm.page_free_count
- vm.compressor_mode
- vm.swapusage
- 
- netdevice
- ioctl
- */
-
 //******************************************************************************
 
 bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept
 {
+   //TODO: implement uptimeSeconds
    return false;
 }
 
@@ -48,6 +38,7 @@ bool SystemStats::getLoadAverages(double& oneMinute,
 
 bool SystemStats::getNumberProcesses(int& numberProcesses) noexcept
 {
+   //TODO: implement getNumberProcesses
    return false;
 }
 
