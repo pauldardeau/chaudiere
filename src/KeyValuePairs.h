@@ -1,13 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef KEYVALUEPAIRS_H
-#define KEYVALUEPAIRS_H
+#ifndef CHAUDIERE_KEYVALUEPAIRS_H
+#define CHAUDIERE_KEYVALUEPAIRS_H
 
 #include <string>
 #include <vector>
 #include <unordered_map>
 
+namespace chaudiere
+{
 
 /**
  * KeyValuePairs is a collection of key/value pairs where the key and the
@@ -109,6 +111,7 @@ class KeyValuePairs
       std::unordered_map<std::string,std::string> m_keyValues;
 };
 
+}
 
 #endif
 

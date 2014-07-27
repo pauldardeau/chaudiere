@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SYSTEMSTATS_H
-#define SYSTEMSTATS_H
+#ifndef CHAUDIERE_SYSTEMSTATS_H
+#define CHAUDIERE_SYSTEMSTATS_H
 
 #include <string>
 
+namespace chaudiere
+{
 
 /**
  * SystemStats retrieves various stats from the underlying OS
@@ -57,5 +59,7 @@ public:
    
    
 };
+
+}
 
 #endif

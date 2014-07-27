@@ -1,12 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SOCKETSERVICEHANDLER_H
-#define SOCKETSERVICEHANDLER_H
+#ifndef CHAUDIERE_SOCKETSERVICEHANDLER_H
+#define CHAUDIERE_SOCKETSERVICEHANDLER_H
 
 #include <string>
 
-class SocketRequest;
+
+namespace chaudiere
+{
+   class SocketRequest;
 
 /**
  * SocketServiceHandler is an interface for a handler the processes a SocketRequest
@@ -33,5 +36,6 @@ public:
    virtual const std::string& getName() const = 0;
 };
 
+}
 
 #endif

@@ -10,6 +10,8 @@
 #include "BasicException.h"
 #include "Logger.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 ThreadPoolWorker::ThreadPoolWorker(std::shared_ptr<ThreadingFactory> threadingFactory,

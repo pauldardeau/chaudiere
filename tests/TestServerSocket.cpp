@@ -4,6 +4,8 @@
 #include "TestServerSocket.h"
 #include "ServerSocket.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestServerSocket::TestServerSocket() :

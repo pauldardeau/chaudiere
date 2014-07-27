@@ -11,6 +11,8 @@
 #include "Logger.h"
 #include "BasicException.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 ThreadPoolDispatch::ThreadPoolDispatch() noexcept :

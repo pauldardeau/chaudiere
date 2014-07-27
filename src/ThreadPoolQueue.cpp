@@ -11,6 +11,8 @@
 #include "Logger.h"
 #include "BasicException.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 ThreadPoolQueue::ThreadPoolQueue(std::shared_ptr<ThreadingFactory> threadingFactory) noexcept :

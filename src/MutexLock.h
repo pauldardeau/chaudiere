@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef MUTEXLOCK_H
-#define MUTEXLOCK_H
+#ifndef CHAUDIERE_MUTEXLOCK_H
+#define CHAUDIERE_MUTEXLOCK_H
 
 #include "Mutex.h"
 
+namespace chaudiere
+{
 
 /**
  * MutexLock is a convenience class for locking and unlocking a Mutex. This
@@ -61,5 +63,6 @@ private:
    bool m_isLocked;
 };
 
+}
 
 #endif

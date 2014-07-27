@@ -7,6 +7,8 @@
 #include "ThreadPoolQueue.h"
 #include "Logger.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 ThreadPool::ThreadPool(int numberWorkers) noexcept :

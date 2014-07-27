@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SERVERSOCKET_H
-#define SERVERSOCKET_H
+#ifndef CHAUDIERE_SERVERSOCKET_H
+#define CHAUDIERE_SERVERSOCKET_H
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -11,7 +11,9 @@
 #include <memory>
 
 
-class Socket;
+namespace chaudiere
+{
+   class Socket;
 
 /**
  * ServerSocket is very similar to Java's ServerSocket class. It provides
@@ -91,6 +93,7 @@ class ServerSocket
       int m_port;
 };
 
+}
 
 #endif
 

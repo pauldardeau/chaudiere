@@ -1,13 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef STDCONDITIONVARIABLE_H
-#define STDCONDITIONVARIABLE_H
+#ifndef CHAUDIERE_STDCONDITIONVARIABLE_H
+#define CHAUDIERE_STDCONDITIONVARIABLE_H
 
 #include <condition_variable>
 
 #include "ConditionVariable.h"
 
+namespace chaudiere
+{
 
 /**
  *
@@ -53,5 +55,7 @@ public:
 private:
    std::condition_variable m_cond;
 };
+
+}
 
 #endif

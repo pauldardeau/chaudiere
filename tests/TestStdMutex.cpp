@@ -4,6 +4,8 @@
 #include "TestStdMutex.h"
 #include "StdMutex.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestStdMutex::TestStdMutex() :

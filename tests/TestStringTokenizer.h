@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTSTRINGTOKENIZER_H
-#define TESTSTRINGTOKENIZER_H
+#ifndef CHAUDIERE_TESTSTRINGTOKENIZER_H
+#define CHAUDIERE_TESTSTRINGTOKENIZER_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestStringTokenizer : public TestSuite
 {
@@ -23,5 +25,7 @@ public:
    
 
 };
+
+}
 
 #endif

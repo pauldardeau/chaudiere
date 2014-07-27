@@ -1,13 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADPOOLDISPATCH_H
-#define THREADPOOLDISPATCH_H
+#ifndef CHAUDIERE_THREADPOOLDISPATCH_H
+#define CHAUDIERE_THREADPOOLDISPATCH_H
 
 #include "ThreadPoolDispatcher.h"
 
-class Runnable;
 
+namespace chaudiere
+{
+   class Runnable;
 
 /**
  *
@@ -58,5 +60,6 @@ private:
    
 };
 
+}
 
 #endif

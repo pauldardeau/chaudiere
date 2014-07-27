@@ -1,11 +1,14 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef RUNCOMPLETIONOBSERVER_H
-#define RUNCOMPLETIONOBSERVER_H
+#ifndef CHAUDIERE_RUNCOMPLETIONOBSERVER_H
+#define CHAUDIERE_RUNCOMPLETIONOBSERVER_H
 
 
-class Runnable;
+
+namespace chaudiere
+{
+   class Runnable;
 
 /**
  * RunCompletionObserver is an interface used for callbacks to be notified
@@ -26,5 +29,6 @@ public:
    virtual void notifyRunComplete(std::shared_ptr<Runnable> runnable) noexcept = 0;
 };
 
+}
 
 #endif

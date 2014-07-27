@@ -1,17 +1,19 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADPOOLQUEUE_H
-#define THREADPOOLQUEUE_H
+#ifndef CHAUDIERE_THREADPOOLQUEUE_H
+#define CHAUDIERE_THREADPOOLQUEUE_H
 
 #include <deque>
 #include <memory>
 
-class ConditionVariable;
-class Mutex;
-class Runnable;
-class ThreadingFactory;
 
+namespace chaudiere
+{
+   class ConditionVariable;
+   class Mutex;
+   class Runnable;
+   class ThreadingFactory;
 
 /**
  * ThreadPoolQueue is an abstract base class for a queue being serviced
@@ -86,5 +88,6 @@ private:
    bool m_isRunning;
 };
 
+}
 
 #endif

@@ -1,18 +1,21 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADINGFACTORY_H
-#define THREADINGFACTORY_H
+#ifndef CHAUDIERE_THREADINGFACTORY_H
+#define CHAUDIERE_THREADINGFACTORY_H
 
 #include <string>
 #include <memory>
 
 
-class Mutex;
-class Thread;
-class ConditionVariable;
-class Runnable;
-class ThreadPoolDispatcher;
+
+namespace chaudiere
+{
+   class Mutex;
+   class Thread;
+   class ConditionVariable;
+   class Runnable;
+   class ThreadPoolDispatcher;
 
 /**
  * ThreadingFactory is a factory for creating Thread, Mutex, and ThreadPoolDispatcher
@@ -115,5 +118,7 @@ private:
    static std::shared_ptr<ThreadingFactory> threadingFactoryInstance;
 
 };
+
+}
 
 #endif

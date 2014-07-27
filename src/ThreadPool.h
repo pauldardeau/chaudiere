@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADPOOL_H
-#define THREADPOOL_H
+#ifndef CHAUDIERE_THREADPOOL_H
+#define CHAUDIERE_THREADPOOL_H
 
 #include <list>
 #include <memory>
@@ -15,6 +15,8 @@
 
 class Runnable;
 
+namespace chaudiere
+{
 
 /**
  * ThreadPool is an interface (abstract base class) for thread pools.
@@ -108,5 +110,7 @@ private:
    int m_workersCreated;
    bool m_isRunning;
 };
+
+}
 
 #endif

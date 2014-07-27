@@ -10,6 +10,7 @@
 
 static const std::string SPACE = " ";
 
+using namespace chaudiere;
 
 //******************************************************************************
 

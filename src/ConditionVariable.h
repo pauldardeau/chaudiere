@@ -1,13 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef CONDITIONVARIABLE_H
-#define CONDITIONVARIABLE_H
+#ifndef CHAUDIERE_CONDITIONVARIABLE_H
+#define CHAUDIERE_CONDITIONVARIABLE_H
 
 #include <memory>
 
-class Mutex;
 
+namespace chaudiere
+{
+   class Mutex;
 
 /**
  * ConditionVariable is an interface (abstract base class) for condition variables
@@ -36,5 +38,7 @@ public:
    virtual void notifyAll() noexcept = 0;
    
 };
+
+}
 
 #endif

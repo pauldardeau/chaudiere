@@ -1,12 +1,16 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef INIREADER_H
-#define INIREADER_H
+#ifndef CHAUDIERE_INIREADER_H
+#define CHAUDIERE_INIREADER_H
 
 #include <string>
 
 #include "SectionedConfigDataSource.h"
+
+
+namespace chaudiere
+{
 
 class KeyValuePairs;
 
@@ -38,7 +42,7 @@ public:
     * @return boolean indicating whether the specified section could be read
     */
    virtual bool readSection(const std::string& section,
-                            KeyValuePairs& mapSectionValues) const noexcept override;
+                            chaudiere::KeyValuePairs& mapSectionValues) const noexcept override;
 
    /**
     * Retrieves the value associated with the specified key within the specified section
@@ -79,5 +83,6 @@ private:
    std::string m_fileContents;
 };
 
+}
 
 #endif

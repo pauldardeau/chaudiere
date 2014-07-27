@@ -4,6 +4,8 @@
 #include "TestSocket.h"
 #include "Socket.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestSocket::TestSocket() :

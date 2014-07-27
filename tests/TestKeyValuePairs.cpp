@@ -4,6 +4,8 @@
 #include "TestKeyValuePairs.h"
 #include "KeyValuePairs.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestKeyValuePairs::TestKeyValuePairs() :

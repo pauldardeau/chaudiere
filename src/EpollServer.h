@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef EPOLLSERVER_H
-#define EPOLLSERVER_H
+#ifndef CHAUDIERE_EPOLLSERVER_H
+#define CHAUDIERE_EPOLLSERVER_H
 
 #include "KernelEventServer.h"
 
@@ -16,6 +16,8 @@ class Mutex;
 #endif
 
 
+namespace chaudiere
+{
 
 /**
  * EpollServer is a wrapper for working with the epoll API. The epoll API
@@ -110,5 +112,6 @@ private:
    int m_epfd;
 };
 
+}
 
 #endif

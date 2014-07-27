@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADCOMPLETIONOBSERVER_H
-#define THREADCOMPLETIONOBSERVER_H
+#ifndef CHAUDIERE_THREADCOMPLETIONOBSERVER_H
+#define CHAUDIERE_THREADCOMPLETIONOBSERVER_H
 
-class Thread;
 
+namespace chaudiere
+{
+   class Thread;
 
 /**
  *
@@ -26,5 +28,6 @@ public:
    virtual void notifyThreadComplete(std::shared_ptr<Thread> thread) noexcept = 0;
 };
 
+}
 
 #endif

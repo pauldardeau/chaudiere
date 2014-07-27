@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTSTRUTILS_H
-#define TESTSTRUTILS_H
+#ifndef CHAUDIERE_TESTSTRUTILS_H
+#define CHAUDIERE_TESTSTRUTILS_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestStrUtils : public TestSuite
 {
@@ -35,5 +37,7 @@ public:
    TestStrUtils();
    
 };
+
+}
 
 #endif

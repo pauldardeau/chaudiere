@@ -23,6 +23,7 @@
 #include "BasicException.h"
 
 
+using namespace chaudiere;
 
 //******************************************************************************
 

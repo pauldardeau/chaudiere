@@ -1,10 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef INVALIDKEYEXCEPTION_H
-#define INVALIDKEYEXCEPTION_H
+#ifndef CHAUDIERE_INVALIDKEYEXCEPTION_H
+#define CHAUDIERE_INVALIDKEYEXCEPTION_H
 
 #include "BasicException.h"
+
+namespace chaudiere
+{
 
 /**
  * InvalidKeyException is an exception that indicates that the specified
@@ -60,5 +63,6 @@ private:
    std::string m_key;
 };
 
+}
 
 #endif

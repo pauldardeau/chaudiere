@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTSOCKETREQUEST_H
-#define TESTSOCKETREQUEST_H
+#ifndef CHAUDIERE_TESTSOCKETREQUEST_H
+#define CHAUDIERE_TESTSOCKETREQUEST_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestSocketRequest : public TestSuite
 {
@@ -19,9 +21,10 @@ protected:
    void testRequestComplete();
 
 public:
-   TestSocketRequest();
-   
+   TestSocketRequest();   
 
 };
+
+}
 
 #endif

@@ -4,6 +4,8 @@
 #include "TestInvalidKeyException.h"
 #include "InvalidKeyException.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestInvalidKeyException::TestInvalidKeyException() :

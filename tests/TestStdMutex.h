@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTSTDMUTEX_H
-#define TESTSTDMUTEX_H
+#ifndef CHAUDIERE_TESTSTDMUTEX_H
+#define CHAUDIERE_TESTSTDMUTEX_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestStdMutex : public TestSuite
 {
@@ -26,5 +28,7 @@ public:
    TestStdMutex();
    
 };
+
+}
 
 #endif

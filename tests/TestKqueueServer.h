@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTKQUEUESERVER_H
-#define TESTKQUEUESERVER_H
+#ifndef CHAUDIERE_TESTKQUEUESERVER_H
+#define CHAUDIERE_TESTKQUEUESERVER_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestKqueueServer : public TestSuite
 {
@@ -22,5 +24,7 @@ public:
    
 
 };
+
+}
 
 #endif

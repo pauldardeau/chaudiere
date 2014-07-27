@@ -1,10 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef STRUTILS_H
-#define STRUTILS_H
+#ifndef CHAUDIERE_STRUTILS_H
+#define CHAUDIERE_STRUTILS_H
 
 #include <string>
+
+namespace chaudiere
+{
 
 /**
  * StrUtils is a utility class of convenience methods for working with strings.
@@ -131,5 +134,6 @@ public:
    
 };
 
+}
 
 #endif

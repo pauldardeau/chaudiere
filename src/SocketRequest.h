@@ -1,14 +1,17 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SOCKETREQUEST_H
-#define SOCKETREQUEST_H
+#ifndef CHAUDIERE_SOCKETREQUEST_H
+#define CHAUDIERE_SOCKETREQUEST_H
 
 #include <memory>
 #include "Runnable.h"
 
-class Socket;
-class SocketServiceHandler;
+
+namespace chaudiere
+{
+   class Socket;
+   class SocketServiceHandler;
 
 /**
  *
@@ -63,5 +66,7 @@ public:
    SocketRequest& operator=(const SocketRequest&) = delete;
    SocketRequest& operator=(SocketRequest&&) = delete;
 };
+
+}
 
 #endif

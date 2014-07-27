@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTINIREADER_H
-#define TESTINIREADER_H
+#ifndef CHAUDIERE_TESTINIREADER_H
+#define CHAUDIERE_TESTINIREADER_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestIniReader : public TestSuite
 {
@@ -26,5 +28,7 @@ public:
    TestIniReader();
 
 };
+
+}
 
 #endif

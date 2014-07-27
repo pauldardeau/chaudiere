@@ -4,6 +4,8 @@
 #include "TestThreadPoolWorker.h"
 #include "ThreadPoolWorker.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestThreadPoolWorker::TestThreadPoolWorker() :

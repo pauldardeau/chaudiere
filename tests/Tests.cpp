@@ -19,6 +19,7 @@
 #include "TestThreadPoolQueue.h"
 #include "TestThreadPoolWorker.h"
 
+using namespace chaudiere;
 
 void Tests::run()
 {

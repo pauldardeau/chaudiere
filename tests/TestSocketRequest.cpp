@@ -4,6 +4,8 @@
 #include "TestSocketRequest.h"
 #include "SocketRequest.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestSocketRequest::TestSocketRequest() :

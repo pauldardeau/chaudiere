@@ -4,6 +4,8 @@
 #include "TestThreadPoolQueue.h"
 #include "ThreadPoolQueue.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestThreadPoolQueue::TestThreadPoolQueue() :

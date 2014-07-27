@@ -4,6 +4,7 @@
 #include "TestCase.h"
 #include "TestSuite.h"
 
+using namespace chaudiere;
 
 //******************************************************************************
 

@@ -4,6 +4,8 @@
 #include "TestStringTokenizer.h"
 #include "StringTokenizer.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestStringTokenizer::TestStringTokenizer() :

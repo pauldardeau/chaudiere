@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTINVALIDKEYEXCEPTION_H
-#define TESTINVALIDKEYEXCEPTION_H
+#ifndef CHAUDIERE_TESTINVALIDKEYEXCEPTION_H
+#define CHAUDIERE_TESTINVALIDKEYEXCEPTION_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestInvalidKeyException : public TestSuite
 {
@@ -23,9 +25,8 @@ protected:
    
 public:
    TestInvalidKeyException();
-   
-
-   
 };
+
+}
 
 #endif

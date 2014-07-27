@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include "StrUtils.h"
 
+using namespace chaudiere;
 
 //******************************************************************************
 

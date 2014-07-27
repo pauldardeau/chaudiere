@@ -1,10 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADINFO_H
-#define THREADINFO_H
+#ifndef CHAUDIERE_THREADINFO_H
+#define CHAUDIERE_THREADINFO_H
 
 #include <string>
+
+namespace chaudiere
+{
 
 /**
  * ThreadInfo is used to track state of a Thread within a ThreadPool.
@@ -88,5 +91,6 @@ public:
    
 };
 
+}
 
 #endif

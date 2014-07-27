@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SERVICEINFO_H
-#define SERVICEINFO_H
+#ifndef CHAUDIERE_SERVICEINFO_H
+#define CHAUDIERE_SERVICEINFO_H
 
 #include <string>
 
+namespace chaudiere
+{
 
 /**
  * ServiceInfo captures basic information for a network service such as the service
@@ -100,5 +102,7 @@ private:
    std::string m_host;
    unsigned short m_port;
 };
+
+}
 
 #endif

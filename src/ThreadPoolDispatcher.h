@@ -1,14 +1,16 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADPOOLDISPATCHER_H
-#define THREADPOOLDISPATCHER_H
+#ifndef CHAUDIERE_THREADPOOLDISPATCHER_H
+#define CHAUDIERE_THREADPOOLDISPATCHER_H
 
 #include <memory>
 
 
-class Runnable;
 
+namespace chaudiere
+{
+   class Runnable;
 
 /**
  * ThreadPoolDispatcher is an abstract base class for handing off requests
@@ -55,5 +57,7 @@ public:
    ThreadPoolDispatcher& operator=(ThreadPoolDispatcher&&) = delete;
 
 };
+
+}
 
 #endif

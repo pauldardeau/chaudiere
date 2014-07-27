@@ -1,14 +1,17 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef STDMUTEX_H
-#define STDMUTEX_H
+#ifndef CHAUDIERE_STDMUTEX_H
+#define CHAUDIERE_STDMUTEX_H
 
 #include <string>
 #include <mutex>
 
 #include "Mutex.h"
 
+
+namespace chaudiere
+{
 
 /**
  * StdMutex is a Mutex that is implemented as a wrapper around std::mutex (C++ 11).
@@ -85,5 +88,7 @@ private:
    bool m_isLocked;
    
 };
+
+}
 
 #endif

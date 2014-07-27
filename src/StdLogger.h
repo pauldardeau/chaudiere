@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef STDLOGGER_H
-#define STDLOGGER_H
+#ifndef CHAUDIERE_STDLOGGER_H
+#define CHAUDIERE_STDLOGGER_H
 
 #include <string>
 #include <unordered_map>
@@ -10,6 +10,9 @@
 
 #include "Logger.h"
 #include "Mutex.h"
+
+namespace chaudiere
+{
 
 /**
  *
@@ -96,5 +99,6 @@ private:
    static const std::string prefixVerbose;
 };
 
+}
 
 #endif

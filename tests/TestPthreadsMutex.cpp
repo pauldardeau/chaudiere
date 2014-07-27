@@ -4,6 +4,8 @@
 #include "TestPthreadsMutex.h"
 #include "PthreadsMutex.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestPthreadsMutex::TestPthreadsMutex() :

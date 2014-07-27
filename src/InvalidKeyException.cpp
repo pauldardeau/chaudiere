@@ -4,6 +4,8 @@
 #include "InvalidKeyException.h"
 #include "Logger.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 InvalidKeyException::InvalidKeyException(const std::string& key) noexcept :

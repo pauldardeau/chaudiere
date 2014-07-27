@@ -1,15 +1,16 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTSUITE_H
-#define TESTSUITE_H
+#ifndef CHAUDIERE_TESTSUITE_H
+#define CHAUDIERE_TESTSUITE_H
 
 #include <string>
 
 #include "TestMacros.h"
 
+namespace chaudiere
+{
 class TestCase;
-
 
 class TestSuite
 {
@@ -57,5 +58,7 @@ public:
    void endingTestCase(const TestCase& testCase);
    
 };
+
+}
 
 #endif

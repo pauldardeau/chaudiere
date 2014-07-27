@@ -9,6 +9,7 @@
 
 static const std::string EMPTY_STRING = "";
 
+using namespace chaudiere;
 
 //******************************************************************************
 

@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SYSTEMINFO_H
-#define SYSTEMINFO_H
+#ifndef CHAUDIERE_SYSTEMINFO_H
+#define CHAUDIERE_SYSTEMINFO_H
 
 #include <string>
 
+namespace chaudiere
+{
 
 /**
  * Wrapper/utility class around uname function
@@ -95,5 +97,7 @@ private:
    bool m_retrievedSystemInfo;
    
 };
+
+}
 
 #endif

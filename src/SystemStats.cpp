@@ -5,6 +5,8 @@
 
 #include "SystemStats.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept

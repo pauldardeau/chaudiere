@@ -1,17 +1,19 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef KERNELEVENTSERVER_H
-#define KERNELEVENTSERVER_H
+#ifndef CHAUDIERE_KERNELEVENTSERVER_H
+#define CHAUDIERE_KERNELEVENTSERVER_H
 
 #include <memory>
 
 #include "Socket.h"
 #include "SocketCompletionObserver.h"
 
-class Mutex;
-class SocketServiceHandler;
 
+namespace chaudiere
+{
+   class Mutex;
+   class SocketServiceHandler;
 
 /**
  * KernelEventServer is an abstract base class for kernel event server
@@ -134,5 +136,7 @@ private:
    int m_numberEventsReturned;
 
 };
+
+}
 
 #endif

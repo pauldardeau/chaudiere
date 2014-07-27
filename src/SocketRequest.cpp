@@ -7,6 +7,8 @@
 #include "Logger.h"
 #include "BasicException.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 SocketRequest::SocketRequest(std::shared_ptr<Socket> socket,

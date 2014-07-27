@@ -1,22 +1,25 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SOCKETSERVER_H
-#define SOCKETSERVER_H
+#ifndef CHAUDIERE_SOCKETSERVER_H
+#define CHAUDIERE_SOCKETSERVER_H
 
 #include <string>
 #include <unordered_map>
 
 #include "KernelEventServer.h"
 
-class KeyValuePairs;
-class RequestHandler;
-class ServerSocket;
-class Socket;
-class SocketRequest;
-class ThreadPoolDispatcher;
-class SectionedConfigDataSource;
-class ThreadingFactory;
+
+namespace chaudiere
+{
+   class KeyValuePairs;
+   class RequestHandler;
+   class ServerSocket;
+   class Socket;
+   class SocketRequest;
+   class ThreadPoolDispatcher;
+   class SectionedConfigDataSource;
+   class ThreadingFactory;
 
 
 class SocketServer
@@ -202,6 +205,7 @@ class SocketServer
 
 };
 
+}
 
 #endif
 

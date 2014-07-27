@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTTHREADPOOLWORKER_H
-#define TESTTHREADPOOLWORKER_H
+#ifndef CHAUDIERE_TESTTHREADPOOLWORKER_H
+#define CHAUDIERE_TESTTHREADPOOLWORKER_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestThreadPoolWorker : public TestSuite
 {
@@ -16,9 +18,10 @@ protected:
    void testRun();
 
 public:
-   TestThreadPoolWorker();
-   
+   TestThreadPoolWorker();   
 
 };
+
+}
 
 #endif

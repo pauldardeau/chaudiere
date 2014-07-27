@@ -5,6 +5,8 @@
 #include "IniReader.h"
 #include "KeyValuePairs.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestIniReader::TestIniReader() :

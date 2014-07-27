@@ -1,8 +1,11 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef MUTEX_H
-#define MUTEX_H
+#ifndef CHAUDIERE_MUTEX_H
+#define CHAUDIERE_MUTEX_H
+
+namespace chaudiere
+{
 
 /**
  * Mutex is an interface for working with abstract mutexes.
@@ -54,5 +57,6 @@ public:
    
 };
 
+}
 
 #endif

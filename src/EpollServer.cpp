@@ -10,6 +10,7 @@
 #include "EpollServer.h"
 #include "Logger.h"
 
+using namespace chaudiere;
 
 //******************************************************************************
 

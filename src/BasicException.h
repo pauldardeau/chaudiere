@@ -1,12 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef BASICEXCEPTION_H
-#define BASICEXCEPTION_H
+#ifndef CHAUDIERE_BASICEXCEPTION_H
+#define CHAUDIERE_BASICEXCEPTION_H
 
 #include <string>
 #include <exception>
 
+
+namespace chaudiere
+{
 
 /**
  * The BasicException is a subclass of std::exception that contains
@@ -110,5 +113,6 @@ private:
    std::string m_what;
 };
 
+}
 
 #endif

@@ -3,6 +3,8 @@
 
 #include "Logger.h"
 
+using namespace chaudiere;
+
 std::shared_ptr<Logger> Logger::loggerInstance = nullptr;
 
 //******************************************************************************

@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTKEYVALUEPAIRS_H
-#define TESTKEYVALUEPAIRS_H
+#ifndef CHAUDIERE_TESTKEYVALUEPAIRS_H
+#define CHAUDIERE_TESTKEYVALUEPAIRS_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestKeyValuePairs : public TestSuite
 {
@@ -27,9 +29,10 @@ protected:
    void testEmpty();
    
 public:
-   TestKeyValuePairs();
-   
+   TestKeyValuePairs();   
 
 };
+
+}
 
 #endif

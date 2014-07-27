@@ -1,12 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SOCKETCOMPLETIONOBSERVER_H
-#define SOCKETCOMPLETIONOBSERVER_H
+#ifndef CHAUDIERE_SOCKETCOMPLETIONOBSERVER_H
+#define CHAUDIERE_SOCKETCOMPLETIONOBSERVER_H
 
 #include <memory>
 
-class Socket;
+
+namespace chaudiere
+{
+   class Socket;
 
 /**
  * SocketCompletionObserver is an interface for being notified when a Socket
@@ -27,5 +30,7 @@ public:
    virtual void notifySocketComplete(std::shared_ptr<Socket> socket) noexcept = 0;
 
 };
+
+}
 
 #endif

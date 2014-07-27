@@ -1,11 +1,14 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef STRINGTOKENIZER_H
-#define STRINGTOKENIZER_H
+#ifndef CHAUDIERE_STRINGTOKENIZER_H
+#define CHAUDIERE_STRINGTOKENIZER_H
 
 #include <string>
 #include <vector>
+
+namespace chaudiere
+{
 
 /**
  * StringTokenizer is very similar to Java's StringTokenizer.
@@ -80,6 +83,8 @@ class StringTokenizer
       std::size_t m_numberTokens;
       std::size_t m_indexToken;
 };
+
+}
 
 #endif
 

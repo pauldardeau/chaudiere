@@ -1,16 +1,18 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef PTHREADSTHREAD_H
-#define PTHREADSTHREAD_H
+#ifndef CHAUDIERE_PTHREADSTHREAD_H
+#define CHAUDIERE_PTHREADSTHREAD_H
 
 #include <pthread.h>
 
 #include "Thread.h"
 #include "PthreadsMutex.h"
 
+namespace chaudiere
+{
 
-/*!
+/**
  * PthreadsThread is a wrapper class for working with POSIX threads (pthreads).
  */
 class PthreadsThread : public Thread
@@ -46,6 +48,7 @@ class PthreadsThread : public Thread
       unsigned long         m_exitCode;
 };
 
+}
 
 #endif
 

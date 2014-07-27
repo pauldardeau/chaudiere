@@ -1,14 +1,14 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef HttpServer_TestMacros_h
-#define HttpServer_TestMacros_h
+#ifndef CHAUDIERE_TESTMACROS_H
+#define CHAUDIERE_TESTMACROS_H
 
 #include "TestCase.h"
 
 
 #define TEST_CASE(testCaseName) \
-TestCase macroTestCase(*this,testCaseName);
+chaudiere::TestCase macroTestCase(*this,testCaseName);
 
 
 #endif

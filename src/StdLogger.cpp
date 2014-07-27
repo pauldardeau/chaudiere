@@ -6,6 +6,8 @@
 #include "PthreadsMutex.h"
 #include "MutexLock.h"
 
+using namespace chaudiere;
+
 const std::string StdLogger::prefixCritical = "Criticial:";
 const std::string StdLogger::prefixError    = "Error:";
 const std::string StdLogger::prefixWarning  = "Warning:";

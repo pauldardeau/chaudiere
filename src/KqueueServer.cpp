@@ -11,6 +11,7 @@
 #include "KqueueServer.h"
 #include "Logger.h"
 
+using namespace chaudiere;
 
 //******************************************************************************
 

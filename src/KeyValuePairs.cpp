@@ -5,6 +5,8 @@
 #include "InvalidKeyException.h"
 #include "Logger.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 KeyValuePairs::KeyValuePairs() noexcept

@@ -1,11 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef TESTTHREADPOOLQUEUE_H
-#define TESTTHREADPOOLQUEUE_H
+#ifndef CHAUDIERE_TESTTHREADPOOLQUEUE_H
+#define CHAUDIERE_TESTTHREADPOOLQUEUE_H
 
 #include "TestSuite.h"
 
+namespace chaudiere
+{
 
 class TestThreadPoolQueue : public TestSuite
 {
@@ -20,9 +22,10 @@ protected:
    void testIsEmpty();
 
 public:
-   TestThreadPoolQueue();
-   
+   TestThreadPoolQueue();   
 
 };
+
+}
 
 #endif

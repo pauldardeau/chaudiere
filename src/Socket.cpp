@@ -23,6 +23,7 @@ static const std::string LF = "\n";
 
 static const int DEFAULT_BUFFER_SIZE = 1024;
 
+using namespace chaudiere;
 
 //******************************************************************************
 

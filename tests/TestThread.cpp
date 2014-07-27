@@ -4,6 +4,8 @@
 #include "TestThread.h"
 #include "Thread.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestThread::TestThread() :

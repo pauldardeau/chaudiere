@@ -1,16 +1,18 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef CHAUDIERE_SOCKET_H
+#define CHAUDIERE_SOCKET_H
 
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <string>
 #include <memory>
 
-class Socket;
-class SocketCompletionObserver;
+
+namespace chaudiere
+{
+   class SocketCompletionObserver;
 
 /**
  * Socket is very similar to Java's Socket class. It provides a wrapper class
@@ -101,5 +103,6 @@ private:
    int m_lastReadSize;
 };
 
+}
 
 #endif

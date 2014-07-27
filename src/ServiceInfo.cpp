@@ -3,6 +3,8 @@
 
 #include "ServiceInfo.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 ServiceInfo::ServiceInfo() :

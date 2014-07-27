@@ -1,14 +1,16 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef STDTHREAD_H
-#define STDTHREAD_H
+#ifndef CHAUDIERE_STDTHREAD_H
+#define CHAUDIERE_STDTHREAD_H
 
 #include <thread>
 
 #include "Thread.h"
 #include "StdMutex.h"
 
+namespace chaudiere
+{
 
 /**
  * StdThread is a Thread that's implemented using std::thread (C++ 11).
@@ -74,5 +76,7 @@ private:
    StdMutex m_mutexAlive;
    
 };
+
+}
 
 #endif

@@ -15,6 +15,8 @@ static const std::string EMPTY = "";
 static const std::string ATTR_THREAD_ID     = "os_tid";
 static const std::string ATTR_WORKER_ID     = "worker_id";
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 Thread::Thread(Mutex& mutexAlive) noexcept :

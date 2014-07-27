@@ -11,6 +11,8 @@
 static const std::string EMPTY = "";
 static const std::string SPACE = " ";
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 void StrUtils::toLowerCase(std::string& s) noexcept

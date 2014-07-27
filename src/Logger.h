@@ -1,12 +1,14 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef CHAUDIERE_LOGGER_H
+#define CHAUDIERE_LOGGER_H
 
 #include <string>
 #include <memory>
 
+namespace chaudiere
+{
 
 /**
  * Logger is an interface (abstract base class) for logging.
@@ -185,5 +187,6 @@ private:
    
 };
 
+}
 
 #endif

@@ -16,6 +16,8 @@ static const std::string OPEN_BRACKET       = "[";
 static const std::string CLOSE_BRACKET      = "]";
 static const std::string COMMENT_IDENTIFIER = "#";
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 IniReader::IniReader(const std::string& iniFile) :

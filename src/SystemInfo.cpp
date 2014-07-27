@@ -6,6 +6,8 @@
 #include "SystemInfo.h"
 #include "Logger.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 SystemInfo::SystemInfo() noexcept :

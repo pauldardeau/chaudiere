@@ -1,13 +1,16 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef PTHREADSMUTEX_H
-#define PTHREADSMUTEX_H
+#ifndef CHAUDIERE_PTHREADSMUTEX_H
+#define CHAUDIERE_PTHREADSMUTEX_H
 
 #include <string>
 #include <pthread.h>
 
 #include "Mutex.h"
+
+namespace chaudiere
+{
 
 /**
  * PthreadsMutex is a wrapper class for working with mutexes from pthreads.
@@ -86,5 +89,6 @@ private:
     
 };
 
+}
 
 #endif

@@ -1,16 +1,18 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREAD_H
-#define THREAD_H
+#ifndef CHAUDIERE_THREAD_H
+#define CHAUDIERE_THREAD_H
 
 
 #include "Runnable.h"
 #include "KeyValuePairs.h"
 
-class Mutex;
-class ThreadCompletionObserver;
 
+namespace chaudiere
+{
+   class Mutex;
+   class ThreadCompletionObserver;
 
 /**
  * Thread is an abstract base class for working with threads.
@@ -77,5 +79,6 @@ private:
    KeyValuePairs m_attributes;
 };
 
+}
 
 #endif

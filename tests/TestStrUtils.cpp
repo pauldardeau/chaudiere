@@ -8,6 +8,8 @@
 
 static const std::string emptyString = "";
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestStrUtils::TestStrUtils() :

@@ -16,6 +16,7 @@ static const int BACKLOG = 50;
 
 typedef socklen_t SOCKLEN_T;
 
+using namespace chaudiere;
 
 //******************************************************************************
 

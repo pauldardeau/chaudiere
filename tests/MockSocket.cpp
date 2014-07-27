@@ -3,6 +3,8 @@
 
 #include "MockSocket.h"
 
+using namespace chaudiere;
+
 MockSocket::MockSocket(const std::string& payload) :
    Socket(-1)
 {

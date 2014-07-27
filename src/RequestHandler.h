@@ -1,15 +1,17 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef REQUESTHANDLER_H
-#define REQUESTHANDLER_H
+#ifndef CHAUDIERE_REQUESTHANDLER_H
+#define CHAUDIERE_REQUESTHANDLER_H
 
 
 #include "Runnable.h"
 
-class Socket;
-class SocketRequest;
 
+namespace chaudiere
+{
+   class Socket;
+   class SocketRequest;
 
 /**
  *
@@ -17,8 +19,8 @@ class SocketRequest;
 class RequestHandler : public Runnable
 {
 private:
-   std::shared_ptr<Socket> m_socket;
-   std::shared_ptr<SocketRequest> m_socketRequest;
+   std::shared_ptr<chaudiere::Socket> m_socket;
+   std::shared_ptr<chaudiere::SocketRequest> m_socketRequest;
    bool m_isThreadPooling;
    
 public:
@@ -27,14 +29,14 @@ public:
     * @param socketRequest the SocketRequest for processing using KernelEventServer
     * @see SocketRequest()
     */
-   RequestHandler(std::shared_ptr<SocketRequest> socketRequest) noexcept;
+   RequestHandler(std::shared_ptr<chaudiere::SocketRequest> socketRequest) noexcept;
    
    /**
     * Constructs a RequestHandler using a Socket
     * @param socket the Socket for handling the request
     * @see Socket()
     */
-   RequestHandler(std::shared_ptr<Socket> socket) noexcept;
+   RequestHandler(std::shared_ptr<chaudiere::Socket> socket) noexcept;
    
    /**
     * Destructor
@@ -58,7 +60,7 @@ public:
     * @return
     * @see Socket()
     */
-   std::shared_ptr<Socket> getSocket() noexcept;
+   std::shared_ptr<chaudiere::Socket> getSocket() noexcept;
    
    
    
@@ -69,5 +71,7 @@ public:
    RequestHandler& operator=(RequestHandler&&) = delete;
    
 };
+
+}
 
 #endif

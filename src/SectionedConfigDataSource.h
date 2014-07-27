@@ -1,12 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef SECTIONEDCONFIGDATASOURCE_H
-#define SECTIONEDCONFIGDATASOURCE_H
+#ifndef CHAUDIERE_SECTIONEDCONFIGDATASOURCE_H
+#define CHAUDIERE_SECTIONEDCONFIGDATASOURCE_H
 
 #include <string>
 
-class KeyValuePairs;
+
+namespace chaudiere
+{
+   class KeyValuePairs;
 
 /**
  * SectionedConfigDataSource is an interface for working with configuration
@@ -49,5 +52,7 @@ public:
                                    std::string& value) const noexcept = 0;
 
 };
+
+}
 
 #endif

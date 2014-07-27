@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef RUNNABLE_H
-#define RUNNABLE_H
+#ifndef CHAUDIERE_RUNNABLE_H
+#define CHAUDIERE_RUNNABLE_H
 
 #include <string>
 #include <memory>
@@ -10,6 +10,8 @@
 #include "RunCompletionObserver.h"
 #include "Logger.h"
 
+namespace chaudiere
+{
 
 /**
  * Runnable is an abstract base class that's conceptually very similar to
@@ -19,7 +21,7 @@
 class Runnable : public virtual std::enable_shared_from_this<Runnable>
 {
 private:
-   std::shared_ptr<RunCompletionObserver> m_completionObserver;
+   std::shared_ptr<chaudiere::RunCompletionObserver> m_completionObserver;
    std::string m_runByThreadWorkerId;
    int m_runByThreadId;
    
@@ -92,7 +94,7 @@ public:
     * @param completionObserver
     * @see RunCompletionObserver()
     */
-   void setCompletionObserver(std::shared_ptr<RunCompletionObserver> completionObserver) noexcept
+   void setCompletionObserver(std::shared_ptr<chaudiere::RunCompletionObserver> completionObserver) noexcept
    {
        m_completionObserver = completionObserver;
    }
@@ -108,5 +110,6 @@ public:
    }
 };
 
+}
 
 #endif

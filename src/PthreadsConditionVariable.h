@@ -1,13 +1,15 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef PTHREADSCONDITIONVARIABLE_H
-#define PTHREADSCONDITIONVARIABLE_H
+#ifndef CHAUDIERE_PTHREADSCONDITIONVARIABLE_H
+#define CHAUDIERE_PTHREADSCONDITIONVARIABLE_H
 
 #include <pthread.h>
 
 #include "ConditionVariable.h"
 
+namespace chaudiere
+{
 
 /**
  *
@@ -55,6 +57,7 @@ private:
    bool m_initialized;
 };
 
+}
 
 #endif
 

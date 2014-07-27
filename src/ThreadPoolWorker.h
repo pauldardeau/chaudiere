@@ -1,17 +1,19 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef THREADPOOLWORKER_H
-#define THREADPOOLWORKER_H
+#ifndef CHAUDIERE_THREADPOOLWORKER_H
+#define CHAUDIERE_THREADPOOLWORKER_H
 
 #include <memory>
 
 #include "Runnable.h"
 
-class ThreadingFactory;
-class ThreadPoolQueue;
-class Thread;
 
+namespace chaudiere
+{
+   class ThreadingFactory;
+   class ThreadPoolQueue;
+   class Thread;
 
 /**
  * ThreadPoolWorker provides the logic of pulling work off of a ThreadPoolQueue
@@ -65,6 +67,8 @@ class ThreadPoolWorker : public Runnable
       int m_workerId;
       bool m_isRunning;
 };
+
+}
 
 #endif
 

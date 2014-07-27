@@ -1,10 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef DYNAMICLIBRARY_H
-#define DYNAMICLIBRARY_H
+#ifndef CHAUDIERE_DYNAMICLIBRARY_H
+#define CHAUDIERE_DYNAMICLIBRARY_H
 
 #include <string>
+
+namespace chaudiere
+{
 
 /**
  * DynamicLibrary is a wrapper around dlopen, dlsym, dlclose.
@@ -58,6 +61,8 @@ class DynamicLibrary
       typedef void* HDLL;
       HDLL m_hDll;
 };
+
+}
 
 #endif
 

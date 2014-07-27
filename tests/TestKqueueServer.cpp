@@ -4,6 +4,8 @@
 #include "TestKqueueServer.h"
 #include "KqueueServer.h"
 
+using namespace chaudiere;
+
 //******************************************************************************
 
 TestKqueueServer::TestKqueueServer() :

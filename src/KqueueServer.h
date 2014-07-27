@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef KQUEUESERVER_H
-#define KQUEUESERVER_H
+#ifndef CHAUDIERE_KQUEUESERVER_H
+#define CHAUDIERE_KQUEUESERVER_H
 
 #include "KernelEventServer.h"
 
@@ -16,6 +16,8 @@ class Mutex;
 #include <sys/event.h>
 #endif
 
+namespace chaudiere
+{
 
 /**
  * KqueueServer is a wrapper for working with the kqueue API. The kqueue API
@@ -112,5 +114,6 @@ private:
    int m_kqfd;
 };
 
+}
 
 #endif

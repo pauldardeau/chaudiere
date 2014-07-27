@@ -13,6 +13,7 @@
 #include "PthreadsConditionVariable.h"
 #include "StdConditionVariable.h"
 
+using namespace chaudiere;
 
 std::shared_ptr<ThreadingFactory> ThreadingFactory::threadingFactoryInstance = nullptr;
 
