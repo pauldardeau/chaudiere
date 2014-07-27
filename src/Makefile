@@ -7,7 +7,19 @@ ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
 LIB_NAME = libchaudiere.a
-LIBZ = ./ThirdParty/zlib/libz.a
+
+ZLIB_OBJS = ./ThirdParty/zlib/adler32.o \
+./ThirdParty/zlib/compress.o \
+./ThirdParty/zlib/crc32.o \
+./ThirdParty/zlib/deflate.o \
+./ThirdParty/zlib/gzlib.o \
+./ThirdParty/zlib/gzwrite.o \
+./ThirdParty/zlib/inffast.o \
+./ThirdParty/zlib/inflate.o \
+./ThirdParty/zlib/inftrees.o \
+./ThirdParty/zlib/trees.o \
+./ThirdParty/zlib/zutil.o
+
 
 OBJS = DynamicLibrary.o \
 EpollServer.o \
@@ -48,11 +60,11 @@ clean :
 	rm -f $(LIB_NAME)
 	cd ThirdParty/zlib && make clean
 	
-$(LIBZ) :
+$(ZLIB_OBJS) :
 	cd ThirdParty/zlib && make
 
-$(LIB_NAME) : $(OBJS) $(LIBZ)
-	$(ARCHIVE_CMD) $(ARCHIVE_OPTS) $(LIB_NAME) $(OBJS) $(LIBZ)
+$(LIB_NAME) : $(OBJS) $(ZLIB_OBJS)
+	$(ARCHIVE_CMD) $(ARCHIVE_OPTS) $(LIB_NAME) $(OBJS) $(ZLIB_OBJS)
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

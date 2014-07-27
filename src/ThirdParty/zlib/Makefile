@@ -3,10 +3,6 @@
 
 CC = clang
 CC_OPTS = -c
-ARCHIVE_CMD = ar
-ARCHIVE_OPTS = rs
-
-LIB_NAME = libz.a
 
 OBJS = adler32.o \
 compress.o \
@@ -20,14 +16,10 @@ inftrees.o \
 trees.o \
 zutil.o
 
-all : $(LIB_NAME)
+all : $(OBJS)
 
 clean :
 	rm -f *.o
-	rm -f $(LIB_NAME)
-
-$(LIB_NAME) : $(OBJS)
-	$(ARCHIVE_CMD) $(ARCHIVE_OPTS) $(LIB_NAME) $(OBJS)
 
 %.o : %.c
 	$(CC) $(CC_OPTS) $< -o $@
