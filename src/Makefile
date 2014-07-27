@@ -2,11 +2,12 @@
 # BSD License
 
 CC = clang++
-CC_OPTS = -c -std=c++11
+CC_OPTS = -c -std=c++11 -I./ThirdParty/zlib
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
 LIB_NAME = libchaudiere.a
+LIBZ = ./ThirdParty/zlib/libz.a
 
 OBJS = DynamicLibrary.o \
 EpollServer.o \
@@ -45,9 +46,13 @@ all : $(LIB_NAME)
 clean :
 	rm -f *.o
 	rm -f $(LIB_NAME)
+	cd ThirdParty/zlib && make clean
+	
+$(LIBZ) :
+	cd ThirdParty/zlib && make
 
-$(LIB_NAME) : $(OBJS)
-	$(ARCHIVE_CMD) $(ARCHIVE_OPTS) $(LIB_NAME) $(OBJS)
+$(LIB_NAME) : $(OBJS) $(LIBZ)
+	$(ARCHIVE_CMD) $(ARCHIVE_OPTS) $(LIB_NAME) $(OBJS) $(LIBZ)
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

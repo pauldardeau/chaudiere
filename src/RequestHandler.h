@@ -39,13 +39,19 @@ public:
    /**
     * Destructor
     */
-   ~RequestHandler() noexcept;
+   virtual ~RequestHandler() noexcept;
    
    /**
     * Sets boolean indicating whether request is being run on thread pool
     * @param isThreadPooling boolean indicating if request is being run on thread pool
     */
    void setThreadPooling(bool isThreadPooling) noexcept;
+   
+   /**
+    *
+    * @return
+    */
+   bool isThreadPooling() const noexcept;
    
    /**
     *

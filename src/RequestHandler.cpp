@@ -50,6 +50,13 @@ void RequestHandler::setThreadPooling(bool isThreadPooling) noexcept
 
 //******************************************************************************
 
+bool RequestHandler::isThreadPooling() const noexcept
+{
+   return m_isThreadPooling;
+}
+
+//******************************************************************************
+
 std::shared_ptr<Socket> RequestHandler::getSocket() noexcept
 {
    std::shared_ptr<Socket> socket = nullptr;
