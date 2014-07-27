@@ -95,3 +95,24 @@ unsigned short ServiceInfo::port() const
 }
    
 //******************************************************************************
+
+void ServiceInfo::setServiceName(const std::string& serviceName)
+{
+   m_serviceName = serviceName;
+}
+
+//******************************************************************************
+
+void ServiceInfo::setHost(const std::string& host)
+{
+   m_host = host;
+}
+
+//******************************************************************************
+
+void ServiceInfo::setPort(unsigned short port)
+{
+   m_port = port;
+}
+
+//******************************************************************************
