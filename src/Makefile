@@ -8,7 +8,8 @@ ARCHIVE_OPTS = rs
 
 LIB_NAME = libchaudiere.a
 
-OBJS = EpollServer.o \
+OBJS = DynamicLibrary.o \
+EpollServer.o \
 IniReader.o \
 InvalidKeyException.o \
 KernelEventServer.o \
@@ -31,6 +32,7 @@ StdThread.o \
 StrUtils.o \
 StringTokenizer.o \
 SystemInfo.o \
+SystemStats.o \
 Thread.o \
 ThreadPool.o \
 ThreadPoolDispatch.o \
