@@ -28,6 +28,8 @@ protected:
    void testStripTrailing();
    void testStripLeading();
    void testTrimLeadingSpaces();
+   
+   void testPadRight();
 
 public:
    TestStrUtils();

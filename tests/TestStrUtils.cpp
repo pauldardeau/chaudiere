@@ -31,6 +31,7 @@ void TestStrUtils::runTests()
    testStripTrailing();
    testStripLeading();
    testTrimLeadingSpaces();
+   testPadRight();
 }
 
 //******************************************************************************
@@ -319,3 +320,29 @@ void TestStrUtils::testTrimLeadingSpaces()
 
 //******************************************************************************
 
+void TestStrUtils::testPadRight()
+{
+   TEST_CASE("padRight");
+   
+   //static void padRight(std::string& s, char padChar, int paddedLength);
+   std::string empty;
+   const std::string tenChars = "xxxxxxxxxx";
+   StrUtils::padRight(empty, 'x', 10);
+   requireStringEquals(tenChars, empty, "empty");
+   
+   std::string noPaddingNeeded = "xxxxxxxxxx";
+   StrUtils::padRight(noPaddingNeeded, 'x', 10);
+   requireStringEquals(tenChars, noPaddingNeeded, "no padding needed");
+   
+   std::string onePadCharNeeded = "...";
+   const std::string fourChars = "....";
+   StrUtils::padRight(onePadCharNeeded, '.', 4);
+   requireStringEquals(fourChars, onePadCharNeeded, "one pad char needed");
+   
+   std::string threePadCharsNeeded = "888    ";
+   const std::string spacePadded = "888       ";
+   StrUtils::padRight(threePadCharsNeeded, ' ', 10);
+   requireStringEquals(spacePadded, threePadCharsNeeded, "three pad chars needed");
+}
+
+//******************************************************************************
