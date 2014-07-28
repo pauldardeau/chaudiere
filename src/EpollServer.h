@@ -7,9 +7,6 @@
 #include "KernelEventServer.h"
 
 
-class SocketServiceHandler;
-class Mutex;
-
 #ifdef __linux__
 #include <sys/epoll.h>
 #define EPOLL_SUPPORT 1
@@ -18,6 +15,8 @@ class Mutex;
 
 namespace chaudiere
 {
+   class SocketServiceHandler;
+   class Mutex;
 
 /**
  * EpollServer is a wrapper for working with the epoll API. The epoll API

@@ -6,9 +6,6 @@
 
 #include "KernelEventServer.h"
 
-class SocketServiceHandler;
-class Mutex;
-
 
 //#if defined(__APPLE__) || defined(__FreeBSD__)
 #ifndef __linux__
@@ -18,6 +15,8 @@ class Mutex;
 
 namespace chaudiere
 {
+   class SocketServiceHandler;
+   class Mutex;
 
 /**
  * KqueueServer is a wrapper for working with the kqueue API. The kqueue API
