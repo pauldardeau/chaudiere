@@ -61,7 +61,7 @@ public:
    ServiceInfo& operator=(ServiceInfo&& move);
    
    /**
-    * Retrieves the name of the sevice
+    * Retrieves the name of the service
     * @return the service name
     */
    const std::string& serviceName() const;
