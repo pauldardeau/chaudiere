@@ -21,7 +21,8 @@ ZLIB_OBJS = ./ThirdParty/zlib/adler32.o \
 ./ThirdParty/zlib/zutil.o
 
 
-OBJS = DynamicLibrary.o \
+OBJS = DateTime.o \
+DynamicLibrary.o \
 EpollServer.o \
 IniReader.o \
 InvalidKeyException.o \
