@@ -30,6 +30,8 @@ KernelEventServer.o \
 KeyValuePairs.o \
 KqueueServer.o \
 Logger.o \
+OSUtils.o \
+OptionParser.o \
 PthreadsConditionVariable.o \
 PthreadsMutex.o \
 PthreadsThread.o \
