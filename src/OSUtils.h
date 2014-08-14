@@ -44,6 +44,13 @@ namespace chaudiere
       static bool pathExists(const std::string& filePath);
       
       /**
+       * Creates a new directory of the specified name
+       * @param directory name of new directory to create
+       * @return boolean indicating if the directory was created
+       */
+      static bool createDirectory(const std::string& directory);
+      
+      /**
        *
        * @param inCrc32
        * @param buf

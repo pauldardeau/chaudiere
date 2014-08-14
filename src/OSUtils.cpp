@@ -118,6 +118,14 @@ bool OSUtils::pathExists(const std::string& filePath)
 
 //******************************************************************************
 
+bool OSUtils::createDirectory(const std::string& directory)
+{
+   const int rc = mkdir(directory.c_str(), S_IRWXU);
+   return (0 == rc);
+}
+
+//******************************************************************************
+
 unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
                                       const void *buf,
                                       size_t bufLen)
