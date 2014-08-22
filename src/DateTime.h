@@ -16,6 +16,7 @@ namespace chaudiere
    class DateTime
    {
    private:
+      double m_timeIntervalSince1970;
       int m_year;
       int m_month;
       int m_day;
@@ -23,9 +24,31 @@ namespace chaudiere
       int m_minute;
       int m_second;
       int m_weekDay;
-      bool m_initialized;
+      bool m_haveUnixTimeValue;
       
    public:
+      /**
+       *
+       * @param date
+       * @param dateValue
+       */
+      static void dateFromString(DateTime* date, const char* dateValue);
+      
+      /**
+       *
+       * @param date
+       * @return
+       */
+      static double unixTimeValue(const DateTime& date);
+      
+      /**
+       *
+       * @param date
+       * @param unixTime
+       * @return
+       */
+      static bool populateFromUnixTime(DateTime& date, double unixTime);
+
       /**
        * Retrieves current date and time as GMT
        * @return DateTime instance with GMT date time
@@ -44,6 +67,24 @@ namespace chaudiere
        * @param dummy ignored
        */
       DateTime(int dummy);
+      
+      /**
+       *
+       * @param year
+       * @param month
+       * @param day
+       * @param hour
+       * @param minute
+       * @param second
+       */
+      DateTime(int year,
+           int month,
+           int day,
+           int hour,
+           int minute,
+           int second);
+   
+      DateTime(double timeIntervalSince1970);
       
       /**
        * Constructs a DateTime instance by parsing a string that
@@ -84,6 +125,19 @@ namespace chaudiere
        */
       bool operator<(const DateTime& compare) const;
       
+      /**
+       *
+       * @param compare
+       * @return
+       */
+      double timeIntervalSinceDate(const DateTime& compare) const;
+      
+      /**
+       *
+       * @return
+       */
+      double timeIntervalSince1970() const;
+
       /**
        * Retrieves the date/time as a formatted string (yyyy-mm-dd hh:mm:ss)
        * @return the date/time as a formatted string
