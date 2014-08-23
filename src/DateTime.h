@@ -16,7 +16,7 @@ namespace chaudiere
    class DateTime
    {
    private:
-      double m_timeIntervalSince1970;
+      mutable double m_timeIntervalSince1970;
       int m_year;
       int m_month;
       int m_day;
@@ -24,7 +24,7 @@ namespace chaudiere
       int m_minute;
       int m_second;
       int m_weekDay;
-      bool m_haveUnixTimeValue;
+      mutable bool m_haveUnixTimeValue;
       
    public:
       /**

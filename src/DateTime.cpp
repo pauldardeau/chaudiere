@@ -453,6 +453,11 @@ double DateTime::timeIntervalSinceDate(const DateTime& compare) const
 
 double DateTime::timeIntervalSince1970() const
 {
+   if (!m_haveUnixTimeValue) {
+      m_timeIntervalSince1970 = unixTimeValue(*this);
+      m_haveUnixTimeValue = true;
+   }
+   
    return m_timeIntervalSince1970;
 }
 
