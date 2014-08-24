@@ -567,11 +567,11 @@ bool Socket::readSocket(char* buffer, int bytesToRead) noexcept
                      bytesToRead - total_bytes_rcvd,
                      0);
       
-      if (Logger::isLogging(Logger::LogLevel::Debug)) {
-         char msg[128];
-         std::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
-         Logger::debug(std::string(msg));
-      }
+      //if (Logger::isLogging(Logger::LogLevel::Debug)) {
+      //   char msg[128];
+      //   std::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
+      //   Logger::debug(std::string(msg));
+      //}
         
       if (bytes <= 0) {  // error or connection closed by peer?
          if (bytes == 0) {

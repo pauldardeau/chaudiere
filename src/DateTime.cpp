@@ -157,8 +157,6 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime)
       date.m_second = timeComponents.tm_sec;
       date.m_timeIntervalSince1970 = unixTime;
       date.m_haveUnixTimeValue = true;
-      
-      printf("populatedFromUnixTime: '%s'\n", date.formattedString().c_str());
          
       return true;
    } else {
@@ -295,7 +293,6 @@ DateTime::DateTime(double timeIntervalSince1970) :
    m_weekDay(-1),
    m_haveUnixTimeValue(true)
 {
-   printf("constructing DateTime with unix time value=%f\n", timeIntervalSince1970);
    populateFromUnixTime(*this, timeIntervalSince1970);
 }
 
