@@ -131,6 +131,7 @@ double DateTime::unixTimeValue(const DateTime& date)
          time.tm_hour = date.m_hour;
          time.tm_min = date.m_minute;
          time.tm_sec = date.m_second;
+         time.tm_isdst = -1;
          return ::mktime(&time);
       } else {
          return 0.0;
@@ -142,27 +143,27 @@ double DateTime::unixTimeValue(const DateTime& date)
 
 bool DateTime::populateFromUnixTime(DateTime& date, double unixTime)
 {
-   if (date.m_year >= 1970) {
-      //DQ: use local time or gm time?
-      const time_t epochTime = unixTime;
-      struct tm timeComponents;
-      memset(&timeComponents, 0, sizeof(timeComponents));
+   //DQ: use local time or gm time?
+   const time_t epochTime = unixTime;
+   struct tm timeComponents;
+   memset(&timeComponents, 0, sizeof(timeComponents));
       
-      if (localtime_r(&epochTime, &timeComponents)) {
-         date.m_year = timeComponents.tm_year + 1900;
-         date.m_month = timeComponents.tm_mon + 1;
-         date.m_day = timeComponents.tm_mday;
-         date.m_hour = timeComponents.tm_hour;
-         date.m_minute = timeComponents.tm_min;
-         date.m_second = timeComponents.tm_sec;
-         date.m_timeIntervalSince1970 = unixTime;
-         date.m_haveUnixTimeValue = true;
+   if (localtime_r(&epochTime, &timeComponents)) {
+      date.m_year = timeComponents.tm_year + 1900;
+      date.m_month = timeComponents.tm_mon + 1;
+      date.m_day = timeComponents.tm_mday;
+      date.m_hour = timeComponents.tm_hour;
+      date.m_minute = timeComponents.tm_min;
+      date.m_second = timeComponents.tm_sec;
+      date.m_timeIntervalSince1970 = unixTime;
+      date.m_haveUnixTimeValue = true;
+      
+      printf("populatedFromUnixTime: '%s'\n", date.formattedString().c_str());
          
-         return true;
-      }
+      return true;
+   } else {
+      return false;
    }
-   
-   return false;
 }
 
 //******************************************************************************
@@ -203,15 +204,17 @@ DateTime::DateTime() :
    m_weekDay(-1),
    m_haveUnixTimeValue(false)
 {
-   time_t t = time(nullptr);
-   struct tm* now = localtime(&t);
-   m_year = now->tm_year + 1900;
-   m_month = now->tm_mon + 1;
-   m_day = now->tm_mday;
-   m_hour = now->tm_hour;
-   m_minute = now->tm_min;
-   m_second = now->tm_sec;
-   m_weekDay = now->tm_wday;
+   time_t t = ::time(nullptr);
+   struct tm* now = ::localtime(&t);
+   if (now != nullptr) {
+      m_year = now->tm_year + 1900;
+      m_month = now->tm_mon + 1;
+      m_day = now->tm_mday;
+      m_hour = now->tm_hour;
+      m_minute = now->tm_min;
+      m_second = now->tm_sec;
+      m_weekDay = now->tm_wday;
+   }
 }
 
 //******************************************************************************
@@ -292,6 +295,7 @@ DateTime::DateTime(double timeIntervalSince1970) :
    m_weekDay(-1),
    m_haveUnixTimeValue(true)
 {
+   printf("constructing DateTime with unix time value=%f\n", timeIntervalSince1970);
    populateFromUnixTime(*this, timeIntervalSince1970);
 }
 
