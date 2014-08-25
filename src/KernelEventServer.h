@@ -121,12 +121,6 @@ protected:
 private:
    std::shared_ptr<SocketServiceHandler> m_socketServiceHandler;
    bool* m_listBusyFlags;
-   Mutex& m_fdMutex;
-   Mutex& m_hwmConnectionsMutex;  // high water mark (concurrent connections)
-   long m_maxConcurrentRequests;
-   long m_concurrentRequests;
-   long m_maxConcurrentConnections;
-   long m_concurrentConnections;
    int m_serverPort;
    int m_maxConnections;
    int m_listenBacklog;

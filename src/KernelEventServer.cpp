@@ -32,14 +32,7 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
                                      const std::string& serverName) noexcept :
    m_socketServiceHandler(nullptr),
    m_listBusyFlags(nullptr),
-   m_fdMutex(fdMutex),
-   m_hwmConnectionsMutex(hwmConnectionsMutex),
-   m_maxConcurrentRequests(0L),
-   m_concurrentRequests(0L),
-   m_maxConcurrentConnections(0L),
-   m_concurrentConnections(0L),
    m_serverPort(0),
-   m_maxConnections(0),
    m_listenBacklog(10),
    m_listenerFD(-1),
    m_kqfd(-1),
@@ -111,9 +104,6 @@ bool KernelEventServer::init(std::shared_ptr<SocketServiceHandler> socketService
    m_fdmax = m_listenerFD; // so far, it's this one
    m_listBusyFlags = (bool*) ::calloc(m_maxConnections, sizeof(bool));
    
-   m_maxConcurrentConnections = 0L;
-   m_concurrentConnections = 0L;
-   
    return true;
 }
 
@@ -156,9 +146,6 @@ void KernelEventServer::run() noexcept
             Logger::debug(msg);
          }
          
-         //m_fdMutex.lock();
-         //m_hwmConnectionsMutex.lock();
-         
          if (isLoggingDebug) {
             Logger::debug("KernelEventServer::run have locks");
          }
@@ -173,20 +160,6 @@ void KernelEventServer::run() noexcept
                   Logger::debug(msg);
                }
                
-               {
-                  ++m_concurrentConnections;
-                  if (m_concurrentConnections > m_maxConcurrentConnections) {
-                     // new high water mark
-                     m_maxConcurrentConnections = m_concurrentConnections;
-                     
-                     if (Logger::isLogging(Logger::LogLevel::Info)) {
-                        std::snprintf(msg, 128, "new hwm concurrent connections = %ld",
-                                 m_maxConcurrentConnections);
-                        Logger::info(msg);
-                     }
-                  }
-               }
-               
                if (!addFileDescriptorForRead(newfd)) {
                   Logger::critical("kernel event server failed adding read filter");
                }
@@ -198,12 +171,9 @@ void KernelEventServer::run() noexcept
                   Logger::debug(msg);
                }
                
-               --m_concurrentConnections;
-               
                // was it busy?
                if (m_listBusyFlags[index]) {
                   m_listBusyFlags[index] = false;
-                  --m_concurrentRequests;
                }
                
                if (!removeFileDescriptorFromRead(client_fd)) {
@@ -221,18 +191,6 @@ void KernelEventServer::run() noexcept
                      std::snprintf(msg, 128, "handling read for socket %d", client_fd);
                      Logger::debug(msg);
                   }
-                  
-                  ++m_concurrentRequests;
-                  if (m_concurrentRequests > m_maxConcurrentRequests) {
-                     // new high water mark
-                     m_maxConcurrentRequests = m_concurrentRequests;
-                     if (Logger::isLogging(Logger::LogLevel::Info)) {
-                        std::snprintf(msg, 128, "new hwm concurrent requests = %ld",
-                                 m_maxConcurrentRequests);
-                        Logger::info(msg);
-                     }
-                  }
-                  
                   
                   // remove file descriptor from watch
                   if (isLoggingDebug) {
@@ -256,12 +214,8 @@ void KernelEventServer::run() noexcept
                      Logger::debug(msg);
                   }
                   
-                  //m_fdMutex.unlock();
-                  //m_hwmConnectionsMutex.unlock();
-
                   std::shared_ptr<Socket> clientSocket(new Socket(this, client_fd));
                   clientSocket->setUserIndex(index);
-                  //TODO: stuff the stats in the socket or the socketrequest
 
                   std::shared_ptr<SocketRequest> socketRequest(new SocketRequest(clientSocket, m_socketServiceHandler));
 
@@ -282,9 +236,9 @@ void KernelEventServer::run() noexcept
                      Logger::error("exception in serviceSocket on handler");
                   }
                   
-                  //socketRequest->run();
-                  
                   m_listBusyFlags[index] = false;
+                  addFileDescriptorForRead(client_fd);
+                  
                } else {
                   std::snprintf(msg, 128, "already busy with socket %d", client_fd);
                   Logger::warning(msg);
@@ -292,11 +246,8 @@ void KernelEventServer::run() noexcept
             }
          }
          
-         //m_fdMutex.unlock();
-         //m_hwmConnectionsMutex.unlock();
-         
          if (isLoggingDebug) {
-            Logger::debug("KernelEventServer::run finished iteration of innner loop");
+            Logger::debug("KernelEventServer::run finished iteration of inner loop");
          }
          
       }
@@ -323,20 +274,14 @@ void KernelEventServer::notifySocketComplete(std::shared_ptr<Socket> socket) noe
       Logger::debug("notifySocketComplete: waiting for locks");
    }
    
-   //MutexLock lock(m_fdMutex);
-   //MutexLock lockConnections(m_hwmConnectionsMutex);
-   
    if (isLoggingDebug) {
       Logger::debug("notifySocketComplete: have locks");
    }
    
    // mark the fd as not being busy anymore
    m_listBusyFlags[userIndex] = false;
-   --m_concurrentRequests;
    
    if (!socket->isConnected()) {
-      
-      --m_concurrentConnections;
       
       // remove file descriptor and close socket
       if (isLoggingDebug) {
