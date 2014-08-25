@@ -95,12 +95,31 @@ public:
     * @param port the new port number for the service
     */
    void setPort(unsigned short port);
+   
+   /**
+    * Retrieves a uniquely identifying string for the ServiceInfo instance
+    * @return uniquely identifying string
+    */
+   std::string getUniqueIdentifier() const;
+   
+   /**
+    * Sets boolean indicator as to whether connection should be persistent
+    * @param persistentConnection boolean indicating whether connection should be persistent
+    */
+   void setPersistentConnection(bool persistentConnection);
+   
+   /**
+    * Retrieves boolean value indicating whether service connection should be persistent
+    * @return boolean value indicating whether connection should be persistent
+    */
+   bool getPersistentConnection() const;
 
 
 private:
    std::string m_serviceName;
    std::string m_host;
    unsigned short m_port;
+   bool m_persistentConnection;
 };
 
 }

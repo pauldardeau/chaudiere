@@ -8,7 +8,8 @@ using namespace chaudiere;
 //******************************************************************************
 
 ServiceInfo::ServiceInfo() :
-   m_port(0)
+   m_port(0),
+   m_persistentConnection(false)
 {
 }
 
@@ -17,7 +18,8 @@ ServiceInfo::ServiceInfo() :
 ServiceInfo::ServiceInfo(const std::string& serviceName, const std::string& host, unsigned short port) :
    m_serviceName(serviceName),
    m_host(host),
-   m_port(port)
+   m_port(port),
+   m_persistentConnection(false)
 {
 }
 
@@ -26,7 +28,8 @@ ServiceInfo::ServiceInfo(const std::string& serviceName, const std::string& host
 ServiceInfo::ServiceInfo(const ServiceInfo& copy) :
    m_serviceName(copy.m_serviceName),
    m_host(copy.m_host),
-   m_port(copy.m_port)
+   m_port(copy.m_port),
+   m_persistentConnection(copy.m_persistentConnection)
 {
 }
 
@@ -35,7 +38,8 @@ ServiceInfo::ServiceInfo(const ServiceInfo& copy) :
 ServiceInfo::ServiceInfo(ServiceInfo&& move) :
    m_serviceName(std::move(move.m_serviceName)),
    m_host(std::move(move.m_host)),
-   m_port(move.m_port)
+   m_port(move.m_port),
+   m_persistentConnection(move.m_persistentConnection)
 {
 }
 
@@ -56,6 +60,7 @@ ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy)
    m_serviceName = copy.m_serviceName;
    m_host = copy.m_host;
    m_port = copy.m_port;
+   m_persistentConnection = copy.m_persistentConnection;
    
    return *this;
 }
@@ -71,6 +76,7 @@ ServiceInfo& ServiceInfo::operator=(ServiceInfo&& move)
    m_serviceName = std::move(move.m_serviceName);
    m_host = std::move(move.m_host);
    m_port = move.m_port;
+   m_persistentConnection = move.m_persistentConnection;
    
    return *this;
 }
@@ -115,6 +121,36 @@ void ServiceInfo::setHost(const std::string& host)
 void ServiceInfo::setPort(unsigned short port)
 {
    m_port = port;
+}
+
+//******************************************************************************
+
+std::string ServiceInfo::getUniqueIdentifier() const
+{
+   std::string uniqueIdentifier = m_host;
+   uniqueIdentifier += std::string("|");
+   
+   char portAsString[10];
+   memset(portAsString, 0, 10);
+   snprintf(portAsString, 10, "%d", m_port);
+   
+   uniqueIdentifier += std::string(portAsString);
+   
+   return uniqueIdentifier;
+}
+
+//******************************************************************************
+
+void ServiceInfo::setPersistentConnection(bool persistentConnection)
+{
+   m_persistentConnection = persistentConnection;
+}
+
+//******************************************************************************
+
+bool ServiceInfo::getPersistentConnection() const
+{
+   return m_persistentConnection;
 }
 
 //******************************************************************************
