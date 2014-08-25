@@ -2,7 +2,7 @@
 # BSD License
 
 CC = clang++
-CC_OPTS = -c -std=c++11 -I./ThirdParty/zlib
+CC_OPTS = -c -O2 -std=c++11 -I./ThirdParty/zlib
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
