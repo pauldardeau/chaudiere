@@ -64,7 +64,9 @@ PthreadsMutex::~PthreadsMutex() noexcept
    Logger::logInstanceDestroy("PthreadsMutex");
 
    if (m_haveValidMutex) {
-      unlock();
+      if (m_isLocked) {
+         unlock();
+      }
       ::pthread_mutex_destroy(&m_mutex);
    }
 }
@@ -73,7 +75,7 @@ PthreadsMutex::~PthreadsMutex() noexcept
 
 bool PthreadsMutex::unlock() noexcept
 {
-   if (m_haveValidMutex) {
+   if (m_haveValidMutex && m_isLocked) {
       const int rc = ::pthread_mutex_unlock(&m_mutex);
       if (0 == rc) {
          m_isLocked = false;
