@@ -353,3 +353,11 @@ void StrUtils::padRight(std::string& s, char padChar, int paddedLength)
 
 //******************************************************************************
 
+void StrUtils::padLeft(std::string& s, char padChar, int paddedLength)
+{
+   if (s.length() < paddedLength) {
+      s.insert(0, std::string(paddedLength - s.length(), padChar));
+   }
+}
+
+//******************************************************************************

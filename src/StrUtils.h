@@ -121,6 +121,14 @@ public:
    /**
     *
     * @param s
+    * @param padChar
+    * @param paddedLength
+    */
+   static void padLeft(std::string& s, char padChar, int paddedLength);
+
+   /**
+    *
+    * @param s
     * @return
     */
    static std::string gzipCompress(const std::string& s);
