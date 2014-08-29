@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <string.h>
 
 #include "DateTime.h"
 

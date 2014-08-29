@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <string.h>
+
 #include "ServiceInfo.h"
 
 using namespace chaudiere;
