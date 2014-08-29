@@ -8,7 +8,7 @@
 
 using namespace chaudiere;
 
-const std::string StdLogger::prefixCritical = "Criticial:";
+const std::string StdLogger::prefixCritical = "Critical:";
 const std::string StdLogger::prefixError    = "Error:";
 const std::string StdLogger::prefixWarning  = "Warning:";
 const std::string StdLogger::prefixInfo     = "Info:";
