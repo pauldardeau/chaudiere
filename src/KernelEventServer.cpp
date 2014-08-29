@@ -165,7 +165,22 @@ void KernelEventServer::run() noexcept
                }
             }
          } else {
-            if (isEventDisconnect(index)) {
+            if (isEventReadClose(index)) {
+               if (isLoggingDebug) {
+                  std::snprintf(msg, 128, "client closed read %d", client_fd);
+                  Logger::debug(msg);
+               }
+               
+               // was it busy?
+               if (m_listBusyFlags[index]) {
+                  m_listBusyFlags[index] = false;
+               }
+               
+               if (!removeFileDescriptorFromRead(client_fd)) {
+                  Logger::warning("kernel event server failed to delete read filter");
+               }
+            }
+            else if (isEventDisconnect(index)) {
                if (isLoggingDebug) {
                   std::snprintf(msg, 128, "client disconnected %d", client_fd);
                   Logger::debug(msg);

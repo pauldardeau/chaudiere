@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <string>
+#include <errno.h>
 
 #include "EpollServer.h"
 #include "Logger.h"
@@ -123,11 +124,26 @@ bool EpollServer::addFileDescriptorForRead(int fileDescriptor) noexcept
 #ifdef EPOLL_SUPPORT
    struct epoll_event ev;
    memset(&ev, 0, sizeof(struct epoll_event));
-   ev.events = EPOLLIN;
+   ev.events = EPOLLIN | EPOLLRDHUP;
    ev.data.fd = fileDescriptor;
    
    if (::epoll_ctl(m_epfd, EPOLL_CTL_ADD, fileDescriptor, &ev) < 0) {
       Logger::critical("epoll_ctl failed in add filter");
+      if (errno == EBADF) {
+         printf("EBADF\n");
+      } else if (errno == EEXIST) {
+         printf("EEXIST\n");
+      } else if (errno == EINVAL) {
+         printf("EINVAL\n");
+      } else if (errno == ENOMEM) {
+         printf("ENOMEM\n");
+      } else if (errno == ENOSPC) {
+         printf("ENOSPC\n");
+      } else if (errno == EPERM) {
+         printf("EPERM\n");
+      } else {
+         printf("unrecognized error for EPOLL_CTL_ADD\n");
+      }
       return false;
    } else {
       return true;
@@ -147,6 +163,23 @@ bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept
 
    if (::epoll_ctl(m_epfd, EPOLL_CTL_DEL, fileDescriptor, &ev) < 0) {
       Logger::critical("epoll_ctl failed in delete filter");
+      if (errno == EBADF) {
+         printf("EBADF\n");
+      } else if (errno == EEXIST) {
+         printf("EEXIST\n");
+      } else if (errno == EINVAL) {
+         printf("EINVAL\n");
+      } else if (errno == ENOENT) {
+         printf("ENOENT\n");
+      } else if (errno == ENOMEM) {
+         printf("ENOMEM\n");
+      } else if (errno == ENOSPC) {
+         printf("ENOSPC\n");
+      } else if (errno == EPERM) {
+         printf("EPERM\n");
+      } else {
+         printf("unrecognized error for EPOLL_CTL_DEL\n");
+      }
       return false;
    } else {
       return true;
@@ -164,6 +197,19 @@ bool EpollServer::isEventDisconnect(int eventIndex) noexcept
    struct epoll_event current_event;
    current_event = m_events[eventIndex];
    return current_event.events & EPOLLHUP;
+#endif
+   
+   return false;
+}
+
+//******************************************************************************
+
+bool EpollServer::isEventReadClose(int eventIndex) noexcept
+{
+#ifdef EPOLL_SUPPORT
+   struct epoll_event current_event;
+   current_event = m_events[eventIndex];
+   return current_event.events & EPOLLRDHUP;
 #endif
    
    return false;

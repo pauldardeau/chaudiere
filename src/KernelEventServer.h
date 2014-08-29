@@ -54,39 +54,46 @@ public:
     */
    virtual void run() noexcept;
 
-  /**
-   *
-   * @param maxConnections
-   * @return
-   */
+   /**
+    *
+    * @param maxConnections
+    * @return
+    */
    virtual int getKernelEvents(int maxConnections) noexcept = 0;
 
-  /**
-   *
-   * @param eventIndex
-   * @return
-   */
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
    virtual int fileDescriptorForEventIndex(int eventIndex) noexcept = 0;
    
-  /**
-   *
-   * @param fileDescriptor
-   * @return
-   */
+   /**
+    *
+    * @param fileDescriptor
+    * @return
+    */
    virtual bool addFileDescriptorForRead(int fileDescriptor) noexcept = 0;
    
-  /**
-   *
-   * @param fileDescriptor
-   * @return
-   */
+   /**
+    *
+    * @param fileDescriptor
+    * @return
+    */
    virtual bool removeFileDescriptorFromRead(int fileDescriptor) noexcept = 0;
 
-  /**
-   *
-   * @param eventIndex
-   * @return
-   */
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
+   virtual bool isEventReadClose(int eventIndex) noexcept = 0;
+   
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
    virtual bool isEventDisconnect(int eventIndex) noexcept = 0;
    
    /**

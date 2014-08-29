@@ -183,6 +183,19 @@ bool KqueueServer::isEventDisconnect(int eventIndex) noexcept
 
 //******************************************************************************
 
+bool KqueueServer::isEventReadClose(int eventIndex) noexcept
+{
+#ifdef KQUEUE_SUPPORT
+   struct kevent current_event;
+   current_event = m_events[eventIndex];
+   return current_event.flags & EV_EOF;
+#endif
+
+   return false;
+}
+
+//******************************************************************************
+
 bool KqueueServer::isEventRead(int eventIndex) noexcept
 {
 #ifdef KQUEUE_SUPPORT

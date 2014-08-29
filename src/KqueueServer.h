@@ -70,32 +70,39 @@ public:
     */
    virtual int fileDescriptorForEventIndex(int eventIndex) noexcept override;
    
-  /**
-   *
-   * @param fileDescriptor
-   * @return
-   */
+   /**
+    *
+    * @param fileDescriptor
+    * @return
+    */
    virtual bool addFileDescriptorForRead(int fileDescriptor) noexcept override;
    
-  /**
-   *
-   * @param fileDescriptor
-   * @return
-   */
+   /**
+    *
+    * @param fileDescriptor
+    * @return
+    */
    virtual bool removeFileDescriptorFromRead(int fileDescriptor) noexcept override;
    
-  /**
-   *
-   * @param eventIndex
-   * @return
-   */
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
    virtual bool isEventDisconnect(int eventIndex) noexcept override;
    
-  /**
-   *
-   * @param eventIndex
-   * @return
-   */
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
+   virtual bool isEventReadClose(int eventIndex) noexcept override;
+
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
    virtual bool isEventRead(int eventIndex) noexcept override;
 
 

@@ -95,6 +95,13 @@ public:
     * @param eventIndex
     * @return
     */
+   virtual bool isEventReadClose(int eventIndex) noexcept override;
+
+   /**
+    *
+    * @param eventIndex
+    * @return
+    */
    virtual bool isEventRead(int eventIndex) noexcept override;
 
    // copying not allowed
