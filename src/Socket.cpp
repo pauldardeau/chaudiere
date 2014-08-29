@@ -417,7 +417,7 @@ bool Socket::readLine(std::string& line) noexcept
 
       if (Logger::isLogging(Logger::LogLevel::Debug)) {
          char msg[128];
-         std::snprintf(msg, 128, "readline: bytes from recv = %ld", bytes);
+         std::snprintf(msg, 128, "readline: bytes from recv = %zd", bytes);
          Logger::debug(std::string(msg));
          buffer[bytes] = '\0';
          Logger::debug("just read from socket recv (next line)");
@@ -640,7 +640,7 @@ bool Socket::write(const char* buffer, unsigned long bufsize) noexcept
    const ssize_t rc = ::send(m_socketFD, buffer, bufsize, 0);
    if (rc < 0) {
       char msg[128];
-      std::snprintf(msg, 128, "socket send failed, rc = %ld", rc);
+      std::snprintf(msg, 128, "socket send failed, rc = %zd", rc);
       Logger::warning(std::string(msg));
    }
      
