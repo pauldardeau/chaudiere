@@ -56,7 +56,7 @@ class StdLogger : public Logger
 public:
    StdLogger() noexcept;
    StdLogger(LogLevel logLevel) noexcept;
-   virtual ~StdLogger();
+   virtual ~StdLogger() noexcept;
    
    virtual LogLevel getLogLevel() const noexcept override;
    virtual void setLogLevel(LogLevel logLevel) noexcept override;

@@ -37,7 +37,7 @@ StdLogger::StdLogger(LogLevel logLevel) noexcept :
 
 //******************************************************************************
 
-StdLogger::~StdLogger()
+StdLogger::~StdLogger() noexcept
 {
 }
 
