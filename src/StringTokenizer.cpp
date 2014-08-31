@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <stdexcept>
 
 #include "StringTokenizer.h"
 #include "BasicException.h"
