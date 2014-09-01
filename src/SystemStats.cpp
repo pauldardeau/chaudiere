@@ -2,6 +2,7 @@
 // BSD License
 
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #ifdef __linux__
@@ -22,9 +23,9 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept
    
 #ifdef __linux__
    struct sysinfo si;
-   memset(&si, 0, sizeof(si));
+   ::memset(&si, 0, sizeof(si));
    
-   const int rc = sysinfo();
+   const int rc = ::sysinfo(&si);
    
    if (rc == 0) {
       uptimeSeconds = si.uptime;  // seconds since boot
@@ -39,9 +40,9 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept
    }
    
    time_t bsec = boottime.tv_sec;
-   time_t csec = time(NULL);
+   time_t csec = ::time(NULL);
 
-   uptimeSeconds = difftime(csec, bsec);
+   uptimeSeconds = ::difftime(csec, bsec);
    
    success = true;
 #endif
