@@ -5,6 +5,14 @@
 #include <string.h>
 #include <time.h>
 
+#include <sys/types.h>
+
+#ifdef __FreeBSD__
+#include <kvm.h>
+#include <sys/param.h>
+#include <sys/user.h>
+#endif
+
 #ifdef __linux__
 #include <sys/sysinfo.h>
 #else
