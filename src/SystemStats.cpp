@@ -107,7 +107,7 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) noexcept
             numberProcesses = length / sizeof(struct kinfo_proc);
             success = true;
          }
-      } else {
+         
          ::free(proc_list);
       }
    }
