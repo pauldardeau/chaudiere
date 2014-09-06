@@ -91,6 +91,11 @@ public:
    
    /**
     *
+    */
+   static void shutdown() noexcept;
+                              
+   /**
+    *
     * @param logger
     */
    static void setLogger(std::shared_ptr<Logger> logger) noexcept;

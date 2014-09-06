@@ -9,6 +9,13 @@ std::shared_ptr<Logger> Logger::loggerInstance = nullptr;
 
 //******************************************************************************
 
+void Logger::shutdown() noexcept
+{
+   loggerInstance = nullptr;
+}
+
+//******************************************************************************
+
 void Logger::setLogger(std::shared_ptr<Logger> logger) noexcept
 {
    loggerInstance = logger;
