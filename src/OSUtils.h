@@ -49,6 +49,13 @@ namespace chaudiere
        * @return boolean indicating if the directory was created
        */
       static bool createDirectory(const std::string& directory);
+
+     /**
+      * Creates a new private directory of the specified name
+      * @param directory name of new directory to create
+      * @return boolean indicating if the directory was created
+      */
+     static bool createPrivateDirectory(const std::string& directory);
       
       /**
        *

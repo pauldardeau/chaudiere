@@ -120,7 +120,20 @@ bool OSUtils::pathExists(const std::string& filePath)
 
 bool OSUtils::createDirectory(const std::string& directory)
 {
-   const int rc = mkdir(directory.c_str(), S_IRWXU);
+   const mode_t mode = S_IRWXU |  // user read/write/execute
+                       S_IRGRP |  // group read
+                       S_IXGRP |  // group execute
+                       S_IROTH |  // other read
+                       S_IXOTH;   // other execute
+   const int rc = ::mkdir(directory.c_str(), mode);
+   return (0 == rc);
+}
+
+//******************************************************************************
+
+bool OSUtils::createPrivateDirectory(const std::string& directory)
+{
+   const int rc = ::mkdir(directory.c_str(), S_IRWXU);
    return (0 == rc);
 }
 
