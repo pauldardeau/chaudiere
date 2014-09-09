@@ -162,6 +162,13 @@ std::string& StrUtils::trimLeadingSpaces(std::string& s) noexcept
 
 //******************************************************************************
 
+std::string StrUtils::trim(const std::string& s) noexcept
+{
+   return StrUtils::strip(s);
+}
+
+//**************************************************************************
+
 std::string StrUtils::strip(const std::string& s) noexcept
 {
    return StrUtils::strip(s, ' ');

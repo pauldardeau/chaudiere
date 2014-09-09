@@ -113,6 +113,13 @@ public:
    /**
     *
     * @param s
+    * @return
+    */
+   static std::string trim(const std::string& s) noexcept;
+   
+   /**
+    *
+    * @param s
     * @param padChar
     * @param paddedLength
     */
