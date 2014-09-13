@@ -24,6 +24,7 @@ ZLIB_OBJS = ./ThirdParty/zlib/adler32.o \
 OBJS = DateTime.o \
 DynamicLibrary.o \
 EpollServer.o \
+FileLogger.o \
 IniReader.o \
 InvalidKeyException.o \
 KernelEventServer.o \
