@@ -35,7 +35,6 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
    m_serverPort(0),
    m_listenBacklog(10),
    m_listenerFD(-1),
-   m_kqfd(-1),
    m_numberEventsReturned(0)
 {
 }

@@ -132,7 +132,6 @@ private:
    int m_maxConnections;
    int m_listenBacklog;
    int m_listenerFD;
-   int m_kqfd;
    int m_fdmax;
    int m_numberEventsReturned;
 
