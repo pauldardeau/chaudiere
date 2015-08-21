@@ -5,7 +5,7 @@
 #define CHAUDIERE_STDLOGGER_H
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <memory>
 
 #include "Logger.h"
@@ -72,22 +72,20 @@ public:
    virtual void logOccurrence(const std::string& occurrenceType,
                               const std::string& occurrenceName) noexcept override;
 
-   void populateClassLifecycleStats(std::unordered_map<std::string, LifecycleStats>& mapClassLifecycleStats);
-   void populateOccurrences(std::unordered_map<std::string, std::unordered_map<std::string, long long>>& mapOccurrences);
+   void populateClassLifecycleStats(std::map<std::string, LifecycleStats>& mapClassLifecycleStats);
+   void populateOccurrences(std::map<std::string, std::map<std::string, long long>>& mapOccurrences);
    
    const std::string& logLevelPrefix(LogLevel level) const noexcept;
 
    // disallow copies
    StdLogger(const StdLogger&) = delete;
-   StdLogger(StdLogger&&) = delete;
    StdLogger& operator=(const StdLogger&) = delete;
-   StdLogger& operator=(StdLogger&&) = delete;
 
 private:
-   std::unordered_map<std::string, LifecycleStats> m_mapClassLifecycleStats;
-   std::unordered_map<std::string, std::unordered_map<std::string, long long>> m_mapOccurrences;
-   std::unique_ptr<Mutex> m_lockLifecycleStats;
-   std::unique_ptr<Mutex> m_lockOccurrences;
+   std::map<std::string, LifecycleStats> m_mapClassLifecycleStats;
+   std::map<std::string, std::map<std::string, long long>> m_mapOccurrences;
+   Mutex* m_lockLifecycleStats;
+   Mutex* m_lockOccurrences;
    LogLevel m_logLevel;
    bool m_isLoggingInstanceLifecycles;
    

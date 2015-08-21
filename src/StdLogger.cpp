@@ -26,19 +26,19 @@ StdLogger::StdLogger() noexcept :
 //******************************************************************************
 
 StdLogger::StdLogger(LogLevel logLevel) noexcept :
+   m_lockLifecycleStats(new PthreadsMutex("lockLifecycleStats")),
+   m_lockOccurrences(new PthreadsMutex("lockOccurrences")),
    m_logLevel(logLevel),
    m_isLoggingInstanceLifecycles(false)
 {
-   m_lockLifecycleStats =
-      std::unique_ptr<Mutex>(new PthreadsMutex("lockLifecycleStats"));
-   m_lockOccurrences =
-      std::unique_ptr<Mutex>(new PthreadsMutex("lockOccurrences"));
 }
 
 //******************************************************************************
 
 StdLogger::~StdLogger() noexcept
 {
+   delete m_lockLifecycleStats;
+   delete m_lockOccurrences;
 }
 
 //******************************************************************************
@@ -142,7 +142,7 @@ void StdLogger::logInstanceDestroy(const std::string& className) noexcept
 
 //******************************************************************************
 
-void StdLogger::populateClassLifecycleStats(std::unordered_map<std::string, LifecycleStats>& mapClassLifecycleStats)
+void StdLogger::populateClassLifecycleStats(std::map<std::string, LifecycleStats>& mapClassLifecycleStats)
 {
    MutexLock lock(*m_lockLifecycleStats);
    mapClassLifecycleStats = m_mapClassLifecycleStats;
@@ -150,7 +150,7 @@ void StdLogger::populateClassLifecycleStats(std::unordered_map<std::string, Life
 
 //******************************************************************************
 
-void StdLogger::populateOccurrences(std::unordered_map<std::string, std::unordered_map<std::string, long long>>& mapOccurrences)
+void StdLogger::populateOccurrences(std::map<std::string, std::map<std::string, long long>>& mapOccurrences)
 {
    MutexLock lock(*m_lockOccurrences);
    mapOccurrences = m_mapOccurrences;
@@ -164,7 +164,7 @@ void StdLogger::logOccurrence(const std::string& occurrenceType,
    MutexLock lock(*m_lockOccurrences);
    auto it = m_mapOccurrences.find(occurrenceType);
    if (it != m_mapOccurrences.end()) {
-      std::unordered_map<std::string, long long>& mapOccurrencesByType = it->second;
+      std::map<std::string, long long>& mapOccurrencesByType = it->second;
       auto itName = mapOccurrencesByType.find(occurrenceName);
       if (itName != mapOccurrencesByType.end()) {
          ++(itName->second);
@@ -172,7 +172,7 @@ void StdLogger::logOccurrence(const std::string& occurrenceType,
          mapOccurrencesByType[occurrenceName] = 1L;
       }
    } else {
-      std::unordered_map<std::string, long long> mapOccurences;
+      std::map<std::string, long long> mapOccurences;
       mapOccurences[occurrenceName] = 1L;
       
       m_mapOccurrences[occurrenceType] = std::move(mapOccurences);
