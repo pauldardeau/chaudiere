@@ -5,7 +5,7 @@
 #define CHAUDIERE_SOCKETSERVER_H
 
 #include <string>
-#include <unordered_map>
+#include <map>
 
 #include "KernelEventServer.h"
 
@@ -40,16 +40,14 @@ class SocketServer
        */
       virtual ~SocketServer() noexcept;
 
-      virtual std::shared_ptr<RequestHandler> handlerForSocket(std::shared_ptr<Socket> socket) = 0;
-      virtual std::shared_ptr<RequestHandler> handlerForSocketRequest(std::shared_ptr<SocketRequest> socketRequest) = 0;
+      virtual RequestHandler* handlerForSocket(Socket* socket) = 0;
+      virtual RequestHandler* handlerForSocketRequest(SocketRequest* socketRequest) = 0;
       
-      virtual std::shared_ptr<SocketServiceHandler> createSocketServiceHandler() = 0;
+      virtual SocketServiceHandler* createSocketServiceHandler() = 0;
 
       // copies not allowed
       SocketServer(const SocketServer&) = delete;
-      SocketServer(SocketServer&&) = delete;
       SocketServer& operator=(const SocketServer&) = delete;
-      SocketServer& operator=(SocketServer&&) = delete;
 
       /**
        * Retrieves the current time in Greenwich Mean Time (GMT)
@@ -86,7 +84,7 @@ class SocketServer
        * @see SectionedConfigDataSource()
        * @return the configuration data source
        */
-      std::unique_ptr<SectionedConfigDataSource> getConfigDataSource();
+      SectionedConfigDataSource* getConfigDataSource();
    
       /**
        * Retrieves the size of the socket send buffer
@@ -117,7 +115,7 @@ class SocketServer
        * @param socketRequest the SocketRequest to process
        * @see SocketRequest()
        */
-      void serviceSocket(std::shared_ptr<SocketRequest> socketRequest);
+      void serviceSocket(SocketRequest* socketRequest);
 
       /**
        * Convenience method to retrieve a setting and convert it to a boolean
@@ -144,7 +142,8 @@ class SocketServer
        * @param kvp the collection of key/value pairs for replacement
        * @param s the string to search and replace all variables in
        */
-      void replaceVariables(const KeyValuePairs& kvp, std::string& s) const noexcept;
+      void replaceVariables(const KeyValuePairs& kvp,
+                            std::string& s) const noexcept;
    
       /**
        * Determines if compression is turned on for the specified mime type
@@ -178,11 +177,11 @@ class SocketServer
 
 
    private:
-      std::unique_ptr<KernelEventServer> m_kernelEventServer;
-      std::unique_ptr<ServerSocket> m_serverSocket;
-      std::shared_ptr<ThreadPoolDispatcher> m_threadPool;
-      std::shared_ptr<ThreadingFactory> m_threadingFactory;
-      std::unordered_map<std::string, std::string> m_mapProperties;
+      KernelEventServer* m_kernelEventServer; //strong
+      ServerSocket* m_serverSocket; //strong
+      ThreadPoolDispatcher* m_threadPool; //weak
+      ThreadingFactory* m_threadingFactory; //weak
+      std::map<std::string, std::string> m_mapProperties;
       std::string m_logLevel;
       std::string m_concurrencyModel;
       std::string m_configFilePath;

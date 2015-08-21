@@ -11,8 +11,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsConditionVariable::PthreadsConditionVariable() :
-   m_initialized(false)
-{
+   m_initialized(false) {
    Logger::logInstanceCreate("PthreadsConditionVariable");
 
    if (0 != ::pthread_cond_init(&m_cond, nullptr)) {
@@ -25,19 +24,17 @@ PthreadsConditionVariable::PthreadsConditionVariable() :
 
 //******************************************************************************
 
-PthreadsConditionVariable::~PthreadsConditionVariable()
-{
+PthreadsConditionVariable::~PthreadsConditionVariable() {
    Logger::logInstanceDestroy("PthreadsConditionVariable");
 }
 
 //******************************************************************************
 
-bool PthreadsConditionVariable::wait(std::shared_ptr<Mutex> mutex) noexcept
-{
+bool PthreadsConditionVariable::wait(Mutex* mutex) noexcept {
    if (m_initialized) {
       if (mutex) {
-         std::shared_ptr<PthreadsMutex> pthreadsMutex =
-            std::dynamic_pointer_cast<PthreadsMutex>(mutex);
+         PthreadsMutex* pthreadsMutex =
+            dynamic_cast<PthreadsMutex*>(mutex);
          
          if (pthreadsMutex) {
             if (pthreadsMutex->isLocked()) {
@@ -65,8 +62,7 @@ bool PthreadsConditionVariable::wait(std::shared_ptr<Mutex> mutex) noexcept
 
 //******************************************************************************
 
-void PthreadsConditionVariable::notifyOne() noexcept
-{
+void PthreadsConditionVariable::notifyOne() noexcept {
    if (m_initialized) {
       if (0 != ::pthread_cond_signal(&m_cond)) {
          Logger::error("unable to signal on condition variable");
@@ -78,8 +74,7 @@ void PthreadsConditionVariable::notifyOne() noexcept
 
 //******************************************************************************
 
-void PthreadsConditionVariable::notifyAll() noexcept
-{
+void PthreadsConditionVariable::notifyAll() noexcept {
    if (m_initialized) {
       if (0 != ::pthread_cond_broadcast(&m_cond)) {
          Logger::error("unable to broadcast on condition variable");

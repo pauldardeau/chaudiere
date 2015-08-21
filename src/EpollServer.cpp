@@ -15,8 +15,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-bool EpollServer::isSupportedPlatform() noexcept
-{
+bool EpollServer::isSupportedPlatform() noexcept {
 #ifdef EPOLL_SUPPORT
    return true;
 #else
@@ -31,15 +30,13 @@ EpollServer::EpollServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) noexcept :
 #ifdef EPOLL_SUPPORT
    m_events(nullptr),
 #endif
-   m_epfd(-1)
-{
+   m_epfd(-1) {
    Logger::logInstanceCreate("EpollServer");
 }
 
 //******************************************************************************
 
-EpollServer::~EpollServer() noexcept
-{
+EpollServer::~EpollServer() noexcept {
    Logger::logInstanceDestroy("EpollServer");
 
 #ifdef EPOLL_SUPPORT
@@ -56,10 +53,9 @@ EpollServer::~EpollServer() noexcept
 
 //******************************************************************************
 
-bool EpollServer::init(std::shared_ptr<SocketServiceHandler> socketServiceHandler,
+bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
                        int serverPort,
-                       int maxConnections) noexcept
-{
+                       int maxConnections) noexcept {
 #ifndef EPOLL_SUPPORT
    return false;
 #endif
@@ -92,8 +88,7 @@ bool EpollServer::init(std::shared_ptr<SocketServiceHandler> socketServiceHandle
 
 //******************************************************************************
 
-int EpollServer::getKernelEvents(int maxConnections) noexcept
-{
+int EpollServer::getKernelEvents(int maxConnections) noexcept {
 #ifdef EPOLL_SUPPORT
    ::epoll_wait(m_epfd, m_events, maxConnections, -1);
    return maxConnections;
@@ -104,8 +99,7 @@ int EpollServer::getKernelEvents(int maxConnections) noexcept
 
 //******************************************************************************
 
-int EpollServer::fileDescriptorForEventIndex(int eventIndex) noexcept
-{
+int EpollServer::fileDescriptorForEventIndex(int eventIndex) noexcept {
    int client_fd = -1;
    
 #ifdef EPOLL_SUPPORT
@@ -119,11 +113,10 @@ int EpollServer::fileDescriptorForEventIndex(int eventIndex) noexcept
 
 //******************************************************************************
 
-bool EpollServer::addFileDescriptorForRead(int fileDescriptor) noexcept
-{
+bool EpollServer::addFileDescriptorForRead(int fileDescriptor) noexcept {
 #ifdef EPOLL_SUPPORT
    struct epoll_event ev;
-   memset(&ev, 0, sizeof(struct epoll_event));
+   ::memset(&ev, 0, sizeof(struct epoll_event));
    ev.events = EPOLLIN | EPOLLRDHUP;
    ev.data.fd = fileDescriptor;
    
@@ -155,11 +148,10 @@ bool EpollServer::addFileDescriptorForRead(int fileDescriptor) noexcept
 
 //******************************************************************************
 
-bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept
-{
+bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept {
 #ifdef EPOLL_SUPPORT
    struct epoll_event ev;
-   memset(&ev, 0, sizeof(struct epoll_event));
+   ::memset(&ev, 0, sizeof(struct epoll_event));
 
    if (::epoll_ctl(m_epfd, EPOLL_CTL_DEL, fileDescriptor, &ev) < 0) {
       Logger::critical("epoll_ctl failed in delete filter");
@@ -191,8 +183,7 @@ bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept
 
 //******************************************************************************
 
-bool EpollServer::isEventDisconnect(int eventIndex) noexcept
-{
+bool EpollServer::isEventDisconnect(int eventIndex) noexcept {
 #ifdef EPOLL_SUPPORT
    struct epoll_event current_event;
    current_event = m_events[eventIndex];
@@ -204,8 +195,7 @@ bool EpollServer::isEventDisconnect(int eventIndex) noexcept
 
 //******************************************************************************
 
-bool EpollServer::isEventReadClose(int eventIndex) noexcept
-{
+bool EpollServer::isEventReadClose(int eventIndex) noexcept {
 #ifdef EPOLL_SUPPORT
    struct epoll_event current_event;
    current_event = m_events[eventIndex];
@@ -217,8 +207,7 @@ bool EpollServer::isEventReadClose(int eventIndex) noexcept
 
 //******************************************************************************
 
-bool EpollServer::isEventRead(int eventIndex) noexcept
-{
+bool EpollServer::isEventRead(int eventIndex) noexcept {
 #ifdef EPOLL_SUPPORT
    struct epoll_event current_event;
    current_event = m_events[eventIndex];

@@ -27,12 +27,6 @@ public:
    SystemInfo(const SystemInfo& copy) noexcept;
    
    /**
-    * Move constructor
-    * @param move the source of the move
-    */
-   SystemInfo(SystemInfo&& move) noexcept;
-   
-   /**
     * Destructor
     */
    ~SystemInfo() noexcept;
@@ -43,13 +37,6 @@ public:
     * @return reference to the updated instance
     */
    SystemInfo& operator=(const SystemInfo& copy) noexcept;
-   
-   /**
-    * Move operator
-    * @param move the source of the move
-    * @return reference to the target of the move
-    */
-   SystemInfo& operator=(SystemInfo&& move) noexcept;
    
    /**
     * Retrieves the system name (sysname)

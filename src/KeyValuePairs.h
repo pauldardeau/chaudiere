@@ -6,7 +6,7 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 namespace chaudiere
 {
@@ -30,12 +30,6 @@ class KeyValuePairs
       KeyValuePairs(const KeyValuePairs& copy) noexcept;
    
       /**
-       * Move constructor
-       * @param move the source of the object being moved
-       */
-      KeyValuePairs(KeyValuePairs&& move) noexcept;
-   
-      /**
        * Destructor
        */
       ~KeyValuePairs() noexcept;
@@ -47,13 +41,6 @@ class KeyValuePairs
        */
       KeyValuePairs& operator=(const KeyValuePairs& copy) noexcept;
    
-      /**
-       * Move operator
-       * @param move source of object move
-       * @return updated object after the move.
-       */
-      KeyValuePairs& operator=(KeyValuePairs&& move) noexcept;
-
       /**
        * Retrieves the keys contained within the collection
        * @param keys the vector to be populated with collection keys
@@ -80,7 +67,8 @@ class KeyValuePairs
        * @param key the key of the pair being added
        * @param value the value of the pair being added
        */
-      void addPair(const std::string& key, const std::string& value) noexcept;
+      void addPair(const std::string& key,
+                   const std::string& value) noexcept;
 
       /**
        * Removes a pair identified by the specified key
@@ -108,7 +96,7 @@ class KeyValuePairs
    
 
    private:
-      std::unordered_map<std::string,std::string> m_keyValues;
+      std::map<std::string, std::string> m_keyValues;
 };
 
 }

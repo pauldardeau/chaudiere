@@ -15,14 +15,13 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-ThreadPoolQueue::ThreadPoolQueue(std::shared_ptr<ThreadingFactory> threadingFactory) noexcept :
+ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
    m_threadingFactory(threadingFactory),
    m_mutex(nullptr),
    m_condQueueEmpty(nullptr),
    m_condQueueNotEmpty(nullptr),
    m_isInitialized(false),
-   m_isRunning(false)
-{
+   m_isRunning(false) {
    Logger::logInstanceCreate("ThreadPoolQueue");
 
    try {
@@ -34,34 +33,25 @@ ThreadPoolQueue::ThreadPoolQueue(std::shared_ptr<ThreadingFactory> threadingFact
          m_isInitialized = true;
          m_isRunning = true;
       }
-   }
-   catch (const BasicException& be)
-   {
+   } catch (const BasicException& be) {
       Logger::error("exception setting up thread pool queue: " + be.whatString());
-   }
-   catch (const std::exception& e)
-   {
+   } catch (const std::exception& e) {
       Logger::error("exception setting up thread pool queue: " + std::string(e.what()));
-   }
-   catch (...)
-   {
+   } catch (...) {
       Logger::error("unknown exception setting up thread pool queue");
    }
 }
 
 //******************************************************************************
 
-ThreadPoolQueue::~ThreadPoolQueue() noexcept
-{
+ThreadPoolQueue::~ThreadPoolQueue() noexcept {
    Logger::logInstanceDestroy("ThreadPoolQueue");
-   
    m_isRunning = false;
 }
 
 //******************************************************************************
 
-bool ThreadPoolQueue::addRequest(std::shared_ptr<Runnable> runnableRequest) noexcept
-{
+bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
    if (!m_isInitialized) {
       Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::addRequest queue not initialized");
       return false;
@@ -81,12 +71,12 @@ bool ThreadPoolQueue::addRequest(std::shared_ptr<Runnable> runnableRequest) noex
    
    if (!m_mutex->haveValidMutex()) {
       Logger::error("don't have valid mutex in addRequest");
-      exit(1);
+      ::exit(1);
    }
 
    if (!m_mutex->lock()) {
       Logger::error("unable to lock mutex in addRequest");
-      exit(1);
+      ::exit(1);
    }
    
    Logger::log(Logger::LogLevel::Debug, "ThreadPoolQueue::addRequest accepting request");
@@ -105,7 +95,7 @@ bool ThreadPoolQueue::addRequest(std::shared_ptr<Runnable> runnableRequest) noex
    
    if (!m_mutex->unlock()) {
       Logger::error("unable to unlock mutex in addRequest");
-      exit(1);
+      ::exit(1);
    }
    
    return true;
@@ -113,8 +103,7 @@ bool ThreadPoolQueue::addRequest(std::shared_ptr<Runnable> runnableRequest) noex
 
 //******************************************************************************
 
-std::shared_ptr<Runnable> ThreadPoolQueue::takeRequest() noexcept
-{
+Runnable* ThreadPoolQueue::takeRequest() noexcept {
    if (!m_isInitialized) {
       Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::takeRequest queue not initialized");
       return nullptr;
@@ -130,7 +119,7 @@ std::shared_ptr<Runnable> ThreadPoolQueue::takeRequest() noexcept
       exit(1);
    }
    
-   std::shared_ptr<Runnable> request = nullptr;
+   Runnable* request = nullptr;
    
    if (m_isRunning) {
       
@@ -175,8 +164,7 @@ std::shared_ptr<Runnable> ThreadPoolQueue::takeRequest() noexcept
 
 //******************************************************************************
 
-void ThreadPoolQueue::shutDown() noexcept
-{
+void ThreadPoolQueue::shutDown() noexcept {
    if (m_isInitialized && m_isRunning) {
       MutexLock lock(*m_mutex);
       m_isRunning = false;
@@ -190,23 +178,20 @@ void ThreadPoolQueue::shutDown() noexcept
 
 //******************************************************************************
 
-bool ThreadPoolQueue::isRunning() const noexcept
-{
+bool ThreadPoolQueue::isRunning() const noexcept {
    return m_isRunning;
 }
 
 //******************************************************************************
 
-bool ThreadPoolQueue::isEmpty() const noexcept
-{
+bool ThreadPoolQueue::isEmpty() const noexcept {
    MutexLock lock(*m_mutex);
    return(m_queue.empty());
 }
 
 //******************************************************************************
 
-bool ThreadPoolQueue::isInitialized() const noexcept
-{
+bool ThreadPoolQueue::isInitialized() const noexcept {
    return m_isInitialized;
 }
 

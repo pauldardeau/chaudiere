@@ -14,8 +14,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsMutex::PthreadsMutex() :
-   PthreadsMutex(EMPTY_STRING)
-{
+   PthreadsMutex(EMPTY_STRING) {
 }
 
 //******************************************************************************
@@ -23,8 +22,7 @@ PthreadsMutex::PthreadsMutex() :
 PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
    m_mutexName(mutexName),
    m_haveValidMutex(false),
-   m_isLocked(false)
-{
+   m_isLocked(false) {
    Logger::logInstanceCreate("PthreadsMutex");
    char buffer[128];
    
@@ -59,8 +57,7 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
 
 //******************************************************************************
 
-PthreadsMutex::~PthreadsMutex() noexcept
-{
+PthreadsMutex::~PthreadsMutex() noexcept {
    Logger::logInstanceDestroy("PthreadsMutex");
 
    if (m_haveValidMutex) {
@@ -73,8 +70,7 @@ PthreadsMutex::~PthreadsMutex() noexcept
 
 //******************************************************************************
 
-bool PthreadsMutex::unlock() noexcept
-{
+bool PthreadsMutex::unlock() noexcept {
    if (m_haveValidMutex && m_isLocked) {
       const int rc = ::pthread_mutex_unlock(&m_mutex);
       if (0 == rc) {
@@ -99,8 +95,7 @@ bool PthreadsMutex::unlock() noexcept
 
 //******************************************************************************
 
-bool PthreadsMutex::lock() noexcept
-{
+bool PthreadsMutex::lock() noexcept {
    if (m_haveValidMutex) {
       
       const int rc = ::pthread_mutex_lock(&m_mutex);
@@ -142,22 +137,19 @@ bool PthreadsMutex::lock() noexcept
 
 //******************************************************************************
 
-bool PthreadsMutex::isLocked() const noexcept
-{
+bool PthreadsMutex::isLocked() const noexcept {
    return m_haveValidMutex && m_isLocked;
 }
 
 //******************************************************************************
 
-bool PthreadsMutex::haveValidMutex() const noexcept
-{
+bool PthreadsMutex::haveValidMutex() const noexcept {
    return m_haveValidMutex;
 }
 
 //******************************************************************************
 
-const std::string& PthreadsMutex::getName() const noexcept
-{
+const std::string& PthreadsMutex::getName() const noexcept {
    return m_mutexName;
 }
 

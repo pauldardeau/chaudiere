@@ -10,25 +10,22 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-StdConditionVariable::StdConditionVariable()
-{
+StdConditionVariable::StdConditionVariable() {
    Logger::logInstanceCreate("StdConditionVariable");
 }
 
 //******************************************************************************
 
-StdConditionVariable::~StdConditionVariable()
-{
+StdConditionVariable::~StdConditionVariable() {
    Logger::logInstanceDestroy("StdConditionVariable");
 }
 
 //******************************************************************************
 
-bool StdConditionVariable::wait(std::shared_ptr<Mutex> mutex) noexcept
-{
+bool StdConditionVariable::wait(Mutex* mutex) noexcept {
    if (mutex) {
-      std::shared_ptr<StdMutex> stdMutex =
-         std::dynamic_pointer_cast<StdMutex>(mutex);
+      StdMutex* stdMutex =
+         dynamic_cast<StdMutex*>(mutex);
       
       if (stdMutex) {
          std::unique_lock<std::mutex> lock(stdMutex->getPlatformPrimitive());
@@ -40,20 +37,19 @@ bool StdConditionVariable::wait(std::shared_ptr<Mutex> mutex) noexcept
    } else {
       Logger::error("no mutex given to wait on");
    }
+   
    return false;
 }
 
 //******************************************************************************
 
-void StdConditionVariable::notifyOne() noexcept
-{
+void StdConditionVariable::notifyOne() noexcept {
    m_cond.notify_one();
 }
 
 //******************************************************************************
 
-void StdConditionVariable::notifyAll() noexcept
-{
+void StdConditionVariable::notifyAll() noexcept {
    m_cond.notify_all();
 }
 

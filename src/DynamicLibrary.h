@@ -53,9 +53,7 @@ class DynamicLibrary
    
       // copies not allowed
       DynamicLibrary(const DynamicLibrary&) = delete;
-      DynamicLibrary(DynamicLibrary&&) = delete;
       DynamicLibrary& operator=(const DynamicLibrary&) = delete;
-      DynamicLibrary& operator=(DynamicLibrary&&) = delete;
 
    private:
       typedef void* HDLL;

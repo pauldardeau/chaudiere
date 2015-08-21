@@ -46,13 +46,11 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(std::shared_ptr<Runnable> runnableRequest) noexcept override;
+   virtual bool addRequest(Runnable* runnableRequest) noexcept override;
 
    // disallow copies
    ThreadPoolDispatch(const ThreadPoolDispatch&) = delete;
-   ThreadPoolDispatch(ThreadPoolDispatch&&) = delete;
    ThreadPoolDispatch& operator=(const ThreadPoolDispatch&) = delete;
-   ThreadPoolDispatch& operator=(ThreadPoolDispatch&&) = delete;
 
    
 private:

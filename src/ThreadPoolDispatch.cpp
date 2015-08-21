@@ -16,38 +16,33 @@ using namespace chaudiere;
 //******************************************************************************
 
 ThreadPoolDispatch::ThreadPoolDispatch() noexcept :
-   m_isRunning(false)
-{
+   m_isRunning(false) {
    Logger::logInstanceCreate("ThreadPoolDispatch");
 }
 
 //******************************************************************************
 
-ThreadPoolDispatch::~ThreadPoolDispatch() noexcept
-{
+ThreadPoolDispatch::~ThreadPoolDispatch() noexcept {
    Logger::logInstanceDestroy("ThreadPoolDispatch");
 }
 
 //******************************************************************************
 
-bool ThreadPoolDispatch::start() noexcept
-{
+bool ThreadPoolDispatch::start() noexcept {
    m_isRunning = true;
    return true;
 }
 
 //******************************************************************************
 
-bool ThreadPoolDispatch::stop() noexcept
-{
+bool ThreadPoolDispatch::stop() noexcept {
    m_isRunning = false;
    return true;
 }
 
 //******************************************************************************
 
-bool ThreadPoolDispatch::addRequest(std::shared_ptr<Runnable> runnableRequest) noexcept
-{
+bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) noexcept {
    if (!m_isRunning || !runnableRequest) {
       return false;
    }
@@ -59,22 +54,15 @@ bool ThreadPoolDispatch::addRequest(std::shared_ptr<Runnable> runnableRequest) n
    dispatch_async(queue, ^{
       try {
          runnableRequest->run();
-      }
-      catch (const BasicException& be)
-      {
+      } catch (const BasicException& be) {
          Logger::error("exception running request: " + be.whatString());
-      }
-      catch (const std::exception& e)
-      {
+      } catch (const std::exception& e) {
          Logger::error("exception running request: " + std::string(e.what()));
-      }
-      catch (...)
-      {
+      } catch (...) {
          Logger::error("unknown exception running request");
       }
       
       runnableRequest->notifyOnCompletion();
-      
    });
    
    return true;

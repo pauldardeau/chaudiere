@@ -11,23 +11,20 @@ using namespace chaudiere;
 //******************************************************************************
 
 StdMutex::StdMutex() :
-   StdMutex(EMPTY_STRING)
-{
+   StdMutex(EMPTY_STRING) {
 }
 
 //******************************************************************************
 
 StdMutex::StdMutex(const std::string& mutexName) :
    m_mutexName(mutexName),
-   m_isLocked(false)
-{
+   m_isLocked(false) {
    Logger::logInstanceCreate("StdMutex");
 }
 
 //******************************************************************************
 
-StdMutex::~StdMutex() noexcept
-{
+StdMutex::~StdMutex() noexcept {
    Logger::logInstanceDestroy("StdMutex");
 
    if (m_isLocked) {
@@ -37,8 +34,7 @@ StdMutex::~StdMutex() noexcept
 
 //******************************************************************************
 
-bool StdMutex::unlock() noexcept
-{
+bool StdMutex::unlock() noexcept {
    if (m_isLocked) {
       m_mutex.unlock();
       m_isLocked = false;
@@ -50,8 +46,7 @@ bool StdMutex::unlock() noexcept
 
 //******************************************************************************
 
-bool StdMutex::lock() noexcept
-{
+bool StdMutex::lock() noexcept {
    if (!m_isLocked) {
       m_mutex.lock();
       m_isLocked = true;
@@ -63,22 +58,19 @@ bool StdMutex::lock() noexcept
 
 //******************************************************************************
 
-bool StdMutex::isLocked() const noexcept
-{
+bool StdMutex::isLocked() const noexcept {
    return m_isLocked;
 }
 
 //******************************************************************************
 
-bool StdMutex::haveValidMutex() const noexcept
-{
+bool StdMutex::haveValidMutex() const noexcept {
    return true;
 }
 
 //******************************************************************************
 
-const std::string& StdMutex::getName() const noexcept
-{
+const std::string& StdMutex::getName() const noexcept {
    return m_mutexName;
 }
 

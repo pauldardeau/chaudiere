@@ -27,7 +27,7 @@ public:
     * @param socketRequest the SocketRequest to process
     * @see SocketRequest()
     */
-   virtual void serviceSocket(std::shared_ptr<SocketRequest> socketRequest) = 0;
+   virtual void serviceSocket(SocketRequest* socketRequest) = 0;
    
    /**
     * Retrieves the name of the handler. This is primarily an aid for debugging.

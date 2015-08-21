@@ -21,7 +21,7 @@ namespace chaudiere
  * ThreadingFactory is a factory for creating Thread, Mutex, and ThreadPoolDispatcher
  * instances based on the desired ThreadingPackage.
  */
-class ThreadingFactory : public std::enable_shared_from_this<ThreadingFactory>
+class ThreadingFactory
 {
 public:
    enum class ThreadingPackage {
@@ -34,13 +34,13 @@ public:
     * Retrieves the class singleton instance
     * @return the class singleton instance
     */
-   static std::shared_ptr<ThreadingFactory> getThreadingFactory() noexcept;
+   static ThreadingFactory* getThreadingFactory() noexcept;
    
    /**
     * Sets the specified ThreadingFactory instance to be the class singleton
     * @param threadingFactory the instance to use for the new class singleton
     */
-   static void setThreadingFactory(std::shared_ptr<ThreadingFactory> threadingFactory) noexcept;
+   static void setThreadingFactory(ThreadingFactory* threadingFactory) noexcept;
 
    /**
     * Constructs a ThreadingFactory instance based on the specified threading package
@@ -65,7 +65,7 @@ public:
     * @return pointer to newly created Mutex
     * @see Mutex()
     */
-   std::shared_ptr<Mutex> createMutex();
+   Mutex* createMutex();
    
    /**
     * Create a new named Mutex
@@ -73,14 +73,14 @@ public:
     * @return pointer to the newly created Mutex
     * @see Mutex()
     */
-   std::shared_ptr<Mutex> createMutex(const std::string& mutexName);
+   Mutex* createMutex(const std::string& mutexName);
    
    /**
     * Create a new Thread
     * @return pointer to newly created Thread
     * @see Thread()
     */
-   std::shared_ptr<Thread> createThread() noexcept;
+   Thread* createThread() noexcept;
    
    /**
     * Creates a new Thread to run the specified Runnable
@@ -89,33 +89,31 @@ public:
     * @see Thread()
     * @see Runnable()
     */
-   std::shared_ptr<Thread> createThread(std::shared_ptr<Runnable> runnable) noexcept;
+   Thread* createThread(Runnable* runnable) noexcept;
    
    /**
     * Create a new ConditionVariable
     * @return pointer to the newly created ConditionVariable
     * @see ConditionVariable()
     */
-   std::shared_ptr<ConditionVariable> createConditionVariable();
+   ConditionVariable* createConditionVariable();
    
    /**
     * Creates a new ThreadPoolDispatcher
     * @param numberThreads the number of threads to initialize in the pool dispatcher
     * @return pointer to newly created ThreadPoolDispatcher
     */
-   std::shared_ptr<ThreadPoolDispatcher> createThreadPoolDispatcher(int numberThreads) noexcept;
+   ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads) noexcept;
    
    // disallow copies
    ThreadingFactory(const ThreadingFactory&) = delete;
-   ThreadingFactory(ThreadingFactory&&) = delete;
    ThreadingFactory& operator=(const ThreadingFactory&) = delete;
-   ThreadingFactory& operator=(ThreadingFactory&&) = delete;
 
 private:
    ThreadingPackage m_threadingPackage;
    ThreadingPackage m_packageMutexType;
 
-   static std::shared_ptr<ThreadingFactory> threadingFactoryInstance;
+   static ThreadingFactory* threadingFactoryInstance;
 
 };
 

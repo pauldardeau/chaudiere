@@ -45,7 +45,7 @@ public:
     * @return
     * @see SocketServiceHandler()
     */
-   virtual bool init(std::shared_ptr<SocketServiceHandler> socketServiceHandler,
+   virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
                      int maxConnections) noexcept;
                      
@@ -108,13 +108,11 @@ public:
     *
     * @param socket
     */
-   void notifySocketComplete(std::shared_ptr<Socket> socket) noexcept override;
+   void notifySocketComplete(Socket* socket) noexcept override;
 
    // copying not allowed
    KernelEventServer(const KernelEventServer&) = delete;
-   KernelEventServer(KernelEventServer&&) = delete;
    KernelEventServer& operator=(const KernelEventServer&) = delete;
-   KernelEventServer& operator=(KernelEventServer&&) = delete;
 
    
 protected:
@@ -126,7 +124,7 @@ protected:
 
 
 private:
-   std::shared_ptr<SocketServiceHandler> m_socketServiceHandler;
+   SocketServiceHandler* m_socketServiceHandler;
    bool* m_listBusyFlags;
    int m_serverPort;
    int m_maxConnections;

@@ -11,27 +11,23 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-SocketRequest::SocketRequest(std::shared_ptr<Socket> socket,
-                             std::shared_ptr<SocketServiceHandler> handler) noexcept :
+SocketRequest::SocketRequest(Socket* socket,
+                             SocketServiceHandler* handler) noexcept :
    Runnable(),
    m_socket(socket),
-   m_handler(handler)
-{
+   m_handler(handler) {
    Logger::logInstanceCreate("SocketRequest");
 }
 
 //******************************************************************************
 
-SocketRequest::~SocketRequest() noexcept
-{
+SocketRequest::~SocketRequest() noexcept {
    Logger::logInstanceDestroy("SocketRequest");
-   
 }
 
 //******************************************************************************
 
-void SocketRequest::run()
-{
+void SocketRequest::run() {
    if (Logger::isLogging(Logger::LogLevel::Debug)) {
       char msg[128];
       std::snprintf(msg, 128, "request for socket fd=%d",
@@ -40,22 +36,15 @@ void SocketRequest::run()
    }
 
    if (m_handler) {
-      try
-      {
-         std::shared_ptr<SocketRequest> socketRequest =
-            std::dynamic_pointer_cast<SocketRequest>(shared_from_this());
+      try {
+         SocketRequest* socketRequest =
+            dynamic_cast<SocketRequest*>(this);
          m_handler->serviceSocket(socketRequest);
-      }
-      catch (const BasicException& be)
-      {
+      } catch (const BasicException& be) {
          Logger::error("exception in serviceSocket on handler: " + be.whatString());
-      }
-      catch (const std::exception& e)
-      {
+      } catch (const std::exception& e) {
          Logger::error("exception in serviceSocket on handler: " + std::string(e.what()));
-      }
-      catch (...)
-      {
+      } catch (...) {
          Logger::error("exception in serviceSocket on handler");
       }
    } else {
@@ -67,22 +56,19 @@ void SocketRequest::run()
 
 //******************************************************************************
 
-int SocketRequest::getSocketFD() const noexcept
-{
+int SocketRequest::getSocketFD() const noexcept {
    return m_socket->getFileDescriptor();
 }
 
 //******************************************************************************
 
-std::shared_ptr<Socket> SocketRequest::getSocket() noexcept
-{
+Socket* SocketRequest::getSocket() noexcept {
    return m_socket;
 }
 
 //******************************************************************************
 
-void SocketRequest::requestComplete() noexcept
-{
+void SocketRequest::requestComplete() noexcept {
    if (nullptr != m_socket) {
       m_socket->requestComplete();
    }

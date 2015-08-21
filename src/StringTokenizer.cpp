@@ -16,8 +16,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 StringTokenizer::StringTokenizer(const std::string& withTokens) noexcept :
-   StringTokenizer(withTokens, SPACE)
-{
+   StringTokenizer(withTokens, SPACE) {
 }
 
 //******************************************************************************
@@ -32,8 +31,7 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
    m_stringLength(m_withTokens.length()),
    m_isConstructing(true),
    m_numberTokens(0),
-   m_indexToken(0)
-{
+   m_indexToken(0) {
    Logger::logInstanceCreate("StringTokenizer");
 
    if (m_withTokens.empty()) {
@@ -53,15 +51,13 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
 
 //******************************************************************************
 
-StringTokenizer::~StringTokenizer() noexcept
-{
+StringTokenizer::~StringTokenizer() noexcept {
    Logger::logInstanceDestroy("StringTokenizer");
 }
 
 //******************************************************************************
 
-bool StringTokenizer::hasMoreTokens() const noexcept
-{
+bool StringTokenizer::hasMoreTokens() const noexcept {
    if (m_isConstructing) {
       return (m_posCurrent != std::string::npos);
    } else {
@@ -71,15 +67,13 @@ bool StringTokenizer::hasMoreTokens() const noexcept
 
 //******************************************************************************
 
-std::size_t StringTokenizer::countTokens() const noexcept
-{
+std::size_t StringTokenizer::countTokens() const noexcept {
    return m_numberTokens;
 }
 
 //******************************************************************************
 
-const std::string& StringTokenizer::nextToken()
-{
+const std::string& StringTokenizer::nextToken() {
    if (m_indexToken < m_numberTokens) {
       return m_tokens[m_indexToken++];
    } else {
@@ -89,8 +83,7 @@ const std::string& StringTokenizer::nextToken()
 
 //******************************************************************************
 
-std::string StringTokenizer::extractNextToken()
-{
+std::string StringTokenizer::extractNextToken() {
    if (m_posCurrent == std::string::npos) {
       throw std::out_of_range("no more tokens");
    }

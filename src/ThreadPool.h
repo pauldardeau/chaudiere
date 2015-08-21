@@ -35,7 +35,7 @@ public:
     * @param threadingFactory
     * @param numberWorkers
     */
-   ThreadPool(std::shared_ptr<ThreadingFactory> threadingFactory, int numberWorkers) noexcept;
+   ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers) noexcept;
 
    /**
     * Destructor
@@ -61,7 +61,7 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(std::shared_ptr<Runnable> runnableRequest) noexcept override;
+   virtual bool addRequest(Runnable* runnableRequest) noexcept override;
    
    /**
     *
@@ -70,7 +70,7 @@ public:
     * @see Runnable()
     * @see Thread()
     */
-   virtual std::shared_ptr<Thread> createThreadWithRunnable(std::shared_ptr<Runnable> runnable) noexcept;
+   virtual Thread* createThreadWithRunnable(Runnable* runnable) noexcept;
    
    /**
     *
@@ -91,9 +91,7 @@ public:
    void removeWorkers(int numberWorkersToRemove) noexcept;
    
    ThreadPool(const ThreadPool&) = delete;
-   ThreadPool(ThreadPool&&) = delete;
    ThreadPool& operator=(const ThreadPool&) = delete;
-   ThreadPool& operator=(ThreadPool&&) = delete;
    
 protected:
    /**
@@ -103,8 +101,8 @@ protected:
    void adjustNumberWorkers(int numberToAddOrDelete) noexcept;
    
 private:
-   std::shared_ptr<ThreadingFactory> m_threadingFactory;
-   std::list<std::shared_ptr<ThreadPoolWorker>> m_listWorkers;
+   ThreadingFactory* m_threadingFactory;
+   std::list<ThreadPoolWorker*> m_listWorkers;
    ThreadPoolQueue m_queue;
    int m_workerCount;
    int m_workersCreated;

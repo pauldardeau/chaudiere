@@ -27,19 +27,15 @@ public:
     * @param host the host for the service
     * @param port the port number for the service
     */
-   ServiceInfo(const std::string& serviceName, const std::string& host, unsigned short port);
+   ServiceInfo(const std::string& serviceName,
+               const std::string& host,
+               unsigned short port);
    
    /**
     * Copy constructor
     * @param copy the source of the copy
     */
    ServiceInfo(const ServiceInfo& copy);
-   
-   /**
-    * Move constructor
-    * @param move the source of the move
-    */
-   ServiceInfo(ServiceInfo&& move);
    
    /**
     * Destructor
@@ -52,13 +48,6 @@ public:
     * @return reference to the target of the copy
     */
    ServiceInfo& operator=(const ServiceInfo& copy);
-   
-   /**
-    * Move operator
-    * @param move the source of the move
-    * @return reference to the target of the move
-    */
-   ServiceInfo& operator=(ServiceInfo&& move);
    
    /**
     * Retrieves the name of the service

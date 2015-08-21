@@ -39,12 +39,6 @@ namespace chaudiere
       OptionParser(const OptionParser& copy);
       
       /**
-       * Move constructor
-       * @param move the source of the move
-       */
-      OptionParser(OptionParser&& move);
-      
-      /**
        * Destructor
        */
       ~OptionParser() {}
@@ -57,25 +51,20 @@ namespace chaudiere
       OptionParser& operator=(const OptionParser& copy);
       
       /**
-       * Move operator
-       * @param move the source of the move
-       * return reference to the target of the move
-       */
-      OptionParser& operator=(OptionParser&& move);
-   
-      /**
        * Adds an option that simply flags a feature/capability as present/enabled or not
        * @param option the name of option as specified on command line
        * @param destVariable the destination to populate if the option is present
        */
-      void addBooleanOption(const std::string& option, const std::string& destVariable);
+      void addBooleanOption(const std::string& option,
+                            const std::string& destVariable);
       
       /**
        * Adds a string option that may be present on the command line
        * @param option the name of the option as specified on the command line
        * @param destVariable the destination to populate if the option is present
        */
-      void addOption(const std::string& option, const std::string& destVariable);
+      void addOption(const std::string& option,
+                     const std::string& destVariable);
    
       /**
        * Determines if the specified string option is present

@@ -26,7 +26,7 @@ public:
     * Notifies the observer that the Runnable has completed
     * @param runnable the Runnable that has completed
     */
-   virtual void notifyRunComplete(std::shared_ptr<Runnable> runnable) noexcept = 0;
+   virtual void notifyRunComplete(Runnable* runnable) noexcept = 0;
 };
 
 }

@@ -13,16 +13,14 @@ using namespace chaudiere;
 //******************************************************************************
 
 DynamicLibrary::DynamicLibrary() noexcept :
-   m_hDll(nullptr)
-{
+   m_hDll(nullptr) {
    Logger::logInstanceCreate("DynamicLibrary");
 }
 
 //******************************************************************************
 
 DynamicLibrary::DynamicLibrary(const std::string& libraryName) :
-   m_hDll(nullptr)
-{
+   m_hDll(nullptr) {
    Logger::logInstanceCreate("DynamicLibrary");
 
    if (!open(libraryName)) {
@@ -32,24 +30,20 @@ DynamicLibrary::DynamicLibrary(const std::string& libraryName) :
 
 //******************************************************************************
 
-DynamicLibrary::~DynamicLibrary() noexcept
-{
+DynamicLibrary::~DynamicLibrary() noexcept {
    Logger::logInstanceDestroy("DynamicLibrary");
-
    close();
 }
 
 //******************************************************************************
 
-void* DynamicLibrary::resolve(const std::string& functionName) noexcept
-{
+void* DynamicLibrary::resolve(const std::string& functionName) noexcept {
    return ::dlsym(m_hDll, functionName.c_str());
 }
 
 //******************************************************************************
 
-bool DynamicLibrary::open(const std::string& libraryName) noexcept
-{
+bool DynamicLibrary::open(const std::string& libraryName) noexcept {
    close();
    
    m_hDll = ::dlopen(libraryName.c_str(), RTLD_NOW);
@@ -57,7 +51,8 @@ bool DynamicLibrary::open(const std::string& libraryName) noexcept
    bool rc = (m_hDll != nullptr);
    
    if (!rc) {
-      Logger::error(std::string("unable to load library '") + libraryName + std::string("'"));
+      Logger::error(std::string("unable to load library '") +
+                    libraryName + std::string("'"));
    }
    
    return rc;
@@ -65,8 +60,7 @@ bool DynamicLibrary::open(const std::string& libraryName) noexcept
 
 //******************************************************************************
 
-void DynamicLibrary::close() noexcept
-{
+void DynamicLibrary::close() noexcept {
    if (m_hDll == nullptr) {
       return;
    }

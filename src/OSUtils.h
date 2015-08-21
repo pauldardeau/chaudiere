@@ -34,7 +34,8 @@ namespace chaudiere
        * @param fileName the name of the file
        * @return joined directory path and file name
        */
-      static std::string pathJoin(const std::string& directory, const std::string& fileName);
+      static std::string pathJoin(const std::string& directory,
+                                  const std::string& fileName);
       
       /**
        * Determines if the specified file path exists
@@ -74,7 +75,8 @@ namespace chaudiere
        * @param crc32 will be populated with the CRC-32 value as a hex string
        * @return boolean indicating if the CRC value was obtained for the file
        */
-      static bool crc32ForFile(const std::string& filePath, std::string& crc32);
+      static bool crc32ForFile(const std::string& filePath,
+                               std::string& crc32);
 
    };
 

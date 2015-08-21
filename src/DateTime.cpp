@@ -11,8 +11,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-static int numberLeadingZeros(const char* value, int length)
-{
+static int numberLeadingZeros(const char* value, int length) {
    int leadingZeros = 0;
    for (int i=0; i < length; ++i) {
       if (value[i] != '0') {
@@ -27,8 +26,7 @@ static int numberLeadingZeros(const char* value, int length)
 
 //******************************************************************************
 
-void DateTime::dateFromString(DateTime* date, const char* dateValue)
-{
+void DateTime::dateFromString(DateTime* date, const char* dateValue) {
    const size_t valueLength = ::strlen(dateValue);
    if ((valueLength > 18) && (date != nullptr)) {
       const char* firstDash = ::strchr(dateValue, '-');
@@ -104,8 +102,7 @@ void DateTime::dateFromString(DateTime* date, const char* dateValue)
 
 //******************************************************************************
 
-double DateTime::unixTimeValue(const DateTime& date)
-{
+double DateTime::unixTimeValue(const DateTime& date) {
    if (date.m_haveUnixTimeValue) {
       return date.m_timeIntervalSince1970;
    } else {
@@ -142,14 +139,13 @@ double DateTime::unixTimeValue(const DateTime& date)
 
 //******************************************************************************
 
-bool DateTime::populateFromUnixTime(DateTime& date, double unixTime)
-{
+bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
    //DQ: use local time or gm time?
    const time_t epochTime = unixTime;
    struct tm timeComponents;
-   memset(&timeComponents, 0, sizeof(timeComponents));
+   ::memset(&timeComponents, 0, sizeof(timeComponents));
       
-   if (localtime_r(&epochTime, &timeComponents)) {
+   if (::localtime_r(&epochTime, &timeComponents)) {
       date.m_year = timeComponents.tm_year + 1900;
       date.m_month = timeComponents.tm_mon + 1;
       date.m_day = timeComponents.tm_mday;
@@ -167,8 +163,7 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime)
 
 //******************************************************************************
 
-DateTime* DateTime::gmtDateTime()
-{
+DateTime* DateTime::gmtDateTime() {
    time_t currentGMT;
    ::time(&currentGMT);
    
@@ -201,8 +196,7 @@ DateTime::DateTime() :
    m_minute(0),
    m_second(0),
    m_weekDay(-1),
-   m_haveUnixTimeValue(false)
-{
+   m_haveUnixTimeValue(false) {
    time_t t = ::time(nullptr);
    struct tm* now = ::localtime(&t);
    if (now != nullptr) {
@@ -227,8 +221,7 @@ DateTime::DateTime(int dummy) :
    m_minute(0),
    m_second(0),
    m_weekDay(-1),
-   m_haveUnixTimeValue(false)
-{
+   m_haveUnixTimeValue(false) {
 }
 
 //******************************************************************************
@@ -242,8 +235,7 @@ DateTime::DateTime(const std::string& dateTime) :
    m_minute(0),
    m_second(0),
    m_weekDay(-1),
-   m_haveUnixTimeValue(false)
-{
+   m_haveUnixTimeValue(false) {
    if (dateTime.length() == 14) {
       const std::string year = dateTime.substr(0, 4);
       const std::string month = dateTime.substr(4, 2);
@@ -277,8 +269,7 @@ DateTime::DateTime(int year,
    m_minute(minute),
    m_second(second),
    m_weekDay(-1),
-   m_haveUnixTimeValue(false)
-{
+   m_haveUnixTimeValue(false) {
 }
 
 //******************************************************************************
@@ -292,8 +283,7 @@ DateTime::DateTime(double timeIntervalSince1970) :
    m_minute(0),
    m_second(0),
    m_weekDay(-1),
-   m_haveUnixTimeValue(true)
-{
+   m_haveUnixTimeValue(true) {
    populateFromUnixTime(*this, timeIntervalSince1970);
 }
 
@@ -308,14 +298,12 @@ DateTime::DateTime(const DateTime& copy) :
    m_minute(copy.m_minute),
    m_second(copy.m_second),
    m_weekDay(copy.m_weekDay),
-   m_haveUnixTimeValue(copy.m_haveUnixTimeValue)
-{
+   m_haveUnixTimeValue(copy.m_haveUnixTimeValue) {
 }
 
 //******************************************************************************
       
-DateTime& DateTime::operator=(const DateTime& copy)
-{
+DateTime& DateTime::operator=(const DateTime& copy) {
    if (this == &copy) {
       return *this;
    }
@@ -335,8 +323,7 @@ DateTime& DateTime::operator=(const DateTime& copy)
 
 //******************************************************************************
       
-bool DateTime::operator==(const DateTime& compare) const
-{
+bool DateTime::operator==(const DateTime& compare) const {
    if (m_haveUnixTimeValue && compare.m_haveUnixTimeValue) {
       return (m_timeIntervalSince1970 == compare.m_timeIntervalSince1970);
    }
@@ -351,8 +338,7 @@ bool DateTime::operator==(const DateTime& compare) const
 
 //******************************************************************************
 
-bool DateTime::operator<(const DateTime& compare) const
-{
+bool DateTime::operator<(const DateTime& compare) const {
    if (m_haveUnixTimeValue && compare.m_haveUnixTimeValue) {
       return (m_timeIntervalSince1970 < compare.m_timeIntervalSince1970);
    }
@@ -404,8 +390,7 @@ bool DateTime::operator<(const DateTime& compare) const
 
 //******************************************************************************
       
-std::string DateTime::formattedString() const
-{
+std::string DateTime::formattedString() const {
    //TODO: what if we only have unix time populated?
    char stringBuffer[20];
    snprintf(stringBuffer, 20, "%04d-%02d-%02d %02d:%02d:%02d",
@@ -415,8 +400,7 @@ std::string DateTime::formattedString() const
 
 //******************************************************************************
 
-std::string DateTime::unformattedString() const
-{
+std::string DateTime::unformattedString() const {
    //TODO: what if we only have unix time populated?
    char stringBuffer[20];
    snprintf(stringBuffer, 20, "%04d%02d%02d%02d%02d%02d",
@@ -426,8 +410,7 @@ std::string DateTime::unformattedString() const
 
 //******************************************************************************
 
-double DateTime::timeIntervalSinceDate(const DateTime& compare) const
-{
+double DateTime::timeIntervalSinceDate(const DateTime& compare) const {
    if (m_haveUnixTimeValue && compare.m_haveUnixTimeValue) {
       return (m_timeIntervalSince1970 - compare.m_timeIntervalSince1970);
    }
@@ -453,8 +436,7 @@ double DateTime::timeIntervalSinceDate(const DateTime& compare) const
 
 //******************************************************************************
 
-double DateTime::timeIntervalSince1970() const
-{
+double DateTime::timeIntervalSince1970() const {
    if (!m_haveUnixTimeValue) {
       m_timeIntervalSince1970 = unixTimeValue(*this);
       m_haveUnixTimeValue = true;
@@ -464,99 +446,86 @@ double DateTime::timeIntervalSince1970() const
 }
 
 //******************************************************************************
-void DateTime::setYear(int year)
-{
+
+void DateTime::setYear(int year) {
    m_year = year;
 }
 
 //******************************************************************************
 
-int DateTime::getYear() const
-{
+int DateTime::getYear() const {
    return m_year;
 }
 
 //******************************************************************************
       
-void DateTime::setMonth(int month)
-{
+void DateTime::setMonth(int month) {
    m_month = month;
 }
 
 //******************************************************************************
 
-int DateTime::getMonth() const
-{
+int DateTime::getMonth() const {
    return m_month;
 }
 
 //******************************************************************************
 
-void DateTime::setDay(int day)
-{
+void DateTime::setDay(int day) {
    m_day = day;
 }
 
 //******************************************************************************
 
-int DateTime::getDay() const
-{
+int DateTime::getDay() const {
    return m_day;
 }
 
 //******************************************************************************
 
-void DateTime::setHour(int hour)
-{
+void DateTime::setHour(int hour) {
    m_hour = hour;
 }
 
 //******************************************************************************
 
-int DateTime::getHour() const
-{
+int DateTime::getHour() const {
    return m_hour;
 }
 
 //******************************************************************************
 
-void DateTime::setMinute(int minute)
-{
+void DateTime::setMinute(int minute) {
    m_minute = minute;
 }
 
 //******************************************************************************
 
-int DateTime::getMinute() const
-{
+int DateTime::getMinute() const {
    return m_minute;
 }
 
 //******************************************************************************
 
-void DateTime::setSecond(int second)
-{
+void DateTime::setSecond(int second) {
    m_second = second;
 }
 
 //******************************************************************************
 
-int DateTime::getSecond() const
-{
+int DateTime::getSecond() const {
    return m_second;
 }
 
 //******************************************************************************
 
-void DateTime::setWeekDay(int weekDay)
-{
+void DateTime::setWeekDay(int weekDay) {
    m_weekDay = weekDay;
 }
 
 //******************************************************************************
 
-int DateTime::getWeekDay() const
-{
+int DateTime::getWeekDay() const {
    return m_weekDay;
 }
 

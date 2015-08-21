@@ -15,8 +15,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-bool KqueueServer::isSupportedPlatform() noexcept
-{
+bool KqueueServer::isSupportedPlatform() noexcept {
 #ifdef KQUEUE_SUPPORT
    return true;
 #else
@@ -31,15 +30,13 @@ KqueueServer::KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) noexcept 
 #ifdef KQUEUE_SUPPORT
    m_events(nullptr),
 #endif
-   m_kqfd(-1)
-{
+   m_kqfd(-1) {
    Logger::logInstanceCreate("KqueueServer");
 }
 
 //******************************************************************************
 
-KqueueServer::~KqueueServer() noexcept
-{
+KqueueServer::~KqueueServer() noexcept {
    Logger::logInstanceDestroy("KqueueServer");
 
 #ifdef KQUEUE_SUPPORT
@@ -56,10 +53,9 @@ KqueueServer::~KqueueServer() noexcept
 
 //******************************************************************************
 
-bool KqueueServer::init(std::shared_ptr<SocketServiceHandler> socketServiceHandler,
+bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
                         int serverPort,
-                        int maxConnections) noexcept
-{
+                        int maxConnections) noexcept {
 #ifndef KQUEUE_SUPPORT
    return false;
 #endif
@@ -97,8 +93,7 @@ bool KqueueServer::init(std::shared_ptr<SocketServiceHandler> socketServiceHandl
 
 //******************************************************************************
 
-int KqueueServer::getKernelEvents(int maxConnections) noexcept
-{
+int KqueueServer::getKernelEvents(int maxConnections) noexcept {
 #ifdef KQUEUE_SUPPORT
    const int numberEventsReturned =
       ::kevent(m_kqfd,
@@ -118,8 +113,7 @@ int KqueueServer::getKernelEvents(int maxConnections) noexcept
 
 //******************************************************************************
 
-int KqueueServer::fileDescriptorForEventIndex(int eventIndex) noexcept
-{
+int KqueueServer::fileDescriptorForEventIndex(int eventIndex) noexcept {
    int client_fd = -1;
    
 #ifdef KQUEUE_SUPPORT
@@ -133,8 +127,7 @@ int KqueueServer::fileDescriptorForEventIndex(int eventIndex) noexcept
 
 //******************************************************************************
 
-bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) noexcept
-{
+bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) noexcept {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_ADD, 0, 0, nullptr);
@@ -151,8 +144,7 @@ bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) noexcept
 
 //******************************************************************************
 
-bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept
-{
+bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
@@ -170,8 +162,7 @@ bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) noexcept
 
 //******************************************************************************
 
-bool KqueueServer::isEventDisconnect(int eventIndex) noexcept
-{
+bool KqueueServer::isEventDisconnect(int eventIndex) noexcept {
 #ifdef KQUEUE_SUPPORT
    struct kevent current_event;
    current_event = m_events[eventIndex];
@@ -183,8 +174,7 @@ bool KqueueServer::isEventDisconnect(int eventIndex) noexcept
 
 //******************************************************************************
 
-bool KqueueServer::isEventReadClose(int eventIndex) noexcept
-{
+bool KqueueServer::isEventReadClose(int eventIndex) noexcept {
 #ifdef KQUEUE_SUPPORT
    struct kevent current_event;
    current_event = m_events[eventIndex];
@@ -196,8 +186,7 @@ bool KqueueServer::isEventReadClose(int eventIndex) noexcept
 
 //******************************************************************************
 
-bool KqueueServer::isEventRead(int eventIndex) noexcept
-{
+bool KqueueServer::isEventRead(int eventIndex) noexcept {
 #ifdef KQUEUE_SUPPORT
    struct kevent current_event;
    current_event = m_events[eventIndex];

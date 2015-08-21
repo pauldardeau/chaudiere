@@ -73,15 +73,13 @@ public:
     * @return name of the mutex
     */
    const std::string& getName() const noexcept;
-   
 
-   // copying not allowed
-   PthreadsMutex(const PthreadsMutex&) = delete;
-   PthreadsMutex(PthreadsMutex&&) = delete;
-   PthreadsMutex& operator=(const PthreadsMutex&) = delete;
-   PthreadsMutex& operator=(PthreadsMutex&&) = delete;
     
 private:
+   // copying not allowed
+   PthreadsMutex(const PthreadsMutex&) = delete;
+   PthreadsMutex& operator=(const PthreadsMutex&) = delete;
+
    pthread_mutex_t  m_mutex;
    std::string m_mutexName;
    bool m_haveValidMutex;

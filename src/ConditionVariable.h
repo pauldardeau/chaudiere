@@ -25,7 +25,7 @@ public:
     * @return boolean
     * @see Mutex()
     */
-   virtual bool wait(std::shared_ptr<Mutex> mutex) noexcept = 0;
+   virtual bool wait(Mutex* mutex) noexcept = 0;
    
    /**
     * Notify (wake up) a single waiting thread that the condition has occurred

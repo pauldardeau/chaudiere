@@ -25,7 +25,8 @@ public:
    virtual LogLevel getLogLevel() const noexcept override;
    virtual void setLogLevel(LogLevel logLevel) noexcept override;
 
-   virtual void logMessage(LogLevel logLevel, const std::string& logMessage) noexcept override;
+   virtual void logMessage(LogLevel logLevel,
+                           const std::string& logMessage) noexcept override;
    virtual bool isLoggingLevel(LogLevel logLevel) const noexcept override;
    
    virtual bool isLoggingInstanceLifecycles() const noexcept override;
@@ -40,9 +41,7 @@ public:
 
    // disallow copies
    FileLogger(const FileLogger&) = delete;
-   FileLogger(FileLogger&&) = delete;
    FileLogger& operator=(const FileLogger&) = delete;
-   FileLogger& operator=(FileLogger&&) = delete;
 
 private:
    std::string m_filePath;

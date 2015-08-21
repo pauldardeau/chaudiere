@@ -29,12 +29,6 @@ public:
    InvalidKeyException(const InvalidKeyException& copy) noexcept;
    
    /**
-    * Move constructor
-    * @param move the source of the move
-    */
-   InvalidKeyException(InvalidKeyException&& move) noexcept;
-   
-   /**
     * Destructor
     */
    virtual ~InvalidKeyException() noexcept;
@@ -46,13 +40,6 @@ public:
     */
    InvalidKeyException& operator=(const InvalidKeyException& copy) noexcept;
    
-   /**
-    * Move operator
-    * @param move the source of the move
-    * @return reference to the target of the move
-    */
-   InvalidKeyException& operator=(InvalidKeyException&& move) noexcept;
-
    /**
     * Retrieves the name of the invalid key
     * @return name of the invalid key

@@ -138,46 +138,39 @@ SocketServer::SocketServer(const std::string& serverName,
    m_compressionEnabled(true),
    m_threadPoolSize(CFG_DEFAULT_THREAD_POOL_SIZE),
    m_serverPort(CFG_DEFAULT_PORT_NUMBER),
-   m_minimumCompressionSize(1000)
-{
+   m_minimumCompressionSize(1000) {
    Logger::logInstanceCreate("SocketServer");
-
    init(CFG_DEFAULT_PORT_NUMBER);
 }
 
 //******************************************************************************
 
-std::unique_ptr<SectionedConfigDataSource> SocketServer::getConfigDataSource()
-{
-   return std::unique_ptr<SectionedConfigDataSource>(new IniReader(m_configFilePath));
+SectionedConfigDataSource* SocketServer::getConfigDataSource() {
+   return new IniReader(m_configFilePath);
 }
 
 //******************************************************************************
 
-int SocketServer::getSocketSendBufferSize() const noexcept
-{
+int SocketServer::getSocketSendBufferSize() const noexcept {
    return m_socketSendBufferSize;
 }
 
 //******************************************************************************
 
-int SocketServer::getSocketReceiveBufferSize() const noexcept
-{
+int SocketServer::getSocketReceiveBufferSize() const noexcept {
    return m_socketReceiveBufferSize;
 }
 
 //******************************************************************************
 
-const std::string& SocketServer::getServerId() const noexcept
-{
+const std::string& SocketServer::getServerId() const noexcept {
    return m_serverString;
 }
 
 //******************************************************************************
 
 bool SocketServer::hasTrueValue(const KeyValuePairs& kvp,
-                                const std::string& setting) const noexcept
-{
+                                const std::string& setting) const noexcept {
    bool hasTrueValue = false;
    
    if (kvp.hasKey(setting)) {
@@ -194,8 +187,7 @@ bool SocketServer::hasTrueValue(const KeyValuePairs& kvp,
 //******************************************************************************
 
 int SocketServer::getIntValue(const KeyValuePairs& kvp,
-                              const std::string& setting) const noexcept
-{
+                              const std::string& setting) const noexcept {
    int value = -1;
    
    if (kvp.hasKey(setting)) {
@@ -213,8 +205,7 @@ int SocketServer::getIntValue(const KeyValuePairs& kvp,
 //******************************************************************************
 
 void SocketServer::replaceVariables(const KeyValuePairs& kvp,
-                                    std::string& s) const noexcept
-{
+                                    std::string& s) const noexcept {
    if (!s.empty()) {
       std::vector<std::string> keys;
       kvp.getKeys(keys);
@@ -235,23 +226,17 @@ bool SocketServer::init(int port)
    
    m_serverPort = port;
 	
-   std::unique_ptr<SectionedConfigDataSource> configDataSource;
+   SectionedConfigDataSource* configDataSource = nullptr;
    
    try {
-      configDataSource = std::move(getConfigDataSource());
-   }
-   catch (const BasicException& be)
-   {
+      configDataSource = getConfigDataSource();
+   } catch (const BasicException& be) {
       Logger::error("exception retrieving config data: " + be.whatString());
       return false;
-   }
-   catch (const std::exception& e)
-   {
+   } catch (const std::exception& e) {
       Logger::error("exception retrieving config data: " + std::string(e.what()));
       return false;
-   }
-   catch (...)
-   {
+   } catch (...) {
       Logger::error("exception retrieving config data");
       return false;
    }
@@ -334,7 +319,7 @@ bool SocketServer::init(int port)
             if (!m_logLevel.empty()) {
                StrUtils::toLowerCase(m_logLevel);
                Logger::info(std::string("log level: ") + m_logLevel);
-               std::shared_ptr<Logger> logger = Logger::getLogger();
+               Logger* logger = Logger::getLogger();
                
                if (logger != nullptr) {
                   if (m_logLevel == CFG_LOGGING_CRITICAL) {
@@ -412,20 +397,14 @@ bool SocketServer::init(int port)
       }
 
       m_startupTime = getLocalDateTime();
-   }
-   catch (const BasicException& be)
-   {
+   } catch (const BasicException& be) {
       Logger::critical("exception initializing server: " + be.whatString());
       return false;
-   }
-   catch (const std::exception& e)
-   {
+   } catch (const std::exception& e) {
       Logger::critical("exception initializing server: " +
                        std::string(e.what()));
       return false;
-   }
-   catch (...)
-   {
+   } catch (...) {
       Logger::critical("unknown exception initializing server");
       return false;
    }
@@ -439,11 +418,8 @@ bool SocketServer::init(int port)
             Logger::debug(std::string(msg));
          }
       
-         std::unique_ptr<ServerSocket> serverSocket(new ServerSocket(port));
-         m_serverSocket = std::move(serverSocket);
-      }
-      catch (...)
-      {
+         m_serverSocket = new ServerSocket(port);
+      } catch (...) {
          std::string exception = "unable to open server socket port '";
          exception += std::to_string(port);
          exception += "'";
@@ -451,7 +427,6 @@ bool SocketServer::init(int port)
          return false;
       }
    }
-
 
    std::string concurrencyModel = EMPTY;
 
@@ -470,10 +445,9 @@ bool SocketServer::init(int port)
          threadingPackage = ThreadingFactory::ThreadingPackage::PTHREADS;
       }
       
-      std::shared_ptr<ThreadingFactory>
-         threadingFactory(new ThreadingFactory(threadingPackage));
-      ThreadingFactory::setThreadingFactory(threadingFactory);
-      m_threadingFactory = std::move(threadingFactory);
+      m_threadingFactory =
+         new ThreadingFactory(threadingPackage);
+      ThreadingFactory::setThreadingFactory(m_threadingFactory);
       
       if (m_isUsingKernelEventServer) {
          m_threadingFactory->setMutexType(ThreadingFactory::ThreadingPackage::PTHREADS);
@@ -522,8 +496,7 @@ bool SocketServer::init(int port)
 
 //******************************************************************************
 
-SocketServer::~SocketServer() noexcept
-{
+SocketServer::~SocketServer() noexcept {
    Logger::logInstanceDestroy("SocketServer");
 
    if (m_serverSocket) {
@@ -537,8 +510,7 @@ SocketServer::~SocketServer() noexcept
 
 //******************************************************************************
 
-std::string SocketServer::getSystemDateGMT() const noexcept
-{
+std::string SocketServer::getSystemDateGMT() const noexcept {
    time_t currentGMT;
    ::time(&currentGMT);
    
@@ -559,8 +531,7 @@ std::string SocketServer::getSystemDateGMT() const noexcept
 
 //******************************************************************************
 
-std::string SocketServer::getLocalDateTime() const noexcept
-{
+std::string SocketServer::getLocalDateTime() const noexcept {
    time_t currentTime;
    ::time(&currentTime);
    
@@ -580,8 +551,7 @@ std::string SocketServer::getLocalDateTime() const noexcept
 
 //******************************************************************************
 
-bool SocketServer::compressResponse(const std::string& mimeType) const noexcept
-{
+bool SocketServer::compressResponse(const std::string& mimeType) const noexcept {
    //TODO: make this configurable through config file
    return (mimeType == MIME_TEXT_HTML) ||
           (mimeType == MIME_TEXT_PLAIN) ||
@@ -591,45 +561,40 @@ bool SocketServer::compressResponse(const std::string& mimeType) const noexcept
 
 //******************************************************************************
 
-bool SocketServer::compressionEnabled() const noexcept
-{
+bool SocketServer::compressionEnabled() const noexcept {
    return m_compressionEnabled;
 }
 
 //******************************************************************************
 
-int SocketServer::minimumCompressionSize() const noexcept
-{
+int SocketServer::minimumCompressionSize() const noexcept {
    return m_minimumCompressionSize;
 }
 
 //******************************************************************************
 
-int SocketServer::platformPointerSizeBits() const noexcept
-{
+int SocketServer::platformPointerSizeBits() const noexcept {
    return sizeof(void*) * 8;
 }
 
 //******************************************************************************
 
-void SocketServer::serviceSocket(std::shared_ptr<SocketRequest> socketRequest)
-{
+void SocketServer::serviceSocket(SocketRequest* socketRequest) {
    if (nullptr != m_threadPool) {
       // Hand off the request to the thread pool for asynchronous processing
-      std::shared_ptr<RequestHandler> requestHandler = handlerForSocketRequest(socketRequest);
+      RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->setThreadPooling(true);
       m_threadPool->addRequest(requestHandler);
    } else {
       // no thread pool available -- process it synchronously
-      std::shared_ptr<RequestHandler> requestHandler = handlerForSocketRequest(socketRequest);
+      RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->run();
    }
 }
 
 //******************************************************************************
 
-int SocketServer::runSocketServer() noexcept
-{
+int SocketServer::runSocketServer() noexcept {
    int rc = 0;
    
    if (!m_serverSocket) {
@@ -639,7 +604,7 @@ int SocketServer::runSocketServer() noexcept
    
    while (!m_isDone) {
       
-      std::shared_ptr<Socket> socket(m_serverSocket->accept());
+      Socket* socket(m_serverSocket->accept());
 
       if (nullptr == socket) {
          continue;
@@ -653,31 +618,25 @@ int SocketServer::runSocketServer() noexcept
       try {
          
          if (m_isThreaded && (nullptr != m_threadPool)) {
-            std::shared_ptr<RequestHandler> handler = handlerForSocket(socket);
+            RequestHandler* handler = handlerForSocket(socket);
 
             handler->setThreadPooling(true);
 
             // give it to the thread pool
             m_threadPool->addRequest(handler);
          } else {
-            std::shared_ptr<RequestHandler> handler = handlerForSocket(socket);
+            RequestHandler* handler = handlerForSocket(socket);
             handler->run();
          }
-      }
-      catch (const BasicException& be)
-      {
+      } catch (const BasicException& be) {
          rc = 1;
          Logger::error("SocketServer runServer exception caught: " +
                        be.whatString());
-      }
-      catch (const std::exception& e)
-      {
+      } catch (const std::exception& e) {
          rc = 1;
          Logger::error(std::string("SocketServer runServer exception caught: ") +
                        std::string(e.what()));
-      }
-      catch (...)
-      {
+      } catch (...) {
          rc = 1;
          Logger::error("SocketServer runServer unknown exception caught");
       }
@@ -688,23 +647,22 @@ int SocketServer::runSocketServer() noexcept
 
 //******************************************************************************
 
-int SocketServer::runKernelEventServer() noexcept
-{
+int SocketServer::runKernelEventServer() noexcept {
    const int MAX_CON = 1200;
    
    int rc = 0;
    
    if (m_threadingFactory != nullptr) {
-      std::shared_ptr<Mutex> mutexFD(m_threadingFactory->createMutex("fdMutex"));
-      std::shared_ptr<Mutex> mutexHWMConnections(m_threadingFactory->createMutex("hwmConnectionsMutex"));
-      std::unique_ptr<KernelEventServer> kernelEventServer = nullptr;
+      Mutex* mutexFD(m_threadingFactory->createMutex("fdMutex"));
+      Mutex* mutexHWMConnections(m_threadingFactory->createMutex("hwmConnectionsMutex"));
+      KernelEventServer* kernelEventServer = nullptr;
       
       if (KqueueServer::isSupportedPlatform()) {
          kernelEventServer =
-            std::unique_ptr<KernelEventServer>(new KqueueServer(*mutexFD, *mutexHWMConnections));
+            new KqueueServer(*mutexFD, *mutexHWMConnections);
       } else if (EpollServer::isSupportedPlatform()) {
          kernelEventServer =
-            std::unique_ptr<KernelEventServer>(new EpollServer(*mutexFD, *mutexHWMConnections));
+            new EpollServer(*mutexFD, *mutexHWMConnections);
       } else {
          Logger::critical("no kernel event server available for platform");
          rc = 1;
@@ -712,10 +670,9 @@ int SocketServer::runKernelEventServer() noexcept
       
       if (kernelEventServer != nullptr) {
          try {
-            std::shared_ptr<SocketServiceHandler> serviceHandler(createSocketServiceHandler());
+            SocketServiceHandler* serviceHandler(createSocketServiceHandler());
 
-            if (kernelEventServer->init(serviceHandler, m_serverPort, MAX_CON))
-            {
+            if (kernelEventServer->init(serviceHandler, m_serverPort, MAX_CON)) {
                kernelEventServer->run();
             } else {
                rc = 1;
@@ -740,8 +697,7 @@ int SocketServer::runKernelEventServer() noexcept
 
 //******************************************************************************
 
-int SocketServer::run() noexcept
-{
+int SocketServer::run() noexcept {
    if (!m_isFullyInitialized) {
       Logger::critical("server not initialized");
       return 1;

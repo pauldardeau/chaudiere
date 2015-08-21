@@ -76,13 +76,12 @@ public:
    const std::string& getName() const noexcept;
    
    
-   // copying not allowed
-   StdMutex(const StdMutex&) = delete;
-   StdMutex(StdMutex&&) = delete;
-   StdMutex& operator=(const StdMutex&) = delete;
-   StdMutex& operator=(StdMutex&&) = delete;
    
 private:
+   // copying not allowed
+   StdMutex(const StdMutex&);
+   StdMutex& operator=(const StdMutex&);
+
    std::mutex  m_mutex;
    std::string m_mutexName;
    bool m_isLocked;

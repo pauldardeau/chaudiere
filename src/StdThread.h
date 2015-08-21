@@ -28,7 +28,7 @@ public:
     * @param runnable
     * @see Runnable()
     */
-   explicit StdThread(std::shared_ptr<Runnable> runnable) noexcept;
+   explicit StdThread(Runnable* runnable) noexcept;
    
    /**
     * Destructor
@@ -64,14 +64,12 @@ public:
     */
    std::thread::id getStdThreadId() const noexcept;
    
-   // disallow copying
-   StdThread(const StdThread&) = delete;
-   StdThread(StdThread&&) = delete;
-   StdThread& operator=(const StdThread&) = delete;
-   StdThread& operator=(StdThread&&) = delete;
-   
    
 private:
+   // disallow copying
+   StdThread(const StdThread&);
+   StdThread& operator=(const StdThread&);
+
    std::thread m_thread;
    StdMutex m_mutexAlive;
    

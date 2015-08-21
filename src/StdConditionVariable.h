@@ -33,7 +33,7 @@ public:
     * @return
     * @see Mutex()
     */
-   virtual bool wait(std::shared_ptr<Mutex> mutex) noexcept override;
+   virtual bool wait(Mutex* mutex) noexcept override;
    
    /**
     *
@@ -45,14 +45,12 @@ public:
     */
    virtual void notifyAll() noexcept override;
    
-   
-   // disallow copies
-   StdConditionVariable(const StdConditionVariable&);
-   StdConditionVariable(StdConditionVariable&&);
-   StdConditionVariable& operator=(const StdConditionVariable&);
-   StdConditionVariable& operator=(StdConditionVariable&&);
 
 private:
+   // disallow copies
+   StdConditionVariable(const StdConditionVariable&);
+   StdConditionVariable& operator=(const StdConditionVariable&);
+
    std::condition_variable m_cond;
 };
 

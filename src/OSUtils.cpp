@@ -55,8 +55,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-std::string OSUtils::getCurrentDirectory()
-{
+std::string OSUtils::getCurrentDirectory() {
    std::string currentDirectory;
    
    char* buffCurrentDir = ::getcwd(nullptr, 0);
@@ -72,8 +71,7 @@ std::string OSUtils::getCurrentDirectory()
 //******************************************************************************
 
 std::string OSUtils::pathJoin(const std::string& directory,
-                              const std::string& fileName)
-{
+                              const std::string& fileName) {
    std::string joinedPath(directory);
    
    if (!StrUtils::endsWith(directory, SLASH)) {
@@ -87,8 +85,7 @@ std::string OSUtils::pathJoin(const std::string& directory,
 
 //******************************************************************************
 
-bool OSUtils::directoryExists(const std::string& directory)
-{
+bool OSUtils::directoryExists(const std::string& directory) {
    struct stat s;
    int err = stat(directory.c_str(), &s);
    if (-1 == err) {
@@ -105,9 +102,8 @@ bool OSUtils::directoryExists(const std::string& directory)
 
 //******************************************************************************
 
-bool OSUtils::pathExists(const std::string& filePath)
-{
-   FILE* f = fopen(filePath.c_str(), "r");
+bool OSUtils::pathExists(const std::string& filePath) {
+   FILE* f = ::fopen(filePath.c_str(), "r");
    if (f != nullptr) {
       fclose(f);
       return true;
@@ -118,8 +114,7 @@ bool OSUtils::pathExists(const std::string& filePath)
 
 //******************************************************************************
 
-bool OSUtils::createDirectory(const std::string& directory)
-{
+bool OSUtils::createDirectory(const std::string& directory) {
    const mode_t mode = S_IRWXU |  // user read/write/execute
                        S_IRGRP |  // group read
                        S_IXGRP |  // group execute
@@ -131,8 +126,7 @@ bool OSUtils::createDirectory(const std::string& directory)
 
 //******************************************************************************
 
-bool OSUtils::createPrivateDirectory(const std::string& directory)
-{
+bool OSUtils::createPrivateDirectory(const std::string& directory) {
    const int rc = ::mkdir(directory.c_str(), S_IRWXU);
    return (0 == rc);
 }
@@ -141,8 +135,7 @@ bool OSUtils::createPrivateDirectory(const std::string& directory)
 
 unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
                                       const void *buf,
-                                      size_t bufLen)
-{
+                                      size_t bufLen) {
    /** accumulate crc32 for buffer **/
    unsigned long crc32 = inCrc32 ^ 0xFFFFFFFF;
    unsigned char* byteBuf = (unsigned char*) buf;
@@ -156,9 +149,8 @@ unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
 
 //******************************************************************************
 
-bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32)
-{
-   FILE* f = fopen(filePath.c_str(), "r");
+bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32) {
+   FILE* f = ::fopen(filePath.c_str(), "r");
    if (f != nullptr) {
       unsigned char buf[8192];
       size_t bufLen;
@@ -166,7 +158,7 @@ bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32)
       unsigned long crc32Value = 0L;
 
       while (1) {
-         bufLen = fread(buf, 1, 8192, f);
+         bufLen = ::fread(buf, 1, 8192, f);
          if (bufLen == 0) {
             if (ferror(f)) {
                // error reading file

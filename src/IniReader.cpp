@@ -21,8 +21,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 IniReader::IniReader(const std::string& iniFile) :
-   m_iniFile(iniFile)
-{
+   m_iniFile(iniFile) {
    Logger::logInstanceCreate("IniReader");
    
    if (!readFile()) {
@@ -32,16 +31,14 @@ IniReader::IniReader(const std::string& iniFile) :
 
 //******************************************************************************
 
-IniReader::~IniReader() noexcept
-{
+IniReader::~IniReader() noexcept {
    Logger::logInstanceDestroy("IniReader");
 }
 
 //******************************************************************************
 
 bool IniReader::readSection(const std::string& section,
-                            KeyValuePairs& mapSectionValues) const noexcept
-{
+                            KeyValuePairs& mapSectionValues) const noexcept {
    const std::string sectionId = bracketedSection(section);
    auto posSection = m_fileContents.find(sectionId);
     
@@ -104,8 +101,7 @@ bool IniReader::readSection(const std::string& section,
 
 bool IniReader::getSectionKeyValue(const std::string& section,
                                    const std::string& key,
-                                   std::string& value) const noexcept
-{
+                                   std::string& value) const noexcept {
    KeyValuePairs map;
     
    if (!readSection(section, map)) {
@@ -131,16 +127,14 @@ bool IniReader::getSectionKeyValue(const std::string& section,
 
 //******************************************************************************
 
-bool IniReader::hasSection(const std::string& section) const noexcept
-{
+bool IniReader::hasSection(const std::string& section) const noexcept {
    const std::string sectionId = bracketedSection(section);
    return (std::string::npos != m_fileContents.find(sectionId));
 }
 
 //******************************************************************************
 
-bool IniReader::readFile() noexcept
-{
+bool IniReader::readFile() noexcept {
    FILE* f = ::fopen(m_iniFile.c_str(), "rb");
    if (f == nullptr) {
       return false;
@@ -219,8 +213,7 @@ bool IniReader::readFile() noexcept
 
 //******************************************************************************
 
-std::string IniReader::bracketedSection(const std::string& sectionName) const noexcept
-{
+std::string IniReader::bracketedSection(const std::string& sectionName) const noexcept {
    return OPEN_BRACKET + StrUtils::strip(sectionName) + CLOSE_BRACKET;
 }
 

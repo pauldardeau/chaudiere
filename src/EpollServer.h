@@ -51,7 +51,7 @@ public:
     * @param maxConnections
     * @return
     */
-   virtual bool init(std::shared_ptr<SocketServiceHandler> socketServiceHandler,
+   virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
                      int maxConnections) noexcept override;
    
@@ -106,9 +106,7 @@ public:
 
    // copying not allowed
    EpollServer(const EpollServer&) = delete;
-   EpollServer(EpollServer&&) = delete;
    EpollServer& operator=(const EpollServer&) = delete;
-   EpollServer& operator=(EpollServer&&) = delete;
 
    
 private:

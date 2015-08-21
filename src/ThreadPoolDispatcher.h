@@ -47,7 +47,7 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(std::shared_ptr<Runnable> runnableRequest) noexcept = 0;
+   virtual bool addRequest(Runnable* runnableRequest) noexcept = 0;
    
 
    // disallow copies

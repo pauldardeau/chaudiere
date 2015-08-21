@@ -56,9 +56,7 @@ class StringTokenizer
    
       //disallow copies
       StringTokenizer(const StringTokenizer&) = delete;
-      StringTokenizer(StringTokenizer&&) = delete;
       StringTokenizer& operator=(const StringTokenizer&) = delete;
-      StringTokenizer& operator=(StringTokenizer&&) = delete;
 
    
    protected:

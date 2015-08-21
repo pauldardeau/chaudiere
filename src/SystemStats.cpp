@@ -25,8 +25,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept
-{
+bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept {
    bool success = false;
    
 #ifdef __linux__
@@ -62,8 +61,7 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept
 
 bool SystemStats::getLoadAverages(double& oneMinute,
                                   double& fiveMinute,
-                                  double& fifteenMinute) noexcept
-{
+                                  double& fifteenMinute) noexcept {
    bool retrievedLoadAverages = false;
    
    double load[3];
@@ -81,8 +79,7 @@ bool SystemStats::getLoadAverages(double& oneMinute,
 
 //******************************************************************************
 
-bool SystemStats::getNumberProcesses(int& numberProcesses) noexcept
-{
+bool SystemStats::getNumberProcesses(int& numberProcesses) noexcept {
    bool success = false;
    
 #ifndef __linux__

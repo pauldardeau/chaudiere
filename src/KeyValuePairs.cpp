@@ -9,38 +9,26 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-KeyValuePairs::KeyValuePairs() noexcept
-{
+KeyValuePairs::KeyValuePairs() noexcept {
    Logger::logInstanceCreate("KeyValuePairs");
 }
 
 //******************************************************************************
 
 KeyValuePairs::KeyValuePairs(const KeyValuePairs& copy) noexcept :
-   m_keyValues(copy.m_keyValues)
-{
+   m_keyValues(copy.m_keyValues) {
    Logger::logInstanceCreate("KeyValuePairs");
 }
 
 //******************************************************************************
 
-KeyValuePairs::KeyValuePairs(KeyValuePairs&& move) noexcept :
-   m_keyValues(std::move(move.m_keyValues))
-{
-   Logger::logInstanceCreate("KeyValuePairs");
-}
-
-//******************************************************************************
-
-KeyValuePairs::~KeyValuePairs() noexcept
-{
+KeyValuePairs::~KeyValuePairs() noexcept {
    Logger::logInstanceDestroy("KeyValuePairs");
 }
 
 //******************************************************************************
 
-KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) noexcept
-{
+KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) noexcept {
    if (&copy == this) {
       return *this;
    }
@@ -52,21 +40,7 @@ KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) noexcept
 
 //******************************************************************************
 
-KeyValuePairs& KeyValuePairs::operator=(KeyValuePairs&& move) noexcept
-{
-   if (&move == this) {
-      return *this;
-   }
-   
-   m_keyValues = std::move(move.m_keyValues);
-
-   return *this;
-}
-
-//******************************************************************************
-
-void KeyValuePairs::getKeys(std::vector<std::string>& keys) const noexcept
-{
+void KeyValuePairs::getKeys(std::vector<std::string>& keys) const noexcept {
    if (m_keyValues.empty()) {
       return;
    }
@@ -80,15 +54,13 @@ void KeyValuePairs::getKeys(std::vector<std::string>& keys) const noexcept
 
 //******************************************************************************
 
-bool KeyValuePairs::hasKey(const std::string& key) const noexcept
-{
+bool KeyValuePairs::hasKey(const std::string& key) const noexcept {
    return (m_keyValues.find(key) != m_keyValues.end());
 }
 
 //******************************************************************************
 
-const std::string& KeyValuePairs::getValue(const std::string& key) const
-{
+const std::string& KeyValuePairs::getValue(const std::string& key) const {
    auto it = m_keyValues.find(key);
    if (it != m_keyValues.end()) {
       return (*it).second;
@@ -100,15 +72,14 @@ const std::string& KeyValuePairs::getValue(const std::string& key) const
 
 //******************************************************************************
 
-void KeyValuePairs::addPair(const std::string& key, const std::string& value) noexcept
-{
+void KeyValuePairs::addPair(const std::string& key,
+                            const std::string& value) noexcept {
    m_keyValues[key] = value;
 }
 
 //******************************************************************************
 
-bool KeyValuePairs::removePair(const std::string& key) noexcept
-{
+bool KeyValuePairs::removePair(const std::string& key) noexcept {
    auto it = m_keyValues.find(key);
    if (it != m_keyValues.end()) {
       m_keyValues.erase(it);
@@ -120,22 +91,19 @@ bool KeyValuePairs::removePair(const std::string& key) noexcept
 
 //******************************************************************************
 
-void KeyValuePairs::clear() noexcept
-{
+void KeyValuePairs::clear() noexcept {
    m_keyValues.erase(m_keyValues.begin(), m_keyValues.end());
 }
 
 //******************************************************************************
 
-std::size_t KeyValuePairs::size() const noexcept
-{
+std::size_t KeyValuePairs::size() const noexcept {
    return m_keyValues.size();
 }
 
 //******************************************************************************
 
-bool KeyValuePairs::empty() const noexcept
-{
+bool KeyValuePairs::empty() const noexcept {
    return m_keyValues.empty();
 }
 

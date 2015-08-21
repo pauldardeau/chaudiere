@@ -21,7 +21,7 @@ class Thread : public Runnable
 {
 public:
    explicit Thread(Mutex& mutexAlive) noexcept;
-   Thread(Mutex& mutexAlive, std::shared_ptr<Runnable> runnable) noexcept;
+   Thread(Mutex& mutexAlive, Runnable* runnable) noexcept;
    
    virtual ~Thread() noexcept;
    
@@ -35,12 +35,12 @@ public:
    bool isAlive() const noexcept;
    void setAlive(bool isAlive) noexcept;
    
-   void registerThreadCompletionObserver(std::shared_ptr<ThreadCompletionObserver> observer) noexcept;
+   void registerThreadCompletionObserver(ThreadCompletionObserver* observer) noexcept;
    void clearThreadCompletionObserver() noexcept;
    void notifyOnCompletion() noexcept;
    
    
-   std::shared_ptr<Runnable> getRunnable() noexcept;
+   Runnable* getRunnable() noexcept;
    
    
    void setAttribute(const std::string& key,
@@ -64,18 +64,16 @@ public:
    
    // disallow copying
    Thread(const Thread&) = delete;
-   Thread(Thread&&) = delete;
    Thread& operator=(const Thread&) = delete;
-   Thread& operator=(Thread&&) = delete;
    
 
    
 private:
-   std::shared_ptr<Runnable> m_runnable;
+   Runnable* m_runnable;
    bool m_isAlive;
    bool m_isPoolWorker;
    Mutex& m_mutexAlive;
-   std::shared_ptr<ThreadCompletionObserver> m_threadCompletionObserver;
+   ThreadCompletionObserver* m_threadCompletionObserver;
    KeyValuePairs m_attributes;
 };
 

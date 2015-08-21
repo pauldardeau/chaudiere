@@ -19,8 +19,8 @@ namespace chaudiere
 class SocketRequest : public Runnable
 {
 private:
-   std::shared_ptr<Socket> m_socket;
-   std::shared_ptr<SocketServiceHandler> m_handler;
+   Socket* m_socket;
+   SocketServiceHandler* m_handler;
     
 public:
    /**
@@ -30,7 +30,7 @@ public:
     * @see Socket()
     * @see SocketServiceHandler()
     */
-   SocketRequest(std::shared_ptr<Socket> socket, std::shared_ptr<SocketServiceHandler> handler) noexcept;
+   SocketRequest(Socket* socket, SocketServiceHandler* handler) noexcept;
    
    /**
     * Destructor
@@ -53,7 +53,7 @@ public:
     * @see Socket()
     * @return the Socket associated with the request
     */
-   std::shared_ptr<Socket> getSocket() noexcept;
+   Socket* getSocket() noexcept;
    
    /**
     * Notifies the Socket that the request processing is complete
@@ -62,9 +62,7 @@ public:
    
    // copies not allowed
    SocketRequest(const SocketRequest&) = delete;
-   SocketRequest(SocketRequest&&) = delete;
    SocketRequest& operator=(const SocketRequest&) = delete;
-   SocketRequest& operator=(SocketRequest&&) = delete;
 };
 
 }

@@ -8,8 +8,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-OptionParser::OptionParser()
-{
+OptionParser::OptionParser() {
 }
 
 //******************************************************************************
@@ -18,24 +17,12 @@ OptionParser::OptionParser(const OptionParser& copy) :
    m_kvpBooleanDefs(copy.m_kvpBooleanDefs),
    m_kvpStringDefs(copy.m_kvpStringDefs),
    m_kvpBooleanValues(copy.m_kvpBooleanValues),
-   m_kvpStringValues(copy.m_kvpStringValues)
-{
+   m_kvpStringValues(copy.m_kvpStringValues) {
 }
 
 //******************************************************************************
 
-OptionParser::OptionParser(OptionParser&& move) :
-   m_kvpBooleanDefs(std::move(move.m_kvpBooleanDefs)),
-   m_kvpStringDefs(std::move(move.m_kvpStringDefs)),
-   m_kvpBooleanValues(std::move(move.m_kvpBooleanValues)),
-   m_kvpStringValues(std::move(move.m_kvpStringValues))
-{
-}
-
-//******************************************************************************
-
-OptionParser& OptionParser::operator=(const OptionParser& copy)
-{
+OptionParser& OptionParser::operator=(const OptionParser& copy) {
    if (this == &copy) {
       return *this;
    }
@@ -50,25 +37,8 @@ OptionParser& OptionParser::operator=(const OptionParser& copy)
 
 //******************************************************************************
 
-OptionParser& OptionParser::operator=(OptionParser&& move)
-{
-   if (this == &move) {
-      return *this;
-   }
-
-   m_kvpBooleanDefs = std::move(move.m_kvpBooleanDefs);
-   m_kvpStringDefs = std::move(move.m_kvpStringDefs);
-   m_kvpBooleanValues = std::move(move.m_kvpBooleanValues);
-   m_kvpStringValues = std::move(move.m_kvpStringValues);
-   
-   return *this;
-}
-
-//******************************************************************************
-
 void OptionParser::addBooleanOption(const std::string& option,
-                                    const std::string& destVariable)
-{
+                                    const std::string& destVariable) {
    if (!option.empty() && !destVariable.empty()) {
       m_kvpBooleanDefs.addPair(option, destVariable);
    }
@@ -77,8 +47,7 @@ void OptionParser::addBooleanOption(const std::string& option,
 //******************************************************************************
 
 void OptionParser::addOption(const std::string& option,
-                             const std::string& destVariable)
-{
+                             const std::string& destVariable) {
    if (!option.empty() && !destVariable.empty()) {
       m_kvpStringDefs.addPair(option, destVariable);
    }
@@ -86,15 +55,13 @@ void OptionParser::addOption(const std::string& option,
 
 //******************************************************************************
 
-bool OptionParser::hasOption(const std::string& option) const
-{
+bool OptionParser::hasOption(const std::string& option) const {
    return m_kvpStringValues.hasKey(option);
 }
 
 //******************************************************************************
 
-const std::string& OptionParser::getOptionValue(const std::string& option) const
-{
+const std::string& OptionParser::getOptionValue(const std::string& option) const {
    if (m_kvpStringValues.hasKey(option)) {
       return m_kvpStringValues.getValue(option);
    }
@@ -104,15 +71,13 @@ const std::string& OptionParser::getOptionValue(const std::string& option) const
 
 //******************************************************************************
 
-bool OptionParser::hasBooleanOption(const std::string& option) const
-{
+bool OptionParser::hasBooleanOption(const std::string& option) const {
    return m_kvpBooleanValues.hasKey(option);
 }
 
 //******************************************************************************
 
-void OptionParser::parseArgs(int* argc, char** argv[])
-{
+void OptionParser::parseArgs(int* argc, char** argv[]) {
    // first argument is program name, skip over it
    --(*argc);
    ++(*argv);

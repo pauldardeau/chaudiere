@@ -18,7 +18,7 @@ namespace chaudiere
  * Socket is very similar to Java's Socket class. It provides a wrapper class
  * for working with sockets.
  */
-class Socket : public std::enable_shared_from_this<Socket>
+class Socket
 {
 public:
    
@@ -70,13 +70,6 @@ public:
     
    void setIncludeMessageSize(bool isSizeIncluded) noexcept;
 
-
-   // copying not allowed
-   Socket(const Socket&) = delete;
-   Socket(Socket&&) = delete;
-   Socket& operator=(const Socket&) = delete;
-   Socket& operator=(Socket&&) = delete;
-
    
 protected:
    bool readMsg(int length) noexcept;
@@ -89,6 +82,10 @@ protected:
 
     
 private:
+   // copying not allowed
+   Socket(const Socket&);
+   Socket& operator=(const Socket&);
+
    SocketCompletionObserver* m_completionObserver;
    std::string m_lineInputBuffer;
    std::string m_serverAddress;
@@ -98,7 +95,7 @@ private:
    int m_port;
    bool m_isConnected;
    bool m_includeMessageSize;
-   std::unique_ptr<char[]> m_inputBuffer;
+   char* m_inputBuffer;
    int m_inBufferSize;
    int m_lastReadSize;
 };

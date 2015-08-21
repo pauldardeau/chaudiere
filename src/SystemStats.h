@@ -53,9 +53,7 @@ public:
    
    // disallow copies
    SystemStats(const SystemStats& copy) noexcept;
-   SystemStats(SystemStats&& move) noexcept;
    SystemStats& operator=(const SystemStats& copy) noexcept;
-   SystemStats& operator=(SystemStats&& move) noexcept;
    
    
 };

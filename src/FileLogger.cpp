@@ -17,8 +17,7 @@ const std::string FileLogger::prefixVerbose  = "Verbose:";
 //******************************************************************************
 
 FileLogger::FileLogger(const std::string& filePath) noexcept :
-   FileLogger(filePath, Logger::LogLevel::Debug)
-{
+   FileLogger(filePath, Logger::LogLevel::Debug) {
 }
 
 //******************************************************************************
@@ -26,14 +25,12 @@ FileLogger::FileLogger(const std::string& filePath) noexcept :
 FileLogger::FileLogger(const std::string& filePath, LogLevel logLevel) noexcept :
    m_filePath(filePath),
    f(nullptr),
-   m_logLevel(logLevel)
-{
+   m_logLevel(logLevel) {
 }
 
 //******************************************************************************
 
-FileLogger::~FileLogger() noexcept
-{
+FileLogger::~FileLogger() noexcept {
    if (f != nullptr) {
       ::fclose(f);
    }
@@ -41,44 +38,42 @@ FileLogger::~FileLogger() noexcept
 
 //******************************************************************************
 
-Logger::LogLevel FileLogger::getLogLevel() const noexcept
-{
+Logger::LogLevel FileLogger::getLogLevel() const noexcept {
    return m_logLevel;
 }
 
 //******************************************************************************
 
-void FileLogger::setLogLevel(LogLevel logLevel) noexcept
-{
+void FileLogger::setLogLevel(LogLevel logLevel) noexcept {
    m_logLevel = logLevel;
 }
 
 //******************************************************************************
 
-void FileLogger::logMessage(LogLevel logLevel, const std::string& logMessage) noexcept
-{
+void FileLogger::logMessage(LogLevel logLevel,
+                            const std::string& logMessage) noexcept {
    if (isLogging(logLevel)) {
       if (f == nullptr) {
-         f = fopen(m_filePath.c_str(), "a+");
+         f = ::fopen(m_filePath.c_str(), "a+");
       }
       
       if (f != nullptr) {
-         fprintf(f, "%s %s\n", logLevelPrefix(logLevel).c_str(), logMessage.c_str());
+         ::fprintf(f, "%s %s\n",
+                      logLevelPrefix(logLevel).c_str(),
+                      logMessage.c_str());
       }
    }
 }
 
 //******************************************************************************
 
-bool FileLogger::isLoggingLevel(LogLevel logLevel) const noexcept
-{
+bool FileLogger::isLoggingLevel(LogLevel logLevel) const noexcept {
    return (logLevel <= m_logLevel);
 }
 
 //******************************************************************************
 
-const std::string& FileLogger::logLevelPrefix(LogLevel level) const noexcept
-{
+const std::string& FileLogger::logLevelPrefix(LogLevel level) const noexcept {
    switch (level) {
       case Logger::LogLevel::Critical:
          return prefixCritical;
@@ -98,34 +93,29 @@ const std::string& FileLogger::logLevelPrefix(LogLevel level) const noexcept
 
 //******************************************************************************
 
-bool FileLogger::isLoggingInstanceLifecycles() const noexcept
-{
+bool FileLogger::isLoggingInstanceLifecycles() const noexcept {
    return false;
 }
 
 //******************************************************************************
 
-void FileLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept
-{
+void FileLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept {
 }
 
 //******************************************************************************
 
-void FileLogger::logInstanceCreate(const std::string& className) noexcept
-{
+void FileLogger::logInstanceCreate(const std::string& className) noexcept {
 }
 
 //******************************************************************************
 
-void FileLogger::logInstanceDestroy(const std::string& className) noexcept
-{
+void FileLogger::logInstanceDestroy(const std::string& className) noexcept {
 }
 
 //******************************************************************************
 
 void FileLogger::logOccurrence(const std::string& occurrenceType,
-                               const std::string& occurrenceName) noexcept
-{
+                               const std::string& occurrenceName) noexcept {
 }
 
 //******************************************************************************

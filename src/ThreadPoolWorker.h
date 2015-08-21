@@ -30,7 +30,7 @@ class ThreadPoolWorker : public Runnable
        * @see ThreadingFactory()
        * @see ThreadPoolQueue()
        */
-      ThreadPoolWorker(std::shared_ptr<ThreadingFactory> threadingFactory,
+      ThreadPoolWorker(ThreadingFactory* threadingFactory,
                        ThreadPoolQueue& queue,
                        int workerId) noexcept;
                        
@@ -56,13 +56,11 @@ class ThreadPoolWorker : public Runnable
 
       // disallow copies
       ThreadPoolWorker(const ThreadPoolWorker&);
-      ThreadPoolWorker(ThreadPoolWorker&&);
       ThreadPoolWorker& operator=(const ThreadPoolWorker&);
-      ThreadPoolWorker& operator=(ThreadPoolWorker&&);
 
    private:
-      std::shared_ptr<ThreadingFactory> m_threadingFactory;
-      std::shared_ptr<Thread> m_workerThread;
+      ThreadingFactory* m_threadingFactory;
+      Thread* m_workerThread;
       ThreadPoolQueue& m_poolQueue;
       int m_workerId;
       bool m_isRunning;

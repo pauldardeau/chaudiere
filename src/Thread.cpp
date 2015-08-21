@@ -20,18 +20,16 @@ using namespace chaudiere;
 //******************************************************************************
 
 Thread::Thread(Mutex& mutexAlive) noexcept :
-   Thread(mutexAlive, nullptr)
-{
+   Thread(mutexAlive, nullptr) {
 }
 
 //******************************************************************************
 
-Thread::Thread(Mutex& mutexAlive, std::shared_ptr<Runnable> runnable) noexcept :
+Thread::Thread(Mutex& mutexAlive, Runnable* runnable) noexcept :
    m_runnable(runnable),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(mutexAlive)
-{
+   m_mutexAlive(mutexAlive) {
    if (Logger::isLogging(Logger::LogLevel::Debug)) {
       Logger::debug("new thread created");
    }
@@ -39,28 +37,24 @@ Thread::Thread(Mutex& mutexAlive, std::shared_ptr<Runnable> runnable) noexcept :
 
 //******************************************************************************
 
-Thread::~Thread() noexcept
-{
+Thread::~Thread() noexcept {
 }
 
 //******************************************************************************
 
-void Thread::setPoolWorkerStatus(bool isPoolWorker) noexcept
-{
+void Thread::setPoolWorkerStatus(bool isPoolWorker) noexcept {
    m_isPoolWorker = isPoolWorker;
 }
 
 //******************************************************************************
 
-bool Thread::isPoolWorker() const noexcept
-{
+bool Thread::isPoolWorker() const noexcept {
    return m_isPoolWorker;
 }
 
 //******************************************************************************
 
-void Thread::run()
-{
+void Thread::run() {
    // This method should never be called.  If you've subclassed Thread, then
    // you need to implement "void run()" in your derived class.
    throw BasicException("this method should not be called");
@@ -68,8 +62,7 @@ void Thread::run()
 
 //******************************************************************************
 
-bool Thread::isAlive() const noexcept
-{
+bool Thread::isAlive() const noexcept {
    bool rc;
    
    {
@@ -83,92 +76,78 @@ bool Thread::isAlive() const noexcept
 
 //******************************************************************************
 
-void Thread::setAlive(bool isAlive) noexcept
-{
+void Thread::setAlive(bool isAlive) noexcept {
    MutexLock lockMutexAlive(m_mutexAlive);
    m_isAlive = isAlive;
 }
 
 //******************************************************************************
 
-void Thread::registerThreadCompletionObserver(std::shared_ptr<ThreadCompletionObserver> observer) noexcept
-{
+void Thread::registerThreadCompletionObserver(ThreadCompletionObserver* observer) noexcept {
    m_threadCompletionObserver = observer;
 }
 
 //******************************************************************************
 
-void Thread::clearThreadCompletionObserver() noexcept
-{
-   m_threadCompletionObserver.reset();
+void Thread::clearThreadCompletionObserver() noexcept {
+   m_threadCompletionObserver = nullptr;
 }
 
 //******************************************************************************
 
-void Thread::notifyOnCompletion() noexcept
-{
+void Thread::notifyOnCompletion() noexcept {
    if (m_threadCompletionObserver) {
-      std::shared_ptr<Thread> thread =
-         std::dynamic_pointer_cast<Thread>(shared_from_this());
-      m_threadCompletionObserver->notifyThreadComplete(thread);
+      m_threadCompletionObserver->notifyThreadComplete(this);
    }
 }
 
 //******************************************************************************
 
-std::shared_ptr<Runnable> Thread::getRunnable() noexcept
-{
+Runnable* Thread::getRunnable() noexcept {
    return m_runnable;
 }
 
 //******************************************************************************
 
 void Thread::setAttribute(const std::string& key,
-                                  const std::string& value) noexcept
-{
+                          const std::string& value) noexcept {
    m_attributes.addPair(key, value);
 }
 
 //******************************************************************************
 
-bool Thread::hasAttribute(const std::string& key) const noexcept
-{
+bool Thread::hasAttribute(const std::string& key) const noexcept {
    return m_attributes.hasKey(key);
 }
 
 //******************************************************************************
 
-const std::string& Thread::getAttribute(const std::string& key) const
-{
+const std::string& Thread::getAttribute(const std::string& key) const {
    // may throw InvalidKeyException
    return m_attributes.getValue(key);
 }
 
 //******************************************************************************
 
-void Thread::clearAttribute(const std::string& key) noexcept
-{
+void Thread::clearAttribute(const std::string& key) noexcept {
    m_attributes.removePair(key);
 }
 
 //******************************************************************************
 
-void Thread::setThreadId(const std::string& threadId) noexcept
-{
+void Thread::setThreadId(const std::string& threadId) noexcept {
    setAttribute(ATTR_THREAD_ID, threadId);
 }
 
 //******************************************************************************
 
-bool Thread::hasThreadId() const noexcept
-{
+bool Thread::hasThreadId() const noexcept {
    return hasAttribute(ATTR_THREAD_ID);
 }
 
 //******************************************************************************
 
-const std::string& Thread::getThreadId() const
-{
+const std::string& Thread::getThreadId() const {
    if (hasThreadId()) {
       return getAttribute(ATTR_THREAD_ID);
    } else {
@@ -178,22 +157,19 @@ const std::string& Thread::getThreadId() const
 
 //******************************************************************************
 
-void Thread::setWorkerId(const std::string& workerId) noexcept
-{
+void Thread::setWorkerId(const std::string& workerId) noexcept {
    setAttribute(ATTR_WORKER_ID, workerId);
 }
 
 //******************************************************************************
 
-bool Thread::hasWorkerId() const noexcept
-{
+bool Thread::hasWorkerId() const noexcept {
    return hasAttribute(ATTR_WORKER_ID);
 }
 
 //******************************************************************************
 
-const std::string& Thread::getWorkerId() const
-{
+const std::string& Thread::getWorkerId() const {
    if (hasWorkerId()) {
       return getAttribute(ATTR_WORKER_ID);
    } else {

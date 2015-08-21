@@ -62,21 +62,20 @@ class ServerSocket
        * @see Socket()
        * @return Socket representing new client connection
        */
-      std::shared_ptr<Socket> accept() noexcept;
+      Socket* accept() noexcept;
 
       /**
        * Closes the socket
        */
       void close() noexcept;
 
-      // copying not allowed
-      ServerSocket(const ServerSocket&) = delete;
-      ServerSocket(const ServerSocket&&) = delete;
-      ServerSocket& operator=(const ServerSocket&) = delete;
-      ServerSocket& operator=(const ServerSocket&&) = delete;
 
    
    private:
+      // copying not allowed
+      ServerSocket(const ServerSocket&);
+      ServerSocket& operator=(const ServerSocket&);
+
       /**
        * Creates the server socket and binds on the specified port
        * @return boolean indicating whether the creation succeeded

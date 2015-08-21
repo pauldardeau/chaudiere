@@ -52,7 +52,7 @@ public:
     * @return
     * @see SocketServiceHandler()
     */
-   virtual bool init(std::shared_ptr<SocketServiceHandler> socketServiceHandler,
+   virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
                      int maxConnections) noexcept override;
    
@@ -108,9 +108,7 @@ public:
 
    // copying not allowed
    KqueueServer(const KqueueServer&) = delete;
-   KqueueServer(KqueueServer&&) = delete;
    KqueueServer& operator=(const KqueueServer&) = delete;
-   KqueueServer& operator=(KqueueServer&&) = delete;
    
    
 private:

@@ -27,7 +27,7 @@ public:
     * @param threadingFactory
     * @see ThreadingFactory()
     */
-   explicit ThreadPoolQueue(std::shared_ptr<ThreadingFactory> threadingFactory) noexcept;
+   explicit ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept;
    
    /**
     * Destructor
@@ -40,14 +40,14 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(std::shared_ptr<Runnable> runnableRequest) noexcept;
+   virtual bool addRequest(Runnable* runnableRequest) noexcept;
    
    /**
     *
     * @return
     * @see Runnable()
     */
-   virtual std::shared_ptr<Runnable> takeRequest() noexcept;
+   virtual Runnable* takeRequest() noexcept;
    
    /**
     *
@@ -74,16 +74,14 @@ public:
    
    // disallow copies
    ThreadPoolQueue(const ThreadPoolQueue&) = delete;
-   ThreadPoolQueue(ThreadPoolQueue&&) = delete;
    ThreadPoolQueue& operator=(const ThreadPoolQueue&) = delete;
-   ThreadPoolQueue& operator=(ThreadPoolQueue&&) = delete;
    
 private:
-   std::shared_ptr<ThreadingFactory> m_threadingFactory;
-   std::deque<std::shared_ptr<Runnable>> m_queue;
-   std::shared_ptr<Mutex> m_mutex;
-   std::shared_ptr<ConditionVariable> m_condQueueEmpty;
-   std::shared_ptr<ConditionVariable> m_condQueueNotEmpty;
+   ThreadingFactory* m_threadingFactory;
+   std::deque<Runnable*> m_queue;
+   Mutex* m_mutex;
+   ConditionVariable* m_condQueueEmpty;
+   ConditionVariable* m_condQueueNotEmpty;
    bool m_isInitialized;
    bool m_isRunning;
 };

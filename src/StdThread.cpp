@@ -22,23 +22,20 @@ void StdThread::runThread(StdThread* thread) noexcept
    
    //unsigned long rc = 0L;
    
-   try
-   {
+   try {
       thread->setAlive(true);
       
       // if we had a runnable passed in on the constructor, use it.  otherwise,
       // call "run" on the thread object itself.
       
-      std::shared_ptr<Runnable> runnable = thread->getRunnable();
+      Runnable* runnable = thread->getRunnable();
       
       if (runnable) {
          runnable->run();
       } else {
          thread->run();
       }
-   }
-   catch (...)
-   {
+   } catch (...) {
       //rc = 1L;
       Logger::error("StdThread::runThread exception caught running thread");
    }
@@ -51,29 +48,25 @@ void StdThread::runThread(StdThread* thread) noexcept
 //******************************************************************************
 
 StdThread::StdThread() noexcept :
-   StdThread(nullptr)
-{
+   StdThread(nullptr) {
 }
 
 //******************************************************************************
 
-StdThread::StdThread(std::shared_ptr<Runnable> runnable) noexcept :
-   Thread(m_mutexAlive, runnable)
-{
+StdThread::StdThread(Runnable* runnable) noexcept :
+   Thread(m_mutexAlive, runnable) {
    Logger::logInstanceCreate("StdThread");
 }
 
 //******************************************************************************
 
-StdThread::~StdThread() noexcept
-{
+StdThread::~StdThread() noexcept {
    Logger::logInstanceDestroy("StdThread");
 }
 
 //******************************************************************************
 
-bool StdThread::start() noexcept
-{
+bool StdThread::start() noexcept {
    bool isSuccess = false;
    
    //TODO: research and fix!
@@ -87,8 +80,7 @@ bool StdThread::start() noexcept
 
 //******************************************************************************
 
-void StdThread::run()
-{
+void StdThread::run() {
    // This method should never be called.  If you've subclassed Thread, then
    // you need to implement "void run()" in your derived class.
    throw BasicException("this method should not be called");
@@ -96,15 +88,13 @@ void StdThread::run()
 
 //******************************************************************************
 
-std::thread::native_handle_type StdThread::getHandle() noexcept
-{
+std::thread::native_handle_type StdThread::getHandle() noexcept {
    return m_thread.native_handle();
 }
 
 //******************************************************************************
 
-std::thread::id StdThread::getStdThreadId() const noexcept
-{
+std::thread::id StdThread::getStdThreadId() const noexcept {
    return m_thread.get_id();
 }
 

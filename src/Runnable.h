@@ -18,29 +18,26 @@ namespace chaudiere
  * Java's Runnable interface for classes that can be used in background
  * threads.
  */
-class Runnable : public virtual std::enable_shared_from_this<Runnable>
+class Runnable
 {
 private:
-   std::shared_ptr<chaudiere::RunCompletionObserver> m_completionObserver;
+   RunCompletionObserver* m_completionObserver;
    std::string m_runByThreadWorkerId;
    int m_runByThreadId;
+
+   // disallow copies
+   Runnable(const Runnable&) noexcept = delete;
+   Runnable& operator=(const Runnable&) noexcept = delete;
+
    
 public:
    /**
     * Default constructor
     */
    Runnable() noexcept :
-      m_runByThreadId(0)
-   {
+      m_completionObserver(nullptr),
+      m_runByThreadId(0) {
    }
-   
-   
-   // disallow copies
-   Runnable(const Runnable&) noexcept = delete;
-   Runnable(Runnable&&) noexcept = delete;
-   Runnable& operator=(const Runnable&) noexcept = delete;
-   Runnable& operator=(Runnable&&) noexcept = delete;
-   
 
    /**
     * Destructor
@@ -57,8 +54,7 @@ public:
     *
     * @param runByThreadId
     */
-   virtual void setRunByThreadId(int runByThreadId) noexcept
-   {
+   virtual void setRunByThreadId(int runByThreadId) noexcept {
       m_runByThreadId = runByThreadId;
    }
    
@@ -66,8 +62,7 @@ public:
     *
     * @return
     */
-   virtual int getRunByThreadId() const noexcept
-   {
+   virtual int getRunByThreadId() const noexcept {
       return m_runByThreadId;
    }
    
@@ -75,8 +70,7 @@ public:
     *
     * @param runByThreadWorkerId
     */
-   virtual void setRunByThreadWorkerId(const std::string& runByThreadWorkerId) noexcept
-   {
+   virtual void setRunByThreadWorkerId(const std::string& runByThreadWorkerId) noexcept {
       m_runByThreadWorkerId = runByThreadWorkerId;
    }
    
@@ -84,8 +78,7 @@ public:
     *
     * @return
     */
-   virtual const std::string& getRunByThreadWorkerId() const noexcept
-   {
+   virtual const std::string& getRunByThreadWorkerId() const noexcept {
       return m_runByThreadWorkerId;
    }
    
@@ -94,18 +87,16 @@ public:
     * @param completionObserver
     * @see RunCompletionObserver()
     */
-   void setCompletionObserver(std::shared_ptr<chaudiere::RunCompletionObserver> completionObserver) noexcept
-   {
+   void setCompletionObserver(RunCompletionObserver* completionObserver) noexcept {
        m_completionObserver = completionObserver;
    }
    
    /**
     * This should only be called AFTER the run method has completed
     */
-   virtual void notifyOnCompletion() noexcept
-   {
+   virtual void notifyOnCompletion() noexcept {
       if (m_completionObserver) {
-         m_completionObserver->notifyRunComplete(shared_from_this());
+         m_completionObserver->notifyRunComplete(this);
       }
    }
 };

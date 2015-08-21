@@ -11,18 +11,18 @@ using namespace chaudiere;
 
 ServiceInfo::ServiceInfo() :
    m_port(0),
-   m_persistentConnection(false)
-{
+   m_persistentConnection(false) {
 }
 
 //******************************************************************************
 
-ServiceInfo::ServiceInfo(const std::string& serviceName, const std::string& host, unsigned short port) :
+ServiceInfo::ServiceInfo(const std::string& serviceName,
+                         const std::string& host,
+                         unsigned short port) :
    m_serviceName(serviceName),
    m_host(host),
    m_port(port),
-   m_persistentConnection(false)
-{
+   m_persistentConnection(false) {
 }
 
 //******************************************************************************
@@ -31,30 +31,17 @@ ServiceInfo::ServiceInfo(const ServiceInfo& copy) :
    m_serviceName(copy.m_serviceName),
    m_host(copy.m_host),
    m_port(copy.m_port),
-   m_persistentConnection(copy.m_persistentConnection)
-{
+   m_persistentConnection(copy.m_persistentConnection) {
 }
 
 //******************************************************************************
 
-ServiceInfo::ServiceInfo(ServiceInfo&& move) :
-   m_serviceName(std::move(move.m_serviceName)),
-   m_host(std::move(move.m_host)),
-   m_port(move.m_port),
-   m_persistentConnection(move.m_persistentConnection)
-{
-}
-
-//******************************************************************************
-
-ServiceInfo::~ServiceInfo()
-{
+ServiceInfo::~ServiceInfo() {
 }
 
 //******************************************************************************
    
-ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy)
-{
+ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy) {
    if (this == &copy) {
       return *this;
    }
@@ -69,66 +56,43 @@ ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy)
 
 //******************************************************************************
 
-ServiceInfo& ServiceInfo::operator=(ServiceInfo&& move)
-{
-   if (this == &move) {
-      return *this;
-   }
-   
-   m_serviceName = std::move(move.m_serviceName);
-   m_host = std::move(move.m_host);
-   m_port = move.m_port;
-   m_persistentConnection = move.m_persistentConnection;
-   
-   return *this;
-}
-
-//******************************************************************************
-   
-const std::string& ServiceInfo::serviceName() const
-{
+const std::string& ServiceInfo::serviceName() const {
    return m_serviceName;
 }
 
 //******************************************************************************
 
-const std::string& ServiceInfo::host() const
-{
+const std::string& ServiceInfo::host() const {
    return m_host;
 }
 
 //******************************************************************************
 
-unsigned short ServiceInfo::port() const
-{
+unsigned short ServiceInfo::port() const {
    return m_port;
 }
    
 //******************************************************************************
 
-void ServiceInfo::setServiceName(const std::string& serviceName)
-{
+void ServiceInfo::setServiceName(const std::string& serviceName) {
    m_serviceName = serviceName;
 }
 
 //******************************************************************************
 
-void ServiceInfo::setHost(const std::string& host)
-{
+void ServiceInfo::setHost(const std::string& host) {
    m_host = host;
 }
 
 //******************************************************************************
 
-void ServiceInfo::setPort(unsigned short port)
-{
+void ServiceInfo::setPort(unsigned short port) {
    m_port = port;
 }
 
 //******************************************************************************
 
-std::string ServiceInfo::getUniqueIdentifier() const
-{
+std::string ServiceInfo::getUniqueIdentifier() const {
    std::string uniqueIdentifier = m_host;
    uniqueIdentifier += std::string("|");
    
@@ -143,15 +107,13 @@ std::string ServiceInfo::getUniqueIdentifier() const
 
 //******************************************************************************
 
-void ServiceInfo::setPersistentConnection(bool persistentConnection)
-{
+void ServiceInfo::setPersistentConnection(bool persistentConnection) {
    m_persistentConnection = persistentConnection;
 }
 
 //******************************************************************************
 
-bool ServiceInfo::getPersistentConnection() const
-{
+bool ServiceInfo::getPersistentConnection() const {
    return m_persistentConnection;
 }
 

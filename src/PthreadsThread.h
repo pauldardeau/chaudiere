@@ -23,7 +23,7 @@ class PthreadsThread : public Thread
 
 
       PthreadsThread() noexcept;
-      explicit PthreadsThread(std::shared_ptr<Runnable> runnable) noexcept;
+      explicit PthreadsThread(Runnable* runnable) noexcept;
       virtual ~PthreadsThread() noexcept;
 
       virtual bool start() noexcept override;
@@ -32,15 +32,12 @@ class PthreadsThread : public Thread
       unsigned long getExitCode() const noexcept;
       pthread_t getHandle() noexcept;
 
-   
-      // disallow copying
-      PthreadsThread(const PthreadsThread&) = delete;
-      PthreadsThread(PthreadsThread&&) = delete;
-      PthreadsThread& operator=(const PthreadsThread&) = delete;
-      PthreadsThread& operator=(PthreadsThread&&) = delete;
-
 
    private:
+      // disallow copying
+      PthreadsThread(const PthreadsThread&) = delete;
+      PthreadsThread& operator=(const PthreadsThread&) = delete;
+
       static void* runThread(void* pArgs) noexcept;
       PthreadsMutex         m_mutexAlive;
       PthreadsMutex         m_mutexExitCode;

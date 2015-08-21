@@ -25,7 +25,7 @@ public:
     * @param thread
     * @see Thread()
     */
-   virtual void notifyThreadComplete(std::shared_ptr<Thread> thread) noexcept = 0;
+   virtual void notifyThreadComplete(Thread* thread) noexcept = 0;
 };
 
 }

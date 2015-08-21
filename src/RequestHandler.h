@@ -19,9 +19,14 @@ namespace chaudiere
 class RequestHandler : public Runnable
 {
 private:
-   std::shared_ptr<chaudiere::Socket> m_socket;
-   std::shared_ptr<chaudiere::SocketRequest> m_socketRequest;
+   // disallow copies
+   RequestHandler(const RequestHandler&);
+   RequestHandler& operator=(const RequestHandler&);
+
+   Socket* m_socket;
+   SocketRequest* m_socketRequest;
    bool m_isThreadPooling;
+
    
 public:
    /**
@@ -29,14 +34,14 @@ public:
     * @param socketRequest the SocketRequest for processing using KernelEventServer
     * @see SocketRequest()
     */
-   RequestHandler(std::shared_ptr<chaudiere::SocketRequest> socketRequest) noexcept;
+   RequestHandler(SocketRequest* socketRequest) noexcept;
    
    /**
     * Constructs a RequestHandler using a Socket
     * @param socket the Socket for handling the request
     * @see Socket()
     */
-   RequestHandler(std::shared_ptr<chaudiere::Socket> socket) noexcept;
+   RequestHandler(Socket* socket) noexcept;
    
    /**
     * Destructor
@@ -60,15 +65,7 @@ public:
     * @return
     * @see Socket()
     */
-   std::shared_ptr<chaudiere::Socket> getSocket() noexcept;
-   
-   
-   
-   // disallow copies
-   RequestHandler(const RequestHandler&) = delete;
-   RequestHandler(RequestHandler&&) = delete;
-   RequestHandler& operator=(const RequestHandler&) = delete;
-   RequestHandler& operator=(RequestHandler&&) = delete;
+   Socket* getSocket() noexcept;
    
 };
 

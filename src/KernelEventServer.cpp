@@ -35,16 +35,17 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
    m_serverPort(0),
    m_listenBacklog(10),
    m_listenerFD(-1),
-   m_numberEventsReturned(0)
-{
+   m_numberEventsReturned(0) {
 }
 
 //******************************************************************************
 
-KernelEventServer::~KernelEventServer() noexcept
-{
+KernelEventServer::~KernelEventServer() noexcept {
+   
+   delete m_socketServiceHandler;
+   
    if (nullptr != m_listBusyFlags) {
-      free(m_listBusyFlags);
+      ::free(m_listBusyFlags);
       m_listBusyFlags = nullptr;
    }
    
@@ -55,11 +56,10 @@ KernelEventServer::~KernelEventServer() noexcept
 
 //******************************************************************************
 
-bool KernelEventServer::init(std::shared_ptr<SocketServiceHandler> socketServiceHandler,
+bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
                              int serverPort,
-                             int maxConnections) noexcept
-{
-   m_socketServiceHandler = std::move(socketServiceHandler);
+                             int maxConnections) noexcept {
+   m_socketServiceHandler = socketServiceHandler;
    m_serverPort = serverPort;
    m_maxConnections = maxConnections;
    
@@ -108,8 +108,7 @@ bool KernelEventServer::init(std::shared_ptr<SocketServiceHandler> socketService
 
 //******************************************************************************
 
-void KernelEventServer::run() noexcept
-{
+void KernelEventServer::run() noexcept {
    struct sockaddr_in clientaddr;
    socklen_t addrlen = sizeof(clientaddr);
    int newfd;
@@ -228,25 +227,20 @@ void KernelEventServer::run() noexcept
                      Logger::debug(msg);
                   }
                   
-                  std::shared_ptr<Socket> clientSocket(new Socket(this, client_fd));
+                  Socket* clientSocket =
+                     new Socket(this, client_fd);
                   clientSocket->setUserIndex(index);
 
-                  std::shared_ptr<SocketRequest> socketRequest(new SocketRequest(clientSocket, m_socketServiceHandler));
+                  SocketRequest* socketRequest =
+                     new SocketRequest(clientSocket, m_socketServiceHandler);
 
-                  try
-                  {
+                  try {
                      m_socketServiceHandler->serviceSocket(socketRequest);
-                  }
-                  catch (const BasicException& be)
-                  {
+                  } catch (const BasicException& be) {
                      Logger::error("exception in serviceSocket on handler: " + be.whatString());
-                  }
-                  catch (const std::exception& e)
-                  {
+                  } catch (const std::exception& e) {
                      Logger::error("exception in serviceSocket on handler: " + std::string(e.what()));
-                  }
-                  catch (...)
-                  {
+                  } catch (...) {
                      Logger::error("exception in serviceSocket on handler");
                   }
                   
@@ -263,15 +257,13 @@ void KernelEventServer::run() noexcept
          if (isLoggingDebug) {
             Logger::debug("KernelEventServer::run finished iteration of inner loop");
          }
-         
       }
    }  // for (;;)
 }
 
 //******************************************************************************
 
-void KernelEventServer::notifySocketComplete(std::shared_ptr<Socket> socket) noexcept
-{
+void KernelEventServer::notifySocketComplete(Socket* socket) noexcept {
    char msg[128];
    const bool isLoggingDebug = Logger::isLogging(Logger::LogLevel::Debug);
    
@@ -330,8 +322,7 @@ void KernelEventServer::notifySocketComplete(std::shared_ptr<Socket> socket) noe
 
 //******************************************************************************
 
-int KernelEventServer::getListenerSocketFileDescriptor() const noexcept
-{
+int KernelEventServer::getListenerSocketFileDescriptor() const noexcept {
    return m_listenerFD;
 }
 

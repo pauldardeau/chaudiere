@@ -14,31 +14,27 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsThread::PthreadsThread() noexcept :
-   PthreadsThread(nullptr)
-{
+   PthreadsThread(nullptr) {
 }
 
 //******************************************************************************
 
-PthreadsThread::PthreadsThread(std::shared_ptr<Runnable> runnable) noexcept :
+PthreadsThread::PthreadsThread(Runnable* runnable) noexcept :
    Thread(m_mutexAlive, runnable),
    m_threadHandle(0),
-   m_exitCode(1L)
-{
+   m_exitCode(1L) {
    Logger::logInstanceCreate("PthreadsThread");
 }
 
 //******************************************************************************
 
-PthreadsThread::~PthreadsThread() noexcept
-{
+PthreadsThread::~PthreadsThread() noexcept {
    Logger::logInstanceDestroy("PthreadsThread");
 }
 
 //******************************************************************************
 
-void* PthreadsThread::runThread(void* pArgs) noexcept
-{
+void* PthreadsThread::runThread(void* pArgs) noexcept {
    PthreadsThread* pThread = (PthreadsThread*) pArgs;
 
    if (!pThread) {
@@ -51,23 +47,20 @@ void* PthreadsThread::runThread(void* pArgs) noexcept
    
    unsigned long rc = 0L;
 
-   try
-   {
+   try {
       pThread->setAlive(true);
 
       // if we had a runnable passed in on the constructor, use it.  otherwise,
       // call "run" on the thread object itself.
       
-      std::shared_ptr<Runnable> runnable = pThread->getRunnable();
+      Runnable* runnable = pThread->getRunnable();
 
       if (runnable) {
          runnable->run();
       } else {
          pThread->run();
       }
-   }
-   catch (...)
-   {
+   } catch (...) {
       rc = 1L;
       Logger::error("Thread::runThread exception caught running thread");
    }
@@ -80,8 +73,7 @@ void* PthreadsThread::runThread(void* pArgs) noexcept
 
 //******************************************************************************
 
-bool PthreadsThread::start() noexcept
-{
+bool PthreadsThread::start() noexcept {
    bool isSuccess = false;
 
    if (0 == ::pthread_create(&m_threadHandle, 0, runThread, (void*) this)) {
@@ -93,8 +85,7 @@ bool PthreadsThread::start() noexcept
 
 //******************************************************************************
 
-void PthreadsThread::run()
-{
+void PthreadsThread::run() {
    // This method should never be called.  If you've subclassed Thread, then
    // you need to implement "void run()" in your derived class.
    throw BasicException("this method should not be called");
@@ -102,8 +93,7 @@ void PthreadsThread::run()
 
 //******************************************************************************
 
-unsigned long PthreadsThread::getExitCode() const noexcept
-{
+unsigned long PthreadsThread::getExitCode() const noexcept {
    unsigned long rc;
 
    {
@@ -117,8 +107,7 @@ unsigned long PthreadsThread::getExitCode() const noexcept
 
 //******************************************************************************
 
-pthread_t PthreadsThread::getHandle() noexcept
-{
+pthread_t PthreadsThread::getHandle() noexcept {
    return m_threadHandle;
 }
 
