@@ -15,8 +15,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-void StrUtils::toLowerCase(std::string& s) noexcept
-{
+void StrUtils::toLowerCase(std::string& s) noexcept {
    if (!s.empty()) {
       for (auto &c : s) {
          c = tolower(c);
@@ -26,8 +25,7 @@ void StrUtils::toLowerCase(std::string& s) noexcept
 
 //******************************************************************************
 
-void StrUtils::toUpperCase(std::string& s) noexcept
-{
+void StrUtils::toUpperCase(std::string& s) noexcept {
    if (!s.empty()) {
       for (auto &c : s) {
          c = toupper(c);
@@ -37,8 +35,8 @@ void StrUtils::toUpperCase(std::string& s) noexcept
 
 //******************************************************************************
 
-bool StrUtils::startsWith(const std::string& haystack, const std::string& needle) noexcept
-{
+bool StrUtils::startsWith(const std::string& haystack,
+                          const std::string& needle) noexcept {
    if (!haystack.empty() && !needle.empty()) {
       const std::string::size_type haystackLength = haystack.length();
       const std::string::size_type needleLength = needle.length();
@@ -59,8 +57,8 @@ bool StrUtils::startsWith(const std::string& haystack, const std::string& needle
 
 //******************************************************************************
 
-bool StrUtils::endsWith(const std::string& haystack, const std::string& needle) noexcept
-{
+bool StrUtils::endsWith(const std::string& haystack,
+                        const std::string& needle) noexcept {
    if (!haystack.empty() && !needle.empty()) {
       const std::string::size_type haystackLength = haystack.length();
       const std::string::size_type needleLength = needle.length();
@@ -83,22 +81,20 @@ bool StrUtils::endsWith(const std::string& haystack, const std::string& needle) 
 
 //******************************************************************************
 
-bool StrUtils::containsString(const std::string& haystack, const std::string& needle) noexcept
-{
+bool StrUtils::containsString(const std::string& haystack,
+                              const std::string& needle) noexcept {
    return (std::string::npos != haystack.find(needle));
 }
 
 //******************************************************************************
 
-std::string& StrUtils::strip(std::string& s, char strip) noexcept
-{
+std::string& StrUtils::strip(std::string& s, char strip) noexcept {
    return stripLeading(stripTrailing(s, strip), strip);
 }
 
 //******************************************************************************
 
-std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept
-{
+std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept {
    if (s.empty()) {
       return s;
    }
@@ -126,8 +122,7 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept
 
 //******************************************************************************
 
-std::string& StrUtils::stripLeading(std::string& s, char stripChar) noexcept
-{
+std::string& StrUtils::stripLeading(std::string& s, char stripChar) noexcept {
    if (s.empty()) {
       return s;
    }
@@ -135,7 +130,8 @@ std::string& StrUtils::stripLeading(std::string& s, char stripChar) noexcept
    const std::string::size_type stringLen = s.length();
    std::string::size_type leadingStripChars = 0;
    
-   while ((leadingStripChars < stringLen) && (s[leadingStripChars] == stripChar)) {
+   while ((leadingStripChars < stringLen) &&
+          (s[leadingStripChars] == stripChar)) {
       ++leadingStripChars;
    }
     
@@ -149,8 +145,7 @@ std::string& StrUtils::stripLeading(std::string& s, char stripChar) noexcept
 
 //******************************************************************************
 
-std::string& StrUtils::trimLeadingSpaces(std::string& s) noexcept
-{
+std::string& StrUtils::trimLeadingSpaces(std::string& s) noexcept {
    const std::string::size_type posFirstNonSpace = s.find_first_not_of(SPACE);
     
    if ((std::string::npos != posFirstNonSpace) && (posFirstNonSpace > 0)) {
@@ -162,22 +157,19 @@ std::string& StrUtils::trimLeadingSpaces(std::string& s) noexcept
 
 //******************************************************************************
 
-std::string StrUtils::trim(const std::string& s) noexcept
-{
+std::string StrUtils::trim(const std::string& s) noexcept {
    return StrUtils::strip(s);
 }
 
 //**************************************************************************
 
-std::string StrUtils::strip(const std::string& s) noexcept
-{
+std::string StrUtils::strip(const std::string& s) noexcept {
    return StrUtils::strip(s, ' ');
 }
 
 //******************************************************************************
 
-std::string StrUtils::strip(const std::string& s, char strip) noexcept
-{
+std::string StrUtils::strip(const std::string& s, char strip) noexcept {
    if (s.empty()) {
       return EMPTY;
    }
@@ -214,9 +206,8 @@ std::string StrUtils::strip(const std::string& s, char strip) noexcept
 //******************************************************************************
 
 std::string& StrUtils::replaceAll(std::string& s,
-                             const std::string& searchFor,
-                             const std::string& replaceWith) noexcept
-{
+                                  const std::string& searchFor,
+                                  const std::string& replaceWith) noexcept {
    std::string::size_type posSearchFor = s.find(searchFor);
     
    if (posSearchFor == std::string::npos) {
@@ -236,10 +227,9 @@ std::string& StrUtils::replaceAll(std::string& s,
 
 //******************************************************************************
 
-std::string StrUtils::gzipCompress(const std::string& str)
-{
+std::string StrUtils::gzipCompress(const std::string& str) {
    z_stream zs;
-   memset(&zs, 0, sizeof(zs));
+   ::memset(&zs, 0, sizeof(zs));
 
    zs.zalloc = Z_NULL;
    zs.zfree = Z_NULL;
@@ -307,8 +297,7 @@ std::string StrUtils::gzipCompress(const std::string& str)
 
 //******************************************************************************
 
-std::string StrUtils::gzipDecompress(const std::string& str)
-{
+std::string StrUtils::gzipDecompress(const std::string& str) {
    z_stream zs;                        // z_stream is zlib's control structure
    memset(&zs, 0, sizeof(zs));
    
@@ -351,8 +340,7 @@ std::string StrUtils::gzipDecompress(const std::string& str)
 
 //******************************************************************************
 
-void StrUtils::padRight(std::string& s, char padChar, int paddedLength)
-{
+void StrUtils::padRight(std::string& s, char padChar, int paddedLength) {
    if (s.length() < paddedLength) {
       s += std::string(paddedLength - s.length(), padChar);
    }
@@ -360,8 +348,7 @@ void StrUtils::padRight(std::string& s, char padChar, int paddedLength)
 
 //******************************************************************************
 
-void StrUtils::padLeft(std::string& s, char padChar, int paddedLength)
-{
+void StrUtils::padLeft(std::string& s, char padChar, int paddedLength) {
    if (s.length() < paddedLength) {
       s.insert(0, std::string(paddedLength - s.length(), padChar));
    }
