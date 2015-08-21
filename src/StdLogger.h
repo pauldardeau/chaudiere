@@ -25,18 +25,15 @@ public:
    
    LifecycleStats() :
       m_instancesCreated(0L),
-      m_instancesDestroyed(0L)
-   {
+      m_instancesDestroyed(0L) {
    }
    
    LifecycleStats(const LifecycleStats& copy) :
       m_instancesCreated(copy.m_instancesCreated),
-      m_instancesDestroyed(copy.m_instancesDestroyed)
-   {
+      m_instancesDestroyed(copy.m_instancesDestroyed) {
    }
    
-   LifecycleStats& operator=(const LifecycleStats& copy)
-   {
+   LifecycleStats& operator=(const LifecycleStats& copy) {
       if (this == &copy) {
          return *this;
       }

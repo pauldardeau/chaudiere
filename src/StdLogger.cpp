@@ -19,8 +19,7 @@ const std::string StdLogger::prefixVerbose  = "Verbose:";
 //******************************************************************************
 
 StdLogger::StdLogger() noexcept :
-   StdLogger(Logger::LogLevel::Debug)
-{
+   StdLogger(Logger::LogLevel::Debug) {
 }
 
 //******************************************************************************
@@ -29,52 +28,48 @@ StdLogger::StdLogger(LogLevel logLevel) noexcept :
    m_lockLifecycleStats(new PthreadsMutex("lockLifecycleStats")),
    m_lockOccurrences(new PthreadsMutex("lockOccurrences")),
    m_logLevel(logLevel),
-   m_isLoggingInstanceLifecycles(false)
-{
+   m_isLoggingInstanceLifecycles(false) {
 }
 
 //******************************************************************************
 
-StdLogger::~StdLogger() noexcept
-{
+StdLogger::~StdLogger() noexcept {
    delete m_lockLifecycleStats;
    delete m_lockOccurrences;
 }
 
 //******************************************************************************
 
-Logger::LogLevel StdLogger::getLogLevel() const noexcept
-{
+Logger::LogLevel StdLogger::getLogLevel() const noexcept {
    return m_logLevel;
 }
 
 //******************************************************************************
 
-void StdLogger::setLogLevel(LogLevel logLevel) noexcept
-{
+void StdLogger::setLogLevel(LogLevel logLevel) noexcept {
    m_logLevel = logLevel;
 }
 
 //******************************************************************************
 
-void StdLogger::logMessage(LogLevel logLevel, const std::string& logMessage) noexcept
-{
+void StdLogger::logMessage(LogLevel logLevel,
+                           const std::string& logMessage) noexcept {
    if (isLogging(logLevel)) {
-      std::printf("%s %s\n", logLevelPrefix(logLevel).c_str(), logMessage.c_str());
+      std::printf("%s %s\n",
+                  logLevelPrefix(logLevel).c_str(),
+                  logMessage.c_str());
    }
 }
 
 //******************************************************************************
 
-bool StdLogger::isLoggingLevel(LogLevel logLevel) const noexcept
-{
+bool StdLogger::isLoggingLevel(LogLevel logLevel) const noexcept {
    return (logLevel <= m_logLevel);
 }
 
 //******************************************************************************
 
-const std::string& StdLogger::logLevelPrefix(LogLevel level) const noexcept
-{
+const std::string& StdLogger::logLevelPrefix(LogLevel level) const noexcept {
    switch (level) {
       case Logger::LogLevel::Critical:
          return prefixCritical;
@@ -94,22 +89,19 @@ const std::string& StdLogger::logLevelPrefix(LogLevel level) const noexcept
 
 //******************************************************************************
 
-bool StdLogger::isLoggingInstanceLifecycles() const noexcept
-{
+bool StdLogger::isLoggingInstanceLifecycles() const noexcept {
    return m_isLoggingInstanceLifecycles;
 }
 
 //******************************************************************************
 
-void StdLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept
-{
+void StdLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept {
    m_isLoggingInstanceLifecycles = logInstanceLifecycles;
 }
 
 //******************************************************************************
 
-void StdLogger::logInstanceCreate(const std::string& className) noexcept
-{
+void StdLogger::logInstanceCreate(const std::string& className) noexcept {
    if (m_lockLifecycleStats) {
       MutexLock lock(*m_lockLifecycleStats);
       auto it = m_mapClassLifecycleStats.find(className);
@@ -126,8 +118,7 @@ void StdLogger::logInstanceCreate(const std::string& className) noexcept
 
 //******************************************************************************
 
-void StdLogger::logInstanceDestroy(const std::string& className) noexcept
-{
+void StdLogger::logInstanceDestroy(const std::string& className) noexcept {
    if (m_lockLifecycleStats) {
       MutexLock lock(*m_lockLifecycleStats);
       auto it = m_mapClassLifecycleStats.find(className);
@@ -142,16 +133,17 @@ void StdLogger::logInstanceDestroy(const std::string& className) noexcept
 
 //******************************************************************************
 
-void StdLogger::populateClassLifecycleStats(std::map<std::string, LifecycleStats>& mapClassLifecycleStats)
-{
+void StdLogger::populateClassLifecycleStats(std::map<std::string,
+                                                     LifecycleStats>& mapClassLifecycleStats) {
    MutexLock lock(*m_lockLifecycleStats);
    mapClassLifecycleStats = m_mapClassLifecycleStats;
 }
 
 //******************************************************************************
 
-void StdLogger::populateOccurrences(std::map<std::string, std::map<std::string, long long>>& mapOccurrences)
-{
+void StdLogger::populateOccurrences(std::map<std::string,
+                                             std::map<std::string,
+                                                      long long>>& mapOccurrences) {
    MutexLock lock(*m_lockOccurrences);
    mapOccurrences = m_mapOccurrences;
 }
@@ -159,8 +151,7 @@ void StdLogger::populateOccurrences(std::map<std::string, std::map<std::string, 
 //******************************************************************************
 
 void StdLogger::logOccurrence(const std::string& occurrenceType,
-                              const std::string& occurrenceName) noexcept
-{
+                              const std::string& occurrenceName) noexcept {
    MutexLock lock(*m_lockOccurrences);
    auto it = m_mapOccurrences.find(occurrenceType);
    if (it != m_mapOccurrences.end()) {
