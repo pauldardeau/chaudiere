@@ -31,6 +31,8 @@
 #include "Thread.h"
 #include "ThreadPoolDispatcher.h"
 #include "ThreadingFactory.h"
+#include "PthreadsThreadingFactory.h"
+#include "StdThreadingFactory.h"
 
 // kernel events
 #include "EpollServer.h"
@@ -444,27 +446,22 @@ bool SocketServer::init(int port)
    std::string concurrencyModel = EMPTY;
 
    if (m_isThreaded) {
-      ThreadingFactory::ThreadingPackage threadingPackage;
       bool isUsingLibDispatch = false;
       
       if (m_threading == CFG_THREADING_PTHREADS) {
-         threadingPackage = ThreadingFactory::ThreadingPackage::PTHREADS;
+         m_threadingFactory = new PthreadsThreadingFactory();
       } else if (m_threading == CFG_THREADING_CPP11) {
-         threadingPackage = ThreadingFactory::ThreadingPackage::CPP_11;
+         m_threadingFactory = new StdThreadingFactory();
       } else if (m_threading == CFG_THREADING_GCD_LIBDISPATCH) {
-         threadingPackage = ThreadingFactory::ThreadingPackage::GCD_LIBDISPATCH;
-         isUsingLibDispatch = true;
+         //TODO: figure out how to handle libdispatch
+         //threadingPackage = ThreadingFactory::ThreadingPackage::GCD_LIBDISPATCH;
+         //isUsingLibDispatch = true;
+         m_threadingFactory = new PthreadsThreadingFactory();
       } else {
-         threadingPackage = ThreadingFactory::ThreadingPackage::PTHREADS;
+         m_threadingFactory = new PthreadsThreadingFactory();
       }
       
-      m_threadingFactory =
-         new ThreadingFactory(threadingPackage);
       ThreadingFactory::setThreadingFactory(m_threadingFactory);
-      
-      if (m_isUsingKernelEventServer) {
-         m_threadingFactory->setMutexType(ThreadingFactory::ThreadingPackage::PTHREADS);
-      }
       
       if (m_threadPool) {
          delete m_threadPool;

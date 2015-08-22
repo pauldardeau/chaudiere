@@ -5,9 +5,6 @@
 #define CHAUDIERE_THREADINGFACTORY_H
 
 #include <string>
-#include <memory>
-
-
 
 namespace chaudiere
 {
@@ -19,17 +16,11 @@ namespace chaudiere
 
 /**
  * ThreadingFactory is a factory for creating Thread, Mutex, and ThreadPoolDispatcher
- * instances based on the desired ThreadingPackage.
+ * instances.
  */
 class ThreadingFactory
 {
 public:
-   enum class ThreadingPackage {
-      CPP_11,
-      PTHREADS,
-      GCD_LIBDISPATCH
-   };
-   
    /**
     * Retrieves the class singleton instance
     * @return the class singleton instance
@@ -43,29 +34,21 @@ public:
    static void setThreadingFactory(ThreadingFactory* threadingFactory) noexcept;
 
    /**
-    * Constructs a ThreadingFactory instance based on the specified threading package
-    * @param threadingPackage the package of threading primitives/library to use
+    * Constructs a ThreadingFactory instance
     */
-   explicit ThreadingFactory(ThreadingPackage threadingPackage) noexcept;
+   ThreadingFactory() noexcept {}
    
    /**
     * Destructor
     */
-   ~ThreadingFactory() noexcept;
-   
-   // throws BasicException
-   /**
-    *
-    * @param threadingPackage
-    */
-   void setMutexType(ThreadingPackage threadingPackage);
+   virtual ~ThreadingFactory() noexcept {}
    
    /**
     * Create a new Mutex
     * @return pointer to newly created Mutex
     * @see Mutex()
     */
-   Mutex* createMutex();
+   virtual Mutex* createMutex() = 0;
    
    /**
     * Create a new named Mutex
@@ -73,14 +56,14 @@ public:
     * @return pointer to the newly created Mutex
     * @see Mutex()
     */
-   Mutex* createMutex(const std::string& mutexName);
+   virtual Mutex* createMutex(const std::string& mutexName) = 0;
    
    /**
     * Create a new Thread
     * @return pointer to newly created Thread
     * @see Thread()
     */
-   Thread* createThread() noexcept;
+   virtual Thread* createThread() noexcept = 0;
    
    /**
     * Creates a new Thread to run the specified Runnable
@@ -89,29 +72,27 @@ public:
     * @see Thread()
     * @see Runnable()
     */
-   Thread* createThread(Runnable* runnable) noexcept;
+   virtual Thread* createThread(Runnable* runnable) noexcept = 0;
    
    /**
     * Create a new ConditionVariable
     * @return pointer to the newly created ConditionVariable
     * @see ConditionVariable()
     */
-   ConditionVariable* createConditionVariable();
+   virtual ConditionVariable* createConditionVariable() = 0;
    
    /**
     * Creates a new ThreadPoolDispatcher
     * @param numberThreads the number of threads to initialize in the pool dispatcher
     * @return pointer to newly created ThreadPoolDispatcher
     */
-   ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads) noexcept;
+   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads) noexcept = 0;
    
-   // disallow copies
-   ThreadingFactory(const ThreadingFactory&) = delete;
-   ThreadingFactory& operator=(const ThreadingFactory&) = delete;
 
 private:
-   ThreadingPackage m_threadingPackage;
-   ThreadingPackage m_packageMutexType;
+   // disallow copies
+   ThreadingFactory(const ThreadingFactory&);
+   ThreadingFactory& operator=(const ThreadingFactory&);
 
    static ThreadingFactory* threadingFactoryInstance;
 

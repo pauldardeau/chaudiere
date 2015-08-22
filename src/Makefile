@@ -55,7 +55,9 @@ ThreadPool.o \
 ThreadPoolDispatch.o \
 ThreadPoolQueue.o \
 ThreadPoolWorker.o \
-ThreadingFactory.o
+ThreadingFactory.o \
+PthreadsThreadingFactory.o \
+StdThreadingFactory.o
 
 all : $(LIB_NAME)
 
