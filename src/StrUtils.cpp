@@ -117,7 +117,7 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept {
    
    const std::string::size_type stringLen = s.length();
     
-   std::string::size_type newLength = stringLen - 1;   // start at last character before NULL
+   int newLength = (int) stringLen - 1;   // start at last character before NULL
     
    // Find out how many trailing characters we have
    while ((0 <= newLength) && (s[newLength] == strip)) {
