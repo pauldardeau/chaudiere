@@ -46,15 +46,6 @@ public:
    }
 
    /**
-    * Move constructor
-    * @param move the source of the move
-    */
-   BasicException(BasicException&& move) noexcept :
-      m_what(std::move(move.m_what))
-   {
-   }
-
-   /**
     * Destructor
     */
    ~BasicException() noexcept {}
@@ -71,22 +62,6 @@ public:
       }
         
       m_what = copy.m_what;
-        
-      return *this;
-   }
-
-   /**
-    * Move operator
-    * @param move the source of the move
-    * @return reference to the target of the move
-    */
-   BasicException& operator=(BasicException&& move) noexcept
-   {
-      if (this == &move) {
-         return *this;
-      }
-        
-      m_what = std::move(move.m_what);
         
       return *this;
    }
