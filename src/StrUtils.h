@@ -137,7 +137,9 @@ public:
     * @param padChar
     * @param paddedLength
     */
-   static void padRight(std::string& s, char padChar, int paddedLength);
+   static void padRight(std::string& s,
+                        char padChar,
+                        std::string::size_type paddedLength);
 
    /**
     *
@@ -145,7 +147,9 @@ public:
     * @param padChar
     * @param paddedLength
     */
-   static void padLeft(std::string& s, char padChar, int paddedLength);
+   static void padLeft(std::string& s,
+                       char padChar,
+                       std::string::size_type paddedLength);
 
    /**
     *

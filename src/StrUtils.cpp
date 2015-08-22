@@ -117,7 +117,7 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept {
    
    const std::string::size_type stringLen = s.length();
     
-   int newLength = (int) stringLen - 1;   // start at last character before NULL
+   std::string::size_type newLength = stringLen - 1;   // start at last character before NULL
     
    // Find out how many trailing characters we have
    while ((0 <= newLength) && (s[newLength] == strip)) {
@@ -131,7 +131,7 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept {
       return s;
    }
    
-   s = s.substr(0,newLength);
+   s = s.substr(0, newLength);
    
    return s;
 }
@@ -356,7 +356,7 @@ std::string StrUtils::gzipDecompress(const std::string& str) {
 
 //******************************************************************************
 
-void StrUtils::padRight(std::string& s, char padChar, int paddedLength) {
+void StrUtils::padRight(std::string& s, char padChar, std::string::size_type paddedLength) {
    if (s.length() < paddedLength) {
       s += std::string(paddedLength - s.length(), padChar);
    }
@@ -364,7 +364,7 @@ void StrUtils::padRight(std::string& s, char padChar, int paddedLength) {
 
 //******************************************************************************
 
-void StrUtils::padLeft(std::string& s, char padChar, int paddedLength) {
+void StrUtils::padLeft(std::string& s, char padChar, std::string::size_type paddedLength) {
    if (s.length() < paddedLength) {
       s.insert(0, std::string(paddedLength - s.length(), padChar));
    }
