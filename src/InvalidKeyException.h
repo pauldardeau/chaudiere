@@ -32,6 +32,14 @@ public:
     * Destructor
     */
    virtual ~InvalidKeyException() noexcept;
+
+   /**
+    * Retrieves the class name (type) of the exception
+    * @return class name
+    */
+   virtual const char* getType() const noexcept {
+      return "InvalidKeyException";
+   }
    
    /**
     * Copy operator

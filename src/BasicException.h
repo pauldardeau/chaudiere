@@ -23,8 +23,7 @@ public:
     * @param what the reason for the exception
     */
    explicit BasicException(const char* what) noexcept :
-      m_what( what )
-   {
+      m_what( what ) {
    }
 
    /**
@@ -32,8 +31,7 @@ public:
     * @param what the reason for the exception
     */
    explicit BasicException(const std::string& what) noexcept :
-      m_what( what )
-   {
+      m_what( what ) {
    }
 
    /**
@@ -41,22 +39,28 @@ public:
     * @param copy the source of the copy
     */
    BasicException(const BasicException& copy) noexcept :
-      m_what( copy.m_what )
-   {
+      m_what( copy.m_what ) {
    }
 
    /**
     * Destructor
     */
-   ~BasicException() noexcept {}
+   virtual ~BasicException() noexcept {}
+
+   /**
+    * Retrieve the type (class name) of exception
+    * @return class name (type) of exception
+    */
+   virtual const char* getType() const noexcept {
+      return "BasicException";
+   }
 
    /**
     * Copy operator
     * @param copy the source of the copy
     * @return reference to the updated instance
     */
-   BasicException& operator=(const BasicException& copy) noexcept
-   {
+   BasicException& operator=(const BasicException& copy) noexcept {
       if (this == &copy) {
          return *this;
       }
@@ -70,8 +74,7 @@ public:
     * Retrieves the C string reason for the exception
     * @return C string reason for exception
     */
-   virtual const char* what() const noexcept
-   {
+   virtual const char* what() const noexcept {
       return m_what.c_str();
    }
 
@@ -79,8 +82,7 @@ public:
     * Retrieves the string reason for the exception
     * @return string reason for the exception
     */
-   virtual const std::string& whatString() const noexcept
-   {
+   virtual const std::string& whatString() const noexcept {
       return m_what;
    }
     
@@ -91,3 +93,4 @@ private:
 }
 
 #endif
+

@@ -31,6 +31,7 @@ KernelEventServer.o \
 KeyValuePairs.o \
 KqueueServer.o \
 Logger.o \
+NumberFormatException.o \
 OSUtils.o \
 OptionParser.o \
 PthreadsConditionVariable.o \

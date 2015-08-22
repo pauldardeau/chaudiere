@@ -8,17 +8,26 @@
 #include <string.h>
 
 #include "StrUtils.h"
+#include "NumberFormatException.h"
 #include "zlib.h"
 
 static const std::string EMPTY = "";
 static const std::string SPACE = " ";
+static const std::string ZERO = "0";
 
 using namespace chaudiere;
 
 //******************************************************************************
 
 int StrUtils::parseInt(const std::string& s) noexcept {
-   return ::atoi(s.c_str());
+   int intValue = ::atoi(s.c_str());
+   if (intValue == 0) {
+      if (s != ZERO) {
+         throw NumberFormatException(s);
+      }
+   }
+
+   return intValue;
 }
 
 //******************************************************************************
