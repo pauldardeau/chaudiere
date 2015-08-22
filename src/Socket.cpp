@@ -79,6 +79,9 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
 
 Socket::~Socket() noexcept {
    Logger::logInstanceDestroy("Socket");
+   if (m_inputBuffer) {
+      delete [] m_inputBuffer;
+   }
 }
 
 //******************************************************************************
@@ -514,10 +517,18 @@ bool Socket::readMsg(int length) noexcept {
       return false;
    }
     
-   // do we need a bigger buffer?
-   if (((length + 1) > m_inBufferSize) || !m_inputBuffer) {
+   if (!m_inputBuffer) {
+      // we don't have a buffer
       m_inBufferSize = length + 1;
       m_inputBuffer = new char[m_inBufferSize];
+   } else {
+      // we have a buffer. is it big enough?
+      if ((length + 1) > m_inBufferSize) {
+         // we need a larger buffer
+         //TODO: copy existing to new
+         m_inBufferSize = length + 1;
+         m_inputBuffer = new char[m_inBufferSize];
+      }
    }
     
    if (readSocket(m_inputBuffer, length)) {

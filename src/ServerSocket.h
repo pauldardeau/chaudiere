@@ -60,7 +60,7 @@ class ServerSocket
       /**
        * Accepts a new client socket connection
        * @see Socket()
-       * @return Socket representing new client connection
+       * @return Socket representing new client connection (caller must delete)
        */
       Socket* accept() noexcept;
 

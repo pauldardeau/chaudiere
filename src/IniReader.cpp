@@ -143,18 +143,31 @@ bool IniReader::readFile() noexcept {
    ::fseek(f, 0, SEEK_END);
    const long fileBytes = ::ftell(f);
    ::fseek(f, 0, SEEK_SET);
-    
-   std::unique_ptr<char []> fileContents(new char[fileBytes + 1]);
-   const size_t numObjectsRead = ::fread(fileContents.get(), fileBytes, 1, f);
+   
+   char* fileContents = nullptr;
+   size_t numObjectsRead = 0;
+
+   if (fileBytes > 0L) {
+      fileContents = new char[fileBytes + 1];
+      numObjectsRead = ::fread(fileContents, fileBytes, 1, f);
+   }
+   
    ::fclose(f);
     
    if (numObjectsRead < 1) {
+      if (fileContents != nullptr) {
+         delete [] fileContents;
+      }
+      
       Logger::error("reading from ini file failed");
       return false;
    }
     
    fileContents[fileBytes] = '\0';
-   m_fileContents = fileContents.get();
+   m_fileContents = fileContents;
+   
+   delete [] fileContents;
+   fileContents = nullptr;
    
    // strip out any comments
    bool strippingComments = true;

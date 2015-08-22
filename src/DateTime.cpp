@@ -169,6 +169,7 @@ DateTime* DateTime::gmtDateTime() {
    
    struct tm* timeptr = ::gmtime(&currentGMT);
    if (timeptr != nullptr) {
+      // caller responsible for deleting
       DateTime* dt = new DateTime(0);
       dt->m_year = timeptr->tm_year + 1900;
       dt->m_month = timeptr->tm_mon + 1;

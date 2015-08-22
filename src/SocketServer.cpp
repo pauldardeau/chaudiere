@@ -232,12 +232,15 @@ bool SocketServer::init(int port)
       configDataSource = getConfigDataSource();
    } catch (const BasicException& be) {
       Logger::error("exception retrieving config data: " + be.whatString());
+      delete configDataSource;
       return false;
    } catch (const std::exception& e) {
       Logger::error("exception retrieving config data: " + std::string(e.what()));
+      delete configDataSource;
       return false;
    } catch (...) {
       Logger::error("exception retrieving config data");
+      delete configDataSource;
       return false;
    }
    
@@ -395,17 +398,23 @@ bool SocketServer::init(int port)
             }
          }
       }
+      
+      delete configDataSource;
+      configDataSource = nullptr;
 
       m_startupTime = getLocalDateTime();
    } catch (const BasicException& be) {
       Logger::critical("exception initializing server: " + be.whatString());
+      delete configDataSource;
       return false;
    } catch (const std::exception& e) {
       Logger::critical("exception initializing server: " +
                        std::string(e.what()));
+      delete configDataSource;
       return false;
    } catch (...) {
       Logger::critical("unknown exception initializing server");
+      delete configDataSource;
       return false;
    }
 
@@ -418,6 +427,10 @@ bool SocketServer::init(int port)
             Logger::debug(std::string(msg));
          }
       
+         if (m_serverSocket != nullptr) {
+            delete m_serverSocket;
+         }
+         
          m_serverSocket = new ServerSocket(port);
       } catch (...) {
          std::string exception = "unable to open server socket port '";
@@ -452,9 +465,13 @@ bool SocketServer::init(int port)
       if (m_isUsingKernelEventServer) {
          m_threadingFactory->setMutexType(ThreadingFactory::ThreadingPackage::PTHREADS);
       }
-         
-      m_threadPool = m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize);
-         
+      
+      if (m_threadPool) {
+         delete m_threadPool;
+      }
+      
+      m_threadPool =
+         m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize);
       m_threadPool->start();
 
       concurrencyModel = "multithreaded - ";
@@ -501,10 +518,20 @@ SocketServer::~SocketServer() noexcept {
 
    if (m_serverSocket) {
       m_serverSocket->close();
+      delete m_serverSocket;
+   }
+   
+   if (m_kernelEventServer) {
+      delete m_kernelEventServer;
    }
 
    if (m_threadPool) {
       m_threadPool->stop();
+      delete m_threadPool;
+   }
+   
+   if (m_threadingFactory) {
+      delete m_threadingFactory;
    }
 }
 
@@ -595,8 +622,6 @@ void SocketServer::serviceSocket(SocketRequest* socketRequest) {
 //******************************************************************************
 
 int SocketServer::runSocketServer() noexcept {
-   int rc = 0;
-   
    if (!m_serverSocket) {
       Logger::critical("runSocketServer called with null serverSocket");
       return 1;
@@ -604,7 +629,7 @@ int SocketServer::runSocketServer() noexcept {
    
    while (!m_isDone) {
       
-      Socket* socket(m_serverSocket->accept());
+      Socket* socket = m_serverSocket->accept();
 
       if (nullptr == socket) {
          continue;
@@ -616,10 +641,8 @@ int SocketServer::runSocketServer() noexcept {
       }
 
       try {
-         
          if (m_isThreaded && (nullptr != m_threadPool)) {
             RequestHandler* handler = handlerForSocket(socket);
-
             handler->setThreadPooling(true);
 
             // give it to the thread pool
@@ -629,20 +652,19 @@ int SocketServer::runSocketServer() noexcept {
             handler->run();
          }
       } catch (const BasicException& be) {
-         rc = 1;
          Logger::error("SocketServer runServer exception caught: " +
                        be.whatString());
       } catch (const std::exception& e) {
-         rc = 1;
          Logger::error(std::string("SocketServer runServer exception caught: ") +
                        std::string(e.what()));
       } catch (...) {
-         rc = 1;
          Logger::error("SocketServer runServer unknown exception caught");
       }
+      
+      delete socket;
    }
    
-   return rc;
+   return 0;
 }
 
 //******************************************************************************
@@ -655,25 +677,29 @@ int SocketServer::runKernelEventServer() noexcept {
    if (m_threadingFactory != nullptr) {
       Mutex* mutexFD(m_threadingFactory->createMutex("fdMutex"));
       Mutex* mutexHWMConnections(m_threadingFactory->createMutex("hwmConnectionsMutex"));
-      KernelEventServer* kernelEventServer = nullptr;
+      
+      if (m_kernelEventServer) {
+         delete m_kernelEventServer;
+         m_kernelEventServer = nullptr;
+      }
       
       if (KqueueServer::isSupportedPlatform()) {
-         kernelEventServer =
+         m_kernelEventServer =
             new KqueueServer(*mutexFD, *mutexHWMConnections);
       } else if (EpollServer::isSupportedPlatform()) {
-         kernelEventServer =
+         m_kernelEventServer =
             new EpollServer(*mutexFD, *mutexHWMConnections);
       } else {
          Logger::critical("no kernel event server available for platform");
          rc = 1;
       }
       
-      if (kernelEventServer != nullptr) {
+      if (m_kernelEventServer != nullptr) {
          try {
             SocketServiceHandler* serviceHandler(createSocketServiceHandler());
 
-            if (kernelEventServer->init(serviceHandler, m_serverPort, MAX_CON)) {
-               kernelEventServer->run();
+            if (m_kernelEventServer->init(serviceHandler, m_serverPort, MAX_CON)) {
+               m_kernelEventServer->run();
             } else {
                rc = 1;
             }

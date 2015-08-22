@@ -41,7 +41,7 @@ EpollServer::~EpollServer() noexcept {
 
 #ifdef EPOLL_SUPPORT
    if (nullptr != m_events) {
-      free(m_events);
+      ::free(m_events);
       m_events = nullptr;
    }
 #endif
@@ -61,6 +61,11 @@ bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
 #endif
 
 #ifdef EPOLL_SUPPORT
+   if (m_events) {
+      ::free(m_events);
+      m_events = nullptr;
+   }
+   
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
       m_epfd = ::epoll_create(maxConnections);
       

@@ -177,10 +177,10 @@ class SocketServer
 
 
    private:
-      KernelEventServer* m_kernelEventServer; //strong
-      ServerSocket* m_serverSocket; //strong
+      KernelEventServer* m_kernelEventServer;
+      ServerSocket* m_serverSocket;
       ThreadPoolDispatcher* m_threadPool; //weak
-      ThreadingFactory* m_threadingFactory; //weak
+      ThreadingFactory* m_threadingFactory;
       std::map<std::string, std::string> m_mapProperties;
       std::string m_logLevel;
       std::string m_concurrencyModel;

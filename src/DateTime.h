@@ -50,8 +50,8 @@ namespace chaudiere
       static bool populateFromUnixTime(DateTime& date, double unixTime);
 
       /**
-       * Retrieves current date and time as GMT
-       * @return DateTime instance with GMT date time
+       * Retrieves current date and time as GMT in a newly created object
+       * @return DateTime instance with GMT date time (caller must delete)
        */
       static DateTime* gmtDateTime();
       

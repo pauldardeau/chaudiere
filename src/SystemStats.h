@@ -50,7 +50,8 @@ public:
     */
    static bool getNumberProcesses(int& numberProcesses) noexcept;
 
-   
+
+private:   
    // disallow copies
    SystemStats(const SystemStats& copy) noexcept;
    SystemStats& operator=(const SystemStats& copy) noexcept;

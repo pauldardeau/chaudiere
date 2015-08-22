@@ -47,6 +47,9 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
 ThreadPoolQueue::~ThreadPoolQueue() noexcept {
    Logger::logInstanceDestroy("ThreadPoolQueue");
    m_isRunning = false;
+   delete m_mutex;
+   delete m_condQueueEmpty;
+   delete m_condQueueNotEmpty;
 }
 
 //******************************************************************************

@@ -227,15 +227,13 @@ void KernelEventServer::run() noexcept {
                      Logger::debug(msg);
                   }
                   
-                  Socket* clientSocket =
-                     new Socket(this, client_fd);
-                  clientSocket->setUserIndex(index);
+                  Socket clientSocket(this, client_fd);
+                  clientSocket.setUserIndex(index);
 
-                  SocketRequest* socketRequest =
-                     new SocketRequest(clientSocket, m_socketServiceHandler);
+                  SocketRequest socketRequest(&clientSocket, m_socketServiceHandler);
 
                   try {
-                     m_socketServiceHandler->serviceSocket(socketRequest);
+                     m_socketServiceHandler->serviceSocket(&socketRequest);
                   } catch (const BasicException& be) {
                      Logger::error("exception in serviceSocket on handler: " + be.whatString());
                   } catch (const std::exception& e) {

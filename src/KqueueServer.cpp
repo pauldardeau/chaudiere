@@ -41,7 +41,7 @@ KqueueServer::~KqueueServer() noexcept {
 
 #ifdef KQUEUE_SUPPORT
    if (nullptr != m_events) {
-      free(m_events);
+      ::free(m_events);
       m_events = nullptr;
    }
 #endif
@@ -61,6 +61,11 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
 #endif
 
 #ifdef KQUEUE_SUPPORT
+   if (m_events != nullptr) {
+      ::free(m_events);
+      m_events = nullptr;
+   }
+   
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
       m_kqfd = ::kqueue();
       if (m_kqfd == -1) {

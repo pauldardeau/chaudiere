@@ -36,6 +36,11 @@ ThreadPool::~ThreadPool() noexcept {
       stop();
    }
    
+   std::list<ThreadPoolWorker*>::iterator it;
+   for (it = m_listWorkers.begin(); it != m_listWorkers.end(); ++it) {
+       delete *it;
+   }
+   
    m_listWorkers.clear();
 }
 
@@ -124,7 +129,7 @@ void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) noexcept {
       }
    } else if (numberToAddOrDelete < 0) {  // removing?
       if (m_isRunning) {
-         // tell thread to shut down
+         //TODO: add support for terminating some threads
       }
    }
 }
