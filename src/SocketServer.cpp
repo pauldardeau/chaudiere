@@ -487,7 +487,7 @@ bool SocketServer::init(int port)
 
    m_concurrencyModel = concurrencyModel;
 
-   std::string portAsString = std::to_string(port);
+   std::string portAsString = StrUtils::toString(port);
 
    std::string startupMsg = m_serverName;
    startupMsg += " ";
