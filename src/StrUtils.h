@@ -16,6 +16,20 @@ class StrUtils
 {
 public:
    /**
+    * Parse a string for integer value
+    * @param s the string to parse for integer
+    * @return integer value
+    */
+   static int parseInt(const std::string& s) noexcept;
+   
+   /**
+    * Construct a string from an integer
+    * @param i integer value to convert to string
+    * @return string version of integer value
+    */
+   static std::string toString(int i) noexcept;
+   
+   /**
     *
     * @param s
     * @return

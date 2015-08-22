@@ -194,7 +194,7 @@ int SocketServer::getIntValue(const KeyValuePairs& kvp,
    
    if (kvp.hasKey(setting)) {
       const std::string& valueAsString = kvp.getValue(setting);
-      const int intValue = std::stoi(valueAsString);
+      const int intValue = StrUtils::parseInt(valueAsString);
       
       if (intValue > 0) {
          value = intValue;
@@ -436,7 +436,7 @@ bool SocketServer::init(int port)
          m_serverSocket = new ServerSocket(port);
       } catch (...) {
          std::string exception = "unable to open server socket port '";
-         exception += std::to_string(port);
+         exception += StrUtils::toString(port);
          exception += "'";
          Logger::critical(exception);
          return false;

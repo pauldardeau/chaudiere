@@ -3,6 +3,8 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "StrUtils.h"
@@ -12,6 +14,20 @@ static const std::string EMPTY = "";
 static const std::string SPACE = " ";
 
 using namespace chaudiere;
+
+//******************************************************************************
+
+int StrUtils::parseInt(const std::string& s) noexcept {
+   return ::atoi(s.c_str());
+}
+
+//******************************************************************************
+
+std::string StrUtils::toString(int i) noexcept {
+   char buffer[40];
+   snprintf(buffer, sizeof(buffer), "%d", i);
+   return std::string(buffer);
+}
 
 //******************************************************************************
 
