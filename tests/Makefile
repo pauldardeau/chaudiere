@@ -8,11 +8,13 @@ EXE_NAME = test_chaudiere
 LIB_NAME = ../src/libchaudiere.a
 
 OBJS = MockSocket.o \
+TestAutoPointer.o \
 TestCase.o \
 TestIniReader.o \
 TestInvalidKeyException.o \
 TestKeyValuePairs.o \
 TestKqueueServer.o \
+TestOptionParser.o \
 TestPthreadsMutex.o \
 TestServerSocket.o \
 TestSocket.o \

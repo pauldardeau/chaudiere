@@ -8,6 +8,7 @@
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
 #include "TestKqueueServer.h"
+#include "TestOptionParser.h"
 #include "TestPthreadsMutex.h"
 #include "TestServerSocket.h"
 #include "TestSocket.h"
@@ -37,6 +38,9 @@ void Tests::run() {
    
    TestKqueueServer testKqueueServer;
    testKqueueServer.run();
+   
+   TestOptionParser testOptionParser;
+   testOptionParser.run();
    
    TestPthreadsMutex testPthreadsMutex;
    testPthreadsMutex.run();
