@@ -10,22 +10,19 @@ using namespace chaudiere;
 
 TestCase::TestCase(TestSuite& testSuite, const std::string& testCaseName) :
    m_testSuite(testSuite),
-   m_testCaseName(testCaseName)
-{
+   m_testCaseName(testCaseName) {
    m_testSuite.startingTestCase(*this);
 }
 
 //******************************************************************************
 
-TestCase::~TestCase()
-{
+TestCase::~TestCase() {
    m_testSuite.endingTestCase(*this);
 }
 
 //******************************************************************************
 
-const std::string& TestCase::getName() const
-{
+const std::string& TestCase::getName() const {
    return m_testCaseName;
 }
 

@@ -38,6 +38,8 @@
 #include "EpollServer.h"
 #include "KqueueServer.h"
 
+#include "AutoPointer.h"
+
 
 
 static const std::string CFG_TRUE_SETTING_VALUES = "yes|true|1";
@@ -228,25 +230,22 @@ bool SocketServer::init(int port)
    
    m_serverPort = port;
 	
-   SectionedConfigDataSource* configDataSource = nullptr;
+   AutoPointer<SectionedConfigDataSource*> configDataSource(nullptr);
    
    try {
-      configDataSource = getConfigDataSource();
+      configDataSource.assign(getConfigDataSource());
    } catch (const BasicException& be) {
       Logger::error("exception retrieving config data: " + be.whatString());
-      delete configDataSource;
       return false;
    } catch (const std::exception& e) {
       Logger::error("exception retrieving config data: " + std::string(e.what()));
-      delete configDataSource;
       return false;
    } catch (...) {
       Logger::error("exception retrieving config data");
-      delete configDataSource;
       return false;
    }
    
-   if (!configDataSource) {
+   if (!configDataSource.haveObject()) {
       Logger::error("unable to retrieve config data");
       return false;
    }
@@ -401,22 +400,16 @@ bool SocketServer::init(int port)
          }
       }
       
-      delete configDataSource;
-      configDataSource = nullptr;
-
       m_startupTime = getLocalDateTime();
    } catch (const BasicException& be) {
       Logger::critical("exception initializing server: " + be.whatString());
-      delete configDataSource;
       return false;
    } catch (const std::exception& e) {
       Logger::critical("exception initializing server: " +
                        std::string(e.what()));
-      delete configDataSource;
       return false;
    } catch (...) {
       Logger::critical("unknown exception initializing server");
-      delete configDataSource;
       return false;
    }
 

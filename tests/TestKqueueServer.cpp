@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestKqueueServer::TestKqueueServer() :
-   TestSuite("TestKqueueServer")
-{
+   TestSuite("TestKqueueServer") {
 }
 
 //******************************************************************************
 
-void TestKqueueServer::runTests()
-{
+void TestKqueueServer::runTests() {
    testConstructor();
    testInit();
    testRun();
@@ -25,34 +23,30 @@ void TestKqueueServer::runTests()
 
 //******************************************************************************
 
-void TestKqueueServer::testConstructor()
-{
+void TestKqueueServer::testConstructor() {
    TEST_CASE("testConstructor");
-   
+   //TODO: implement testConstructor
 }
 
 //******************************************************************************
 
-void TestKqueueServer::testInit()
-{
+void TestKqueueServer::testInit() {
    TEST_CASE("testInit");
-   
+   //TODO: implement testInit
 }
 
 //******************************************************************************
 
-void TestKqueueServer::testRun()
-{
+void TestKqueueServer::testRun() {
    TEST_CASE("testRun");
-   
+   //TODO: implement testRun
 }
 
 //******************************************************************************
 
-void TestKqueueServer::testNotifySocketComplete()
-{
+void TestKqueueServer::testNotifySocketComplete() {
    TEST_CASE("testNotifySocketComplete");
-   
+   //TODO: implement testNotifySocketComplete
 }
 
 //******************************************************************************

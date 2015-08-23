@@ -16,10 +16,8 @@ protected:
    
    void testConstructor();
    void testCopyConstructor();
-   void testMoveConstructor();
    
    void testAssignmentCopy();
-   void testAssignmentMove();
    
    void testGetKey();
    

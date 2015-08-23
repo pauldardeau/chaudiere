@@ -9,26 +9,21 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestInvalidKeyException::TestInvalidKeyException() :
-   TestSuite("TestInvalidKeyException")
-{
+   TestSuite("TestInvalidKeyException") {
 }
 
 //******************************************************************************
 
-void TestInvalidKeyException::runTests()
-{
+void TestInvalidKeyException::runTests() {
    testConstructor();
    testCopyConstructor();
-   testMoveConstructor();
    testAssignmentCopy();
-   testAssignmentMove();
    testGetKey();
 }
 
 //******************************************************************************
 
-void TestInvalidKeyException::testConstructor()
-{
+void TestInvalidKeyException::testConstructor() {
    TEST_CASE("testConstructor");
    
    InvalidKeyException ike("TestKey");
@@ -38,8 +33,7 @@ void TestInvalidKeyException::testConstructor()
 
 //******************************************************************************
 
-void TestInvalidKeyException::testCopyConstructor()
-{
+void TestInvalidKeyException::testCopyConstructor() {
    TEST_CASE("testCopyConstructor");
 
    InvalidKeyException ike("TestKey");
@@ -50,16 +44,7 @@ void TestInvalidKeyException::testCopyConstructor()
 
 //******************************************************************************
 
-void TestInvalidKeyException::testMoveConstructor()
-{
-   TEST_CASE("testMoveConstructor");
-   
-}
-
-//******************************************************************************
-
-void TestInvalidKeyException::testAssignmentCopy()
-{
+void TestInvalidKeyException::testAssignmentCopy() {
    TEST_CASE("testAssignmentCopy");
 
    InvalidKeyException ike("TestKey");
@@ -71,16 +56,7 @@ void TestInvalidKeyException::testAssignmentCopy()
 
 //******************************************************************************
 
-void TestInvalidKeyException::testAssignmentMove()
-{
-   TEST_CASE("testAssignmentMove");
-   
-}
-
-//******************************************************************************
-
-void TestInvalidKeyException::testGetKey()
-{
+void TestInvalidKeyException::testGetKey() {
    TEST_CASE("testGetKey");
    
    InvalidKeyException ike("TestKey");

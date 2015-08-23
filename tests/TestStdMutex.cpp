@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestStdMutex::TestStdMutex() :
-   TestSuite("TestMutex")
-{
+   TestSuite("TestMutex") {
 }
 
 //******************************************************************************
 
-void TestStdMutex::runTests()
-{
+void TestStdMutex::runTests() {
    testConstructor();
    testConstructorWithName();
    testLock();
@@ -29,8 +27,7 @@ void TestStdMutex::runTests()
 
 //******************************************************************************
 
-void TestStdMutex::testConstructor()
-{
+void TestStdMutex::testConstructor() {
    TEST_CASE("testConstructor");
    
    StdMutex mutex;
@@ -39,8 +36,7 @@ void TestStdMutex::testConstructor()
 
 //******************************************************************************
 
-void TestStdMutex::testConstructorWithName()
-{
+void TestStdMutex::testConstructorWithName() {
    TEST_CASE("testConstructorWithName");
    
    StdMutex mutex("testMutex");
@@ -49,8 +45,7 @@ void TestStdMutex::testConstructorWithName()
 
 //******************************************************************************
 
-void TestStdMutex::testLock()
-{
+void TestStdMutex::testLock() {
    TEST_CASE("testLock");
    
    StdMutex mutex;
@@ -60,8 +55,7 @@ void TestStdMutex::testLock()
 
 //******************************************************************************
 
-void TestStdMutex::testUnlock()
-{
+void TestStdMutex::testUnlock() {
    TEST_CASE("testUnlock");
    
    StdMutex mutex;
@@ -73,8 +67,7 @@ void TestStdMutex::testUnlock()
 
 //******************************************************************************
 
-void TestStdMutex::testHaveValidMutex()
-{
+void TestStdMutex::testHaveValidMutex() {
    TEST_CASE("testHaveValidMutex");
    
    StdMutex mutex;
@@ -83,8 +76,7 @@ void TestStdMutex::testHaveValidMutex()
 
 //******************************************************************************
 
-void TestStdMutex::testGetPlatformPrimitive()
-{
+void TestStdMutex::testGetPlatformPrimitive() {
    TEST_CASE("testGetPlatformPrimitive");
    
    StdMutex mutex;
@@ -93,8 +85,7 @@ void TestStdMutex::testGetPlatformPrimitive()
 
 //******************************************************************************
 
-void TestStdMutex::testGetName()
-{
+void TestStdMutex::testGetName() {
    TEST_CASE("testGetName");
    
    const std::string name = "testMutex";
@@ -104,8 +95,7 @@ void TestStdMutex::testGetName()
 
 //******************************************************************************
 
-void TestStdMutex::testIsLocked()
-{
+void TestStdMutex::testIsLocked() {
    TEST_CASE("testIsLocked");
    
    StdMutex mutex;

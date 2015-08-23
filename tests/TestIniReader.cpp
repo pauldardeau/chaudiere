@@ -10,14 +10,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestIniReader::TestIniReader() :
-   TestSuite("TestIniReader")
-{
+   TestSuite("TestIniReader") {
 }
 
 //******************************************************************************
 
-void TestIniReader::runTests()
-{
+void TestIniReader::runTests() {
    setupSuite();
    
    testConstructor();
@@ -30,8 +28,7 @@ void TestIniReader::runTests()
 
 //******************************************************************************
 
-void TestIniReader::setupSuite()
-{
+void TestIniReader::setupSuite() {
    m_filePath = getTempFile();
    
    if (!m_filePath.empty()) {
@@ -61,8 +58,7 @@ void TestIniReader::setupSuite()
 
 //******************************************************************************
 
-void TestIniReader::tearDownSuite()
-{
+void TestIniReader::tearDownSuite() {
    if (!m_filePath.empty()) {
       deleteFile(m_filePath);
       m_filePath = "";
@@ -71,8 +67,7 @@ void TestIniReader::tearDownSuite()
 
 //******************************************************************************
 
-void TestIniReader::testConstructor()
-{
+void TestIniReader::testConstructor() {
    TEST_CASE("testConstructor");
 
    //IniReader(const std::string& iniFile);
@@ -83,8 +78,7 @@ void TestIniReader::testConstructor()
 
 //******************************************************************************
 
-void TestIniReader::testReadSection()
-{
+void TestIniReader::testReadSection() {
    TEST_CASE("testReadSection");
 
    //bool readSection(const std::string& section, KeyValuePairs& mapSectionValues) const;
@@ -104,8 +98,7 @@ void TestIniReader::testReadSection()
 
 //******************************************************************************
 
-void TestIniReader::testGetSectionKeyValue()
-{
+void TestIniReader::testGetSectionKeyValue() {
    TEST_CASE("testGetSectionKeyValue");
    
    //bool getSectionKeyValue(const std::string& section,
@@ -124,8 +117,7 @@ void TestIniReader::testGetSectionKeyValue()
 
 //******************************************************************************
 
-void TestIniReader::testHasSection()
-{
+void TestIniReader::testHasSection() {
    TEST_CASE("testHasSection");
    
    //bool hasSection(const std::string& section) const;

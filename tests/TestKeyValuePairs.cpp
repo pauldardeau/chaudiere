@@ -9,19 +9,15 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestKeyValuePairs::TestKeyValuePairs() :
-   TestSuite("TestKeyValuePairs")
-{
+   TestSuite("TestKeyValuePairs") {
 }
 
 //******************************************************************************
 
-void TestKeyValuePairs::runTests()
-{
+void TestKeyValuePairs::runTests() {
    testConstructor();
    testCopyConstructor();
-   testMoveConstructor();
    testAssignmentCopy();
-   testAssignmentMove();
    testGetKeys();
    testHasKey();
    testGetValue();
@@ -34,8 +30,7 @@ void TestKeyValuePairs::runTests()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testConstructor()
-{
+void TestKeyValuePairs::testConstructor() {
    TEST_CASE("testConstructor");
    
    KeyValuePairs kvp;
@@ -46,8 +41,7 @@ void TestKeyValuePairs::testConstructor()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testCopyConstructor()
-{
+void TestKeyValuePairs::testCopyConstructor() {
    TEST_CASE("testCopyConstructor");
    
    KeyValuePairs kvp;
@@ -62,15 +56,7 @@ void TestKeyValuePairs::testCopyConstructor()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testMoveConstructor()
-{
-   TEST_CASE("testMoveConstructor");
-}
-
-//******************************************************************************
-
-void TestKeyValuePairs::testAssignmentCopy()
-{
+void TestKeyValuePairs::testAssignmentCopy() {
    TEST_CASE("testAssignmentCopy");
 
    KeyValuePairs kvp;
@@ -86,16 +72,7 @@ void TestKeyValuePairs::testAssignmentCopy()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testAssignmentMove()
-{
-   TEST_CASE("testAssignmentMove");
-   
-}
-
-//******************************************************************************
-
-void TestKeyValuePairs::testGetKeys()
-{
+void TestKeyValuePairs::testGetKeys() {
    TEST_CASE("testGetKeys");
    
    std::vector<std::string> keys;
@@ -113,8 +90,7 @@ void TestKeyValuePairs::testGetKeys()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testHasKey()
-{
+void TestKeyValuePairs::testHasKey() {
    TEST_CASE("testHasKey");
 
    KeyValuePairs kvp;
@@ -125,8 +101,7 @@ void TestKeyValuePairs::testHasKey()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testGetValue()
-{
+void TestKeyValuePairs::testGetValue() {
    TEST_CASE("testGetValue");
 
    KeyValuePairs kvp;
@@ -137,8 +112,7 @@ void TestKeyValuePairs::testGetValue()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testAddPair()
-{
+void TestKeyValuePairs::testAddPair() {
    TEST_CASE("testAddPair");
 
    KeyValuePairs kvp;
@@ -153,8 +127,7 @@ void TestKeyValuePairs::testAddPair()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testRemovePair()
-{
+void TestKeyValuePairs::testRemovePair() {
    TEST_CASE("testRemovePair");
 
    KeyValuePairs kvp;
@@ -168,8 +141,7 @@ void TestKeyValuePairs::testRemovePair()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testClear()
-{
+void TestKeyValuePairs::testClear() {
    TEST_CASE("testClear");
    
    KeyValuePairs kvp;
@@ -184,8 +156,7 @@ void TestKeyValuePairs::testClear()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testSize()
-{
+void TestKeyValuePairs::testSize() {
    TEST_CASE("testSize");
 
    KeyValuePairs kvp;
@@ -198,8 +169,7 @@ void TestKeyValuePairs::testSize()
 
 //******************************************************************************
 
-void TestKeyValuePairs::testEmpty()
-{
+void TestKeyValuePairs::testEmpty() {
    TEST_CASE("testEmpty");
 
    KeyValuePairs kvp;

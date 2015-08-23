@@ -7,6 +7,7 @@
 
 #include "TestSuite.h"
 #include "BasicException.h"
+#include "AutoPointer.h"
 
 using namespace chaudiere;
 
@@ -170,23 +171,24 @@ void TestSuite::requireNonEmptyString(const std::string& actual,
 void TestSuite::requireException(const char* exceptionType,
                                  Runnable* runnable,
                                  const std::string& testDesc) {
+   ++m_numTestsExecuted;
+   AutoPointer<Runnable*> uniqueRunnable(runnable);
    try {
-      runnable->run();
+      uniqueRunnable->run();
       ++m_numFailures;
-      ++m_numTestsExecuted;
-      delete runnable;
       throw BasicException("no exception thrown");
    } catch (BasicException& be) {
+      printf("BasicException caught: %s\n", be.what());
       if (strcmp(exceptionType, be.getType())) {
          ++m_numFailures;
-         ++m_numTestsExecuted;
-         delete runnable;
          throw BasicException("Wrong exception type");
       } else {
          // we got what's expected
-         ++m_numTestsExecuted;
-         delete runnable;
       }
+   } catch (std::exception& e) {
+      printf("std::exception caught: %s\n", e.what());
+   } catch (...) {
+      printf("unknown exception caught\n");
    }
 }
 

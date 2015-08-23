@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestThread::TestThread() :
-   TestSuite("TestThread")
-{
+   TestSuite("TestThread") {
 }
 
 //******************************************************************************
 
-void TestThread::runTests()
-{
+void TestThread::runTests() {
    testConstructor();
    testConstructorWithRunnable();
    testSetPoolWorkerStatus();
@@ -37,129 +35,114 @@ void TestThread::runTests()
 
 //******************************************************************************
 
-void TestThread::testConstructor()
-{
+void TestThread::testConstructor() {
    TEST_CASE("testConstructor");
-   
+   //TODO: implement testConstructor
 }
 
 //******************************************************************************
 
-void TestThread::testConstructorWithRunnable()
-{
+void TestThread::testConstructorWithRunnable() {
    TEST_CASE("testConstructorWithRunnable");
+   //TODO: testConstructorWithRunnable
 }
 
 //******************************************************************************
 
-void TestThread::testSetPoolWorkerStatus()
-{
+void TestThread::testSetPoolWorkerStatus() {
    TEST_CASE("testSetPoolWorkerStatus");
-   
+   //TODO: implement testSetPoolWorkerStatus
 }
 
 //******************************************************************************
 
-void TestThread::testIsPoolWorker()
-{
+void TestThread::testIsPoolWorker() {
    TEST_CASE("testIsPoolWorker");
-   
+   //TODO: implement testIsPoolWorker
 }
 
 //******************************************************************************
 
-void TestThread::testStart()
-{
+void TestThread::testStart() {
    TEST_CASE("testStart");
-   
+   //TODO: implement testStart
 }
 
 //******************************************************************************
 
-void TestThread::testRun()
-{
+void TestThread::testRun() {
    TEST_CASE("testRun");
-   
+   //TODO: implement testRun
 }
 
 //******************************************************************************
 
-void TestThread::testIsAlive()
-{
+void TestThread::testIsAlive() {
    TEST_CASE("testIsAlive");
-   
+   //TODO: implement testIsAlive
 }
 
 //******************************************************************************
 
-void TestThread::testGetExitCode()
-{
+void TestThread::testGetExitCode() {
    TEST_CASE("testGetExitCode");
-   
+   //TODO: implement testGetExitCode
 }
 
 //******************************************************************************
 
-void TestThread::testRegisterThreadCompletionObserver()
-{
+void TestThread::testRegisterThreadCompletionObserver() {
    TEST_CASE("testRegisterThreadCompletionObserver");
-   
+   //TODO: implement testRegisterThreadCompletionObserver
 }
 
 //******************************************************************************
 
-void TestThread::testClearThreadCompletionObserver()
-{
+void TestThread::testClearThreadCompletionObserver() {
    TEST_CASE("testClearThreadCompletionObserver");
-   
+   //TODO: implement testClearThreadCompletionObserver
 }
 
 //******************************************************************************
 
-void TestThread::testGetRunnable()
-{
+void TestThread::testGetRunnable() {
    TEST_CASE("testGetRunnable");
-   
+   //TODO: implement testGetRunnable
 }
 
 //******************************************************************************
 
-void TestThread::testGetHandle()
-{
+void TestThread::testGetHandle() {
    TEST_CASE("testGetHandle");
-   
+   //TODO: implement testGetHandle
 }
 
 //******************************************************************************
 
-void TestThread::testSetAttribute()
-{
+void TestThread::testSetAttribute() {
    TEST_CASE("testSetAttribute");
-   
+   //TODO: implement testSetAttribute
 }
 
 //******************************************************************************
 
-void TestThread::testHasAttribute()
-{
+void TestThread::testHasAttribute() {
    TEST_CASE("testHasAttribute");
-   
+   //TODO: implement testHasAttribute
 }
 
 //******************************************************************************
 
-void TestThread::testGetAttribute()
-{
+void TestThread::testGetAttribute() {
    TEST_CASE("testGetAttribute");
-   
+   //TODO: implement testGetAttribute
 }
 
 //******************************************************************************
 
-void TestThread::testClearAttribute()
-{
+void TestThread::testClearAttribute() {
    TEST_CASE("testClearAttribute");
-   
+   //TODO: implement testClearAttribute
 }
 
 //******************************************************************************

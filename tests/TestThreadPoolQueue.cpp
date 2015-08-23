@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestThreadPoolQueue::TestThreadPoolQueue() :
-   TestSuite("TestThreadPoolQueue")
-{
+   TestSuite("TestThreadPoolQueue") {
 }
 
 //******************************************************************************
 
-void TestThreadPoolQueue::runTests()
-{
+void TestThreadPoolQueue::runTests() {
    testConstructor();
    testAddRequest();
    testTakeRequest();
@@ -27,44 +25,44 @@ void TestThreadPoolQueue::runTests()
 
 //******************************************************************************
 
-void TestThreadPoolQueue::testConstructor()
-{
+void TestThreadPoolQueue::testConstructor() {
    TEST_CASE("testConstructor");
+   //TODO: implement testConstructor
 }
 
 //******************************************************************************
 
-void TestThreadPoolQueue::testAddRequest()
-{
+void TestThreadPoolQueue::testAddRequest() {
    TEST_CASE("testAddRequest");
+   //TODO: implement testAddRequest
 }
 
 //******************************************************************************
 
-void TestThreadPoolQueue::testTakeRequest()
-{
+void TestThreadPoolQueue::testTakeRequest() {
    TEST_CASE("testTakeRequest");
+   //TODO: testTakeRequest
 }
 
 //******************************************************************************
 
-void TestThreadPoolQueue::testShutDown()
-{
+void TestThreadPoolQueue::testShutDown() {
    TEST_CASE("testShutDown");
+   //TODO: testShutDown
 }
 
 //******************************************************************************
 
-void TestThreadPoolQueue::testIsRunning()
-{
+void TestThreadPoolQueue::testIsRunning() {
    TEST_CASE("testIsRunning");
+   //TODO: testIsRunning
 }
 
 //******************************************************************************
 
-void TestThreadPoolQueue::testIsEmpty()
-{
+void TestThreadPoolQueue::testIsEmpty() {
    TEST_CASE("testIsEmpty");
+   //TODO: implement testIsEmpty
 }
 
 //******************************************************************************

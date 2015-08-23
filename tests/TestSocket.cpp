@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestSocket::TestSocket() :
-   TestSuite("TestSocket")
-{
+   TestSuite("TestSocket") {
 }
 
 //******************************************************************************
 
-void TestSocket::runTests()
-{
+void TestSocket::runTests() {
    testConstructorWithAddress();
    testConstructorWithFD();
    testConstructorWithCompletionObserver();
@@ -49,198 +47,198 @@ void TestSocket::runTests()
 
 //******************************************************************************
 
-void TestSocket::testConstructorWithAddress()
-{
+void TestSocket::testConstructorWithAddress() {
    TEST_CASE("testConstructorWithAddress");
+   //TODO: implement testConstructorWithAddress
 }
 
 //******************************************************************************
 
-void TestSocket::testConstructorWithFD()
-{
+void TestSocket::testConstructorWithFD() {
    TEST_CASE("testConstructorWithFD");
+   //TODO: implement testConstructorWithFD
 }
 
 //******************************************************************************
 
-void TestSocket::testConstructorWithCompletionObserver()
-{
+void TestSocket::testConstructorWithCompletionObserver() {
    TEST_CASE("testConstructorWithCompletionObserver");
+   //TODO: implement testConstructorWithCompletionObserver
 }
 
 //******************************************************************************
 
-void TestSocket::testSend()
-{
+void TestSocket::testSend() {
    TEST_CASE("testSend");
+   //TODO: implement testSend
 }
 
 //******************************************************************************
 
-void TestSocket::testWriteWithBuffer()
-{
+void TestSocket::testWriteWithBuffer() {
    TEST_CASE("testWriteWithBuffer");
+   //TODO: implement testWriteWithBuffer
 }
 
 //******************************************************************************
 
-void TestSocket::testWriteWithString()
-{
+void TestSocket::testWriteWithString() {
    TEST_CASE("testWriteWithString");
+   //TODO: implement testWriteWithString
 }
 
 //******************************************************************************
 
-void TestSocket::testReceive()
-{
+void TestSocket::testReceive() {
    TEST_CASE("testReceive");
+   //TODO: implement testReceive
 }
 
 //******************************************************************************
 
-void TestSocket::testRead()
-{
+void TestSocket::testRead() {
    TEST_CASE("testRead");
+   //TODO: implement testRead
 }
 
 //******************************************************************************
 
-void TestSocket::testClose()
-{
+void TestSocket::testClose() {
    TEST_CASE("testClose");
+   //TODO: implement testClose
 }
 
 //******************************************************************************
 
-void TestSocket::testIsOpen()
-{
+void TestSocket::testIsOpen() {
    TEST_CASE("testIsOpen");
+   //TODO: implement testIsOpen
 }
 
 //******************************************************************************
 
-void TestSocket::testIsConnected()
-{
+void TestSocket::testIsConnected() {
    TEST_CASE("testIsConnected");
+   //TODO: implement testIsConnected
 }
 
 //******************************************************************************
 
-void TestSocket::testCloseConnection()
-{
+void TestSocket::testCloseConnection() {
    TEST_CASE("testCloseConnection");
+   //TODO: implement testCloseConnection
 }
 
 //******************************************************************************
 
-void TestSocket::testGetFileDescriptor()
-{
+void TestSocket::testGetFileDescriptor() {
    TEST_CASE("testGetFileDescriptor");
+   //TODO: implement testGetFileDescriptor
 }
 
 //******************************************************************************
 
-void TestSocket::testRequestComplete()
-{
+void TestSocket::testRequestComplete() {
    TEST_CASE("testRequestComplete");
+   //TODO: implement testRequestComplete
 }
 
 //******************************************************************************
 
-void TestSocket::testSetUserIndex()
-{
+void TestSocket::testSetUserIndex() {
    TEST_CASE("testSetUserIndex");
+   //TODO: implement testSetUserIndex
 }
 
 //******************************************************************************
 
-void TestSocket::testGetUserIndex()
-{
+void TestSocket::testGetUserIndex() {
    TEST_CASE("testGetUserIndex");
+   //TODO: implement testGetUserIndex
 }
 
 //******************************************************************************
 
-void TestSocket::testSetTcpNoDelay()
-{
+void TestSocket::testSetTcpNoDelay() {
    TEST_CASE("testSetTcpNoDelay");
+   //TODO: implement testSetTcpNoDelay
 }
 
 //******************************************************************************
 
-void TestSocket::testGetTcpNoDelay()
-{
+void TestSocket::testGetTcpNoDelay() {
    TEST_CASE("testGetTcpNoDelay");
+   //TODO: implement testGetTcpNoDelay
 }
 
 //******************************************************************************
 
-void TestSocket::testSetSendBufferSize()
-{
+void TestSocket::testSetSendBufferSize() {
    TEST_CASE("testSetSendBufferSize");
+   //TODO: implement testSetSendBufferSize
 }
 
 //******************************************************************************
 
-void TestSocket::testGetSendBufferSize()
-{
+void TestSocket::testGetSendBufferSize() {
    TEST_CASE("testGetSendBufferSize");
+   //TODO: implement testGetSendBufferSize
 }
 
 //******************************************************************************
 
-void TestSocket::testSetReceiveBufferSize()
-{
+void TestSocket::testSetReceiveBufferSize() {
    TEST_CASE("testSetReceiveBufferSize");
+   //TODO: implement testSetReceiveBufferSize
 }
 
 //******************************************************************************
 
-void TestSocket::testGetReceiveBufferSize()
-{
+void TestSocket::testGetReceiveBufferSize() {
    TEST_CASE("testGetReceiveBufferSize");
+   //TODO: implement testGetReceiveBufferSize
 }
 
 //******************************************************************************
 
-void TestSocket::testSetKeepAlive()
-{
+void TestSocket::testSetKeepAlive() {
    TEST_CASE("testSetKeepAlive");
+   //TODO: implement testSetKeepAlive
 }
 
 //******************************************************************************
 
-void TestSocket::testGetKeepAlive()
-{
+void TestSocket::testGetKeepAlive() {
    TEST_CASE("testGetKeepAlive");
+   //TODO: implement testGetKeepAlive
 }
 
 //******************************************************************************
 
-void TestSocket::testReadLine()
-{
+void TestSocket::testReadLine() {
    TEST_CASE("testReadLine");
+   //TODO: implement testReadLine
 }
 
 //******************************************************************************
 
-void TestSocket::testGetPeerIPAddress()
-{
+void TestSocket::testGetPeerIPAddress() {
    TEST_CASE("testGetPeerIPAddress");
+   //TODO: implement testGetPeerIPAddress
 }
 
 //******************************************************************************
 
-void TestSocket::testGetPort()
-{
+void TestSocket::testGetPort() {
    TEST_CASE("testGetPort");
+   //TODO: implement testGetPort
 }
 
 //******************************************************************************
 
-void TestSocket::testSetIncludeMessageSize()
-{
+void TestSocket::testSetIncludeMessageSize() {
    TEST_CASE("testSetIncludeMessageSize");
+   //TODO: implement testSetIncludeMessageSize
 }
 
 //******************************************************************************

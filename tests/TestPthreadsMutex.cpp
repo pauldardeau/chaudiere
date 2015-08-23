@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestPthreadsMutex::TestPthreadsMutex() :
-   TestSuite("TestMutex")
-{
+   TestSuite("TestMutex") {
 }
 
 //******************************************************************************
 
-void TestPthreadsMutex::runTests()
-{
+void TestPthreadsMutex::runTests() {
    testConstructor();
    testConstructorWithName();
    testLock();
@@ -29,8 +27,7 @@ void TestPthreadsMutex::runTests()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testConstructor()
-{
+void TestPthreadsMutex::testConstructor() {
    TEST_CASE("testConstructor");
    
    PthreadsMutex mutex;
@@ -39,8 +36,7 @@ void TestPthreadsMutex::testConstructor()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testConstructorWithName()
-{
+void TestPthreadsMutex::testConstructorWithName() {
    TEST_CASE("testConstructorWithName");
 
    PthreadsMutex mutex("testMutex");
@@ -49,8 +45,7 @@ void TestPthreadsMutex::testConstructorWithName()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testLock()
-{
+void TestPthreadsMutex::testLock() {
    TEST_CASE("testLock");
    
    PthreadsMutex mutex;
@@ -60,8 +55,7 @@ void TestPthreadsMutex::testLock()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testUnlock()
-{
+void TestPthreadsMutex::testUnlock() {
    TEST_CASE("testUnlock");
 
    PthreadsMutex mutex;
@@ -73,8 +67,7 @@ void TestPthreadsMutex::testUnlock()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testHaveValidMutex()
-{
+void TestPthreadsMutex::testHaveValidMutex() {
    TEST_CASE("testHaveValidMutex");
    
    PthreadsMutex mutex;
@@ -83,8 +76,7 @@ void TestPthreadsMutex::testHaveValidMutex()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testGetPlatformPrimitive()
-{
+void TestPthreadsMutex::testGetPlatformPrimitive() {
    TEST_CASE("testGetPlatformPrimitive");
 
    PthreadsMutex mutex;
@@ -93,8 +85,7 @@ void TestPthreadsMutex::testGetPlatformPrimitive()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testGetName()
-{
+void TestPthreadsMutex::testGetName() {
    TEST_CASE("testGetName");
    
    const std::string name = "testMutex";
@@ -104,8 +95,7 @@ void TestPthreadsMutex::testGetName()
 
 //******************************************************************************
 
-void TestPthreadsMutex::testIsLocked()
-{
+void TestPthreadsMutex::testIsLocked() {
    TEST_CASE("testIsLocked");
    
    PthreadsMutex mutex;

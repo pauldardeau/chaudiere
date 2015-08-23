@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestThreadPool::TestThreadPool() :
-   TestSuite("TestThreadPool")
-{
+   TestSuite("TestThreadPool") {
 }
 
 //******************************************************************************
 
-void TestThreadPool::runTests()
-{
+void TestThreadPool::runTests() {
    testConstructor();
    testStart();
    testStop();
@@ -28,57 +26,51 @@ void TestThreadPool::runTests()
 
 //******************************************************************************
 
-void TestThreadPool::testConstructor()
-{
+void TestThreadPool::testConstructor() {
    TEST_CASE("testConstructor");
+   //TODO: implement testConstructor
 }
 
 //******************************************************************************
 
-void TestThreadPool::testStart()
-{
+void TestThreadPool::testStart() {
    TEST_CASE("testStart");
-   
+   //TODO: implement testStart
 }
 
 //******************************************************************************
 
-void TestThreadPool::testStop()
-{
+void TestThreadPool::testStop() {
    TEST_CASE("testStop");
-   
+   //TODO: implement testStop
 }
 
 //******************************************************************************
 
-void TestThreadPool::testAddRequest()
-{
+void TestThreadPool::testAddRequest() {
    TEST_CASE("testAddRequest");
-   
+   //TODO: implement testAddRequest
 }
 
 //******************************************************************************
 
-void TestThreadPool::testGetNumberWorkers()
-{
+void TestThreadPool::testGetNumberWorkers() {
    TEST_CASE("testGetNumberWorkers");
-   
+   //TODO: implement testGetNumberWorkers
 }
 
 //******************************************************************************
 
-void TestThreadPool::testAddWorkers()
-{
+void TestThreadPool::testAddWorkers() {
    TEST_CASE("testAddWorkers");
-   
+   //TODO: implement testAddWorkers
 }
 
 //******************************************************************************
 
-void TestThreadPool::testRemoveWorkers()
-{
+void TestThreadPool::testRemoveWorkers() {
    TEST_CASE("testRemoveWorkers");
-   
+   //TODO: implement testRemoveWorkers
 }
 
 //******************************************************************************

@@ -3,17 +3,18 @@
 
 #include "Tests.h"
 
+#include "TestAutoPointer.h"
 #include "TestIniReader.h"
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
 #include "TestKqueueServer.h"
 #include "TestPthreadsMutex.h"
-#include "TestStdMutex.h"
 #include "TestServerSocket.h"
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
-#include "TestStringTokenizer.h"
+#include "TestStdMutex.h"
 #include "TestStrUtils.h"
+#include "TestStringTokenizer.h"
 #include "TestThread.h"
 #include "TestThreadPool.h"
 #include "TestThreadPoolQueue.h"
@@ -21,8 +22,10 @@
 
 using namespace chaudiere;
 
-void Tests::run()
-{
+void Tests::run() {
+   TestAutoPointer testAutoPointer;
+   testAutoPointer.run();
+   
    TestIniReader testIniReader;
    testIniReader.run();
    
@@ -69,8 +72,7 @@ void Tests::run()
    testThreadPoolWorker.run();
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
    Tests tests;
    tests.run();
 }

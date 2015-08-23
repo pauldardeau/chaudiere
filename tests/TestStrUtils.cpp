@@ -13,14 +13,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestStrUtils::TestStrUtils() :
-   TestSuite("TestStrUtils")
-{
+   TestSuite("TestStrUtils") {
 }
 
 //******************************************************************************
 
-void TestStrUtils::runTests()
-{
+void TestStrUtils::runTests() {
    testParseInt();
    testToString();
    testStrip();

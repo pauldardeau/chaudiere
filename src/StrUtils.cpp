@@ -20,9 +20,11 @@ using namespace chaudiere;
 //******************************************************************************
 
 int StrUtils::parseInt(const std::string& s) noexcept {
+   printf("parseInt: '%s'\n", s.c_str());
    int intValue = ::atoi(s.c_str());
    if (intValue == 0) {
       if (s != ZERO) {
+         printf("throwing NumberFormatException\n");
          throw NumberFormatException(s);
       }
    }

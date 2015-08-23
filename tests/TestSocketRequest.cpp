@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestSocketRequest::TestSocketRequest() :
-   TestSuite("TestSocketRequest")
-{
+   TestSuite("TestSocketRequest") {
 }
 
 //******************************************************************************
 
-void TestSocketRequest::runTests()
-{
+void TestSocketRequest::runTests() {
    testConstructor();
    testRun();
    testGetSocketFD();
@@ -26,36 +24,31 @@ void TestSocketRequest::runTests()
 
 //******************************************************************************
 
-void TestSocketRequest::testConstructor()
-{
+void TestSocketRequest::testConstructor() {
    TEST_CASE("testConstructor");
 }
 
 //******************************************************************************
 
-void TestSocketRequest::testRun()
-{
+void TestSocketRequest::testRun() {
    TEST_CASE("testRun");
 }
 
 //******************************************************************************
 
-void TestSocketRequest::testGetSocketFD()
-{
+void TestSocketRequest::testGetSocketFD() {
    TEST_CASE("testGetSocketFD");
 }
 
 //******************************************************************************
 
-void TestSocketRequest::testGetSocket()
-{
+void TestSocketRequest::testGetSocket() {
    TEST_CASE("testGetSocket");
 }
 
 //******************************************************************************
 
-void TestSocketRequest::testRequestComplete()
-{
+void TestSocketRequest::testRequestComplete() {
    TEST_CASE("testRequestComplete");
 }
 

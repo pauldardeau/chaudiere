@@ -9,14 +9,12 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestStringTokenizer::TestStringTokenizer() :
-   TestSuite("TestStringTokenizer")
-{
+   TestSuite("TestStringTokenizer") {
 }
 
 //******************************************************************************
 
-void TestStringTokenizer::runTests()
-{
+void TestStringTokenizer::runTests() {
    testConstructor();
    testConstructorWithDelimiter();
    testHasMoreTokens();
@@ -26,8 +24,7 @@ void TestStringTokenizer::runTests()
 
 //******************************************************************************
 
-void TestStringTokenizer::testConstructor()
-{
+void TestStringTokenizer::testConstructor() {
    TEST_CASE("testConstructor");
    
    StringTokenizer stLetters("a b c");
@@ -39,8 +36,7 @@ void TestStringTokenizer::testConstructor()
 
 //******************************************************************************
 
-void TestStringTokenizer::testConstructorWithDelimiter()
-{
+void TestStringTokenizer::testConstructorWithDelimiter() {
    TEST_CASE("testConstructorWithDelimiter");
 
    StringTokenizer stSpace("a b c", " ");
@@ -52,8 +48,7 @@ void TestStringTokenizer::testConstructorWithDelimiter()
 
 //******************************************************************************
 
-void TestStringTokenizer::testHasMoreTokens()
-{
+void TestStringTokenizer::testHasMoreTokens() {
    TEST_CASE("testHasMoreTokens");
 
    StringTokenizer st("a b c");
@@ -68,8 +63,7 @@ void TestStringTokenizer::testHasMoreTokens()
 
 //******************************************************************************
 
-void TestStringTokenizer::testNextToken()
-{
+void TestStringTokenizer::testNextToken() {
    TEST_CASE("testNextToken");
 
    std::string token;
@@ -87,8 +81,7 @@ void TestStringTokenizer::testNextToken()
 
 //******************************************************************************
 
-void TestStringTokenizer::testCountTokens()
-{
+void TestStringTokenizer::testCountTokens() {
    TEST_CASE("testCountTokens");
 
    StringTokenizer st("a b c");
