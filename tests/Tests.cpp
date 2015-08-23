@@ -16,7 +16,10 @@
 #include "TestStdMutex.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
+#include "TestSystemInfo.h"
+#include "TestSystemStats.h"
 #include "TestThread.h"
+#include "TestThreadInfo.h"
 #include "TestThreadPool.h"
 #include "TestThreadPoolQueue.h"
 #include "TestThreadPoolWorker.h"
@@ -63,8 +66,17 @@ void Tests::run() {
    TestStrUtils testStrUtils;
    testStrUtils.run();
    
+   TestSystemInfo testSystemInfo;
+   testSystemInfo.run();
+   
+   TestSystemStats testSystemStats;
+   testSystemStats.run();
+   
    TestThread testThread;
    testThread.run();
+   
+   TestThreadInfo testThreadInfo;
+   testThreadInfo.run();
    
    TestThreadPool testThreadPool;
    testThreadPool.run();

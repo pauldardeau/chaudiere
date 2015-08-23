@@ -23,7 +23,10 @@ TestStdMutex.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
 TestSuite.o \
+TestSystemInfo.o \
+TestSystemStats.o \
 TestThread.o \
+TestThreadInfo.o \
 TestThreadPool.o \
 TestThreadPoolQueue.o \
 TestThreadPoolWorker.o \
