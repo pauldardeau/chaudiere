@@ -21,6 +21,8 @@ TestStrUtils::TestStrUtils() :
 
 void TestStrUtils::runTests()
 {
+   testParseInt();
+   testToString();
    testStrip();
    testStripWithChar();
    testStartsWith();
@@ -33,13 +35,67 @@ void TestStrUtils::runTests()
    testStripTrailing();
    testStripLeading();
    testTrimLeadingSpaces();
+   testTrim();
    testPadRight();
+   testPadLeft();
+   testGzipCompress();
+   testGzipDecompress();
 }
 
 //******************************************************************************
 
-void TestStrUtils::testStrip()
-{
+class ParseIntRunner : public Runnable {
+public:
+   explicit ParseIntRunner(const std::string& arg) :
+      m_arg(arg) {
+   }
+
+   ParseIntRunner(const ParseIntRunner& copy) :
+      m_arg(copy.m_arg) {
+   }
+
+   ParseIntRunner& operator=(const ParseIntRunner& copy) {
+      if (this == &copy) {
+         return *this;
+      }
+
+      m_arg = copy.m_arg;
+      return *this;
+   }
+
+   void run() {
+      StrUtils::parseInt(m_arg);
+   }
+
+private:
+   std::string m_arg;
+};
+
+void TestStrUtils::testParseInt() {
+   TEST_CASE("parseInt");
+
+   require(3 == StrUtils::parseInt("3"), "1 digit positive integer");
+   require(-5 == StrUtils::parseInt("-5"), "1 digit negative integer");
+   require(0 == StrUtils::parseInt("0"), "zero");
+   require(35 == StrUtils::parseInt("35"), "2 digit positive integer");
+   require(121 == StrUtils::parseInt("121"), "3 digit positive integer");
+   require(4096 == StrUtils::parseInt("4096"), "4 digit positive integer");
+   require(65535 == StrUtils::parseInt("65535"), "5 digit positive integer");
+   requireException("NumberFormatException", new ParseIntRunner(""), "empty string");
+   requireException("NumberFormatException", new ParseIntRunner("x"), "letter");
+   requireException("NumberFormatException", new ParseIntRunner("y123"), "leading char");
+   requireException("NumberFormatException", new ParseIntRunner("456t"), "trailing char");
+}
+
+//******************************************************************************
+
+void TestStrUtils::testToString() {
+   //TODO: implement testToString
+}
+
+//******************************************************************************
+
+void TestStrUtils::testStrip() {
    TEST_CASE("strip");
 
    //static std::string strip(const std::string& s);
@@ -57,8 +113,7 @@ void TestStrUtils::testStrip()
 
 //******************************************************************************
 
-void TestStrUtils::testStripWithChar()
-{
+void TestStrUtils::testStripWithChar() {
    TEST_CASE("stripWithChar");
 
    //static std::string strip(const std::string& s, char strip);
@@ -84,8 +139,7 @@ void TestStrUtils::testStripWithChar()
 
 //******************************************************************************
 
-void TestStrUtils::testStartsWith()
-{
+void TestStrUtils::testStartsWith() {
    TEST_CASE("startsWith");
    
    //static bool startsWith(const std::string& haystack, const std::string& needle);
@@ -103,8 +157,7 @@ void TestStrUtils::testStartsWith()
 
 //******************************************************************************
 
-void TestStrUtils::testEndsWith()
-{
+void TestStrUtils::testEndsWith() {
    TEST_CASE("endsWith");
    
    //static bool endsWith(const std::string& haystack, const std::string& needle);
@@ -122,8 +175,7 @@ void TestStrUtils::testEndsWith()
 
 //******************************************************************************
 
-void TestStrUtils::testContainsString()
-{
+void TestStrUtils::testContainsString() {
    TEST_CASE("containsString");
    
    //static bool containsString(const std::string& haystack, const std::string& needle);
@@ -141,8 +193,7 @@ void TestStrUtils::testContainsString()
 
 //******************************************************************************
 
-void TestStrUtils::testToUpperCase()
-{
+void TestStrUtils::testToUpperCase() {
    TEST_CASE("toUpperCase");
    
    //static void toUpperCase(std::string& s);
@@ -169,8 +220,7 @@ void TestStrUtils::testToUpperCase()
 
 //******************************************************************************
 
-void TestStrUtils::testToLowerCase()
-{
+void TestStrUtils::testToLowerCase() {
    TEST_CASE("toLowerCase");
    
    //static void toLowerCase(std::string& s);
@@ -197,8 +247,7 @@ void TestStrUtils::testToLowerCase()
 
 //******************************************************************************
 
-void TestStrUtils::testReplaceAll()
-{
+void TestStrUtils::testReplaceAll() {
    TEST_CASE("replaceAll");
    
    //static std::string& replaceAll(std::string& s, const std::string& searchFor, const std::string& replaceWith);
@@ -234,8 +283,7 @@ void TestStrUtils::testReplaceAll()
 
 //******************************************************************************
 
-void TestStrUtils::testStripInPlace()
-{
+void TestStrUtils::testStripInPlace() {
    TEST_CASE("stripInPlace");
 
    //static std::string& strip(std::string& s, char strip=' ');
@@ -261,8 +309,7 @@ void TestStrUtils::testStripInPlace()
 
 //******************************************************************************
 
-void TestStrUtils::testStripTrailing()
-{
+void TestStrUtils::testStripTrailing() {
    TEST_CASE("stripTrailing");
 
    //static std::string& stripTrailing(std::string& s, char strip);
@@ -282,8 +329,7 @@ void TestStrUtils::testStripTrailing()
 
 //******************************************************************************
 
-void TestStrUtils::testStripLeading()
-{
+void TestStrUtils::testStripLeading() {
    TEST_CASE("stripLeading");
 
    //static std::string& stripLeading(std::string& s, char strip);
@@ -303,8 +349,7 @@ void TestStrUtils::testStripLeading()
 
 //******************************************************************************
 
-void TestStrUtils::testTrimLeadingSpaces()
-{
+void TestStrUtils::testTrimLeadingSpaces() {
    TEST_CASE("trimLeadingSpaces");
 
    //static std::string& trimLeadingSpaces(std::string& s);
@@ -322,8 +367,13 @@ void TestStrUtils::testTrimLeadingSpaces()
 
 //******************************************************************************
 
-void TestStrUtils::testPadRight()
-{
+void TestStrUtils::testTrim() {
+   //TODO: implement testTrim
+}
+
+//******************************************************************************
+
+void TestStrUtils::testPadRight() {
    TEST_CASE("padRight");
    
    //static void padRight(std::string& s, char padChar, int paddedLength);
@@ -348,3 +398,22 @@ void TestStrUtils::testPadRight()
 }
 
 //******************************************************************************
+
+void TestStrUtils::testPadLeft() {
+   //TODO: implement testPadLeft
+}
+
+//******************************************************************************
+
+void TestStrUtils::testGzipCompress() {
+   //TODO: implement testGzipCompress
+}
+
+//******************************************************************************
+
+void TestStrUtils::testGzipDecompress() {
+   //TODO: implement testGzipDecompress
+}
+
+//******************************************************************************
+

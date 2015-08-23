@@ -13,6 +13,9 @@ class TestStrUtils : public TestSuite
 {
 protected:
    void runTests();
+
+   void testParseInt();
+   void testToString();
    
    void testStrip();
    void testStripWithChar();
@@ -30,8 +33,13 @@ protected:
    void testStripTrailing();
    void testStripLeading();
    void testTrimLeadingSpaces();
+   void testTrim();
    
    void testPadRight();
+   void testPadLeft();
+
+   void testGzipCompress();
+   void testGzipDecompress();
 
 public:
    TestStrUtils();
@@ -41,3 +49,4 @@ public:
 }
 
 #endif
+

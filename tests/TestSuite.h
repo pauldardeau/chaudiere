@@ -7,6 +7,8 @@
 #include <string>
 
 #include "TestMacros.h"
+#include "Runnable.h"
+
 
 namespace chaudiere
 {
@@ -52,7 +54,11 @@ public:
    void requireStringEquals(const std::string& expected,
                             const std::string& actual,
                             const std::string& testDesc);
-   void requireNonEmptyString(const std::string& actual, const std::string& testDesc);
+   void requireNonEmptyString(const std::string& actual,
+                              const std::string& testDesc);
+   void requireException(const char* exceptionType,
+                         Runnable* run,
+                         const std::string& testDesc); 
    
    void startingTestCase(const TestCase& testCase);
    void endingTestCase(const TestCase& testCase);
@@ -62,3 +68,4 @@ public:
 }
 
 #endif
+
