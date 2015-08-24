@@ -40,9 +40,24 @@ class SocketServer
        */
       virtual ~SocketServer() noexcept;
 
+      /**
+       *
+       * @param socket
+       * @return
+       */
       virtual RequestHandler* handlerForSocket(Socket* socket) = 0;
+      
+      /**
+       *
+       * @param socketRequest
+       * @return
+       */
       virtual RequestHandler* handlerForSocketRequest(SocketRequest* socketRequest) = 0;
       
+      /**
+       *
+       * @return
+       */
       virtual SocketServiceHandler* createSocketServiceHandler() = 0;
 
       /**

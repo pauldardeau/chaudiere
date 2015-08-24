@@ -35,7 +35,6 @@ public:
     */
    ~StdMutex() noexcept;
    
-   // Mutex
    /**
     *
     * @return

@@ -23,16 +23,28 @@ public:
    long long m_instancesCreated;
    long long m_instancesDestroyed;
    
+   /**
+    *
+    */
    LifecycleStats() :
       m_instancesCreated(0L),
       m_instancesDestroyed(0L) {
    }
    
+   /**
+    *
+    * @param copy
+    */
    LifecycleStats(const LifecycleStats& copy) :
       m_instancesCreated(copy.m_instancesCreated),
       m_instancesDestroyed(copy.m_instancesDestroyed) {
    }
    
+   /**
+    *
+    * @param copy
+    * @return
+    */
    LifecycleStats& operator=(const LifecycleStats& copy) {
       if (this == &copy) {
          return *this;
@@ -51,27 +63,97 @@ public:
 class StdLogger : public Logger
 {
 public:
+   /**
+    *
+    */
    StdLogger() noexcept;
+   
+   /**
+    *
+    * @param logLevel
+    */
    StdLogger(LogLevel logLevel) noexcept;
+   
+   /**
+    *
+    */
    virtual ~StdLogger() noexcept;
    
+   /**
+    *
+    * @return
+    */
    virtual LogLevel getLogLevel() const noexcept override;
+   
+   /**
+    *
+    * @param logLevel
+    */
    virtual void setLogLevel(LogLevel logLevel) noexcept override;
 
+   /**
+    *
+    * @param logLevel
+    * @param logMessage
+    */
    virtual void logMessage(LogLevel logLevel, const std::string& logMessage) noexcept override;
+   
+   /**
+    *
+    * @param logLevel
+    * @return
+    */
    virtual bool isLoggingLevel(LogLevel logLevel) const noexcept override;
    
+   /**
+    *
+    * @return
+    */
    virtual bool isLoggingInstanceLifecycles() const noexcept override;
+   
+   /**
+    *
+    * @param logInstanceLifecycles
+    */
    virtual void setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept override;
+   
+   /**
+    *
+    * @param className
+    */
    virtual void logInstanceCreate(const std::string& className) noexcept override;
+   
+   /**
+    *
+    * @param className
+    */
    virtual void logInstanceDestroy(const std::string& className) noexcept override;
    
+   /**
+    *
+    * @param occurrenceType
+    * @param occurrenceName
+    */
    virtual void logOccurrence(const std::string& occurrenceType,
                               const std::string& occurrenceName) noexcept override;
 
+   /**
+    *
+    * @param mapClassLifecycleStats
+    */                           
    void populateClassLifecycleStats(std::map<std::string, LifecycleStats>& mapClassLifecycleStats);
+   
+   /**
+    *
+    * @param mapOccurrences
+    */
    void populateOccurrences(std::map<std::string, std::map<std::string, long long>>& mapOccurrences);
    
+   /**
+    *
+    * @param level
+    * @return
+    */
    const std::string& logLevelPrefix(LogLevel level) const noexcept;
 
 

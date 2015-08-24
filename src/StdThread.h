@@ -24,8 +24,8 @@ public:
    StdThread() noexcept;
    
    /**
-    *
-    * @param runnable
+    * Constructs a c++11 thread using the specified Runnable
+    * @param runnable the executable object that the thread will run
     * @see Runnable()
     */
    explicit StdThread(Runnable* runnable) noexcept;
