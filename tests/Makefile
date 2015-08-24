@@ -9,6 +9,7 @@ LIB_NAME = ../src/libchaudiere.a
 
 OBJS = MockSocket.o \
 TestAutoPointer.o \
+TestByteBuffer.o \
 TestCase.o \
 TestIniReader.o \
 TestInvalidKeyException.o \

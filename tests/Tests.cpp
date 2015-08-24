@@ -4,6 +4,7 @@
 #include "Tests.h"
 
 #include "TestAutoPointer.h"
+#include "TestByteBuffer.h"
 #include "TestIniReader.h"
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
@@ -29,6 +30,9 @@ using namespace chaudiere;
 void Tests::run() {
    TestAutoPointer testAutoPointer;
    testAutoPointer.run();
+   
+   TestByteBuffer testByteBuffer;
+   testByteBuffer.run();
    
    TestIniReader testIniReader;
    testIniReader.run();
