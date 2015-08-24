@@ -24,8 +24,7 @@ public:
     */
    explicit ThreadInfo(const std::string& theThreadId) noexcept :
       threadId(theThreadId),
-      isBusy(false)
-   {
+      isBusy(false) {
    }
    
    /**
@@ -34,15 +33,13 @@ public:
     */
    ThreadInfo(const ThreadInfo& copy) noexcept :
       threadId(copy.threadId),
-      isBusy(copy.isBusy)
-   {
+      isBusy(copy.isBusy) {
    }
    
    /**
     * Destructor
     */
-   ~ThreadInfo() noexcept
-   {
+   ~ThreadInfo() noexcept {
    }
    
    /**
@@ -50,8 +47,7 @@ public:
     * @param copy the source of the copy
     * @return reference to the target of the copy
     */
-   ThreadInfo& operator=(const ThreadInfo& copy) noexcept
-   {
+   ThreadInfo& operator=(const ThreadInfo& copy) noexcept {
       if (this == &copy) {
          return *this;
       }
