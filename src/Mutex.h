@@ -24,26 +24,26 @@ public:
    virtual ~Mutex() noexcept {}
    
    /**
-    *
-    * @return
+    * Unlocks the mutex
+    * @return true if mutex was successfully unlocked, false otherwise
     */
    virtual bool unlock() noexcept = 0;
    
    /**
-    *
-    * @return
+    * Locks the mutex
+    * @return true if mutex was successfully locked, false otherwise
     */
    virtual bool lock() noexcept = 0;
    
    /**
-    *
-    * @return
+    * Determines if the mutex is currently locked
+    * @return true if mutex is locked, false otherwise
     */
    virtual bool isLocked() const noexcept = 0;
    
    /**
-    *
-    * @return
+    * Determines if a valid mutex is present (usable)
+    * @return true if valid mutex, false otherwise
     */
    virtual bool haveValidMutex() const noexcept = 0;
 
