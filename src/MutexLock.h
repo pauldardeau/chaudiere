@@ -51,16 +51,15 @@ public:
       }
    }
 
-   MutexLock() = delete;
-   MutexLock(const Mutex&) = delete;
-   MutexLock(Mutex&&) = delete;
-   Mutex& operator=(const Mutex&) = delete;
-   Mutex& operator=(Mutex&&) = delete;
-   
     
 private:
    Mutex& m_mutex;
    bool m_isLocked;
+   
+   MutexLock();
+   MutexLock(const Mutex&);
+   Mutex& operator=(const Mutex&);   
+
 };
 
 }

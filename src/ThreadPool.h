@@ -90,8 +90,6 @@ public:
     */
    void removeWorkers(int numberWorkersToRemove) noexcept;
    
-   ThreadPool(const ThreadPool&) = delete;
-   ThreadPool& operator=(const ThreadPool&) = delete;
    
 protected:
    /**
@@ -107,6 +105,10 @@ private:
    int m_workerCount;
    int m_workersCreated;
    bool m_isRunning;
+   
+   // disallow copies
+   ThreadPool(const ThreadPool&);
+   ThreadPool& operator=(const ThreadPool&);
 };
 
 }

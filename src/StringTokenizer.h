@@ -54,9 +54,6 @@ class StringTokenizer
        */
       std::size_t countTokens() const noexcept;
    
-      //disallow copies
-      StringTokenizer(const StringTokenizer&) = delete;
-      StringTokenizer& operator=(const StringTokenizer&) = delete;
 
    
    protected:
@@ -80,6 +77,11 @@ class StringTokenizer
       std::vector<std::string> m_tokens;
       std::size_t m_numberTokens;
       std::size_t m_indexToken;
+      
+      //disallow copies
+      StringTokenizer(const StringTokenizer&);
+      StringTokenizer& operator=(const StringTokenizer&);
+
 };
 
 }

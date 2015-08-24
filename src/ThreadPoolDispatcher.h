@@ -50,11 +50,10 @@ public:
    virtual bool addRequest(Runnable* runnableRequest) noexcept = 0;
    
 
+private:
    // disallow copies
-   ThreadPoolDispatcher(const ThreadPoolDispatcher&) = delete;
-   ThreadPoolDispatcher(ThreadPoolDispatcher&&) = delete;
-   ThreadPoolDispatcher& operator=(const ThreadPoolDispatcher&) = delete;
-   ThreadPoolDispatcher& operator=(ThreadPoolDispatcher&&) = delete;
+   ThreadPoolDispatcher(const ThreadPoolDispatcher&);
+   ThreadPoolDispatcher& operator=(const ThreadPoolDispatcher&);
 
 };
 

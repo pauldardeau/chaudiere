@@ -51,13 +51,15 @@ class DynamicLibrary
        */
       void close() noexcept;
    
-      // copies not allowed
-      DynamicLibrary(const DynamicLibrary&) = delete;
-      DynamicLibrary& operator=(const DynamicLibrary&) = delete;
 
    private:
       typedef void* HDLL;
       HDLL m_hDll;
+      
+      // copies not allowed
+      DynamicLibrary(const DynamicLibrary&);
+      DynamicLibrary& operator=(const DynamicLibrary&);
+
 };
 
 }

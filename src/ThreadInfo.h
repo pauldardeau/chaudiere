@@ -39,16 +39,6 @@ public:
    }
    
    /**
-    * Move constructor
-    * @param move the source of the move
-    */
-   ThreadInfo(ThreadInfo&& move) noexcept :
-      threadId(std::move(move.threadId)),
-      isBusy(move.isBusy)
-   {
-   }
-   
-   /**
     * Destructor
     */
    ~ThreadInfo() noexcept
@@ -68,23 +58,6 @@ public:
       
       threadId = copy.threadId;
       isBusy = copy.isBusy;
-      
-      return *this;
-   }
-   
-   /**
-    * Move operator
-    * @param move the source of the move
-    * @return reference to the target of the move
-    */
-   ThreadInfo& operator=(ThreadInfo&& move) noexcept
-   {
-      if (this == &move) {
-         return *this;
-      }
-      
-      threadId = std::move(move.threadId);
-      isBusy = move.isBusy;
       
       return *this;
    }

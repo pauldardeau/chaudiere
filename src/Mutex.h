@@ -48,12 +48,10 @@ public:
    virtual bool haveValidMutex() const noexcept = 0;
 
    
+private:
    // copying not allowed
-   Mutex(const Mutex&) = delete;
-   Mutex(Mutex&&) = delete;
-   Mutex& operator=(const Mutex&) = delete;
-   Mutex& operator=(Mutex&&) = delete;
-   
+   Mutex(const Mutex&);
+   Mutex& operator=(const Mutex&);   
    
 };
 

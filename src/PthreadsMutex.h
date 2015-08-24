@@ -77,8 +77,8 @@ public:
     
 private:
    // copying not allowed
-   PthreadsMutex(const PthreadsMutex&) = delete;
-   PthreadsMutex& operator=(const PthreadsMutex&) = delete;
+   PthreadsMutex(const PthreadsMutex&);
+   PthreadsMutex& operator=(const PthreadsMutex&);
 
    pthread_mutex_t  m_mutex;
    std::string m_mutexName;

@@ -20,16 +20,6 @@ namespace chaudiere
  */
 class Runnable
 {
-private:
-   RunCompletionObserver* m_completionObserver;
-   std::string m_runByThreadWorkerId;
-   int m_runByThreadId;
-
-   // disallow copies
-   Runnable(const Runnable&) noexcept = delete;
-   Runnable& operator=(const Runnable&) noexcept = delete;
-
-   
 public:
    /**
     * Default constructor
@@ -99,6 +89,15 @@ public:
          m_completionObserver->notifyRunComplete(this);
       }
    }
+   
+private:
+   RunCompletionObserver* m_completionObserver;
+   std::string m_runByThreadWorkerId;
+   int m_runByThreadId;
+
+   // disallow copies
+   Runnable(const Runnable&) noexcept;
+   Runnable& operator=(const Runnable&) noexcept;
 };
 
 }

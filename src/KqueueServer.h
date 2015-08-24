@@ -104,11 +104,6 @@ public:
     * @return
     */
    virtual bool isEventRead(int eventIndex) noexcept override;
-
-
-   // copying not allowed
-   KqueueServer(const KqueueServer&) = delete;
-   KqueueServer& operator=(const KqueueServer&) = delete;
    
    
 private:
@@ -116,6 +111,11 @@ private:
    struct kevent* m_events;
 #endif
    int m_kqfd;
+   
+   // copying not allowed
+   KqueueServer(const KqueueServer&);
+   KqueueServer& operator=(const KqueueServer&);
+
 };
 
 }

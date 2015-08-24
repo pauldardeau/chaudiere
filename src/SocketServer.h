@@ -45,10 +45,6 @@ class SocketServer
       
       virtual SocketServiceHandler* createSocketServiceHandler() = 0;
 
-      // copies not allowed
-      SocketServer(const SocketServer&) = delete;
-      SocketServer& operator=(const SocketServer&) = delete;
-
       /**
        * Retrieves the current time in Greenwich Mean Time (GMT)
        * @return current time in GMT
@@ -201,6 +197,10 @@ class SocketServer
       int m_socketSendBufferSize;
       int m_socketReceiveBufferSize;
       int m_minimumCompressionSize;
+
+      // copies not allowed
+      SocketServer(const SocketServer&);
+      SocketServer& operator=(const SocketServer&);
 
 };
 

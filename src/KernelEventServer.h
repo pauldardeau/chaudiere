@@ -110,10 +110,6 @@ public:
     */
    void notifySocketComplete(Socket* socket) noexcept override;
 
-   // copying not allowed
-   KernelEventServer(const KernelEventServer&) = delete;
-   KernelEventServer& operator=(const KernelEventServer&) = delete;
-
    
 protected:
    /**
@@ -132,6 +128,10 @@ private:
    int m_listenerFD;
    int m_fdmax;
    int m_numberEventsReturned;
+
+   // copying not allowed
+   KernelEventServer(const KernelEventServer&);
+   KernelEventServer& operator=(const KernelEventServer&);
 
 };
 

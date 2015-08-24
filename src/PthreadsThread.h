@@ -35,8 +35,8 @@ class PthreadsThread : public Thread
 
    private:
       // disallow copying
-      PthreadsThread(const PthreadsThread&) = delete;
-      PthreadsThread& operator=(const PthreadsThread&) = delete;
+      PthreadsThread(const PthreadsThread&);
+      PthreadsThread& operator=(const PthreadsThread&);
 
       static void* runThread(void* pArgs) noexcept;
       PthreadsMutex         m_mutexAlive;

@@ -72,9 +72,6 @@ public:
     */
    virtual bool isInitialized() const noexcept;
    
-   // disallow copies
-   ThreadPoolQueue(const ThreadPoolQueue&) = delete;
-   ThreadPoolQueue& operator=(const ThreadPoolQueue&) = delete;
    
 private:
    ThreadingFactory* m_threadingFactory;
@@ -84,6 +81,11 @@ private:
    ConditionVariable* m_condQueueNotEmpty;
    bool m_isInitialized;
    bool m_isRunning;
+
+   // disallow copies
+   ThreadPoolQueue(const ThreadPoolQueue&);
+   ThreadPoolQueue& operator=(const ThreadPoolQueue&);
+
 };
 
 }

@@ -104,16 +104,17 @@ public:
     */
    virtual bool isEventRead(int eventIndex) noexcept override;
 
-   // copying not allowed
-   EpollServer(const EpollServer&) = delete;
-   EpollServer& operator=(const EpollServer&) = delete;
-
    
 private:
 #ifdef EPOLL_SUPPORT
    struct epoll_event* m_events;
 #endif
    int m_epfd;
+   
+   // copying not allowed
+   EpollServer(const EpollServer&);
+   EpollServer& operator=(const EpollServer&);
+
 };
 
 }

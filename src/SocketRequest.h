@@ -18,10 +18,6 @@ namespace chaudiere
  */
 class SocketRequest : public Runnable
 {
-private:
-   Socket* m_socket;
-   SocketServiceHandler* m_handler;
-    
 public:
    /**
     * Constructs a SocketRequest with a Socket and SocketServiceHandler
@@ -59,10 +55,15 @@ public:
     * Notifies the Socket that the request processing is complete
     */
    void requestComplete() noexcept;
+
    
+private:
+   Socket* m_socket;
+   SocketServiceHandler* m_handler;
+
    // copies not allowed
-   SocketRequest(const SocketRequest&) = delete;
-   SocketRequest& operator=(const SocketRequest&) = delete;
+   SocketRequest(const SocketRequest&);
+   SocketRequest& operator=(const SocketRequest&);
 };
 
 }
