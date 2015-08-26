@@ -38,7 +38,14 @@ public:
     * @return pointer to owned object
     */
    T& operator->() { return m_object; }
-
+   
+   T& operator()() { return m_object; }
+   
+   /**
+    *
+    */
+   T& operator*() { return *m_object; }
+   
    /**
     * Assigns new object to be owned by the AutoPointer. Deletes old one if present.
     * @param copyObject the new object that will be owned.
