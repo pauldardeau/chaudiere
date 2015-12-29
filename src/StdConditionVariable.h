@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_STDCONDITIONVARIABLE_H
 #define CHAUDIERE_STDCONDITIONVARIABLE_H
 
+#include <string>
 #include <condition_variable>
 
 #include "ConditionVariable.h"
@@ -21,6 +22,8 @@ public:
     * Default constructor
     */
    StdConditionVariable();
+
+   StdConditionVariable(const std::string& name);
    
    /**
     * Destructor
@@ -44,6 +47,8 @@ public:
     *
     */
    virtual void notifyAll() noexcept override;
+
+   const std::string& getName() const noexcept;
    
 
 private:
@@ -52,6 +57,7 @@ private:
    StdConditionVariable& operator=(const StdConditionVariable&);
 
    std::condition_variable m_cond;
+   std::string m_name;
 };
 
 }

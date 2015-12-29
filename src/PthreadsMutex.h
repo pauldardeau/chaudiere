@@ -80,7 +80,7 @@ private:
    PthreadsMutex(const PthreadsMutex&);
    PthreadsMutex& operator=(const PthreadsMutex&);
 
-   pthread_mutex_t  m_mutex;
+   pthread_mutex_t m_mutex;
    std::string m_mutexName;
    bool m_haveValidMutex;
    bool m_isLocked;

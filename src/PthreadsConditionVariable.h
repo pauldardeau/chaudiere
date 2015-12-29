@@ -5,6 +5,7 @@
 #define CHAUDIERE_PTHREADSCONDITIONVARIABLE_H
 
 #include <pthread.h>
+#include <string>
 
 #include "ConditionVariable.h"
 
@@ -21,6 +22,8 @@ public:
     * Default constructor
     */
    PthreadsConditionVariable();
+
+   PthreadsConditionVariable(const std::string& name);
    
    /**
     * Destructor
@@ -45,6 +48,8 @@ public:
     */
    virtual void notifyAll() noexcept override;
 
+   virtual const std::string& getName() const noexcept;
+
    
 private:
    // disallow copies
@@ -53,6 +58,7 @@ private:
 
    pthread_cond_t m_cond;
    bool m_initialized;
+   std::string m_name;
 };
 
 }

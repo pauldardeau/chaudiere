@@ -5,6 +5,7 @@
 #define CHAUDIERE_PTHREADSTHREAD_H
 
 #include <pthread.h>
+#include <string>
 
 #include "Thread.h"
 #include "PthreadsMutex.h"
@@ -23,7 +24,9 @@ class PthreadsThread : public Thread
 
 
       PthreadsThread() noexcept;
+      explicit PthreadsThread(const std::string& name) noexcept;
       explicit PthreadsThread(Runnable* runnable) noexcept;
+      explicit PthreadsThread(Runnable* runnable, const std::string& name) noexcept;
       virtual ~PthreadsThread() noexcept;
 
       virtual bool start() noexcept override;
@@ -31,6 +34,7 @@ class PthreadsThread : public Thread
 
       unsigned long getExitCode() const noexcept;
       pthread_t getHandle() noexcept;
+      const std::string& getName() const noexcept;
 
 
    private:
@@ -43,6 +47,7 @@ class PthreadsThread : public Thread
       PthreadsMutex         m_mutexExitCode;
       pthread_t             m_threadHandle;
       unsigned long         m_exitCode;
+      std::string           m_name;
 };
 
 }

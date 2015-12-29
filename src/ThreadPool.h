@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_THREADPOOL_H
 #define CHAUDIERE_THREADPOOL_H
 
+#include <string>
 #include <list>
 #include <memory>
 
@@ -29,6 +30,8 @@ public:
     * @param numberWorkers
     */
    explicit ThreadPool(int numberWorkers) noexcept;
+
+   explicit ThreadPool(int numberWorkers, const std::string& name) noexcept;
    
    /**
     *
@@ -36,6 +39,9 @@ public:
     * @param numberWorkers
     */
    ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers) noexcept;
+
+   ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers,
+              const std::string& name) noexcept;
 
    /**
     * Destructor
@@ -89,6 +95,8 @@ public:
     * @param numberWorkersToRemove
     */
    void removeWorkers(int numberWorkersToRemove) noexcept;
+
+   const std::string& getName() const noexcept;
    
    
 protected:
@@ -105,6 +113,7 @@ private:
    int m_workerCount;
    int m_workersCreated;
    bool m_isRunning;
+   std::string m_name;
    
    // disallow copies
    ThreadPool(const ThreadPool&);

@@ -23,38 +23,20 @@ public:
     * @see Mutex()
     */
    explicit MutexLock(Mutex& mutex) noexcept :
-      m_mutex(mutex),
-      m_isLocked(false)
-   {
-      if (m_mutex.haveValidMutex()) {
-         m_isLocked = m_mutex.lock();
-      }
+      m_mutex(mutex) {
+      m_mutex.lock();
    }
 
    /**
     * Destructor - unlocks the mutex
     */
-   ~MutexLock() noexcept
-   {
-      unlock();
-   }
-
-   /**
-    * Unlocks the mutex
-    */
-   void unlock() noexcept
-   {
-      if (m_isLocked) {
-         if (m_mutex.unlock()) {
-            m_isLocked = false;
-         }
-      }
+   ~MutexLock() noexcept {
+      m_mutex.unlock();
    }
 
     
 private:
    Mutex& m_mutex;
-   bool m_isLocked;
    
    MutexLock();
    MutexLock(const Mutex&);

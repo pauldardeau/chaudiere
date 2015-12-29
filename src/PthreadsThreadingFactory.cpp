@@ -24,39 +24,31 @@ PthreadsThreadingFactory::~PthreadsThreadingFactory() noexcept {
 
 //******************************************************************************
 
-Mutex* PthreadsThreadingFactory::createMutex() {
-   return new PthreadsMutex();
+Mutex* PthreadsThreadingFactory::createMutex(const std::string& name) {
+   return new PthreadsMutex(name);
 }
 
 //******************************************************************************
 
-Mutex* PthreadsThreadingFactory::createMutex(const std::string& mutexName) {
-   return new PthreadsMutex(mutexName);
+Thread* PthreadsThreadingFactory::createThread(const std::string& name) noexcept {
+   return createThread(NULL, name);
+}
+
+Thread* PthreadsThreadingFactory::createThread(Runnable* runnable,
+           const std::string& name) noexcept {
+   return new PthreadsThread(runnable, name);
 }
 
 //******************************************************************************
 
-Thread* PthreadsThreadingFactory::createThread() noexcept {
-   return createThread(nullptr);
+ConditionVariable* PthreadsThreadingFactory::createConditionVariable(const std::string& name) {
+   return new PthreadsConditionVariable(name);
 }
 
 //******************************************************************************
 
-Thread* PthreadsThreadingFactory::createThread(Runnable* runnable) noexcept {
-   return new PthreadsThread(runnable);
+ThreadPoolDispatcher* PthreadsThreadingFactory::createThreadPoolDispatcher(int numberThreads, const std::string& name) noexcept {
+   return new ThreadPool(this, numberThreads, name);
 }
 
-//******************************************************************************
-
-ConditionVariable* PthreadsThreadingFactory::createConditionVariable() {
-   return new PthreadsConditionVariable();
-}
-
-//******************************************************************************
-
-ThreadPoolDispatcher* PthreadsThreadingFactory::createThreadPoolDispatcher(int numberThreads) noexcept {
-   return new ThreadPool(this, numberThreads);
-}
-
-//******************************************************************************
 

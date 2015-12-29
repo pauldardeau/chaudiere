@@ -47,6 +47,8 @@ public:
     */
    virtual bool haveValidMutex() const noexcept = 0;
 
+   virtual const std::string& getName() const noexcept = 0;
+
    
 private:
    // copying not allowed
