@@ -2,7 +2,7 @@
 # BSD License
 
 CC = clang++
-CC_OPTS = -c -std=c++11 -I../src
+CC_OPTS = -c -fblocks -pthread -std=c++11 -I../src
 
 EXE_NAME = test_chaudiere
 LIB_NAME = ../src/libchaudiere.a
