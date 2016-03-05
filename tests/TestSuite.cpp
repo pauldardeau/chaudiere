@@ -178,7 +178,6 @@ void TestSuite::requireException(const char* exceptionType,
       ++m_numFailures;
       throw BasicException("no exception thrown");
    } catch (BasicException& be) {
-      printf("BasicException caught: %s\n", be.what());
       if (strcmp(exceptionType, be.getType())) {
          ++m_numFailures;
          throw BasicException("Wrong exception type");
