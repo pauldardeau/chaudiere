@@ -19,12 +19,23 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-int StrUtils::parseInt(const std::string& s) noexcept {
-   printf("parseInt: '%s'\n", s.c_str());
+int StrUtils::parseInt(const std::string& s) {
+   // scan for valid characters (0-9, and possibly '-' in first position)
+   for (int i = 0; i < s.length(); ++i) {
+      char c = s[i];
+      int digit_value = c - '0';
+      if (digit_value < 0 || digit_value > 9) {
+         if (0 == i && c == '-') {
+            // a minus sign as first character is our only exception to 0-9
+         } else {
+            throw NumberFormatException(s);
+         }
+      }
+   }
+
    int intValue = ::atoi(s.c_str());
    if (intValue == 0) {
       if (s != ZERO) {
-         printf("throwing NumberFormatException\n");
          throw NumberFormatException(s);
       }
    }
