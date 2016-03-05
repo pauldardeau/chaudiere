@@ -88,7 +88,7 @@ public:
    /**
     *
     */
-   void notifyOnCompletion() noexcept;
+   void notifyOnCompletion() noexcept override;
    
    
    /**
