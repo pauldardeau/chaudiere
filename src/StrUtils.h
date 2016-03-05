@@ -20,7 +20,7 @@ public:
     * @param s the string to parse for integer
     * @return integer value
     */
-   static int parseInt(const std::string& s) noexcept;
+   static int parseInt(const std::string& s);
    
    /**
     * Construct a string from an integer
