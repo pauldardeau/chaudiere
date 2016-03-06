@@ -48,13 +48,22 @@ void StdThread::runThread(StdThread* thread) noexcept
 //******************************************************************************
 
 StdThread::StdThread() noexcept :
-   StdThread(nullptr) {
+   StdThread(NULL, "") {
+}
+
+StdThread::StdThread(const std::string& name) noexcept :
+   StdThread(NULL, name) {
 }
 
 //******************************************************************************
 
 StdThread::StdThread(Runnable* runnable) noexcept :
-   Thread(m_mutexAlive, runnable) {
+   StdThread(NULL, "") {
+}
+
+StdThread::StdThread(Runnable* runnable, const std::string& name) noexcept :
+   Thread(m_mutexAlive, runnable),
+   m_name(name) {
    Logger::logInstanceCreate("StdThread");
 }
 
@@ -99,4 +108,8 @@ std::thread::id StdThread::getStdThreadId() const noexcept {
 }
 
 //******************************************************************************
+
+const std::string& StdThread::getName() const noexcept {
+   return m_name;
+}
 

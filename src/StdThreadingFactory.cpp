@@ -24,43 +24,31 @@ StdThreadingFactory::~StdThreadingFactory() noexcept {
 
 //******************************************************************************
 
-Mutex* StdThreadingFactory::createMutex() {
-   return new StdMutex();
+Mutex* StdThreadingFactory::createMutex(const std::string& name) {
+   return new StdMutex(name);
 }
 
 //******************************************************************************
 
-Mutex* StdThreadingFactory::createMutex(const std::string& mutexName) {
-   return new StdMutex(mutexName);
+Thread* StdThreadingFactory::createThread(const std::string& name) noexcept {
+   return createThread(NULL, name);
 }
 
-//******************************************************************************
-
-Thread* StdThreadingFactory::createThread() noexcept {
-   return createThread(nullptr);
-}
-
-//******************************************************************************
-
-Thread* StdThreadingFactory::createThread(Runnable* runnable) noexcept {
-   if (runnable != nullptr) {
-      return new StdThread(runnable);
+Thread* StdThreadingFactory::createThread(Runnable* runnable, const std::string& name) noexcept {
+   if (runnable != NULL) {
+      return new StdThread(runnable, name);
    } else {
-      return new StdThread();
+      return new StdThread(name);
    }
 }
 
 //******************************************************************************
 
-ConditionVariable* StdThreadingFactory::createConditionVariable() {
-   return new StdConditionVariable();
+ConditionVariable* StdThreadingFactory::createConditionVariable(const std::string& name) {
+   return new StdConditionVariable(name);
 }
 
-//******************************************************************************
-
-ThreadPoolDispatcher* StdThreadingFactory::createThreadPoolDispatcher(int numberThreads) noexcept {
-   return new ThreadPool(this, numberThreads);
+ThreadPoolDispatcher* StdThreadingFactory::createThreadPoolDispatcher(int numberThreads, const std::string& name) noexcept {
+   return new ThreadPool(this, numberThreads, name);
 }
-
-//******************************************************************************
 

@@ -17,13 +17,24 @@ ThreadPool::ThreadPool(int numberWorkers) noexcept :
 
 //******************************************************************************
 
+ThreadPool::ThreadPool(int numberWorkers, const std::string& name) noexcept :
+   ThreadPool(ThreadingFactory::getThreadingFactory(), numberWorkers, name) {
+}
+
 ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
                        int numberWorkers) noexcept :
+   ThreadPool(threadingFactory, numberWorkers, "") {
+}
+
+ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
+                       int numberWorkers,
+                       const std::string& name) noexcept :
    m_threadingFactory(threadingFactory),
    m_queue(m_threadingFactory),
    m_workerCount(numberWorkers),
    m_workersCreated(0),
-   m_isRunning(false) {
+   m_isRunning(false),
+   m_name(name) {
    Logger::logInstanceCreate("ThreadPool");
 }
 
@@ -87,7 +98,7 @@ bool ThreadPool::addRequest(Runnable* runnableRequest) noexcept {
 //******************************************************************************
 
 Thread* ThreadPool::createThreadWithRunnable(Runnable* runnable) noexcept {
-   return m_threadingFactory->createThread(runnable);
+   return m_threadingFactory->createThread(runnable, "threadpool");
 }
 
 //******************************************************************************
@@ -135,3 +146,8 @@ void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) noexcept {
 }
 
 //******************************************************************************
+
+const std::string& ThreadPool::getName() const noexcept {
+   return m_name;
+}
+

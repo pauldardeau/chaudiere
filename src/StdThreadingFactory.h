@@ -28,26 +28,19 @@ public:
    ~StdThreadingFactory() noexcept;
 
   /**
-   * Create a new StdMutex
-   * @return pointer to newly created Mutex
-   * @see Mutex()
-   */
-  virtual Mutex* createMutex();
-  
-  /**
    * Create a new named StdMutex
-   * @param mutexName the name for the new Mutex
+   * @param name the name for the new Mutex
    * @return pointer to the newly created Mutex
    * @see Mutex()
    */
-  virtual Mutex* createMutex(const std::string& mutexName);
+  virtual Mutex* createMutex(const std::string& name);
   
   /**
    * Create a new StdThread
    * @return pointer to newly created Thread
    * @see Thread()
    */
-  virtual Thread* createThread() noexcept;
+  virtual Thread* createThread(const std::string& name) noexcept;
   
   /**
    * Creates a new StdThread to run the specified Runnable
@@ -56,23 +49,24 @@ public:
    * @see Thread()
    * @see Runnable()
    */
-  virtual Thread* createThread(Runnable* runnable) noexcept;
+  virtual Thread* createThread(Runnable* runnable,
+                               const std::string& name) noexcept;
   
   /**
    * Create a new StdConditionVariable
    * @return pointer to the newly created ConditionVariable
    * @see ConditionVariable()
    */
-  virtual ConditionVariable* createConditionVariable();
+  virtual ConditionVariable* createConditionVariable(const std::string& name);
   
   /**
    * Creates a new Std C++11 compatible ThreadPool
    * @param numberThreads the number of threads to initialize in the pool dispatcher
    * @return pointer to newly created ThreadPoolDispatcher
    */
-  virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads) noexcept;
+  virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
+             const std::string& name) noexcept; 
 
-   
 private:
    // disallow copies
    StdThreadingFactory(const StdThreadingFactory&);

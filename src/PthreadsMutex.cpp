@@ -23,13 +23,15 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
    m_mutexName(mutexName),
    m_haveValidMutex(false),
    m_isLocked(false) {
+
    Logger::logInstanceCreate("PthreadsMutex");
    char buffer[128];
    
    pthread_mutexattr_t attr;
    int rc = ::pthread_mutexattr_init(&attr);
    if (0 == rc) {
-      rc = ::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+      //rc = ::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+      rc = ::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
 
       if (0 == rc) {
          rc = ::pthread_mutex_init(&m_mutex, &attr);
@@ -76,19 +78,11 @@ bool PthreadsMutex::unlock() noexcept {
       if (0 == rc) {
          m_isLocked = false;
       } else {
-         Logger::error("unable to unlock PthreadsMutex");
+         printf("error: mutex unlock failed, name='%s'\n", m_mutexName.c_str());
       }
-      
       return !m_isLocked;
    } else {
-      if (!m_haveValidMutex) {
-         Logger::error("can't unlock PthreadsMutex, don't have valid mutex");
-      }
-      
-      if (!m_isLocked) {
-         Logger::error("can't unlock PthreadsMutex, not locked");
-      }
-      
+      printf("unlock not attempted, already unlocked, name='%s'\n", m_mutexName.c_str());
       return false;
    }
 }
@@ -97,11 +91,11 @@ bool PthreadsMutex::unlock() noexcept {
 
 bool PthreadsMutex::lock() noexcept {
    if (m_haveValidMutex) {
-      
       const int rc = ::pthread_mutex_lock(&m_mutex);
       if (0 == rc) {
          m_isLocked = true;
       } else {
+         printf("mutex lock failed, name='%s'\n", m_mutexName.c_str());
          std::string errorCode;
          
          switch(rc) {
@@ -123,14 +117,7 @@ bool PthreadsMutex::lock() noexcept {
       
       return m_isLocked;
    } else {
-      if (!m_haveValidMutex) {
-         Logger::error("can't lock PthreadsMutex, don't have a valid Pthreads mutex");
-      }
-      
-      if (m_isLocked) {
-         Logger::error("can't lock PthreadsMutex, already locked");
-      }
-      
+      printf("mutex locking not attempted, name='%s'\n", m_mutexName.c_str());
       return false;
    }
 }

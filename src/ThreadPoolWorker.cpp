@@ -35,7 +35,7 @@ ThreadPoolWorker::~ThreadPoolWorker() noexcept {
 
 void ThreadPoolWorker::start() noexcept {
    if (!m_workerThread) {
-      m_workerThread = m_threadingFactory->createThread(this);
+      m_workerThread = m_threadingFactory->createThread(this, "threadpoolworker");
       if (m_workerThread) {
          m_workerThread->setPoolWorkerStatus(true);
          m_workerThread->setWorkerId(std::to_string(m_workerId));

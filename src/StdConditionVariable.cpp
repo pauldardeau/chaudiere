@@ -14,6 +14,11 @@ StdConditionVariable::StdConditionVariable() {
    Logger::logInstanceCreate("StdConditionVariable");
 }
 
+StdConditionVariable::StdConditionVariable(const std::string& name) :
+   m_name(name) {
+   Logger::logInstanceCreate("StdConditionVariable");
+}
+
 //******************************************************************************
 
 StdConditionVariable::~StdConditionVariable() {
@@ -54,4 +59,8 @@ void StdConditionVariable::notifyAll() noexcept {
 }
 
 //******************************************************************************
+
+const std::string& StdConditionVariable::getName() const noexcept {
+   return m_name;
+}
 

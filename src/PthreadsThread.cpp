@@ -14,15 +14,24 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsThread::PthreadsThread() noexcept :
-   PthreadsThread(nullptr) {
+   PthreadsThread(NULL, "") {
+}
+
+PthreadsThread::PthreadsThread(const std::string& name) noexcept :
+   PthreadsThread(NULL, name) {
 }
 
 //******************************************************************************
 
 PthreadsThread::PthreadsThread(Runnable* runnable) noexcept :
+   PthreadsThread(runnable, "") {
+}
+
+PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) noexcept :
    Thread(m_mutexAlive, runnable),
    m_threadHandle(0),
-   m_exitCode(1L) {
+   m_exitCode(1L),
+   m_name(name) {
    Logger::logInstanceCreate("PthreadsThread");
 }
 
@@ -112,4 +121,8 @@ pthread_t PthreadsThread::getHandle() noexcept {
 }
 
 //******************************************************************************
+
+const std::string& PthreadsThread::getName() const noexcept {
+   return m_name;
+}
 

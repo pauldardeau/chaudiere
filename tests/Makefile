@@ -2,7 +2,7 @@
 # BSD License
 
 CC = clang++
-CC_OPTS = -c -std=c++11 -I../src
+CC_OPTS = -c -fblocks -pthread -std=c++11 -I../src
 
 EXE_NAME = test_chaudiere
 LIB_NAME = ../src/libchaudiere.a
@@ -40,7 +40,7 @@ clean :
 	rm -f $(EXE_NAME)
 	
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) -o $(EXE_NAME) $(OBJS) $(LIB_NAME)
+	$(CC) -o $(EXE_NAME) $(OBJS) $(LIB_NAME) -lpthread
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

@@ -446,9 +446,7 @@ bool SocketServer::init(int port)
       } else if (m_threading == CFG_THREADING_CPP11) {
          m_threadingFactory = new StdThreadingFactory();
       } else if (m_threading == CFG_THREADING_GCD_LIBDISPATCH) {
-         //TODO: figure out how to handle libdispatch
-         //threadingPackage = ThreadingFactory::ThreadingPackage::GCD_LIBDISPATCH;
-         //isUsingLibDispatch = true;
+         isUsingLibDispatch = true;
          m_threadingFactory = new PthreadsThreadingFactory();
       } else {
          m_threadingFactory = new PthreadsThreadingFactory();
@@ -461,13 +459,15 @@ bool SocketServer::init(int port)
       }
       
       m_threadPool =
-         m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize);
+         m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize, "threadpool");
       m_threadPool->start();
 
       concurrencyModel = "multithreaded - ";
       concurrencyModel += m_threading;
-      
-      if (!isUsingLibDispatch) {
+     
+      if (isUsingLibDispatch) {
+         concurrencyModel += " [libdispatch]";
+      } else {
          char numberThreads[128];
          std::snprintf(numberThreads, 128, " [%d threads]",
                        m_threadPoolSize);
@@ -665,8 +665,9 @@ int SocketServer::runKernelEventServer() noexcept {
    int rc = 0;
    
    if (m_threadingFactory != nullptr) {
-      Mutex* mutexFD(m_threadingFactory->createMutex("fdMutex"));
-      Mutex* mutexHWMConnections(m_threadingFactory->createMutex("hwmConnectionsMutex"));
+      Mutex* mutexFD = m_threadingFactory->createMutex("fdMutex");
+      Mutex* mutexHWMConnections =
+         m_threadingFactory->createMutex("hwmConnectionsMutex");
       
       if (m_kernelEventServer) {
          delete m_kernelEventServer;
@@ -686,7 +687,7 @@ int SocketServer::runKernelEventServer() noexcept {
       
       if (m_kernelEventServer != nullptr) {
          try {
-            SocketServiceHandler* serviceHandler(createSocketServiceHandler());
+            SocketServiceHandler* serviceHandler = createSocketServiceHandler();
 
             if (m_kernelEventServer->init(serviceHandler, m_serverPort, MAX_CON)) {
                m_kernelEventServer->run();
