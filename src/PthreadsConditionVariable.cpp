@@ -22,6 +22,8 @@ PthreadsConditionVariable::PthreadsConditionVariable() :
    }
 }
 
+//******************************************************************************
+
 PthreadsConditionVariable::PthreadsConditionVariable(const std::string& name) :
    m_initialized(false),
    m_name(name) {
@@ -51,7 +53,8 @@ bool PthreadsConditionVariable::wait(Mutex* mutex) noexcept {
          
          if (pthreadsMutex) {
             if (pthreadsMutex->isLocked()) {
-               if (0 != ::pthread_cond_wait(&m_cond, &pthreadsMutex->getPlatformPrimitive())) {
+               if (0 != ::pthread_cond_wait(&m_cond,
+                                            &pthreadsMutex->getPlatformPrimitive())) {
                   Logger::error("unable to wait on condition variable");
                } else {
                   return true;

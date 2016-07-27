@@ -17,6 +17,8 @@ PthreadsThread::PthreadsThread() noexcept :
    PthreadsThread(NULL, "") {
 }
 
+//******************************************************************************
+
 PthreadsThread::PthreadsThread(const std::string& name) noexcept :
    PthreadsThread(NULL, name) {
 }
@@ -26,6 +28,8 @@ PthreadsThread::PthreadsThread(const std::string& name) noexcept :
 PthreadsThread::PthreadsThread(Runnable* runnable) noexcept :
    PthreadsThread(runnable, "") {
 }
+
+//******************************************************************************
 
 PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) noexcept :
    Thread(m_mutexAlive, runnable),

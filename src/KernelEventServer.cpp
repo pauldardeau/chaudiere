@@ -78,7 +78,6 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
       return false;
    }
    
-   
    m_listenerFD = Socket::createSocket();
    if (m_listenerFD == -1) {
       Logger::critical("error: unable to create server listening socket");
