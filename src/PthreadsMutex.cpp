@@ -26,12 +26,12 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
 
    Logger::logInstanceCreate("PthreadsMutex");
    char buffer[128];
-   
+   int rc;
+
    pthread_mutexattr_t attr;
-   int rc = ::pthread_mutexattr_init(&attr);
+   rc = ::pthread_mutexattr_init(&attr);
    if (0 == rc) {
-      //rc = ::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
-      rc = ::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+      rc = ::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
 
       if (0 == rc) {
          rc = ::pthread_mutex_init(&m_mutex, &attr);
@@ -73,7 +73,7 @@ PthreadsMutex::~PthreadsMutex() noexcept {
 //******************************************************************************
 
 bool PthreadsMutex::unlock() noexcept {
-   if (m_haveValidMutex && m_isLocked) {
+   if (m_haveValidMutex) { // && m_isLocked) {
       const int rc = ::pthread_mutex_unlock(&m_mutex);
       if (0 == rc) {
          m_isLocked = false;
@@ -82,7 +82,10 @@ bool PthreadsMutex::unlock() noexcept {
       }
       return !m_isLocked;
    } else {
-      printf("unlock not attempted, already unlocked, name='%s'\n", m_mutexName.c_str());
+      if (!m_haveValidMutex) {
+         printf("error: mutex unlock called, missing valid mutex\n");
+      }
+
       return false;
    }
 }
@@ -117,7 +120,7 @@ bool PthreadsMutex::lock() noexcept {
       
       return m_isLocked;
    } else {
-      printf("mutex locking not attempted, name='%s'\n", m_mutexName.c_str());
+      printf("locking not attempted, no valid mutex, name='%s'\n", m_mutexName.c_str());
       return false;
    }
 }

@@ -41,6 +41,9 @@ PthreadsConditionVariable::PthreadsConditionVariable(const std::string& name) :
 
 PthreadsConditionVariable::~PthreadsConditionVariable() {
    Logger::logInstanceDestroy("PthreadsConditionVariable");
+   if (m_initialized) {
+      ::pthread_cond_destroy(&m_cond);
+   }
 }
 
 //******************************************************************************
@@ -52,16 +55,11 @@ bool PthreadsConditionVariable::wait(Mutex* mutex) noexcept {
             dynamic_cast<PthreadsMutex*>(mutex);
          
          if (pthreadsMutex) {
-            if (pthreadsMutex->isLocked()) {
-               if (0 != ::pthread_cond_wait(&m_cond,
-                                            &pthreadsMutex->getPlatformPrimitive())) {
-                  Logger::error("unable to wait on condition variable");
-               } else {
-                  return true;
-               }
+            if (0 != ::pthread_cond_wait(&m_cond,
+                                         &pthreadsMutex->getPlatformPrimitive())) {
+               Logger::error("unable to wait on condition variable");
             } else {
-               Logger::error("mutex must be locked before calling wait");
-               throw BasicException("mutex must be locked before calling wait");
+               return true;
             }
          } else {
             Logger::error("mutex must be an instance of PthreadsMutex");

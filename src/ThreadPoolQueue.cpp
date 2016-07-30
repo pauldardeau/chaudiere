@@ -18,7 +18,6 @@ using namespace chaudiere;
 ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
    m_threadingFactory(threadingFactory),
    m_mutex(NULL),
-   m_condQueueEmpty(NULL),
    m_condQueueNotEmpty(NULL),
    m_isInitialized(false),
    m_isRunning(false) {
@@ -27,11 +26,9 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
 
    try {
       m_mutex = m_threadingFactory->createMutex("ThreadPoolQueue");
-      m_condQueueEmpty = m_threadingFactory->createConditionVariable("queue-empty");
       m_condQueueNotEmpty = m_threadingFactory->createConditionVariable("queue-not-empty");
          
       if ((m_mutex != NULL) &&
-          (m_condQueueEmpty != NULL) &&
           (m_condQueueNotEmpty != NULL)) {
          m_isInitialized = true;
          m_isRunning = true;
@@ -39,9 +36,6 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
          Logger::error("unable to initialize ThreadPoolQueue");
          if (NULL == m_mutex) {
             Logger::error("unable to create mutex");
-         }
-         if (NULL == m_condQueueEmpty) {
-            Logger::error("unable to create queue empty condition variable");
          }
          if (NULL == m_condQueueNotEmpty) {
             Logger::error("unable to create queue not empty condition variable");
@@ -66,9 +60,6 @@ ThreadPoolQueue::~ThreadPoolQueue() noexcept {
    if (NULL != m_mutex) {
       delete m_mutex;
    }
-   if (NULL != m_condQueueEmpty) {
-      delete m_condQueueEmpty;
-   }
    if (NULL != m_condQueueNotEmpty) {
       delete m_condQueueNotEmpty;
    }
@@ -86,18 +77,18 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
       Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::addRequest rejecting NULL request");
       return false;
    }
-   
-   MutexLock lock(*m_mutex);
+  
+   MutexLock lock(*m_mutex, "ThreadPoolQueue::addRequest");
    
    if (!m_isRunning) {
       Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::addRequest rejecting request, queue is shutting down");
       return false;
    }
    
-   if (!m_mutex->haveValidMutex()) {
-      Logger::error("don't have valid mutex in addRequest");
-      ::exit(1);
-   }
+   //if (!m_mutex->haveValidMutex()) {
+   //   Logger::error("don't have valid mutex in addRequest");
+   //   ::exit(1);
+   //}
 
    Logger::log(Logger::LogLevel::Debug, "ThreadPoolQueue::addRequest accepting request");
    
@@ -107,12 +98,12 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
    m_queue.push_back(runnableRequest);
    
    // did we just transition from QUEUE_EMPTY to QUEUE_NOT_EMPTY?
-   if (wasEmpty && !m_queue.empty()) {
+   if (wasEmpty) {
       // signal QUEUE_NOT_EMPTY (wake up a worker thread)
       Logger::log(Logger::LogLevel::Debug, "signalling queue_not_empty");
       m_condQueueNotEmpty->notifyAll();
    }
-   
+  
    return true;
 }
 
@@ -124,24 +115,22 @@ Runnable* ThreadPoolQueue::takeRequest() noexcept {
       return NULL;
    }
 
-   MutexLock lock(*m_mutex);
+   MutexLock lock(*m_mutex, "ThreadPoolQueue::takeRequest");
 
    // is the queue shut down?
    if (!m_isRunning) {
       return NULL;
    }
    
-   if (!m_mutex->haveValidMutex()) {
-      Logger::error("don't have valid mutex in takeRequest");
-      exit(1);
-   }
+   //if (!m_mutex->haveValidMutex()) {
+   //   Logger::error("don't have valid mutex in takeRequest");
+   //   exit(1);
+   //}
    
    Runnable* request = NULL;
   
    // is the queue empty?
-   while (m_queue.empty() && m_isRunning) {
-      //printf( "queue is empty, waiting for QUEUE_NOT_EMPTY event\n" );
-
+   while (m_queue.empty()) { // && m_isRunning) {
       // empty queue -- wait for QUEUE_NOT_EMPTY event
       m_condQueueNotEmpty->wait(m_mutex);
    }
@@ -150,13 +139,6 @@ Runnable* ThreadPoolQueue::takeRequest() noexcept {
       // take a request from the queue
       request = m_queue.front();
       m_queue.pop_front();
-         
-      // did we empty the queue?
-      if (m_queue.empty()) {
-         Logger::log(Logger::LogLevel::Debug, "--- signalling queue_empty_event");
-         // signal that queue is now empty
-         m_condQueueEmpty->notifyOne();
-      }
    }
 
    return request;
@@ -167,13 +149,8 @@ Runnable* ThreadPoolQueue::takeRequest() noexcept {
 void ThreadPoolQueue::shutDown() noexcept {
    printf("ThreadPoolQueue::shutDown\n");
    if (m_isInitialized && m_isRunning) {
-      MutexLock lock(*m_mutex);
+      MutexLock lock(*m_mutex, "ThreadPoolQueue::shutDown");
       m_isRunning = false;
-   
-      if (!m_queue.empty()) {
-         // wait for QUEUE_EMPTY event
-         m_condQueueEmpty->wait(m_mutex);
-      }
    }
 }
 
@@ -186,8 +163,6 @@ bool ThreadPoolQueue::isRunning() const noexcept {
 //******************************************************************************
 
 bool ThreadPoolQueue::isEmpty() const noexcept {
-   printf("ThreadPoolQueue::isEmpty\n");
-   //MutexLock lock(*m_mutex);
    return m_queue.empty();
 }
 
