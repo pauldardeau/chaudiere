@@ -41,7 +41,6 @@
 #include "AutoPointer.h"
 
 
-
 static const std::string CFG_TRUE_SETTING_VALUES = "yes|true|1";
 
 static const std::string EMPTY = "";
@@ -109,13 +108,11 @@ static const std::string APP_PREFIX = "app:";
 
 static const auto APP_PREFIX_LEN = APP_PREFIX.length();
 
-static const char* LOG_WEEKDAY_NAME[7] =
-{
+static const char* LOG_WEEKDAY_NAME[7] = {
    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
-static const char* LOG_MONTH_NAME[12] =
-{
+static const char* LOG_MONTH_NAME[12] = {
    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
@@ -413,7 +410,6 @@ bool SocketServer::init(int port)
       return false;
    }
 
-
    if (!m_isUsingKernelEventServer) {
       try {
          if (isLoggingDebug) {
@@ -534,14 +530,15 @@ std::string SocketServer::getSystemDateGMT() const noexcept {
    struct tm* timeptr = ::gmtime(&currentGMT);
    char dateBuffer[128];
    
-   std::snprintf(dateBuffer, 128, "%.3s, %02d %.3s %d %.2d:%.2d:%.2d GMT",
-             LOG_WEEKDAY_NAME[timeptr->tm_wday],
-             timeptr->tm_mday,
-             LOG_MONTH_NAME[timeptr->tm_mon],
-             1900 + timeptr->tm_year,
-             timeptr->tm_hour,
-             timeptr->tm_min,
-             timeptr->tm_sec);
+   std::snprintf(dateBuffer, 128,
+                 "%.3s, %02d %.3s %d %.2d:%.2d:%.2d GMT",
+                 LOG_WEEKDAY_NAME[timeptr->tm_wday],
+                 timeptr->tm_mday,
+                 LOG_MONTH_NAME[timeptr->tm_mon],
+                 1900 + timeptr->tm_year,
+                 timeptr->tm_hour,
+                 timeptr->tm_min,
+                 timeptr->tm_sec);
    
    return std::string(dateBuffer);
 }
@@ -555,13 +552,14 @@ std::string SocketServer::getLocalDateTime() const noexcept {
    struct tm* timeptr = ::localtime(&currentTime);
    char dateBuffer[128];
    
-   std::snprintf(dateBuffer, 128, "%d-%02d-%02d %.2d:%.2d:%.2d",
-             1900 + timeptr->tm_year,
-             timeptr->tm_mon + 1,
-             timeptr->tm_mday,
-             timeptr->tm_hour,
-             timeptr->tm_min,
-             timeptr->tm_sec);
+   std::snprintf(dateBuffer, 128,
+                 "%d-%02d-%02d %.2d:%.2d:%.2d",
+                 1900 + timeptr->tm_year,
+                 timeptr->tm_mon + 1,
+                 timeptr->tm_mday,
+                 timeptr->tm_hour,
+                 timeptr->tm_min,
+                 timeptr->tm_sec);
    
    return std::string(dateBuffer);
 }

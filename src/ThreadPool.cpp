@@ -21,10 +21,14 @@ ThreadPool::ThreadPool(int numberWorkers, const std::string& name) noexcept :
    ThreadPool(ThreadingFactory::getThreadingFactory(), numberWorkers, name) {
 }
 
+//*****************************************************************************
+
 ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
                        int numberWorkers) noexcept :
    ThreadPool(threadingFactory, numberWorkers, "") {
 }
+
+//*****************************************************************************
 
 ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
                        int numberWorkers,
