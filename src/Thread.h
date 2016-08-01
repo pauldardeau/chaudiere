@@ -9,16 +9,16 @@
 #include "KeyValuePairs.h"
 
 
-namespace chaudiere
-{
-   class Mutex;
-   class ThreadCompletionObserver;
+namespace chaudiere {
+
+class Mutex;
+class ThreadCompletionObserver;
 
 /**
  * Thread is an abstract base class for working with threads.
  */
-class Thread : public Runnable
-{
+class Thread : public Runnable {
+
 public:
    /**
     *
@@ -181,3 +181,4 @@ private:
 }
 
 #endif
+
