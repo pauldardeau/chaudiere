@@ -24,14 +24,20 @@ public:
     *
     * @param mutexAlive
     */
-   explicit Thread(Mutex& mutexAlive) noexcept;
+   explicit Thread(Mutex* mutexAlive) noexcept;
+
+   /**
+    *
+    * @param runnable
+    */
+   Thread(Runnable* runnable) noexcept;
    
    /**
     *
     * @param mutexAlive
     * @param runnable
     */
-   Thread(Mutex& mutexAlive, Runnable* runnable) noexcept;
+   Thread(Mutex* mutexAlive, Runnable* runnable) noexcept;
    
    /**
     * Destructor
@@ -168,7 +174,7 @@ private:
    Runnable* m_runnable;
    bool m_isAlive;
    bool m_isPoolWorker;
-   Mutex& m_mutexAlive;
+   Mutex* m_mutexAlive; // weak
    ThreadCompletionObserver* m_threadCompletionObserver;
    KeyValuePairs m_attributes;
    

@@ -19,13 +19,19 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-Thread::Thread(Mutex& mutexAlive) noexcept :
+Thread::Thread(Mutex* mutexAlive) noexcept :
    Thread(mutexAlive, nullptr) {
 }
 
 //******************************************************************************
 
-Thread::Thread(Mutex& mutexAlive, Runnable* runnable) noexcept :
+Thread::Thread(Runnable* runnable) noexcept :
+   Thread(nullptr, runnable) {
+}
+
+//******************************************************************************
+
+Thread::Thread(Mutex* mutexAlive, Runnable* runnable) noexcept :
    m_runnable(runnable),
    m_isAlive(false),
    m_isPoolWorker(false),
@@ -67,8 +73,12 @@ bool Thread::isAlive() const noexcept {
    
    {
       Thread* pThis = const_cast<Thread*>(this);
-      MutexLock lockMutexAlive(pThis->m_mutexAlive);
-      rc = m_isAlive;
+      if (nullptr != pThis->m_mutexAlive) {
+         MutexLock lockMutexAlive(*pThis->m_mutexAlive);
+         rc = m_isAlive;
+      } else {
+         rc = m_isAlive;
+      }
    }
    
    return rc;
@@ -77,8 +87,12 @@ bool Thread::isAlive() const noexcept {
 //******************************************************************************
 
 void Thread::setAlive(bool isAlive) noexcept {
-   MutexLock lockMutexAlive(m_mutexAlive);
-   m_isAlive = isAlive;
+   if (nullptr != m_mutexAlive) {
+      MutexLock lockMutexAlive(*m_mutexAlive);
+      m_isAlive = isAlive;
+   } else {
+      m_isAlive = isAlive;
+   }
 }
 
 //******************************************************************************

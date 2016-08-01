@@ -32,7 +32,7 @@ PthreadsThread::PthreadsThread(Runnable* runnable) noexcept :
 //******************************************************************************
 
 PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) noexcept :
-   Thread(m_mutexAlive, runnable),
+   Thread(&m_mutexAlive, runnable),
    m_threadHandle(0),
    m_exitCode(1L),
    m_name(name) {

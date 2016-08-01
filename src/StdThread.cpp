@@ -62,7 +62,7 @@ StdThread::StdThread(Runnable* runnable) noexcept :
 }
 
 StdThread::StdThread(Runnable* runnable, const std::string& name) noexcept :
-   Thread(m_mutexAlive, runnable),
+   Thread(&m_mutexAlive, runnable),
    m_name(name) {
    Logger::logInstanceCreate("StdThread");
 }
