@@ -64,7 +64,6 @@ bool IniReader::readSection(const std::string& section,
       sectionContents = m_fileContents.substr(posEndSection);
    }
     
-    
    std::string::size_type posEol;
    std::string::size_type index = 0;
     

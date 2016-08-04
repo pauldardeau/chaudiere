@@ -73,8 +73,7 @@ void ThreadPoolWorker::run() noexcept {
             runnable->setRunByThreadId(m_workerId);
             runnable->setRunByThreadWorkerId(m_workerThread->getWorkerId());
             
-            try
-            {
+            try {
                runnable->run();
             } catch (const BasicException& be) {
                Logger::error("run method of runnable threw exception: " + be.whatString());
@@ -86,7 +85,9 @@ void ThreadPoolWorker::run() noexcept {
 
             if (Logger::isLogging(Logger::LogLevel::Debug)) {
                char message[128];
-               std::snprintf(message, 128, "ending processing request on thread %d", m_workerId);
+               std::snprintf(message, 128,
+                             "ending processing request on thread %d",
+                             m_workerId);
                Logger::debug(std::string(message));
             }
          }

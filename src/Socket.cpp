@@ -210,10 +210,10 @@ int Socket::getUserIndex() const noexcept {
 bool Socket::setTcpNoDelay(bool on) noexcept {
    int sockopt_arg = on ? 1 : 0;
    return (0 == ::setsockopt(m_socketFD,
-               IPPROTO_TCP,
-               TCP_NODELAY,
-               (char *) &sockopt_arg,
-               sizeof(sockopt_arg)));
+                             IPPROTO_TCP,
+                             TCP_NODELAY,
+                             (char *) &sockopt_arg,
+                             sizeof(sockopt_arg)));
 }
 
 //******************************************************************************
@@ -223,10 +223,10 @@ bool Socket::getTcpNoDelay() const noexcept {
    socklen_t len = sizeof(int);
     
    if (0 == ::getsockopt(m_socketFD,
-                        IPPROTO_TCP,
-                        TCP_NODELAY,
-                        (char*) &result,
-                        &len)) {
+                         IPPROTO_TCP,
+                         TCP_NODELAY,
+                         (char*) &result,
+                         &len)) {
       return (result > 0 ? true : false);
    } else {
       // error
@@ -239,10 +239,10 @@ bool Socket::getTcpNoDelay() const noexcept {
 bool Socket::setSendBufferSize(int size) noexcept {
    int sockopt_arg = size;
    return (0 == ::setsockopt(m_socketFD,
-               SOL_SOCKET,
-               SO_SNDBUF,
-               (char *) &sockopt_arg,
-               sizeof(sockopt_arg)));
+                             SOL_SOCKET,
+                             SO_SNDBUF,
+                             (char *) &sockopt_arg,
+                             sizeof(sockopt_arg)));
 }
 
 //******************************************************************************
@@ -252,10 +252,10 @@ int Socket::getSendBufferSize() const noexcept {
    socklen_t len = sizeof(int);
     
    if (0 == ::getsockopt(m_socketFD,
-                        SOL_SOCKET,
-                        SO_SNDBUF,
-                        (char*) &result,
-                        &len)) {
+                         SOL_SOCKET,
+                         SO_SNDBUF,
+                         (char*) &result,
+                         &len)) {
       return result;
    } else {
       // error
@@ -268,10 +268,10 @@ int Socket::getSendBufferSize() const noexcept {
 bool Socket::setReceiveBufferSize(int size) noexcept {
    int sockopt_arg = size;
    return (0 == ::setsockopt(m_socketFD,
-               SOL_SOCKET,
-               SO_RCVBUF,
-               (char *) &sockopt_arg,
-               sizeof(sockopt_arg)));
+                             SOL_SOCKET,
+                             SO_RCVBUF,
+                             (char *) &sockopt_arg,
+                             sizeof(sockopt_arg)));
 }
 
 //******************************************************************************
@@ -281,10 +281,10 @@ int Socket::getReceiveBufferSize() const noexcept {
    socklen_t len = sizeof(int);
     
    if (0 == ::getsockopt(m_socketFD,
-                        SOL_SOCKET,
-                        SO_RCVBUF,
-                        (char*) &result,
-                        &len)) {
+                         SOL_SOCKET,
+                         SO_RCVBUF,
+                         (char*) &result,
+                         &len)) {
       return result;
    } else {
       // error
@@ -297,10 +297,10 @@ int Socket::getReceiveBufferSize() const noexcept {
 bool Socket::setKeepAlive(bool on) noexcept {
    int sockopt_arg = on ? 1 : 0;
    return (0 == ::setsockopt(m_socketFD,
-               SOL_SOCKET,
-               SO_KEEPALIVE,
-               (char *) &sockopt_arg,
-               sizeof(sockopt_arg)));
+                             SOL_SOCKET,
+                             SO_KEEPALIVE,
+                             (char *) &sockopt_arg,
+                             sizeof(sockopt_arg)));
 }
 
 //******************************************************************************
@@ -310,10 +310,10 @@ bool Socket::getKeepAlive() const noexcept {
    socklen_t len = sizeof(int);
     
    if (0 == ::getsockopt(m_socketFD,
-                        SOL_SOCKET,
-                        SO_KEEPALIVE,
-                        (char*) &result,
-                        &len)) {
+                         SOL_SOCKET,
+                         SO_KEEPALIVE,
+                         (char*) &result,
+                         &len)) {
       return (result > 0 ? true : false);
    } else {
       // error
