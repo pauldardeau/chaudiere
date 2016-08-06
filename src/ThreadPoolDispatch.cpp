@@ -2,6 +2,7 @@
 // BSD License
 
 #ifndef __linux__
+// libdispatch (core of Apple's Grand Central Dispatch)
 #include <dispatch/dispatch.h>
 #include <dispatch/queue.h>
 #endif
