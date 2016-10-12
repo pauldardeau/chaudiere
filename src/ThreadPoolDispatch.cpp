@@ -1,10 +1,13 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#ifndef __linux__
+#if defined(__FreeBSD__) || defined(__APPLE__)
+#define HAVE_GCD 1
 // libdispatch (core of Apple's Grand Central Dispatch)
 #include <dispatch/dispatch.h>
 #include <dispatch/queue.h>
+#else
+#undef HAVE_GCD
 #endif
 
 #include "ThreadPoolDispatch.h"
@@ -48,7 +51,7 @@ bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) noexcept {
       return false;
    }
    
-#ifndef __linux__
+#ifdef HAVE_GCD
    dispatch_queue_t queue =
       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
    
