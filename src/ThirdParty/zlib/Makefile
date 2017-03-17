@@ -1,7 +1,7 @@
 # Copyright Paul Dardeau, SwampBits LLC 2014
 # BSD License
 
-CC = clang
+CC = gcc
 CC_OPTS = -c
 
 OBJS = adler32.o \
