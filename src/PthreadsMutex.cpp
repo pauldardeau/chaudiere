@@ -15,7 +15,9 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsMutex::PthreadsMutex() :
-   PthreadsMutex(EMPTY_STRING) {
+   m_mutexName(EMPTY_STRING),
+   m_haveValidMutex(false),
+   m_isLocked(false) {
 }
 
 //******************************************************************************

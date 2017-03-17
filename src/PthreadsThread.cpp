@@ -14,19 +14,28 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsThread::PthreadsThread() :
-   PthreadsThread(NULL, "") {
+   Thread(&m_mutexAlive, NULL),
+   m_threadHandle(0),
+   m_exitCode(1L),
+   m_name("") {
 }
 
 //******************************************************************************
 
 PthreadsThread::PthreadsThread(const std::string& name) :
-   PthreadsThread(NULL, name) {
+   Thread(&m_mutexAlive, NULL),
+   m_threadHandle(0),
+   m_exitCode(1L),
+   m_name(name) {
 }
 
 //******************************************************************************
 
 PthreadsThread::PthreadsThread(Runnable* runnable) :
-   PthreadsThread(runnable, "") {
+   Thread(&m_mutexAlive, runnable),
+   m_threadHandle(0),
+   m_exitCode(1L),
+   m_name("") {
 }
 
 //******************************************************************************
