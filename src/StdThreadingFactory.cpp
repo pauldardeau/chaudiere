@@ -12,13 +12,13 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-StdThreadingFactory::StdThreadingFactory() noexcept {
+StdThreadingFactory::StdThreadingFactory() {
    Logger::logInstanceCreate("StdThreadingFactory");
 }
 
 //******************************************************************************
 
-StdThreadingFactory::~StdThreadingFactory() noexcept {
+StdThreadingFactory::~StdThreadingFactory() {
    Logger::logInstanceDestroy("StdThreadingFactory");
 }
 
@@ -30,11 +30,13 @@ Mutex* StdThreadingFactory::createMutex(const std::string& name) {
 
 //******************************************************************************
 
-Thread* StdThreadingFactory::createThread(const std::string& name) noexcept {
+Thread* StdThreadingFactory::createThread(const std::string& name) {
    return createThread(NULL, name);
 }
 
-Thread* StdThreadingFactory::createThread(Runnable* runnable, const std::string& name) noexcept {
+//******************************************************************************
+
+Thread* StdThreadingFactory::createThread(Runnable* runnable, const std::string& name) {
    if (runnable != NULL) {
       return new StdThread(runnable, name);
    } else {
@@ -48,7 +50,11 @@ ConditionVariable* StdThreadingFactory::createConditionVariable(const std::strin
    return new StdConditionVariable(name);
 }
 
-ThreadPoolDispatcher* StdThreadingFactory::createThreadPoolDispatcher(int numberThreads, const std::string& name) noexcept {
+//******************************************************************************
+
+ThreadPoolDispatcher* StdThreadingFactory::createThreadPoolDispatcher(int numberThreads, const std::string& name) {
    return new ThreadPool(this, numberThreads, name);
 }
+
+//******************************************************************************
 

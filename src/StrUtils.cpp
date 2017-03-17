@@ -45,7 +45,7 @@ int StrUtils::parseInt(const std::string& s) {
 
 //******************************************************************************
 
-std::string StrUtils::toString(int i) noexcept {
+std::string StrUtils::toString(int i) {
    char buffer[40];
    snprintf(buffer, sizeof(buffer), "%d", i);
    return std::string(buffer);
@@ -53,20 +53,20 @@ std::string StrUtils::toString(int i) noexcept {
 
 //******************************************************************************
 
-void StrUtils::toLowerCase(std::string& s) noexcept {
+void StrUtils::toLowerCase(std::string& s) {
    if (!s.empty()) {
-      for (auto &c : s) {
-         c = tolower(c);
+      for (std::size_t i = 0; i < s.length(); i++) {
+         s[i] = tolower(s[i]);
       }
    }
 }
 
 //******************************************************************************
 
-void StrUtils::toUpperCase(std::string& s) noexcept {
+void StrUtils::toUpperCase(std::string& s) {
    if (!s.empty()) {
-      for (auto &c : s) {
-         c = toupper(c);
+      for (std::size_t i = 0; i < s.length(); i++) {
+         s[i] = toupper(s[i]);
       }
    }
 }
@@ -74,7 +74,7 @@ void StrUtils::toUpperCase(std::string& s) noexcept {
 //******************************************************************************
 
 bool StrUtils::startsWith(const std::string& haystack,
-                          const std::string& needle) noexcept {
+                          const std::string& needle) {
    if (!haystack.empty() && !needle.empty()) {
       const std::string::size_type haystackLength = haystack.length();
       const std::string::size_type needleLength = needle.length();
@@ -96,7 +96,7 @@ bool StrUtils::startsWith(const std::string& haystack,
 //******************************************************************************
 
 bool StrUtils::endsWith(const std::string& haystack,
-                        const std::string& needle) noexcept {
+                        const std::string& needle) {
    if (!haystack.empty() && !needle.empty()) {
       const std::string::size_type haystackLength = haystack.length();
       const std::string::size_type needleLength = needle.length();
@@ -120,19 +120,19 @@ bool StrUtils::endsWith(const std::string& haystack,
 //******************************************************************************
 
 bool StrUtils::containsString(const std::string& haystack,
-                              const std::string& needle) noexcept {
+                              const std::string& needle) {
    return (std::string::npos != haystack.find(needle));
 }
 
 //******************************************************************************
 
-std::string& StrUtils::strip(std::string& s, char strip) noexcept {
+std::string& StrUtils::strip(std::string& s, char strip) {
    return stripLeading(stripTrailing(s, strip), strip);
 }
 
 //******************************************************************************
 
-std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept {
+std::string& StrUtils::stripTrailing(std::string& s, char strip) {
    if (s.empty()) {
       return s;
    }
@@ -160,7 +160,7 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) noexcept {
 
 //******************************************************************************
 
-std::string& StrUtils::stripLeading(std::string& s, char stripChar) noexcept {
+std::string& StrUtils::stripLeading(std::string& s, char stripChar) {
    if (s.empty()) {
       return s;
    }
@@ -183,7 +183,7 @@ std::string& StrUtils::stripLeading(std::string& s, char stripChar) noexcept {
 
 //******************************************************************************
 
-std::string& StrUtils::trimLeadingSpaces(std::string& s) noexcept {
+std::string& StrUtils::trimLeadingSpaces(std::string& s) {
    const std::string::size_type posFirstNonSpace = s.find_first_not_of(SPACE);
     
    if ((std::string::npos != posFirstNonSpace) && (posFirstNonSpace > 0)) {
@@ -195,19 +195,19 @@ std::string& StrUtils::trimLeadingSpaces(std::string& s) noexcept {
 
 //******************************************************************************
 
-std::string StrUtils::trim(const std::string& s) noexcept {
+std::string StrUtils::trim(const std::string& s) {
    return StrUtils::strip(s);
 }
 
 //**************************************************************************
 
-std::string StrUtils::strip(const std::string& s) noexcept {
+std::string StrUtils::strip(const std::string& s) {
    return StrUtils::strip(s, ' ');
 }
 
 //******************************************************************************
 
-std::string StrUtils::strip(const std::string& s, char strip) noexcept {
+std::string StrUtils::strip(const std::string& s, char strip) {
    if (s.empty()) {
       return EMPTY;
    }
@@ -245,7 +245,7 @@ std::string StrUtils::strip(const std::string& s, char strip) noexcept {
 
 std::string& StrUtils::replaceAll(std::string& s,
                                   const std::string& searchFor,
-                                  const std::string& replaceWith) noexcept {
+                                  const std::string& replaceWith) {
    std::string::size_type posSearchFor = s.find(searchFor);
     
    if (posSearchFor == std::string::npos) {

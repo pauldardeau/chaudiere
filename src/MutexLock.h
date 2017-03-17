@@ -17,7 +17,7 @@ namespace chaudiere
 class MutexLock
 {
 public:
-   explicit MutexLock(Mutex& mutex) noexcept :
+   explicit MutexLock(Mutex& mutex) :
       m_mutex(mutex) {
       m_mutex.lock();
    }
@@ -27,7 +27,7 @@ public:
     * @param mutex the mutex to lock
     * @see Mutex()
     */
-   explicit MutexLock(Mutex& mutex, const std::string& name) noexcept :
+   explicit MutexLock(Mutex& mutex, const std::string& name) :
       m_mutex(mutex),
       m_name(name) {
       m_mutex.lock();
@@ -36,11 +36,11 @@ public:
    /**
     * Destructor - unlocks the mutex
     */
-   ~MutexLock() noexcept {
+   ~MutexLock() {
       m_mutex.unlock();
    }
 
-   void unlock() noexcept {
+   void unlock() {
       m_mutex.unlock();
    }
     

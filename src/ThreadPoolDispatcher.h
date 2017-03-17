@@ -22,24 +22,24 @@ public:
    /**
     * Default constructor
     */
-   ThreadPoolDispatcher() noexcept {}
+   ThreadPoolDispatcher() {}
    
    /**
     * Destructor
     */
-   virtual ~ThreadPoolDispatcher() noexcept {}
+   virtual ~ThreadPoolDispatcher() {}
    
    /**
     *
     * @return
     */
-   virtual bool start() noexcept = 0;
+   virtual bool start() = 0;
    
    /**
     *
     * @return
     */
-   virtual bool stop() noexcept = 0;
+   virtual bool stop() = 0;
    
    /**
     *
@@ -47,7 +47,7 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(Runnable* runnableRequest) noexcept = 0;
+   virtual bool addRequest(Runnable* runnableRequest) = 0;
    
 
 private:

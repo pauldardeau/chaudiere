@@ -8,7 +8,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-InvalidKeyException::InvalidKeyException(const std::string& key) noexcept :
+InvalidKeyException::InvalidKeyException(const std::string& key) :
    BasicException("Invalid Key: " +  key),
    m_key(key) {
    Logger::logInstanceCreate("InvalidKeyException");
@@ -16,7 +16,7 @@ InvalidKeyException::InvalidKeyException(const std::string& key) noexcept :
 
 //******************************************************************************
 
-InvalidKeyException::InvalidKeyException(const InvalidKeyException& copy) noexcept :
+InvalidKeyException::InvalidKeyException(const InvalidKeyException& copy) :
    BasicException(copy),
    m_key(copy.m_key) {
    Logger::logInstanceCreate("InvalidKeyException");
@@ -24,13 +24,13 @@ InvalidKeyException::InvalidKeyException(const InvalidKeyException& copy) noexce
 
 //******************************************************************************
 
-InvalidKeyException::~InvalidKeyException() noexcept {
+InvalidKeyException::~InvalidKeyException() throw () {
    Logger::logInstanceDestroy("InvalidKeyException");
 }
 
 //******************************************************************************
 
-InvalidKeyException& InvalidKeyException::operator=(const InvalidKeyException& copy) noexcept {
+InvalidKeyException& InvalidKeyException::operator=(const InvalidKeyException& copy) {
    if (this == &copy) {
       return *this;
    }
@@ -43,7 +43,7 @@ InvalidKeyException& InvalidKeyException::operator=(const InvalidKeyException& c
 
 //******************************************************************************
 
-const std::string& InvalidKeyException::getKey() const noexcept {
+const std::string& InvalidKeyException::getKey() const {
    return m_key;
 }
 

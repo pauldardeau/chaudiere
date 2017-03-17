@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <stdio.h>
+
 #include "SocketRequest.h"
 #include "Socket.h"
 #include "SocketServiceHandler.h"
@@ -12,7 +14,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 SocketRequest::SocketRequest(Socket* socket,
-                             SocketServiceHandler* handler) noexcept :
+                             SocketServiceHandler* handler) :
    Runnable(),
    m_socket(socket),
    m_handler(handler) {
@@ -21,16 +23,16 @@ SocketRequest::SocketRequest(Socket* socket,
 
 //******************************************************************************
 
-SocketRequest::~SocketRequest() noexcept {
+SocketRequest::~SocketRequest() {
    Logger::logInstanceDestroy("SocketRequest");
 }
 
 //******************************************************************************
 
 void SocketRequest::run() {
-   if (Logger::isLogging(Logger::LogLevel::Debug)) {
+   if (Logger::isLogging(Debug)) {
       char msg[128];
-      std::snprintf(msg, 128, "request for socket fd=%d",
+      ::snprintf(msg, 128, "request for socket fd=%d",
                m_socket->getFileDescriptor());
       Logger::debug(std::string(msg));
    }
@@ -56,20 +58,20 @@ void SocketRequest::run() {
 
 //******************************************************************************
 
-int SocketRequest::getSocketFD() const noexcept {
+int SocketRequest::getSocketFD() const {
    return m_socket->getFileDescriptor();
 }
 
 //******************************************************************************
 
-Socket* SocketRequest::getSocket() noexcept {
+Socket* SocketRequest::getSocket() {
    return m_socket;
 }
 
 //******************************************************************************
 
-void SocketRequest::requestComplete() noexcept {
-   if (nullptr != m_socket) {
+void SocketRequest::requestComplete() {
+   if (NULL != m_socket) {
       m_socket->requestComplete();
    }
 }

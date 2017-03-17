@@ -65,7 +65,7 @@ public:
     * @return true if AutoPointer has an object, false otherwise
     */
    bool haveObject() const {
-      return (nullptr != m_object);
+      return (NULL != m_object);
    }
    
 private:

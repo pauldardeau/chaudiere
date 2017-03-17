@@ -12,15 +12,15 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-DynamicLibrary::DynamicLibrary() noexcept :
-   m_hDll(nullptr) {
+DynamicLibrary::DynamicLibrary() :
+   m_hDll(NULL) {
    Logger::logInstanceCreate("DynamicLibrary");
 }
 
 //******************************************************************************
 
 DynamicLibrary::DynamicLibrary(const std::string& libraryName) :
-   m_hDll(nullptr) {
+   m_hDll(NULL) {
    Logger::logInstanceCreate("DynamicLibrary");
 
    if (!open(libraryName)) {
@@ -30,25 +30,25 @@ DynamicLibrary::DynamicLibrary(const std::string& libraryName) :
 
 //******************************************************************************
 
-DynamicLibrary::~DynamicLibrary() noexcept {
+DynamicLibrary::~DynamicLibrary() {
    Logger::logInstanceDestroy("DynamicLibrary");
    close();
 }
 
 //******************************************************************************
 
-void* DynamicLibrary::resolve(const std::string& functionName) noexcept {
+void* DynamicLibrary::resolve(const std::string& functionName) {
    return ::dlsym(m_hDll, functionName.c_str());
 }
 
 //******************************************************************************
 
-bool DynamicLibrary::open(const std::string& libraryName) noexcept {
+bool DynamicLibrary::open(const std::string& libraryName) {
    close();
    
    m_hDll = ::dlopen(libraryName.c_str(), RTLD_NOW);
    
-   bool rc = (m_hDll != nullptr);
+   bool rc = (m_hDll != NULL);
    
    if (!rc) {
       Logger::error(std::string("unable to load library '") +
@@ -60,14 +60,14 @@ bool DynamicLibrary::open(const std::string& libraryName) noexcept {
 
 //******************************************************************************
 
-void DynamicLibrary::close() noexcept {
-   if (m_hDll == nullptr) {
+void DynamicLibrary::close() {
+   if (m_hDll == NULL) {
       return;
    }
 
    ::dlclose(m_hDll);
 
-   m_hDll = nullptr;
+   m_hDll = NULL;
 }
 
 //******************************************************************************

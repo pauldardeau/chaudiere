@@ -27,7 +27,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-int Socket::createSocket() noexcept {
+int Socket::createSocket() {
    const int socketFD = ::socket(AF_INET, SOCK_STREAM, 0);
    if (socketFD == -1) {
       Logger::error("unable to create socket");
@@ -39,14 +39,14 @@ int Socket::createSocket() noexcept {
 //******************************************************************************
 
 Socket::Socket(const std::string& address, int port) :
-   m_completionObserver(nullptr),
+   m_completionObserver(NULL),
    m_serverAddress(address),
    m_socketFD(-1),
    m_userIndex(-1),
    m_port(port),
    m_isConnected(false),
    m_includeMessageSize(false),
-   m_inputBuffer(nullptr),
+   m_inputBuffer(NULL),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
 
@@ -57,14 +57,21 @@ Socket::Socket(const std::string& address, int port) :
 
 //******************************************************************************
 
-Socket::Socket(int socketFD) noexcept :
-   Socket(nullptr, socketFD) {
+Socket::Socket(int socketFD) :
+   m_completionObserver(NULL),
+   m_socketFD(socketFD),
+   m_userIndex(-1),
+   m_isConnected(true),
+   m_includeMessageSize(false),
+   m_inputBuffer(new char[DEFAULT_BUFFER_SIZE]),
+   m_inBufferSize(DEFAULT_BUFFER_SIZE) {
+   Logger::logInstanceCreate("Socket");
 }
 
 //******************************************************************************
 
 Socket::Socket(SocketCompletionObserver* completionObserver,
-               int socketFD) noexcept :
+               int socketFD) :
    m_completionObserver(completionObserver),
    m_socketFD(socketFD),
    m_userIndex(-1),
@@ -77,7 +84,7 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
 
 //******************************************************************************
 
-Socket::~Socket() noexcept {
+Socket::~Socket() {
    Logger::logInstanceDestroy("Socket");
    if (m_inputBuffer) {
       delete [] m_inputBuffer;
@@ -86,13 +93,13 @@ Socket::~Socket() noexcept {
 
 //******************************************************************************
 
-void Socket::init() noexcept {
+void Socket::init() {
    setTcpNoDelay(true);
 }
 
 //******************************************************************************
 
-bool Socket::open() noexcept {
+bool Socket::open() {
    m_socketFD = Socket::createSocket();
 
    if (m_socketFD < 0) {
@@ -124,10 +131,10 @@ bool Socket::open() noexcept {
 
 ssize_t Socket::send(const void* sendBuffer,
                      size_t bufferLength,
-                     int flags) noexcept {
+                     int flags) {
    if ((m_socketFD < 0) ||
        (! m_isConnected) ||
-       (nullptr == sendBuffer)) {
+       (NULL == sendBuffer)) {
       return -1;
    }
     
@@ -138,10 +145,10 @@ ssize_t Socket::send(const void* sendBuffer,
 
 ssize_t Socket::receive(void* receiveBuffer,
                         size_t bufferLength,
-                        int flags) noexcept {
+                        int flags) {
    if ((m_socketFD < 0) ||
        (!m_isConnected) ||
-       (nullptr == receiveBuffer)) {
+       (NULL == receiveBuffer)) {
       return -1;
    }
     
@@ -159,13 +166,13 @@ ssize_t Socket::receive(void* receiveBuffer,
 
 //******************************************************************************
 
-void Socket::closeConnection() noexcept {
+void Socket::closeConnection() {
    close();
 }
 
 //******************************************************************************
 
-void Socket::close() noexcept {
+void Socket::close() {
    if (m_socketFD > -1) {
       ::close(m_socketFD);
       m_socketFD = -1;
@@ -175,19 +182,19 @@ void Socket::close() noexcept {
 
 //******************************************************************************
 
-bool Socket::isConnected() const noexcept {
+bool Socket::isConnected() const {
    return m_isConnected;
 }
 
 //******************************************************************************
 
-int Socket::getFileDescriptor() const noexcept {
+int Socket::getFileDescriptor() const {
    return m_socketFD;
 }
 
 //******************************************************************************
 
-void Socket::requestComplete() noexcept {
+void Socket::requestComplete() {
    if (m_completionObserver) {
       m_completionObserver->notifySocketComplete(this);
    }
@@ -195,19 +202,19 @@ void Socket::requestComplete() noexcept {
 
 //******************************************************************************
 
-void Socket::setUserIndex(int userIndex) noexcept {
+void Socket::setUserIndex(int userIndex) {
    m_userIndex = userIndex;
 }
 
 //******************************************************************************
 
-int Socket::getUserIndex() const noexcept {
+int Socket::getUserIndex() const {
    return m_userIndex;
 }
 
 //******************************************************************************
 
-bool Socket::setTcpNoDelay(bool on) noexcept {
+bool Socket::setTcpNoDelay(bool on) {
    int sockopt_arg = on ? 1 : 0;
    return (0 == ::setsockopt(m_socketFD,
                              IPPROTO_TCP,
@@ -218,7 +225,7 @@ bool Socket::setTcpNoDelay(bool on) noexcept {
 
 //******************************************************************************
 
-bool Socket::getTcpNoDelay() const noexcept {
+bool Socket::getTcpNoDelay() const {
    int result = 0;
    socklen_t len = sizeof(int);
     
@@ -236,7 +243,7 @@ bool Socket::getTcpNoDelay() const noexcept {
 
 //******************************************************************************
 
-bool Socket::setSendBufferSize(int size) noexcept {
+bool Socket::setSendBufferSize(int size) {
    int sockopt_arg = size;
    return (0 == ::setsockopt(m_socketFD,
                              SOL_SOCKET,
@@ -247,7 +254,7 @@ bool Socket::setSendBufferSize(int size) noexcept {
 
 //******************************************************************************
 
-int Socket::getSendBufferSize() const noexcept {
+int Socket::getSendBufferSize() const {
    int result = 0;
    socklen_t len = sizeof(int);
     
@@ -265,7 +272,7 @@ int Socket::getSendBufferSize() const noexcept {
 
 //******************************************************************************
 
-bool Socket::setReceiveBufferSize(int size) noexcept {
+bool Socket::setReceiveBufferSize(int size) {
    int sockopt_arg = size;
    return (0 == ::setsockopt(m_socketFD,
                              SOL_SOCKET,
@@ -276,7 +283,7 @@ bool Socket::setReceiveBufferSize(int size) noexcept {
 
 //******************************************************************************
 
-int Socket::getReceiveBufferSize() const noexcept {
+int Socket::getReceiveBufferSize() const {
    int result = 0;
    socklen_t len = sizeof(int);
     
@@ -294,7 +301,7 @@ int Socket::getReceiveBufferSize() const noexcept {
 
 //******************************************************************************
 
-bool Socket::setKeepAlive(bool on) noexcept {
+bool Socket::setKeepAlive(bool on) {
    int sockopt_arg = on ? 1 : 0;
    return (0 == ::setsockopt(m_socketFD,
                              SOL_SOCKET,
@@ -305,7 +312,7 @@ bool Socket::setKeepAlive(bool on) noexcept {
 
 //******************************************************************************
 
-bool Socket::getKeepAlive() const noexcept {
+bool Socket::getKeepAlive() const {
    int result = 0;
    socklen_t len = sizeof(int);
     
@@ -323,7 +330,7 @@ bool Socket::getKeepAlive() const noexcept {
 
 //******************************************************************************
 
-bool Socket::readLine(std::string& line) noexcept {
+bool Socket::readLine(std::string& line) {
    line.erase();
     
    int eolLength = 0;
@@ -355,7 +362,7 @@ bool Socket::readLine(std::string& line) noexcept {
          // remove the current line from the line input buffer
          m_lineInputBuffer.erase(0, posEOL + eolLength);
          
-         if (Logger::isLogging(Logger::LogLevel::Debug)) {
+         if (Logger::isLogging(Debug)) {
             Logger::debug("Socket::readLine, using buffer line: (next line)");
             Logger::debug(line);
             
@@ -370,7 +377,7 @@ bool Socket::readLine(std::string& line) noexcept {
          // put our line input buffer contents into the current line
          line = m_lineInputBuffer;
          
-         if (Logger::isLogging(Logger::LogLevel::Debug)) {
+         if (Logger::isLogging(Debug)) {
             Logger::debug("Socket::readLine, using partial buffer: (next line)");
             Logger::debug(line);
          }
@@ -389,16 +396,16 @@ bool Socket::readLine(std::string& line) noexcept {
    eolLength = 0;
     
    do {
-      posLF = nullptr;
-      posCRLF = nullptr;
-      pszEOL = nullptr;
+      posLF = NULL;
+      posCRLF = NULL;
+      pszEOL = NULL;
         
       bytes = ::recv(m_socketFD,
                      buffer,
                      bytesToRead,
                      0);
 
-      if (Logger::isLogging(Logger::LogLevel::Debug)) {
+      if (Logger::isLogging(Debug)) {
          char msg[128];
          std::snprintf(msg, 128, "readline: bytes from recv = %zd", bytes);
          Logger::debug(std::string(msg));
@@ -441,11 +448,11 @@ bool Socket::readLine(std::string& line) noexcept {
          }
       }
         
-      if ((nullptr != pszEOL) && (eolLength > 0)) {
+      if ((NULL != pszEOL) && (eolLength > 0)) {
          // hold onto everything after the EOL in the line input buffer
          m_lineInputBuffer = (pszEOL + eolLength);
          
-         if (Logger::isLogging(Logger::LogLevel::Debug)) {
+         if (Logger::isLogging(Debug)) {
             Logger::debug("Socket::readLine holding onto following text in line input buffer");
             char msg[256];
             std::snprintf(msg, 256, "buffer: '%s'", m_lineInputBuffer.c_str());
@@ -458,14 +465,14 @@ bool Socket::readLine(std::string& line) noexcept {
         
       line += buffer;
         
-   } while (nullptr == pszEOL);
+   } while (NULL == pszEOL);
    
    return true;
 }
 
 //******************************************************************************
 
-bool Socket::read(char* buffer, int bufsize) noexcept {
+bool Socket::read(char* buffer, int bufsize) {
    int length;
    int bytesAlreadyRead = 0;
     
@@ -511,7 +518,7 @@ bool Socket::read(char* buffer, int bufsize) noexcept {
 
 //******************************************************************************
 
-bool Socket::readMsg(int length) noexcept {
+bool Socket::readMsg(int length) {
    if (!isOpen()) {
       Logger::warning("unable to read message size, socket is closed");
       return false;
@@ -543,7 +550,7 @@ bool Socket::readMsg(int length) noexcept {
 
 //******************************************************************************
 
-bool Socket::readSocket(char* buffer, int bytesToRead) noexcept {
+bool Socket::readSocket(char* buffer, int bytesToRead) {
    int total_bytes_rcvd = 0;
    ssize_t bytes = 0;
    char* currentBufferDest = buffer;
@@ -589,13 +596,13 @@ bool Socket::readSocket(char* buffer, int bytesToRead) noexcept {
 
 //******************************************************************************
 
-bool Socket::isOpen() const noexcept {
+bool Socket::isOpen() const {
    return (m_socketFD != -1);
 }
 
 //******************************************************************************
 
-bool Socket::getPeerIPAddress(std::string& ipAddress) noexcept {
+bool Socket::getPeerIPAddress(std::string& ipAddress) {
    struct sockaddr_in addr;
    socklen_t x = sizeof(addr);
     
@@ -615,7 +622,7 @@ bool Socket::getPeerIPAddress(std::string& ipAddress) noexcept {
 
 //******************************************************************************
 
-bool Socket::write(const char* buffer, unsigned long bufsize) noexcept {
+bool Socket::write(const char* buffer, unsigned long bufsize) {
    if (!isOpen()) {
       Logger::warning("unable to write message, socket is closed");
       return false;
@@ -633,31 +640,31 @@ bool Socket::write(const char* buffer, unsigned long bufsize) noexcept {
 
 //******************************************************************************
 
-bool Socket::write(const std::string& payload) noexcept {
+bool Socket::write(const std::string& payload) {
    return write(payload.c_str(), payload.length());
 }
 
 //******************************************************************************
 
-int Socket::getPort() const noexcept {
+int Socket::getPort() const {
    return m_port;
 }
 
 //******************************************************************************
 
-void Socket::setIncludeMessageSize(bool isSizeIncluded) noexcept {
+void Socket::setIncludeMessageSize(bool isSizeIncluded) {
    m_includeMessageSize = isSizeIncluded;
 }
 
 //******************************************************************************
 
-void Socket::setLineInputBuffer(const std::string& s) noexcept {
+void Socket::setLineInputBuffer(const std::string& s) {
    m_lineInputBuffer = s;
 }
 
 //******************************************************************************
 
-void Socket::appendLineInputBuffer(const std::string& s) noexcept {
+void Socket::appendLineInputBuffer(const std::string& s) {
    m_lineInputBuffer += s;
 }
 

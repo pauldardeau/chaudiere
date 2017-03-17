@@ -13,25 +13,25 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-PthreadsThread::PthreadsThread() noexcept :
+PthreadsThread::PthreadsThread() :
    PthreadsThread(NULL, "") {
 }
 
 //******************************************************************************
 
-PthreadsThread::PthreadsThread(const std::string& name) noexcept :
+PthreadsThread::PthreadsThread(const std::string& name) :
    PthreadsThread(NULL, name) {
 }
 
 //******************************************************************************
 
-PthreadsThread::PthreadsThread(Runnable* runnable) noexcept :
+PthreadsThread::PthreadsThread(Runnable* runnable) :
    PthreadsThread(runnable, "") {
 }
 
 //******************************************************************************
 
-PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) noexcept :
+PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) :
    Thread(&m_mutexAlive, runnable),
    m_threadHandle(0),
    m_exitCode(1L),
@@ -41,13 +41,13 @@ PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) noex
 
 //******************************************************************************
 
-PthreadsThread::~PthreadsThread() noexcept {
+PthreadsThread::~PthreadsThread() {
    Logger::logInstanceDestroy("PthreadsThread");
 }
 
 //******************************************************************************
 
-void* PthreadsThread::runThread(void* pArgs) noexcept {
+void* PthreadsThread::runThread(void* pArgs) {
    PthreadsThread* pThread = (PthreadsThread*) pArgs;
 
    if (!pThread) {
@@ -86,7 +86,7 @@ void* PthreadsThread::runThread(void* pArgs) noexcept {
 
 //******************************************************************************
 
-bool PthreadsThread::start() noexcept {
+bool PthreadsThread::start() {
    bool isSuccess = false;
 
    if (0 == ::pthread_create(&m_threadHandle, 0, runThread, (void*) this)) {
@@ -106,7 +106,7 @@ void PthreadsThread::run() {
 
 //******************************************************************************
 
-unsigned long PthreadsThread::getExitCode() const noexcept {
+unsigned long PthreadsThread::getExitCode() const {
    unsigned long rc;
 
    {
@@ -120,13 +120,13 @@ unsigned long PthreadsThread::getExitCode() const noexcept {
 
 //******************************************************************************
 
-pthread_t PthreadsThread::getHandle() noexcept {
+pthread_t PthreadsThread::getHandle() {
    return m_threadHandle;
 }
 
 //******************************************************************************
 
-const std::string& PthreadsThread::getName() const noexcept {
+const std::string& PthreadsThread::getName() const {
    return m_name;
 }
 

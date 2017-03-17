@@ -36,19 +36,19 @@ public:
     * @return
     * @see Mutex()
     */
-   virtual bool wait(Mutex* mutex) noexcept override;
+   virtual bool wait(Mutex* mutex);
    
    /**
     *
     */
-   virtual void notifyOne() noexcept override;
+   virtual void notifyOne();
    
    /**
     *
     */
-   virtual void notifyAll() noexcept override;
+   virtual void notifyAll();
 
-   const std::string& getName() const noexcept;
+   const std::string& getName() const;
    
 
 private:

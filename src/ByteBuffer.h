@@ -21,7 +21,7 @@ public:
     * Constructs a new ByteBuffer
     */
    ByteBuffer() :
-      m_buffer(nullptr),
+      m_buffer(NULL),
       m_bufferSize(0) {
    }
    
@@ -29,12 +29,12 @@ public:
     * Constructs a new ByteBuffer of the specified size
     * @param bufferSize the size needed for the buffer
     */
-   explicit ByteBuffer(const std::size_t bufferSize) noexcept :
+   explicit ByteBuffer(const std::size_t bufferSize) :
       m_bufferSize(bufferSize) {
       if (m_bufferSize > 0) {
          m_buffer = ::calloc(1, m_bufferSize);
       } else {
-         m_buffer = nullptr;
+         m_buffer = NULL;
       }
    }
    
@@ -42,20 +42,20 @@ public:
     * Copy constructor
     * @param copy the source of the copy
     */
-   ByteBuffer(const ByteBuffer& copy) noexcept :
+   ByteBuffer(const ByteBuffer& copy) :
       m_bufferSize(copy.m_bufferSize) {
       if (m_bufferSize > 0) {
          m_buffer = ::calloc(1, m_bufferSize);
          ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);   
       } else {
-         m_buffer = nullptr;
+         m_buffer = NULL;
       }
    }
    
    /**
     * Destructor
     */
-   ~ByteBuffer() noexcept {
+   ~ByteBuffer() {
       clear();
    }
    
@@ -64,7 +64,7 @@ public:
     * @param copy the source of the copy
     * @return reference to the target of the copy
     */
-   ByteBuffer& operator=(const ByteBuffer& copy) noexcept {
+   ByteBuffer& operator=(const ByteBuffer& copy) {
       if (this == &copy) {
          return *this;
       }
@@ -84,7 +84,7 @@ public:
     * @param sourceBuffer the new data buffer
     */
    void take(void* sourceBuffer, std::size_t bufferSize) {
-      if (m_buffer != nullptr) {
+      if (m_buffer != NULL) {
          ::free(m_buffer);
          m_bufferSize = 0;
       }
@@ -99,7 +99,7 @@ public:
     */
    void* release() {
       void* releasedBuffer = m_buffer;
-      m_buffer = nullptr;
+      m_buffer = NULL;
       m_bufferSize = 0;
       return releasedBuffer;
    }
@@ -108,7 +108,7 @@ public:
     * Retrieve pointer to raw data buffer
     * @return pointer to raw data buffer
     */
-   void* data() noexcept {
+   void* data() {
       return m_buffer;
    }
    
@@ -116,17 +116,17 @@ public:
     * Retrieve size of data buffer
     * @return size of data buffer in bytes
     */
-   std::size_t size() const noexcept {
+   std::size_t size() const {
       return m_bufferSize;
    }
    
    /**
     * Frees existing buffer
     */
-   void clear() noexcept {
-      if (m_buffer != nullptr) {
+   void clear() {
+      if (m_buffer != NULL) {
          ::free(m_buffer);
-         m_buffer = nullptr;
+         m_buffer = NULL;
          m_bufferSize = 0;
       }
    }

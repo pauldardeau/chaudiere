@@ -20,24 +20,24 @@ public:
     * Constructs an InvalidKeyException with the specified key
     * @param key the name of the invalid key
     */
-   explicit InvalidKeyException(const std::string& key) noexcept;
+   explicit InvalidKeyException(const std::string& key);
    
    /**
     * Copy constructor
     * @param copy the source of the copy
     */
-   InvalidKeyException(const InvalidKeyException& copy) noexcept;
+   InvalidKeyException(const InvalidKeyException& copy);
    
    /**
     * Destructor
     */
-   virtual ~InvalidKeyException() noexcept;
+   virtual ~InvalidKeyException() throw ();
 
    /**
     * Retrieves the class name (type) of the exception
     * @return class name
     */
-   virtual const char* getType() const noexcept {
+   virtual const char* getType() const {
       return "InvalidKeyException";
    }
    
@@ -46,13 +46,13 @@ public:
     * @param copy the source of the copy
     * @return reference to the updated reference
     */
-   InvalidKeyException& operator=(const InvalidKeyException& copy) noexcept;
+   InvalidKeyException& operator=(const InvalidKeyException& copy);
    
    /**
     * Retrieves the name of the invalid key
     * @return name of the invalid key
     */
-   const std::string& getKey() const noexcept;
+   const std::string& getKey() const;
    
 private:
    std::string m_key;

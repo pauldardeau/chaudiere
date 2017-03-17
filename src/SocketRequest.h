@@ -26,35 +26,35 @@ public:
     * @see Socket()
     * @see SocketServiceHandler()
     */
-   SocketRequest(Socket* socket, SocketServiceHandler* handler) noexcept;
+   SocketRequest(Socket* socket, SocketServiceHandler* handler);
    
    /**
     * Destructor
     */
-   ~SocketRequest() noexcept;
+   ~SocketRequest();
    
    /**
     * Services the socket using the specified handler
     */
-   void run() override;
+   void run();
    
    /**
     * Retrieves the file descriptor for the socket
     * @return socket file descriptor
     */
-   int getSocketFD() const noexcept;
+   int getSocketFD() const;
    
    /**
     * Retrieves the Socket associated with the request
     * @see Socket()
     * @return the Socket associated with the request
     */
-   Socket* getSocket() noexcept;
+   Socket* getSocket();
    
    /**
     * Notifies the Socket that the request processing is complete
     */
-   void requestComplete() noexcept;
+   void requestComplete();
 
    
 private:

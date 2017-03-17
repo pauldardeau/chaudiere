@@ -59,9 +59,9 @@ std::string OSUtils::getCurrentDirectory() {
    std::string currentDirectory;
    
    // this call to getcwd will allocate memory buffer
-   char* buffCurrentDir = ::getcwd(nullptr, 0);
+   char* buffCurrentDir = ::getcwd(NULL, 0);
    
-   if (buffCurrentDir != nullptr) {
+   if (buffCurrentDir != NULL) {
       currentDirectory = buffCurrentDir;
       free(buffCurrentDir);
    }
@@ -105,7 +105,7 @@ bool OSUtils::directoryExists(const std::string& directory) {
 
 bool OSUtils::pathExists(const std::string& filePath) {
    FILE* f = ::fopen(filePath.c_str(), "r");
-   if (f != nullptr) {
+   if (f != NULL) {
       fclose(f);
       return true;
    } else {
@@ -152,7 +152,7 @@ unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
 
 bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32) {
    FILE* f = ::fopen(filePath.c_str(), "r");
-   if (f != nullptr) {
+   if (f != NULL) {
       unsigned char buf[8192];
       size_t bufLen;
       

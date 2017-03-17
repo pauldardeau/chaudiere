@@ -1,6 +1,7 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <stdio.h>
 #include <errno.h>
 
 #include "PthreadsMutex.h"
@@ -59,7 +60,7 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
 
 //******************************************************************************
 
-PthreadsMutex::~PthreadsMutex() noexcept {
+PthreadsMutex::~PthreadsMutex() {
    Logger::logInstanceDestroy("PthreadsMutex");
 
    if (m_haveValidMutex) {
@@ -72,7 +73,7 @@ PthreadsMutex::~PthreadsMutex() noexcept {
 
 //******************************************************************************
 
-bool PthreadsMutex::unlock() noexcept {
+bool PthreadsMutex::unlock() {
    if (m_haveValidMutex) { // && m_isLocked) {
       const int rc = ::pthread_mutex_unlock(&m_mutex);
       if (0 == rc) {
@@ -92,7 +93,7 @@ bool PthreadsMutex::unlock() noexcept {
 
 //******************************************************************************
 
-bool PthreadsMutex::lock() noexcept {
+bool PthreadsMutex::lock() {
    if (m_haveValidMutex) {
       const int rc = ::pthread_mutex_lock(&m_mutex);
       if (0 == rc) {
@@ -127,19 +128,19 @@ bool PthreadsMutex::lock() noexcept {
 
 //******************************************************************************
 
-bool PthreadsMutex::isLocked() const noexcept {
+bool PthreadsMutex::isLocked() const {
    return m_haveValidMutex && m_isLocked;
 }
 
 //******************************************************************************
 
-bool PthreadsMutex::haveValidMutex() const noexcept {
+bool PthreadsMutex::haveValidMutex() const {
    return m_haveValidMutex;
 }
 
 //******************************************************************************
 
-const std::string& PthreadsMutex::getName() const noexcept {
+const std::string& PthreadsMutex::getName() const {
    return m_mutexName;
 }
 

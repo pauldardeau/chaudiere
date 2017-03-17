@@ -27,7 +27,7 @@ class ServerSocket
        * @param socketFD the socket file descriptor to change
        * @return boolean indicating whether the update succeeded
        */
-      static bool setReuseAddr(int socketFD) noexcept;
+      static bool setReuseAddr(int socketFD);
    
       /**
        * Starts the listening on the specified socket
@@ -35,7 +35,7 @@ class ServerSocket
        * @param backlog the backlog value for listening
        * @return boolean indicating whether the listen succeeded
        */
-      static bool listen(int socketFD, int backlog) noexcept;
+      static bool listen(int socketFD, int backlog);
    
       /**
        * Binds the socket to the specified port
@@ -43,7 +43,7 @@ class ServerSocket
        * @param port the port number value
        * @return boolean indicating whether the bind succeeded
        */
-      static bool bind(int socketFD, int port) noexcept;
+      static bool bind(int socketFD, int port);
    
       /**
        * Creates a new server socket and starts listening on the specified port
@@ -55,19 +55,19 @@ class ServerSocket
       /**
        * Destructor
        */
-      ~ServerSocket() noexcept;
+      ~ServerSocket();
 
       /**
        * Accepts a new client socket connection
        * @see Socket()
        * @return Socket representing new client connection (caller must delete)
        */
-      Socket* accept() noexcept;
+      Socket* accept();
 
       /**
        * Closes the socket
        */
-      void close() noexcept;
+      void close();
 
 
    
@@ -80,13 +80,13 @@ class ServerSocket
        * Creates the server socket and binds on the specified port
        * @return boolean indicating whether the creation succeeded
        */
-      bool create() noexcept;
+      bool create();
    
       /**
        * Starts listening on the server socket
        * @return boolean indicating whether the listen succeeded
        */
-      bool listen() noexcept;
+      bool listen();
 
       int m_serverSocket;
       int m_port;

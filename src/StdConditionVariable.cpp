@@ -14,6 +14,8 @@ StdConditionVariable::StdConditionVariable() {
    Logger::logInstanceCreate("StdConditionVariable");
 }
 
+//******************************************************************************
+
 StdConditionVariable::StdConditionVariable(const std::string& name) :
    m_name(name) {
    Logger::logInstanceCreate("StdConditionVariable");
@@ -27,7 +29,7 @@ StdConditionVariable::~StdConditionVariable() {
 
 //******************************************************************************
 
-bool StdConditionVariable::wait(Mutex* mutex) noexcept {
+bool StdConditionVariable::wait(Mutex* mutex) {
    if (mutex) {
       StdMutex* stdMutex =
          dynamic_cast<StdMutex*>(mutex);
@@ -48,19 +50,19 @@ bool StdConditionVariable::wait(Mutex* mutex) noexcept {
 
 //******************************************************************************
 
-void StdConditionVariable::notifyOne() noexcept {
+void StdConditionVariable::notifyOne() {
    m_cond.notify_one();
 }
 
 //******************************************************************************
 
-void StdConditionVariable::notifyAll() noexcept {
+void StdConditionVariable::notifyAll() {
    m_cond.notify_all();
 }
 
 //******************************************************************************
 
-const std::string& StdConditionVariable::getName() const noexcept {
+const std::string& StdConditionVariable::getName() const {
    return m_name;
 }
 

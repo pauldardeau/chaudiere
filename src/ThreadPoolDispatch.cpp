@@ -19,34 +19,34 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-ThreadPoolDispatch::ThreadPoolDispatch() noexcept :
+ThreadPoolDispatch::ThreadPoolDispatch() :
    m_isRunning(false) {
    Logger::logInstanceCreate("ThreadPoolDispatch");
 }
 
 //******************************************************************************
 
-ThreadPoolDispatch::~ThreadPoolDispatch() noexcept {
+ThreadPoolDispatch::~ThreadPoolDispatch() {
    Logger::logInstanceDestroy("ThreadPoolDispatch");
 }
 
 //******************************************************************************
 
-bool ThreadPoolDispatch::start() noexcept {
+bool ThreadPoolDispatch::start() {
    m_isRunning = true;
    return true;
 }
 
 //******************************************************************************
 
-bool ThreadPoolDispatch::stop() noexcept {
+bool ThreadPoolDispatch::stop() {
    m_isRunning = false;
    return true;
 }
 
 //******************************************************************************
 
-bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) noexcept {
+bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) {
    if (!m_isRunning || !runnableRequest) {
       return false;
    }

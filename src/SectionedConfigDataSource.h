@@ -21,14 +21,14 @@ public:
    /**
     * Destructor
     */
-   virtual ~SectionedConfigDataSource() noexcept {}
+   virtual ~SectionedConfigDataSource() {}
    
    /**
     * Determines whether the specified section name exists in the configuration
     * @param sectionName the name of the section whose existence is being tested
     * @return boolean indicating whether the specified section exists
     */
-   virtual bool hasSection(const std::string& sectionName) const noexcept = 0;
+   virtual bool hasSection(const std::string& sectionName) const = 0;
    
    /**
     * Reads the key/value pairs of the specified section
@@ -38,7 +38,7 @@ public:
     * @return boolean indicating whether the specified section could be read
     */
    virtual bool readSection(const std::string& sectionName,
-                            KeyValuePairs& settings) const noexcept = 0;
+                            KeyValuePairs& settings) const = 0;
    
    /**
     * Retrieves the value associated with the specified key within the specified section
@@ -49,7 +49,7 @@ public:
     */
    virtual bool getSectionKeyValue(const std::string& section,
                                    const std::string& key,
-                                   std::string& value) const noexcept = 0;
+                                   std::string& value) const = 0;
 
 };
 

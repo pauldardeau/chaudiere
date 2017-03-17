@@ -33,37 +33,37 @@ public:
    /**
     * Destructor
     */
-   ~StdMutex() noexcept;
+   ~StdMutex();
    
    /**
     *
     * @return
     */
-   virtual bool unlock() noexcept override;
+   virtual bool unlock();
    
    /**
     *
     * @return
     */
-   virtual bool lock() noexcept override;
+   virtual bool lock();
    
    /**
     *
     * @return
     */
-   virtual bool isLocked() const noexcept override;
+   virtual bool isLocked() const;
    
    /**
     *
     * @return
     */
-   virtual bool haveValidMutex() const noexcept override;
+   virtual bool haveValidMutex() const;
    
    /**
     *
     * @return
     */
-   std::mutex& getPlatformPrimitive() noexcept
+   std::mutex& getPlatformPrimitive()
    {
       return m_mutex;
    }
@@ -72,7 +72,7 @@ public:
     *
     * @return
     */
-   const std::string& getName() const noexcept;
+   const std::string& getName() const;
    
    
    

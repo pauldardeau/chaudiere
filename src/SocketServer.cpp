@@ -106,7 +106,7 @@ static const std::string MIME_TEXT_PLAIN        = "text/plain";
 // module config values
 static const std::string APP_PREFIX = "app:";
 
-static const auto APP_PREFIX_LEN = APP_PREFIX.length();
+static const std::size_t APP_PREFIX_LEN = APP_PREFIX.length();
 
 static const char* LOG_WEEKDAY_NAME[7] = {
    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
@@ -125,10 +125,10 @@ using namespace chaudiere;
 SocketServer::SocketServer(const std::string& serverName,
                            const std::string& serverVersion,
                            const std::string& configFilePath) :
-   m_kernelEventServer(nullptr),
-   m_serverSocket(nullptr),
-   m_threadPool(nullptr),
-   m_threadingFactory(nullptr),
+   m_kernelEventServer(NULL),
+   m_serverSocket(NULL),
+   m_threadPool(NULL),
+   m_threadingFactory(NULL),
    m_configFilePath(configFilePath),
    m_serverName(serverName),
    m_serverVersion(serverVersion),
@@ -152,26 +152,26 @@ SectionedConfigDataSource* SocketServer::getConfigDataSource() {
 
 //******************************************************************************
 
-int SocketServer::getSocketSendBufferSize() const noexcept {
+int SocketServer::getSocketSendBufferSize() const {
    return m_socketSendBufferSize;
 }
 
 //******************************************************************************
 
-int SocketServer::getSocketReceiveBufferSize() const noexcept {
+int SocketServer::getSocketReceiveBufferSize() const {
    return m_socketReceiveBufferSize;
 }
 
 //******************************************************************************
 
-const std::string& SocketServer::getServerId() const noexcept {
+const std::string& SocketServer::getServerId() const {
    return m_serverString;
 }
 
 //******************************************************************************
 
 bool SocketServer::hasTrueValue(const KeyValuePairs& kvp,
-                                const std::string& setting) const noexcept {
+                                const std::string& setting) const {
    bool hasTrueValue = false;
    
    if (kvp.hasKey(setting)) {
@@ -188,7 +188,7 @@ bool SocketServer::hasTrueValue(const KeyValuePairs& kvp,
 //******************************************************************************
 
 int SocketServer::getIntValue(const KeyValuePairs& kvp,
-                              const std::string& setting) const noexcept {
+                              const std::string& setting) const {
    int value = -1;
    
    if (kvp.hasKey(setting)) {
@@ -206,12 +206,15 @@ int SocketServer::getIntValue(const KeyValuePairs& kvp,
 //******************************************************************************
 
 void SocketServer::replaceVariables(const KeyValuePairs& kvp,
-                                    std::string& s) const noexcept {
+                                    std::string& s) const {
    if (!s.empty()) {
       std::vector<std::string> keys;
       kvp.getKeys(keys);
+      const std::vector<std::string>::const_iterator itEnd = keys.end();
+      std::vector<std::string>::const_iterator it = keys.begin();
       
-      for (const std::string& key : keys) {
+      for (; it != itEnd; it++) {
+         const std::string& key = *it;
          if (StrUtils::containsString(s, key)) {
             StrUtils::replaceAll(s, key, kvp.getValue(key));
          }
@@ -223,11 +226,11 @@ void SocketServer::replaceVariables(const KeyValuePairs& kvp,
 
 bool SocketServer::init(int port)
 {
-   const bool isLoggingDebug = Logger::isLogging(Logger::LogLevel::Debug);
+   const bool isLoggingDebug = Logger::isLogging(Debug);
    
    m_serverPort = port;
 	
-   AutoPointer<SectionedConfigDataSource*> configDataSource(nullptr);
+   AutoPointer<SectionedConfigDataSource*> configDataSource(NULL);
    
    try {
       configDataSource.assign(getConfigDataSource());
@@ -322,19 +325,19 @@ bool SocketServer::init(int port)
                Logger::info(std::string("log level: ") + m_logLevel);
                Logger* logger = Logger::getLogger();
                
-               if (logger != nullptr) {
+               if (logger != NULL) {
                   if (m_logLevel == CFG_LOGGING_CRITICAL) {
-                     logger->setLogLevel(Logger::LogLevel::Critical);
+                     logger->setLogLevel(Critical);
                   } else if (m_logLevel == CFG_LOGGING_ERROR) {
-                     logger->setLogLevel(Logger::LogLevel::Error);
+                     logger->setLogLevel(Error);
                   } else if (m_logLevel == CFG_LOGGING_WARNING) {
-                     logger->setLogLevel(Logger::LogLevel::Warning);
+                     logger->setLogLevel(Warning);
                   } else if (m_logLevel == CFG_LOGGING_INFO) {
-                     logger->setLogLevel(Logger::LogLevel::Info);
+                     logger->setLogLevel(Info);
                   } else if (m_logLevel == CFG_LOGGING_DEBUG) {
-                     logger->setLogLevel(Logger::LogLevel::Debug);
+                     logger->setLogLevel(Debug);
                   } else if (m_logLevel == CFG_LOGGING_VERBOSE) {
-                     logger->setLogLevel(Logger::LogLevel::Verbose);
+                     logger->setLogLevel(Verbose);
                   } else {
                      Logger::warning("unrecognized log level: '" + m_logLevel);
                   }
@@ -366,7 +369,7 @@ bool SocketServer::init(int port)
             if (!serverString.empty()) {
                m_serverString = serverString;
 
-               const auto posDollar = serverString.find("$");
+               const std::size_t posDollar = serverString.find("$");
                if (posDollar != std::string::npos) {
                   KeyValuePairs kvpVars;
                   kvpVars.addPair("$PRODUCT_NAME", m_serverName);
@@ -374,7 +377,7 @@ bool SocketServer::init(int port)
                   kvpVars.addPair("$CFG_SOCKETS", m_sockets);
                   kvpVars.addPair("$CFG_THREADING", m_threading);
                   
-                  const auto posDollarOS = serverString.find("$OS_");
+                  const std::size_t posDollarOS = serverString.find("$OS_");
                   
                   if (posDollarOS != std::string::npos) {
                      SystemInfo systemInfo;
@@ -418,7 +421,7 @@ bool SocketServer::init(int port)
             Logger::debug(std::string(msg));
          }
       
-         if (m_serverSocket != nullptr) {
+         if (m_serverSocket != NULL) {
             delete m_serverSocket;
          }
          
@@ -499,7 +502,7 @@ bool SocketServer::init(int port)
 
 //******************************************************************************
 
-SocketServer::~SocketServer() noexcept {
+SocketServer::~SocketServer() {
    Logger::logInstanceDestroy("SocketServer");
 
    if (m_serverSocket) {
@@ -523,7 +526,7 @@ SocketServer::~SocketServer() noexcept {
 
 //******************************************************************************
 
-std::string SocketServer::getSystemDateGMT() const noexcept {
+std::string SocketServer::getSystemDateGMT() const {
    time_t currentGMT;
    ::time(&currentGMT);
    
@@ -545,7 +548,7 @@ std::string SocketServer::getSystemDateGMT() const noexcept {
 
 //******************************************************************************
 
-std::string SocketServer::getLocalDateTime() const noexcept {
+std::string SocketServer::getLocalDateTime() const {
    time_t currentTime;
    ::time(&currentTime);
    
@@ -566,7 +569,7 @@ std::string SocketServer::getLocalDateTime() const noexcept {
 
 //******************************************************************************
 
-bool SocketServer::compressResponse(const std::string& mimeType) const noexcept {
+bool SocketServer::compressResponse(const std::string& mimeType) const {
    //TODO: make this configurable through config file
    return (mimeType == MIME_TEXT_HTML) ||
           (mimeType == MIME_TEXT_PLAIN) ||
@@ -576,26 +579,26 @@ bool SocketServer::compressResponse(const std::string& mimeType) const noexcept 
 
 //******************************************************************************
 
-bool SocketServer::compressionEnabled() const noexcept {
+bool SocketServer::compressionEnabled() const {
    return m_compressionEnabled;
 }
 
 //******************************************************************************
 
-int SocketServer::minimumCompressionSize() const noexcept {
+int SocketServer::minimumCompressionSize() const {
    return m_minimumCompressionSize;
 }
 
 //******************************************************************************
 
-int SocketServer::platformPointerSizeBits() const noexcept {
+int SocketServer::platformPointerSizeBits() const {
    return sizeof(void*) * 8;
 }
 
 //******************************************************************************
 
 void SocketServer::serviceSocket(SocketRequest* socketRequest) {
-   if (nullptr != m_threadPool) {
+   if (NULL != m_threadPool) {
       // Hand off the request to the thread pool for asynchronous processing
       RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->setThreadPooling(true);
@@ -609,7 +612,7 @@ void SocketServer::serviceSocket(SocketRequest* socketRequest) {
 
 //******************************************************************************
 
-int SocketServer::runSocketServer() noexcept {
+int SocketServer::runSocketServer() {
    if (!m_serverSocket) {
       Logger::critical("runSocketServer called with null serverSocket");
       return 1;
@@ -619,17 +622,17 @@ int SocketServer::runSocketServer() noexcept {
       
       Socket* socket = m_serverSocket->accept();
 
-      if (nullptr == socket) {
+      if (NULL == socket) {
          continue;
       }
 
-      if (Logger::isLogging(Logger::LogLevel::Debug)) {
+      if (Logger::isLogging(Debug)) {
          Logger::debug("*****************************************");
          Logger::debug("client connected");
       }
 
       try {
-         if (m_isThreaded && (nullptr != m_threadPool)) {
+         if (m_isThreaded && (NULL != m_threadPool)) {
             RequestHandler* handler = handlerForSocket(socket);
             handler->setThreadPooling(true);
 
@@ -657,19 +660,19 @@ int SocketServer::runSocketServer() noexcept {
 
 //******************************************************************************
 
-int SocketServer::runKernelEventServer() noexcept {
+int SocketServer::runKernelEventServer() {
    const int MAX_CON = 1200;
    
    int rc = 0;
    
-   if (m_threadingFactory != nullptr) {
+   if (m_threadingFactory != NULL) {
       Mutex* mutexFD = m_threadingFactory->createMutex("fdMutex");
       Mutex* mutexHWMConnections =
          m_threadingFactory->createMutex("hwmConnectionsMutex");
       
       if (m_kernelEventServer) {
          delete m_kernelEventServer;
-         m_kernelEventServer = nullptr;
+         m_kernelEventServer = NULL;
       }
       
       if (KqueueServer::isSupportedPlatform()) {
@@ -683,7 +686,7 @@ int SocketServer::runKernelEventServer() noexcept {
          rc = 1;
       }
       
-      if (m_kernelEventServer != nullptr) {
+      if (m_kernelEventServer != NULL) {
          try {
             SocketServiceHandler* serviceHandler = createSocketServiceHandler();
 
@@ -712,7 +715,7 @@ int SocketServer::runKernelEventServer() noexcept {
 
 //******************************************************************************
 
-int SocketServer::run() noexcept {
+int SocketServer::run() {
    if (!m_isFullyInitialized) {
       Logger::critical("server not initialized");
       return 1;

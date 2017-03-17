@@ -20,7 +20,7 @@ class StringTokenizer
        * Constructs a StringTokenizer and tokenizes the specified string
        * @param s the string to tokenize
        */
-      explicit StringTokenizer(const std::string& s) noexcept;
+      explicit StringTokenizer(const std::string& s);
    
       /**
        * Constructs a StringTokenizer with the string to tokenize and the delimiter
@@ -28,18 +28,18 @@ class StringTokenizer
        * @param delimiter the delimiter of the tokens
        */
       StringTokenizer(const std::string& s,
-                      const std::string& delimiter) noexcept;
+                      const std::string& delimiter);
    
       /**
        * Destructor
        */
-      ~StringTokenizer() noexcept;
+      ~StringTokenizer();
 
       /**
        * Determines whether more tokens are present
        * @return boolean indicating if there are more tokens available
        */
-      bool hasMoreTokens() const noexcept;
+      bool hasMoreTokens() const;
    
       /**
        * Retrieves the next available token
@@ -52,7 +52,7 @@ class StringTokenizer
        * Retrieves the number of tokens found
        * @return the number of tokens
        */
-      std::size_t countTokens() const noexcept;
+      std::size_t countTokens() const;
    
 
    

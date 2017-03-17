@@ -18,26 +18,26 @@ namespace chaudiere
 class FileLogger : public Logger
 {
 public:
-   FileLogger(const std::string& filePath) noexcept;
-   FileLogger(const std::string& filePath, LogLevel logLevel) noexcept;
-   virtual ~FileLogger() noexcept;
+   FileLogger(const std::string& filePath);
+   FileLogger(const std::string& filePath, LogLevel logLevel);
+   virtual ~FileLogger();
    
-   virtual LogLevel getLogLevel() const noexcept override;
-   virtual void setLogLevel(LogLevel logLevel) noexcept override;
+   virtual LogLevel getLogLevel() const;
+   virtual void setLogLevel(LogLevel logLevel);
 
    virtual void logMessage(LogLevel logLevel,
-                           const std::string& logMessage) noexcept override;
-   virtual bool isLoggingLevel(LogLevel logLevel) const noexcept override;
+                           const std::string& logMessage);
+   virtual bool isLoggingLevel(LogLevel logLevel) const;
    
-   virtual bool isLoggingInstanceLifecycles() const noexcept override;
-   virtual void setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept override;
-   virtual void logInstanceCreate(const std::string& className) noexcept override;
-   virtual void logInstanceDestroy(const std::string& className) noexcept override;
+   virtual bool isLoggingInstanceLifecycles() const;
+   virtual void setLogInstanceLifecycles(bool logInstanceLifecycles);
+   virtual void logInstanceCreate(const std::string& className);
+   virtual void logInstanceDestroy(const std::string& className);
    
    virtual void logOccurrence(const std::string& occurrenceType,
-                              const std::string& occurrenceName) noexcept override;
+                              const std::string& occurrenceName);
 
-   const std::string& logLevelPrefix(LogLevel level) const noexcept;
+   const std::string& logLevelPrefix(LogLevel level) const;
 
 
 private:

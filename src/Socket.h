@@ -25,7 +25,7 @@ public:
     *
     * @return
     */
-   static int createSocket() noexcept;
+   static int createSocket();
    
    /**
     *
@@ -39,19 +39,19 @@ public:
     *
     * @param socketFD
     */
-   explicit Socket(int socketFD) noexcept;
+   explicit Socket(int socketFD);
    
    /**
     *
     * @param completionObserver
     * @param socketFD
     */
-   Socket(SocketCompletionObserver* completionObserver, int socketFD) noexcept;
+   Socket(SocketCompletionObserver* completionObserver, int socketFD);
    
    /**
     *
     */
-   ~Socket() noexcept;
+   ~Socket();
     
    /**
     *
@@ -60,7 +60,7 @@ public:
     * @param flags
     * @return
     */
-   ssize_t send(const void* sendBuffer, size_t bufferLength, int flags) noexcept;
+   ssize_t send(const void* sendBuffer, size_t bufferLength, int flags);
    
    /**
     *
@@ -68,14 +68,14 @@ public:
     * @param bufsize
     * @return
     */
-   bool write(const char* buffer, unsigned long bufsize) noexcept;
+   bool write(const char* buffer, unsigned long bufsize);
    
    /**
     *
     * @param payload
     * @return
     */
-   bool write(const std::string& payload) noexcept;
+   bool write(const std::string& payload);
 
     
    /**
@@ -85,7 +85,7 @@ public:
     * @param flags
     * @return
     */
-   ssize_t receive(void* receiveBuffer, size_t bufferLength, int flags) noexcept;
+   ssize_t receive(void* receiveBuffer, size_t bufferLength, int flags);
    
    /**
     *
@@ -93,7 +93,7 @@ public:
     * @param bufferLen
     * @return
     */
-   bool read(char* buffer, int bufferLen) noexcept;
+   bool read(char* buffer, int bufferLen);
    
    /**
     *
@@ -101,140 +101,140 @@ public:
     * @param bytesToRead
     * @return
     */
-   bool readSocket(char* buffer, int bytesToRead) noexcept;
+   bool readSocket(char* buffer, int bytesToRead);
    
    /**
     *
     */
-   void close() noexcept;
-   
-   /**
-    *
-    * @return
-    */
-   bool isOpen() const noexcept;
+   void close();
    
    /**
     *
     * @return
     */
-   bool isConnected() const noexcept;
-   
-   /**
-    *
-    */
-   void closeConnection() noexcept;
+   bool isOpen() const;
    
    /**
     *
     * @return
     */
-   int getFileDescriptor() const noexcept;
+   bool isConnected() const;
    
    /**
     *
     */
-   void requestComplete() noexcept;
+   void closeConnection();
+   
+   /**
+    *
+    * @return
+    */
+   int getFileDescriptor() const;
+   
+   /**
+    *
+    */
+   void requestComplete();
     
    /**
     *
     * @param userIndex
     */
-   void setUserIndex(int userIndex) noexcept;
+   void setUserIndex(int userIndex);
    
    /**
     *
     * @return
     */
-   int getUserIndex() const noexcept;
+   int getUserIndex() const;
    
    /**
     *
     * @param on
     * @return
     */
-   bool setTcpNoDelay(bool on) noexcept;
+   bool setTcpNoDelay(bool on);
    
    /**
     *
     * @return
     */
-   bool getTcpNoDelay() const noexcept;
+   bool getTcpNoDelay() const;
     
    /**
     *
     * @param size
     * @return
     */
-   bool setSendBufferSize(int size) noexcept;
+   bool setSendBufferSize(int size);
    
    /**
     *
     * @return
     */
-   int getSendBufferSize() const noexcept;
+   int getSendBufferSize() const;
     
    /**
     *
     * @param size
     * @return
     */
-   bool setReceiveBufferSize(int size) noexcept;
+   bool setReceiveBufferSize(int size);
    
    /**
     *
     * @return
     */
-   int getReceiveBufferSize() const noexcept;
+   int getReceiveBufferSize() const;
     
    /**
     *
     * @param on
     * @return
     */
-   bool setKeepAlive(bool on) noexcept;
+   bool setKeepAlive(bool on);
    
    /**
     *
     * @return
     */
-   bool getKeepAlive() const noexcept;
+   bool getKeepAlive() const;
     
    /**
     *
     * @param line
     * @return
     */
-   bool readLine(std::string& line) noexcept;
+   bool readLine(std::string& line);
     
    /**
     *
     * @param ipAddress
     * @return
     */
-   bool getPeerIPAddress(std::string& ipAddress) noexcept;
+   bool getPeerIPAddress(std::string& ipAddress);
     
    /**
     *
     * @return
     */
-   int getPort() const noexcept;
+   int getPort() const;
     
    /**
     *
     * @param isSizeIncluded
     */
-   void setIncludeMessageSize(bool isSizeIncluded) noexcept;
+   void setIncludeMessageSize(bool isSizeIncluded);
 
    
 protected:
-   bool readMsg(int length) noexcept;
-   //bool readSocket(char* buffer, int bytesToRead) noexcept;
-   bool open() noexcept;
-   void init() noexcept;
+   bool readMsg(int length);
+   //bool readSocket(char* buffer, int bytesToRead);
+   bool open();
+   void init();
    
-   void setLineInputBuffer(const std::string& s) noexcept;
-   void appendLineInputBuffer(const std::string& s) noexcept;
+   void setLineInputBuffer(const std::string& s);
+   void appendLineInputBuffer(const std::string& s);
 
     
 private:

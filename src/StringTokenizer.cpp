@@ -15,14 +15,22 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-StringTokenizer::StringTokenizer(const std::string& withTokens) noexcept :
-   StringTokenizer(withTokens, SPACE) {
+StringTokenizer::StringTokenizer(const std::string& withTokens) :
+   m_withTokens(withTokens),
+   m_delimiter(SPACE),
+   m_posTokens(m_withTokens.c_str()),
+   m_posDelimiter(m_delimiter.c_str()),
+   m_posCurrent(0),
+   m_stringLength(m_withTokens.length()),
+   m_isConstructing(true),
+   m_numberTokens(0),
+   m_indexToken(0) {
 }
 
 //******************************************************************************
 
 StringTokenizer::StringTokenizer(const std::string& withTokens,
-                                 const std::string& delimiter) noexcept :
+                                 const std::string& delimiter) :
    m_withTokens(withTokens),
    m_delimiter(delimiter),
    m_posTokens(m_withTokens.c_str()),
@@ -51,13 +59,13 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
 
 //******************************************************************************
 
-StringTokenizer::~StringTokenizer() noexcept {
+StringTokenizer::~StringTokenizer() {
    Logger::logInstanceDestroy("StringTokenizer");
 }
 
 //******************************************************************************
 
-bool StringTokenizer::hasMoreTokens() const noexcept {
+bool StringTokenizer::hasMoreTokens() const {
    if (m_isConstructing) {
       return (m_posCurrent != std::string::npos);
    } else {
@@ -67,7 +75,7 @@ bool StringTokenizer::hasMoreTokens() const noexcept {
 
 //******************************************************************************
 
-std::size_t StringTokenizer::countTokens() const noexcept {
+std::size_t StringTokenizer::countTokens() const {
    return m_numberTokens;
 }
 
@@ -93,7 +101,7 @@ std::string StringTokenizer::extractNextToken() {
    const size_t numNonDelimiterChars = ::strcspn(posWithTokens, m_posDelimiter);
    
    if (numNonDelimiterChars > 0) {
-      auto posStart = m_posCurrent;
+      std::size_t posStart = m_posCurrent;
       m_posCurrent += numNonDelimiterChars;
       posWithTokens += numNonDelimiterChars;
       

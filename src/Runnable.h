@@ -24,15 +24,15 @@ public:
    /**
     * Default constructor
     */
-   Runnable() noexcept :
-      m_completionObserver(nullptr),
+   Runnable() :
+      m_completionObserver(NULL),
       m_runByThreadId(0) {
    }
 
    /**
     * Destructor
     */
-   virtual ~Runnable() noexcept {}
+   virtual ~Runnable() {}
     
 
    /**
@@ -44,7 +44,7 @@ public:
     *
     * @param runByThreadId
     */
-   virtual void setRunByThreadId(int runByThreadId) noexcept {
+   virtual void setRunByThreadId(int runByThreadId) {
       m_runByThreadId = runByThreadId;
    }
    
@@ -52,7 +52,7 @@ public:
     *
     * @return
     */
-   virtual int getRunByThreadId() const noexcept {
+   virtual int getRunByThreadId() const {
       return m_runByThreadId;
    }
    
@@ -60,7 +60,7 @@ public:
     *
     * @param runByThreadWorkerId
     */
-   virtual void setRunByThreadWorkerId(const std::string& runByThreadWorkerId) noexcept {
+   virtual void setRunByThreadWorkerId(const std::string& runByThreadWorkerId) {
       m_runByThreadWorkerId = runByThreadWorkerId;
    }
    
@@ -68,7 +68,7 @@ public:
     *
     * @return
     */
-   virtual const std::string& getRunByThreadWorkerId() const noexcept {
+   virtual const std::string& getRunByThreadWorkerId() const {
       return m_runByThreadWorkerId;
    }
    
@@ -77,14 +77,14 @@ public:
     * @param completionObserver
     * @see RunCompletionObserver()
     */
-   void setCompletionObserver(RunCompletionObserver* completionObserver) noexcept {
+   void setCompletionObserver(RunCompletionObserver* completionObserver) {
        m_completionObserver = completionObserver;
    }
    
    /**
     * This should only be called AFTER the run method has completed
     */
-   virtual void notifyOnCompletion() noexcept {
+   virtual void notifyOnCompletion() {
       if (m_completionObserver) {
          m_completionObserver->notifyRunComplete(this);
       }
@@ -96,8 +96,8 @@ private:
    int m_runByThreadId;
 
    // disallow copies
-   Runnable(const Runnable&) noexcept;
-   Runnable& operator=(const Runnable&) noexcept;
+   Runnable(const Runnable&);
+   Runnable& operator=(const Runnable&);
 };
 
 }

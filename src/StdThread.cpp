@@ -12,7 +12,7 @@ using namespace chaudiere;
 //******************************************************************************
 //******************************************************************************
 
-void StdThread::runThread(StdThread* thread) noexcept
+void StdThread::runThread(StdThread* thread)
 {
    std::stringstream ss;
    ss << std::this_thread::get_id();
@@ -47,21 +47,21 @@ void StdThread::runThread(StdThread* thread) noexcept
 //******************************************************************************
 //******************************************************************************
 
-StdThread::StdThread() noexcept :
+StdThread::StdThread() :
    StdThread(NULL, "") {
 }
 
-StdThread::StdThread(const std::string& name) noexcept :
+StdThread::StdThread(const std::string& name) :
    StdThread(NULL, name) {
 }
 
 //******************************************************************************
 
-StdThread::StdThread(Runnable* runnable) noexcept :
+StdThread::StdThread(Runnable* runnable) :
    StdThread(NULL, "") {
 }
 
-StdThread::StdThread(Runnable* runnable, const std::string& name) noexcept :
+StdThread::StdThread(Runnable* runnable, const std::string& name) :
    Thread(&m_mutexAlive, runnable),
    m_name(name) {
    Logger::logInstanceCreate("StdThread");
@@ -69,13 +69,13 @@ StdThread::StdThread(Runnable* runnable, const std::string& name) noexcept :
 
 //******************************************************************************
 
-StdThread::~StdThread() noexcept {
+StdThread::~StdThread() {
    Logger::logInstanceDestroy("StdThread");
 }
 
 //******************************************************************************
 
-bool StdThread::start() noexcept {
+bool StdThread::start() {
    bool isSuccess = false;
    
    //TODO: research and fix!
@@ -97,19 +97,19 @@ void StdThread::run() {
 
 //******************************************************************************
 
-std::thread::native_handle_type StdThread::getHandle() noexcept {
+std::thread::native_handle_type StdThread::getHandle() {
    return m_thread.native_handle();
 }
 
 //******************************************************************************
 
-std::thread::id StdThread::getStdThreadId() const noexcept {
+std::thread::id StdThread::getStdThreadId() const {
    return m_thread.get_id();
 }
 
 //******************************************************************************
 
-const std::string& StdThread::getName() const noexcept {
+const std::string& StdThread::getName() const {
    return m_name;
 }
 

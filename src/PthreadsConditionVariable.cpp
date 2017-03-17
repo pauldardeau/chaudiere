@@ -48,7 +48,7 @@ PthreadsConditionVariable::~PthreadsConditionVariable() {
 
 //******************************************************************************
 
-bool PthreadsConditionVariable::wait(Mutex* mutex) noexcept {
+bool PthreadsConditionVariable::wait(Mutex* mutex) {
    if (m_initialized) {
       if (mutex) {
          PthreadsMutex* pthreadsMutex =
@@ -76,7 +76,7 @@ bool PthreadsConditionVariable::wait(Mutex* mutex) noexcept {
 
 //******************************************************************************
 
-void PthreadsConditionVariable::notifyOne() noexcept {
+void PthreadsConditionVariable::notifyOne() {
    if (m_initialized) {
       if (0 != ::pthread_cond_signal(&m_cond)) {
          Logger::error("unable to signal on condition variable");
@@ -88,7 +88,7 @@ void PthreadsConditionVariable::notifyOne() noexcept {
 
 //******************************************************************************
 
-void PthreadsConditionVariable::notifyAll() noexcept {
+void PthreadsConditionVariable::notifyAll() {
    if (m_initialized) {
       if (0 != ::pthread_cond_broadcast(&m_cond)) {
          Logger::error("unable to broadcast on condition variable");
@@ -100,7 +100,7 @@ void PthreadsConditionVariable::notifyAll() noexcept {
 
 //******************************************************************************
 
-const std::string& PthreadsConditionVariable::getName() const noexcept {
+const std::string& PthreadsConditionVariable::getName() const {
    return m_name;
 }
 

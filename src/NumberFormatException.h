@@ -19,30 +19,30 @@ public:
    /**
     * Constructs a NumberFormatException with no detail message
     */
-   NumberFormatException() noexcept;
+   NumberFormatException();
 
    /**
     * Constructs a NumberFormatException with the specified detail
     * @param s the detail message
     */
-   explicit NumberFormatException(const std::string& s) noexcept;
+   explicit NumberFormatException(const std::string& s);
    
    /**
     * Copy constructor
     * @param copy the source of the copy
     */
-   NumberFormatException(const NumberFormatException& copy) noexcept;
+   NumberFormatException(const NumberFormatException& copy);
    
    /**
     * Destructor
     */
-   virtual ~NumberFormatException() noexcept;
+   virtual ~NumberFormatException() throw ();
 
    /**
     * Retrieves the class name (type) of the exception
     * @return exception class name
     */
-   virtual const char* getType() const noexcept {
+   virtual const char* getType() const {
       return "NumberFormatException";
    }
    
@@ -51,7 +51,7 @@ public:
     * @param copy the source of the copy
     * @return reference to the updated reference
     */
-   NumberFormatException& operator=(const NumberFormatException& copy) noexcept;
+   NumberFormatException& operator=(const NumberFormatException& copy);
    
 };
 

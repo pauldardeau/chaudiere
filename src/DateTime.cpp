@@ -1,8 +1,9 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include <cstdlib>
-#include <ctime>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <string.h>
 
 #include "DateTime.h"
@@ -28,7 +29,7 @@ static int numberLeadingZeros(const char* value, int length) {
 
 void DateTime::dateFromString(DateTime* date, const char* dateValue) {
    const size_t valueLength = ::strlen(dateValue);
-   if ((valueLength > 18) && (date != nullptr)) {
+   if ((valueLength > 18) && (date != NULL)) {
       const char* firstDash = ::strchr(dateValue, '-');
       if (firstDash > dateValue) {
          const char* secondDash = ::strchr(firstDash+1, '-');
@@ -168,7 +169,7 @@ DateTime* DateTime::gmtDateTime() {
    ::time(&currentGMT);
    
    struct tm* timeptr = ::gmtime(&currentGMT);
-   if (timeptr != nullptr) {
+   if (timeptr != NULL) {
       // caller responsible for deleting
       DateTime* dt = new DateTime(0);
       dt->m_year = timeptr->tm_year + 1900;
@@ -183,7 +184,7 @@ DateTime* DateTime::gmtDateTime() {
       return dt;
    }
    
-   return nullptr;
+   return NULL;
 }
 
 //******************************************************************************
@@ -198,9 +199,9 @@ DateTime::DateTime() :
    m_second(0),
    m_weekDay(-1),
    m_haveUnixTimeValue(false) {
-   time_t t = ::time(nullptr);
+   time_t t = ::time(NULL);
    struct tm* now = ::localtime(&t);
-   if (now != nullptr) {
+   if (now != NULL) {
       m_year = now->tm_year + 1900;
       m_month = now->tm_mon + 1;
       m_day = now->tm_mday;

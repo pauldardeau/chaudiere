@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <stdio.h>
+#include <string.h>
 #include <exception>
 
 #include "ThreadPoolWorker.h"
@@ -16,9 +18,9 @@ using namespace chaudiere;
 
 ThreadPoolWorker::ThreadPoolWorker(ThreadingFactory* threadingFactory,
                                    ThreadPoolQueue& queue,
-                                   int workerId) noexcept :
+                                   int workerId) :
    m_threadingFactory(threadingFactory),
-   m_workerThread(nullptr),
+   m_workerThread(NULL),
    m_poolQueue(queue),
    m_workerId(workerId),
    m_isRunning(false) {
@@ -27,18 +29,21 @@ ThreadPoolWorker::ThreadPoolWorker(ThreadingFactory* threadingFactory,
 
 //******************************************************************************
 
-ThreadPoolWorker::~ThreadPoolWorker() noexcept {
+ThreadPoolWorker::~ThreadPoolWorker() {
    Logger::logInstanceDestroy("ThreadPoolWorker");   
 }
 
 //******************************************************************************
 
-void ThreadPoolWorker::start() noexcept {
+void ThreadPoolWorker::start() {
    if (!m_workerThread) {
       m_workerThread = m_threadingFactory->createThread(this, "threadpoolworker");
       if (m_workerThread) {
          m_workerThread->setPoolWorkerStatus(true);
-         m_workerThread->setWorkerId(std::to_string(m_workerId));
+         char workerIdAsString[20];
+         memset(workerIdAsString, 0, 20);
+         snprintf(workerIdAsString, 20, "%d", m_workerId);
+         m_workerThread->setWorkerId(workerIdAsString);
          m_isRunning = true;
          m_workerThread->start();
       }
@@ -47,17 +52,17 @@ void ThreadPoolWorker::start() noexcept {
 
 //******************************************************************************
 
-void ThreadPoolWorker::stop() noexcept {
+void ThreadPoolWorker::stop() {
    m_isRunning = false;
 }
 
 //******************************************************************************
 
-void ThreadPoolWorker::run() noexcept {
+void ThreadPoolWorker::run() {
    while (m_isRunning) {
-      if (Logger::isLogging(Logger::LogLevel::Debug)) {
+      if (Logger::isLogging(Debug)) {
          char message[128];
-         std::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
+         ::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
          Logger::debug(std::string(message));
       }
 
@@ -83,9 +88,9 @@ void ThreadPoolWorker::run() noexcept {
                Logger::error("run method of runnable threw exception");
             }
 
-            if (Logger::isLogging(Logger::LogLevel::Debug)) {
+            if (Logger::isLogging(Debug)) {
                char message[128];
-               std::snprintf(message, 128,
+               ::snprintf(message, 128,
                              "ending processing request on thread %d",
                              m_workerId);
                Logger::debug(std::string(message));

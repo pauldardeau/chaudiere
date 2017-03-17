@@ -8,34 +8,34 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-NumberFormatException::NumberFormatException() noexcept :
+NumberFormatException::NumberFormatException() :
    BasicException("") {
    Logger::logInstanceCreate("NumberFormatException");
 }
 
 //******************************************************************************
 
-NumberFormatException::NumberFormatException(const std::string& s) noexcept :
+NumberFormatException::NumberFormatException(const std::string& s) :
    BasicException(s) {
    Logger::logInstanceCreate("NumberFormatException");
 }
 
 //******************************************************************************
 
-NumberFormatException::NumberFormatException(const NumberFormatException& copy) noexcept :
+NumberFormatException::NumberFormatException(const NumberFormatException& copy) :
    BasicException(copy) {
    Logger::logInstanceCreate("NumberFormatException");
 }
 
 //******************************************************************************
 
-NumberFormatException::~NumberFormatException() noexcept {
+NumberFormatException::~NumberFormatException() throw () {
    Logger::logInstanceDestroy("NumberFormatException");
 }
 
 //******************************************************************************
 
-NumberFormatException& NumberFormatException::operator=(const NumberFormatException& copy) noexcept {
+NumberFormatException& NumberFormatException::operator=(const NumberFormatException& copy) {
    if (this == &copy) {
       return *this;
    }

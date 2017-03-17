@@ -22,54 +22,54 @@ public:
    /**
     * Default constructor
     */
-   StdThread() noexcept;
+   StdThread();
 
-   explicit StdThread(const std::string& name) noexcept;
+   explicit StdThread(const std::string& name);
    
    /**
     * Constructs a c++11 thread using the specified Runnable
     * @param runnable the executable object that the thread will run
     * @see Runnable()
     */
-   explicit StdThread(Runnable* runnable) noexcept;
+   explicit StdThread(Runnable* runnable);
 
-   explicit StdThread(Runnable* runnable, const std::string& name) noexcept;
+   explicit StdThread(Runnable* runnable, const std::string& name);
    
    /**
     * Destructor
     */
-   virtual ~StdThread() noexcept;
+   virtual ~StdThread();
    
    /**
     *
     * @return
     */
-   virtual bool start() noexcept override;
+   virtual bool start();
    
    /**
     *
     */
-   virtual void run() override;
+   virtual void run();
    
    /**
     *
     * @param thread
     */
-   void runThread(StdThread* thread) noexcept;
+   void runThread(StdThread* thread);
    
    /**
     *
     * @return
     */
-   std::thread::native_handle_type getHandle() noexcept;
+   std::thread::native_handle_type getHandle();
    
    /**
     *
     * @return
     */
-   std::thread::id getStdThreadId() const noexcept;
+   std::thread::id getStdThreadId() const;
 
-   const std::string& getName() const noexcept;
+   const std::string& getName() const;
    
    
 private:

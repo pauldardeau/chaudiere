@@ -13,8 +13,8 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-RequestHandler::RequestHandler(SocketRequest* socketRequest) noexcept :
-   m_socket(nullptr),
+RequestHandler::RequestHandler(SocketRequest* socketRequest) :
+   m_socket(NULL),
    m_socketRequest(socketRequest),
    m_isThreadPooling(false) {
    Logger::logInstanceCreate("RequestHandler");
@@ -22,16 +22,16 @@ RequestHandler::RequestHandler(SocketRequest* socketRequest) noexcept :
 
 //******************************************************************************
 
-RequestHandler::RequestHandler(Socket* socket) noexcept :
+RequestHandler::RequestHandler(Socket* socket) :
    m_socket(socket),
-   m_socketRequest(nullptr),
+   m_socketRequest(NULL),
    m_isThreadPooling(false) {
    Logger::logInstanceCreate("RequestHandler");
 }
 
 //******************************************************************************
 
-RequestHandler::~RequestHandler() noexcept {
+RequestHandler::~RequestHandler() {
    Logger::logInstanceDestroy("RequestHandler");
 
    if (m_socket) {
@@ -41,20 +41,20 @@ RequestHandler::~RequestHandler() noexcept {
 
 //******************************************************************************
 
-void RequestHandler::setThreadPooling(bool isThreadPooling) noexcept {
+void RequestHandler::setThreadPooling(bool isThreadPooling) {
    m_isThreadPooling = isThreadPooling;
 }
 
 //******************************************************************************
 
-bool RequestHandler::isThreadPooling() const noexcept {
+bool RequestHandler::isThreadPooling() const {
    return m_isThreadPooling;
 }
 
 //******************************************************************************
 
-Socket* RequestHandler::getSocket() noexcept {
-   Socket* socket = nullptr;
+Socket* RequestHandler::getSocket() {
+   Socket* socket = NULL;
 
    if (m_socket) {
       socket = m_socket;

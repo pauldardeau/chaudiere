@@ -29,9 +29,9 @@ using namespace chaudiere;
 
 KernelEventServer::KernelEventServer(Mutex& fdMutex,
                                      Mutex& hwmConnectionsMutex,
-                                     const std::string& serverName) noexcept :
-   m_socketServiceHandler(nullptr),
-   m_listBusyFlags(nullptr),
+                                     const std::string& serverName) :
+   m_socketServiceHandler(NULL),
+   m_listBusyFlags(NULL),
    m_serverPort(0),
    m_listenBacklog(10),
    m_listenerFD(-1),
@@ -40,13 +40,13 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
 
 //******************************************************************************
 
-KernelEventServer::~KernelEventServer() noexcept {
+KernelEventServer::~KernelEventServer() {
    
    delete m_socketServiceHandler;
    
-   if (nullptr != m_listBusyFlags) {
+   if (NULL != m_listBusyFlags) {
       ::free(m_listBusyFlags);
-      m_listBusyFlags = nullptr;
+      m_listBusyFlags = NULL;
    }
    
    if (-1 != m_listenerFD) {
@@ -58,12 +58,12 @@ KernelEventServer::~KernelEventServer() noexcept {
 
 bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
                              int serverPort,
-                             int maxConnections) noexcept {
+                             int maxConnections) {
    m_socketServiceHandler = socketServiceHandler;
    m_serverPort = serverPort;
    m_maxConnections = maxConnections;
    
-   if (nullptr == m_socketServiceHandler) {
+   if (NULL == m_socketServiceHandler) {
       Logger::critical("no socket service handler set");
       return false;
    }
@@ -107,7 +107,7 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
 
 //******************************************************************************
 
-void KernelEventServer::run() noexcept {
+void KernelEventServer::run() {
    struct sockaddr_in clientaddr;
    socklen_t addrlen = sizeof(clientaddr);
    int newfd;
@@ -119,7 +119,7 @@ void KernelEventServer::run() noexcept {
    
    for (;;) {
       
-      const bool isLoggingDebug = Logger::isLogging(Logger::LogLevel::Debug);
+      const bool isLoggingDebug = Logger::isLogging(Debug);
       
       m_numberEventsReturned = getKernelEvents(m_maxConnections);
       
@@ -260,9 +260,9 @@ void KernelEventServer::run() noexcept {
 
 //******************************************************************************
 
-void KernelEventServer::notifySocketComplete(Socket* socket) noexcept {
+void KernelEventServer::notifySocketComplete(Socket* socket) {
    char msg[128];
-   const bool isLoggingDebug = Logger::isLogging(Logger::LogLevel::Debug);
+   const bool isLoggingDebug = Logger::isLogging(Debug);
    
    const int socketFD = socket->getFileDescriptor();
    
@@ -319,7 +319,7 @@ void KernelEventServer::notifySocketComplete(Socket* socket) noexcept {
 
 //******************************************************************************
 
-int KernelEventServer::getListenerSocketFileDescriptor() const noexcept {
+int KernelEventServer::getListenerSocketFileDescriptor() const {
    return m_listenerFD;
 }
 

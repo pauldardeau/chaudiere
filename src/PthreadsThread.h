@@ -23,18 +23,18 @@ class PthreadsThread : public Thread
       typedef THREAD_RETURN_T (*PFN_THREAD_ROUTINE)(void*);
 
 
-      PthreadsThread() noexcept;
-      explicit PthreadsThread(const std::string& name) noexcept;
-      explicit PthreadsThread(Runnable* runnable) noexcept;
-      explicit PthreadsThread(Runnable* runnable, const std::string& name) noexcept;
-      virtual ~PthreadsThread() noexcept;
+      PthreadsThread();
+      explicit PthreadsThread(const std::string& name);
+      explicit PthreadsThread(Runnable* runnable);
+      explicit PthreadsThread(Runnable* runnable, const std::string& name);
+      virtual ~PthreadsThread();
 
-      virtual bool start() noexcept override;
-      virtual void run() override;
+      virtual bool start();
+      virtual void run();
 
-      unsigned long getExitCode() const noexcept;
-      pthread_t getHandle() noexcept;
-      const std::string& getName() const noexcept;
+      unsigned long getExitCode() const;
+      pthread_t getHandle();
+      const std::string& getName() const;
 
 
    private:
@@ -42,7 +42,7 @@ class PthreadsThread : public Thread
       PthreadsThread(const PthreadsThread&);
       PthreadsThread& operator=(const PthreadsThread&);
 
-      static void* runThread(void* pArgs) noexcept;
+      static void* runThread(void* pArgs);
       PthreadsMutex         m_mutexAlive;
       PthreadsMutex         m_mutexExitCode;
       pthread_t             m_threadHandle;

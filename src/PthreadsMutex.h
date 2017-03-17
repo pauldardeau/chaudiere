@@ -32,38 +32,38 @@ public:
    /**
     * Destructor
     */
-   ~PthreadsMutex() noexcept;
+   ~PthreadsMutex();
 
    // Mutex
    /**
     *
     * @return
     */
-   virtual bool unlock() noexcept override;
+   virtual bool unlock();
    
    /**
     *
     * @return
     */
-   virtual bool lock() noexcept override;
+   virtual bool lock();
    
    /**
     *
     * @return
     */
-   virtual bool isLocked() const noexcept override;
+   virtual bool isLocked() const;
    
    /**
     *
     * @return
     */
-   virtual bool haveValidMutex() const noexcept override;
+   virtual bool haveValidMutex() const;
    
    /**
     * Retrieves the primitive data type for the underlying platform
     * @return the platform's primitive data type for the mutex
     */
-   pthread_mutex_t& getPlatformPrimitive() noexcept
+   pthread_mutex_t& getPlatformPrimitive()
    {
       return m_mutex;
    }
@@ -72,7 +72,7 @@ public:
     * Retrieves the name of the mutex
     * @return name of the mutex
     */
-   const std::string& getName() const noexcept;
+   const std::string& getName() const;
 
     
 private:

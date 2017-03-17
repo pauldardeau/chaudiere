@@ -5,32 +5,32 @@
 
 using namespace chaudiere;
 
-Logger* Logger::loggerInstance = nullptr;
+Logger* Logger::loggerInstance = NULL;
 
 //******************************************************************************
 
-void Logger::shutdown() noexcept {
-   if (nullptr != loggerInstance) {
+void Logger::shutdown() {
+   if (NULL != loggerInstance) {
       delete loggerInstance;
-      loggerInstance = nullptr;
+      loggerInstance = NULL;
    }
 }
 
 //******************************************************************************
 
-void Logger::setLogger(Logger* logger) noexcept {
+void Logger::setLogger(Logger* logger) {
    loggerInstance = logger;
 }
 
 //******************************************************************************
 
-Logger* Logger::getLogger() noexcept {
+Logger* Logger::getLogger() {
    return loggerInstance;
 }
 
 //******************************************************************************
 
-void Logger::log(LogLevel logLevel, const std::string& logMessage) noexcept {
+void Logger::log(LogLevel logLevel, const std::string& logMessage) {
    if (loggerInstance) {
       loggerInstance->logMessage(logLevel, logMessage);
    }
@@ -38,43 +38,43 @@ void Logger::log(LogLevel logLevel, const std::string& logMessage) noexcept {
 
 //******************************************************************************
 
-void Logger::critical(const std::string& logMessage) noexcept {
-   log(LogLevel::Critical, logMessage);
+void Logger::critical(const std::string& logMessage) {
+   log(Critical, logMessage);
 }
 
 //******************************************************************************
 
-void Logger::error(const std::string& logMessage) noexcept {
-   log(LogLevel::Error, logMessage);
+void Logger::error(const std::string& logMessage) {
+   log(Error, logMessage);
 }
 
 //******************************************************************************
 
-void Logger::warning(const std::string& logMessage) noexcept {
-   log(LogLevel::Warning, logMessage);
+void Logger::warning(const std::string& logMessage) {
+   log(Warning, logMessage);
 }
 
 //******************************************************************************
 
-void Logger::info(const std::string& logMessage) noexcept {
-   log(LogLevel::Info, logMessage);
+void Logger::info(const std::string& logMessage) {
+   log(Info, logMessage);
 }
 
 //******************************************************************************
 
-void Logger::debug(const std::string& logMessage) noexcept {
-   log(LogLevel::Debug, logMessage);
+void Logger::debug(const std::string& logMessage) {
+   log(Debug, logMessage);
 }
 
 //******************************************************************************
 
-void Logger::verbose(const std::string& logMessage) noexcept {
-   log(LogLevel::Verbose, logMessage);
+void Logger::verbose(const std::string& logMessage) {
+   log(Verbose, logMessage);
 }
 
 //******************************************************************************
 
-bool Logger::isLogging(LogLevel logLevel) noexcept {
+bool Logger::isLogging(LogLevel logLevel) {
    if (loggerInstance) {
       return loggerInstance->isLoggingLevel(logLevel);
    }
@@ -84,7 +84,7 @@ bool Logger::isLogging(LogLevel logLevel) noexcept {
 
 //******************************************************************************
 
-void Logger::logInstanceCreate(const char* className) noexcept {
+void Logger::logInstanceCreate(const char* className) {
    if (loggerInstance) {
       if (loggerInstance->isLoggingInstanceLifecycles()) {
          loggerInstance->logInstanceCreate(std::string(className));
@@ -94,7 +94,7 @@ void Logger::logInstanceCreate(const char* className) noexcept {
 
 //******************************************************************************
 
-void Logger::logInstanceDestroy(const char* className) noexcept {
+void Logger::logInstanceDestroy(const char* className) {
    if (loggerInstance) {
       if (loggerInstance->isLoggingInstanceLifecycles()) {
          loggerInstance->logInstanceDestroy(std::string(className));
@@ -105,7 +105,7 @@ void Logger::logInstanceDestroy(const char* className) noexcept {
 //******************************************************************************
 
 void Logger::countOccurrence(const char* occurrenceType,
-                             const char* occurrenceName) noexcept {
+                             const char* occurrenceName) {
    if (loggerInstance) {
       loggerInstance->logOccurrence(std::string(occurrenceType),
                                     std::string(occurrenceName));
@@ -115,7 +115,7 @@ void Logger::countOccurrence(const char* occurrenceType,
 //******************************************************************************
 
 void Logger::countOccurrence(const std::string& occurrenceType,
-                             const std::string& occurrenceName) noexcept {
+                             const std::string& occurrenceName) {
    if (loggerInstance) {
       loggerInstance->logOccurrence(occurrenceType, occurrenceName);
    }

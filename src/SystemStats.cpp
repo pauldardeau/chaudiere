@@ -25,7 +25,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept {
+bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
    bool success = false;
    
 #ifdef __linux__
@@ -61,7 +61,7 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) noexcept {
 
 bool SystemStats::getLoadAverages(double& oneMinute,
                                   double& fiveMinute,
-                                  double& fifteenMinute) noexcept {
+                                  double& fifteenMinute) {
    bool retrievedLoadAverages = false;
    
    double load[3];
@@ -79,7 +79,7 @@ bool SystemStats::getLoadAverages(double& oneMinute,
 
 //******************************************************************************
 
-bool SystemStats::getNumberProcesses(int& numberProcesses) noexcept {
+bool SystemStats::getNumberProcesses(int& numberProcesses) {
    bool success = false;
    
 #ifndef __linux__
@@ -100,7 +100,7 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) noexcept {
       struct kinfo_proc* proc_list =
          (struct kinfo_proc*)::malloc(length);
        
-      if (proc_list != nullptr) {
+      if (proc_list != NULL) {
          // Get the actual process list
          rc = ::sysctl((int *)name,
                        (sizeof(name) / sizeof(*name)) - 1,

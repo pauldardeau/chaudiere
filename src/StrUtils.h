@@ -27,14 +27,14 @@ public:
     * @param i integer value to convert to string
     * @return string version of integer value
     */
-   static std::string toString(int i) noexcept;
+   static std::string toString(int i);
    
    /**
     *
     * @param s
     * @return
     */
-   static std::string strip(const std::string& s) noexcept;
+   static std::string strip(const std::string& s);
    
   /**
    *
@@ -42,7 +42,7 @@ public:
    * @param strip
    * @return
    */
-   static std::string strip(const std::string& s, char strip) noexcept;
+   static std::string strip(const std::string& s, char strip);
     
    /**
     *
@@ -51,7 +51,7 @@ public:
     * @return
     */
    static bool startsWith(const std::string& haystack,
-                          const std::string& needle) noexcept;
+                          const std::string& needle);
                           
    /**
     *
@@ -60,7 +60,7 @@ public:
     * @return
     */
    static bool endsWith(const std::string& haystack,
-                        const std::string& needle) noexcept;
+                        const std::string& needle);
 
    /**
     *
@@ -69,19 +69,19 @@ public:
     * @return
     */
    static bool containsString(const std::string& haystack,
-                              const std::string& needle) noexcept;
+                              const std::string& needle);
 
    /**
     *
     * @param s
     */
-   static void toUpperCase(std::string& s) noexcept;
+   static void toUpperCase(std::string& s);
    
    /**
     *
     * @param s
     */
-   static void toLowerCase(std::string& s) noexcept;
+   static void toLowerCase(std::string& s);
 
    /**
     *
@@ -92,7 +92,7 @@ public:
     */
    static std::string& replaceAll(std::string& s,
                                   const std::string& searchFor,
-                                  const std::string& replaceWith) noexcept;
+                                  const std::string& replaceWith);
 
    /**
     *
@@ -100,14 +100,14 @@ public:
     * @param strip
     * @return
     */
-   static std::string& strip(std::string& s, char strip=' ') noexcept;
+   static std::string& strip(std::string& s, char strip=' ');
    
    /**
     *
     * @param s
     * @param strip
     */
-   static std::string& stripTrailing(std::string& s, char strip) noexcept;
+   static std::string& stripTrailing(std::string& s, char strip);
    
    /**
     *
@@ -115,21 +115,21 @@ public:
     * @param strip
     * @return
     */
-   static std::string& stripLeading(std::string& s, char strip) noexcept;
+   static std::string& stripLeading(std::string& s, char strip);
    
    /**
     *
     * @param s
     * @return
     */
-   static std::string& trimLeadingSpaces(std::string& s) noexcept;
+   static std::string& trimLeadingSpaces(std::string& s);
    
    /**
     *
     * @param s
     * @return
     */
-   static std::string trim(const std::string& s) noexcept;
+   static std::string trim(const std::string& s);
    
    /**
     *

@@ -24,84 +24,84 @@ public:
     *
     * @param mutexAlive
     */
-   explicit Thread(Mutex* mutexAlive) noexcept;
+   explicit Thread(Mutex* mutexAlive);
 
    /**
     *
     * @param runnable
     */
-   Thread(Runnable* runnable) noexcept;
+   Thread(Runnable* runnable);
    
    /**
     *
     * @param mutexAlive
     * @param runnable
     */
-   Thread(Mutex* mutexAlive, Runnable* runnable) noexcept;
+   Thread(Mutex* mutexAlive, Runnable* runnable);
    
    /**
     * Destructor
     */
-   virtual ~Thread() noexcept;
+   virtual ~Thread();
    
    
    /**
     *
     * @param isPoolWorker
     */
-   void setPoolWorkerStatus(bool isPoolWorker) noexcept;
+   void setPoolWorkerStatus(bool isPoolWorker);
    
    /**
     *
     * @return
     */
-   bool isPoolWorker() const noexcept;
+   bool isPoolWorker() const;
    
    /**
     *
     * @return
     */
-   virtual bool start() noexcept = 0;
+   virtual bool start() = 0;
    
    /**
     *
     */
-   virtual void run() override;
+   virtual void run();
    
    /**
     *
     * @return
     */
-   bool isAlive() const noexcept;
+   bool isAlive() const;
    
    /**
     *
     * @param isAlive
     */
-   void setAlive(bool isAlive) noexcept;
+   void setAlive(bool isAlive);
    
    /**
     *
     * @param observer
     */
-   void registerThreadCompletionObserver(ThreadCompletionObserver* observer) noexcept;
+   void registerThreadCompletionObserver(ThreadCompletionObserver* observer);
    
    /**
     *
     */
-   void clearThreadCompletionObserver() noexcept;
+   void clearThreadCompletionObserver();
    
    /**
     *
     */
-   void notifyOnCompletion() noexcept override;
+   void notifyOnCompletion();
    
    
    /**
     *
     * @return
     */
-   Runnable* getRunnable() noexcept;
+   Runnable* getRunnable();
    
    
    /**
@@ -110,14 +110,14 @@ public:
     * @param value
     */
    void setAttribute(const std::string& key,
-                     const std::string& value) noexcept;
+                     const std::string& value);
    
    /**
     *
     * @param key
     * @return
     */
-   bool hasAttribute(const std::string& key) const noexcept;
+   bool hasAttribute(const std::string& key) const;
    
    /**
     *
@@ -131,19 +131,19 @@ public:
     *
     * @param key
     */
-   void clearAttribute(const std::string& key) noexcept;
+   void clearAttribute(const std::string& key);
    
    /**
     *
     * @param threadId
     */
-   void setThreadId(const std::string& threadId) noexcept;
+   void setThreadId(const std::string& threadId);
    
    /**
     *
     * @return
     */
-   bool hasThreadId() const noexcept;
+   bool hasThreadId() const;
    
    /**
     *
@@ -155,13 +155,13 @@ public:
     *
     * @param workerId
     */
-   void setWorkerId(const std::string& workerId) noexcept;
+   void setWorkerId(const std::string& workerId);
    
    /**
     *
     * @return
     */
-   bool hasWorkerId() const noexcept;
+   bool hasWorkerId() const;
    
    /**
     *

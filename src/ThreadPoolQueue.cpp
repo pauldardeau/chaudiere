@@ -15,7 +15,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
+ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
    m_threadingFactory(threadingFactory),
    m_mutex(NULL),
    m_condQueueNotEmpty(NULL),
@@ -54,7 +54,7 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept :
 
 //******************************************************************************
 
-ThreadPoolQueue::~ThreadPoolQueue() noexcept {
+ThreadPoolQueue::~ThreadPoolQueue() {
    Logger::logInstanceDestroy("ThreadPoolQueue");
    m_isRunning = false;
    if (NULL != m_mutex) {
@@ -67,21 +67,21 @@ ThreadPoolQueue::~ThreadPoolQueue() noexcept {
 
 //******************************************************************************
 
-bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
+bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    if (!m_isInitialized) {
-      Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::addRequest queue not initialized");
+      Logger::log(Warning, "ThreadPoolQueue::addRequest queue not initialized");
       return false;
    }
 
    if (!runnableRequest) {
-      Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::addRequest rejecting NULL request");
+      Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting NULL request");
       return false;
    }
   
    MutexLock lock(*m_mutex, "ThreadPoolQueue::addRequest");
    
    if (!m_isRunning) {
-      Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::addRequest rejecting request, queue is shutting down");
+      Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting request, queue is shutting down");
       return false;
    }
    
@@ -90,7 +90,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
    //   ::exit(1);
    //}
 
-   Logger::log(Logger::LogLevel::Debug, "ThreadPoolQueue::addRequest accepting request");
+   Logger::log(Debug, "ThreadPoolQueue::addRequest accepting request");
    
    const bool wasEmpty = m_queue.empty();
    
@@ -100,7 +100,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
    // did we just transition from QUEUE_EMPTY to QUEUE_NOT_EMPTY?
    if (wasEmpty) {
       // signal QUEUE_NOT_EMPTY (wake up a worker thread)
-      Logger::log(Logger::LogLevel::Debug, "signalling queue_not_empty");
+      Logger::log(Debug, "signalling queue_not_empty");
       m_condQueueNotEmpty->notifyAll();
    }
   
@@ -109,9 +109,9 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) noexcept {
 
 //******************************************************************************
 
-Runnable* ThreadPoolQueue::takeRequest() noexcept {
+Runnable* ThreadPoolQueue::takeRequest() {
    if (!m_isInitialized) {
-      Logger::log(Logger::LogLevel::Warning, "ThreadPoolQueue::takeRequest queue not initialized");
+      Logger::log(Warning, "ThreadPoolQueue::takeRequest queue not initialized");
       return NULL;
    }
 
@@ -146,7 +146,7 @@ Runnable* ThreadPoolQueue::takeRequest() noexcept {
 
 //******************************************************************************
 
-void ThreadPoolQueue::shutDown() noexcept {
+void ThreadPoolQueue::shutDown() {
    printf("ThreadPoolQueue::shutDown\n");
    if (m_isInitialized && m_isRunning) {
       MutexLock lock(*m_mutex, "ThreadPoolQueue::shutDown");
@@ -156,19 +156,19 @@ void ThreadPoolQueue::shutDown() noexcept {
 
 //******************************************************************************
 
-bool ThreadPoolQueue::isRunning() const noexcept {
+bool ThreadPoolQueue::isRunning() const {
    return m_isRunning;
 }
 
 //******************************************************************************
 
-bool ThreadPoolQueue::isEmpty() const noexcept {
+bool ThreadPoolQueue::isEmpty() const {
    return m_queue.empty();
 }
 
 //******************************************************************************
 
-bool ThreadPoolQueue::isInitialized() const noexcept {
+bool ThreadPoolQueue::isInitialized() const {
    return m_isInitialized;
 }
 

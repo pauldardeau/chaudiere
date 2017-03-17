@@ -10,7 +10,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-SystemInfo::SystemInfo() noexcept :
+SystemInfo::SystemInfo() :
    m_retrievedSystemInfo(false) {
    Logger::logInstanceCreate("SystemInfo");
 
@@ -27,7 +27,7 @@ SystemInfo::SystemInfo() noexcept :
 
 //******************************************************************************
 
-SystemInfo::SystemInfo(const SystemInfo& copy) noexcept :
+SystemInfo::SystemInfo(const SystemInfo& copy) :
    m_sysName(copy.m_sysName),
    m_nodeName(copy.m_nodeName),
    m_release(copy.m_release),
@@ -39,13 +39,13 @@ SystemInfo::SystemInfo(const SystemInfo& copy) noexcept :
 
 //******************************************************************************
 
-SystemInfo::~SystemInfo() noexcept {
+SystemInfo::~SystemInfo() {
    Logger::logInstanceDestroy("SystemInfo");
 }
 
 //******************************************************************************
 
-SystemInfo& SystemInfo::operator=(const SystemInfo& copy) noexcept {
+SystemInfo& SystemInfo::operator=(const SystemInfo& copy) {
    if (this ==&copy) {
       return *this;
    }
@@ -62,37 +62,37 @@ SystemInfo& SystemInfo::operator=(const SystemInfo& copy) noexcept {
 
 //******************************************************************************
 
-const std::string& SystemInfo::sysName() const noexcept {
+const std::string& SystemInfo::sysName() const {
    return m_sysName;
 }
 
 //******************************************************************************
 
-const std::string& SystemInfo::nodeName() const noexcept {
+const std::string& SystemInfo::nodeName() const {
    return m_nodeName;
 }
 
 //******************************************************************************
 
-const std::string& SystemInfo::release() const noexcept {
+const std::string& SystemInfo::release() const {
    return m_release;
 }
 
 //******************************************************************************
 
-const std::string& SystemInfo::version() const noexcept {
+const std::string& SystemInfo::version() const {
    return m_version;
 }
 
 //******************************************************************************
 
-const std::string& SystemInfo::machine() const noexcept {
+const std::string& SystemInfo::machine() const {
    return m_machine;
 }
 
 //******************************************************************************
 
-bool SystemInfo::retrievedSystemInfo() const noexcept {
+bool SystemInfo::retrievedSystemInfo() const {
    return m_retrievedSystemInfo;
 }
 

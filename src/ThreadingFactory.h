@@ -25,23 +25,23 @@ public:
     * Retrieves the class singleton instance
     * @return the class singleton instance
     */
-   static ThreadingFactory* getThreadingFactory() noexcept;
+   static ThreadingFactory* getThreadingFactory();
    
    /**
     * Sets the specified ThreadingFactory instance to be the class singleton
     * @param threadingFactory the instance to use for the new class singleton
     */
-   static void setThreadingFactory(ThreadingFactory* threadingFactory) noexcept;
+   static void setThreadingFactory(ThreadingFactory* threadingFactory);
 
    /**
     * Constructs a ThreadingFactory instance
     */
-   ThreadingFactory() noexcept {}
+   ThreadingFactory() {}
    
    /**
     * Destructor
     */
-   virtual ~ThreadingFactory() noexcept {}
+   virtual ~ThreadingFactory() {}
    
    /**
     * Create a new named Mutex

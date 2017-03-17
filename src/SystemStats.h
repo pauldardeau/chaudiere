@@ -18,19 +18,19 @@ public:
    /**
     * Default constructor
     */
-   SystemStats() noexcept;
+   SystemStats();
    
    /**
     * Destructor
     */
-   ~SystemStats() noexcept;
+   ~SystemStats();
 
    /**
     * Retrieves the time that the system has been running in seconds
     * @param uptimeSeconds the variable to be populated
     * @return boolean indicating whether the uptime could be retrieved
     */
-   static bool uptimeSeconds(long long& uptimeSeconds) noexcept;
+   static bool uptimeSeconds(long long& uptimeSeconds);
    
    /**
     * Retrieves the system load averages for the past 1, 5, and 15 minute intervals
@@ -41,20 +41,20 @@ public:
     */
    static bool getLoadAverages(double& oneMinute,
                                double& fiveMinute,
-                               double& fifteenMinute) noexcept;
+                               double& fifteenMinute);
                                
    /**
     * Retrieves the number of processes running on the system
     * @param numberProcesses the variable to populate
     * @return boolean indicating whether the number of processes could be retrieved
     */
-   static bool getNumberProcesses(int& numberProcesses) noexcept;
+   static bool getNumberProcesses(int& numberProcesses);
 
 
 private:   
    // disallow copies
-   SystemStats(const SystemStats& copy) noexcept;
-   SystemStats& operator=(const SystemStats& copy) noexcept;
+   SystemStats(const SystemStats& copy);
+   SystemStats& operator=(const SystemStats& copy);
    
    
 };

@@ -32,27 +32,27 @@ class ThreadPoolWorker : public Runnable
        */
       ThreadPoolWorker(ThreadingFactory* threadingFactory,
                        ThreadPoolQueue& queue,
-                       int workerId) noexcept;
+                       int workerId);
                        
       /**
        * Destructor
        */
-      ~ThreadPoolWorker() noexcept;
+      ~ThreadPoolWorker();
 
       /**
        *
        */
-      void start() noexcept;
+      void start();
       
       /**
        *
        */
-      void stop() noexcept;
+      void stop();
       
       /**
        *
        */
-      void run() noexcept override;
+      void run();
 
 
    private:

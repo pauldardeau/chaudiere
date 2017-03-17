@@ -5,30 +5,31 @@
 #include "InvalidKeyException.h"
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
 
-KeyValuePairs::KeyValuePairs() noexcept {
+KeyValuePairs::KeyValuePairs() {
    Logger::logInstanceCreate("KeyValuePairs");
 }
 
 //******************************************************************************
 
-KeyValuePairs::KeyValuePairs(const KeyValuePairs& copy) noexcept :
+KeyValuePairs::KeyValuePairs(const KeyValuePairs& copy) :
    m_keyValues(copy.m_keyValues) {
    Logger::logInstanceCreate("KeyValuePairs");
 }
 
 //******************************************************************************
 
-KeyValuePairs::~KeyValuePairs() noexcept {
+KeyValuePairs::~KeyValuePairs() {
    Logger::logInstanceDestroy("KeyValuePairs");
 }
 
 //******************************************************************************
 
-KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) noexcept {
+KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) {
    if (&copy == this) {
       return *this;
    }
@@ -40,28 +41,30 @@ KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) noexcept {
 
 //******************************************************************************
 
-void KeyValuePairs::getKeys(std::vector<std::string>& keys) const noexcept {
+void KeyValuePairs::getKeys(std::vector<std::string>& keys) const {
    if (m_keyValues.empty()) {
       return;
    }
 
    keys.reserve(m_keyValues.size());
+   const map<string,string>::const_iterator itEnd = m_keyValues.end();
+   map<string,string>::const_iterator it = m_keyValues.begin();
    
-   for (auto kv : m_keyValues) {
-      keys.push_back(kv.first);
+   for ( ; it != itEnd; it++) {
+      keys.push_back((*it).first);
    }
 }
 
 //******************************************************************************
 
-bool KeyValuePairs::hasKey(const std::string& key) const noexcept {
+bool KeyValuePairs::hasKey(const std::string& key) const {
    return (m_keyValues.find(key) != m_keyValues.end());
 }
 
 //******************************************************************************
 
 const std::string& KeyValuePairs::getValue(const std::string& key) const {
-   auto it = m_keyValues.find(key);
+   map<string,string>::const_iterator it = m_keyValues.find(key);
    if (it != m_keyValues.end()) {
       return (*it).second;
    } else {
@@ -73,14 +76,14 @@ const std::string& KeyValuePairs::getValue(const std::string& key) const {
 //******************************************************************************
 
 void KeyValuePairs::addPair(const std::string& key,
-                            const std::string& value) noexcept {
+                            const std::string& value) {
    m_keyValues[key] = value;
 }
 
 //******************************************************************************
 
-bool KeyValuePairs::removePair(const std::string& key) noexcept {
-   auto it = m_keyValues.find(key);
+bool KeyValuePairs::removePair(const std::string& key) {
+   map<string,string>::iterator it = m_keyValues.find(key);
    if (it != m_keyValues.end()) {
       m_keyValues.erase(it);
       return true;
@@ -91,19 +94,19 @@ bool KeyValuePairs::removePair(const std::string& key) noexcept {
 
 //******************************************************************************
 
-void KeyValuePairs::clear() noexcept {
+void KeyValuePairs::clear() {
    m_keyValues.erase(m_keyValues.begin(), m_keyValues.end());
 }
 
 //******************************************************************************
 
-std::size_t KeyValuePairs::size() const noexcept {
+std::size_t KeyValuePairs::size() const {
    return m_keyValues.size();
 }
 
 //******************************************************************************
 
-bool KeyValuePairs::empty() const noexcept {
+bool KeyValuePairs::empty() const {
    return m_keyValues.empty();
 }
 

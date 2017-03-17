@@ -20,13 +20,13 @@ public:
    /**
     * Destructor
     */
-   virtual ~RunCompletionObserver() noexcept {}
+   virtual ~RunCompletionObserver() {}
    
    /**
     * Notifies the observer that the Runnable has completed
     * @param runnable the Runnable that has completed
     */
-   virtual void notifyRunComplete(Runnable* runnable) noexcept = 0;
+   virtual void notifyRunComplete(Runnable* runnable) = 0;
 };
 
 }

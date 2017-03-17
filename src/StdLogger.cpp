@@ -18,13 +18,16 @@ const std::string StdLogger::prefixVerbose  = "Verbose:";
 
 //******************************************************************************
 
-StdLogger::StdLogger() noexcept :
-   StdLogger(Logger::LogLevel::Debug) {
+StdLogger::StdLogger() :
+   m_lockLifecycleStats(new PthreadsMutex("lockLifecycleStats")),
+   m_lockOccurrences(new PthreadsMutex("lockOccurrences")),
+   m_logLevel(Debug),
+   m_isLoggingInstanceLifecycles(false) {
 }
 
 //******************************************************************************
 
-StdLogger::StdLogger(LogLevel logLevel) noexcept :
+StdLogger::StdLogger(LogLevel logLevel) :
    m_lockLifecycleStats(new PthreadsMutex("lockLifecycleStats")),
    m_lockOccurrences(new PthreadsMutex("lockOccurrences")),
    m_logLevel(logLevel),
@@ -33,27 +36,27 @@ StdLogger::StdLogger(LogLevel logLevel) noexcept :
 
 //******************************************************************************
 
-StdLogger::~StdLogger() noexcept {
+StdLogger::~StdLogger() {
    delete m_lockLifecycleStats;
    delete m_lockOccurrences;
 }
 
 //******************************************************************************
 
-Logger::LogLevel StdLogger::getLogLevel() const noexcept {
+LogLevel StdLogger::getLogLevel() const {
    return m_logLevel;
 }
 
 //******************************************************************************
 
-void StdLogger::setLogLevel(LogLevel logLevel) noexcept {
+void StdLogger::setLogLevel(LogLevel logLevel) {
    m_logLevel = logLevel;
 }
 
 //******************************************************************************
 
 void StdLogger::logMessage(LogLevel logLevel,
-                           const std::string& logMessage) noexcept {
+                           const std::string& logMessage) {
    if (isLogging(logLevel)) {
       std::printf("%s %s\n",
                   logLevelPrefix(logLevel).c_str(),
@@ -63,25 +66,25 @@ void StdLogger::logMessage(LogLevel logLevel,
 
 //******************************************************************************
 
-bool StdLogger::isLoggingLevel(LogLevel logLevel) const noexcept {
+bool StdLogger::isLoggingLevel(LogLevel logLevel) const {
    return (logLevel <= m_logLevel);
 }
 
 //******************************************************************************
 
-const std::string& StdLogger::logLevelPrefix(LogLevel level) const noexcept {
+const std::string& StdLogger::logLevelPrefix(LogLevel level) const {
    switch (level) {
-      case Logger::LogLevel::Critical:
+      case Critical:
          return prefixCritical;
-      case Logger::LogLevel::Error:
+      case Error:
          return prefixError;
-      case Logger::LogLevel::Warning:
+      case Warning:
          return prefixWarning;
-      case Logger::LogLevel::Info:
+      case Info:
          return prefixInfo;
-      case Logger::LogLevel::Verbose:
+      case Verbose:
          return prefixVerbose;
-      case Logger::LogLevel::Debug:
+      case Debug:
       default:
          return prefixDebug;
    }
@@ -89,22 +92,23 @@ const std::string& StdLogger::logLevelPrefix(LogLevel level) const noexcept {
 
 //******************************************************************************
 
-bool StdLogger::isLoggingInstanceLifecycles() const noexcept {
+bool StdLogger::isLoggingInstanceLifecycles() const {
    return m_isLoggingInstanceLifecycles;
 }
 
 //******************************************************************************
 
-void StdLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept {
+void StdLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) {
    m_isLoggingInstanceLifecycles = logInstanceLifecycles;
 }
 
 //******************************************************************************
 
-void StdLogger::logInstanceCreate(const std::string& className) noexcept {
+void StdLogger::logInstanceCreate(const std::string& className) {
    if (m_lockLifecycleStats) {
       MutexLock lock(*m_lockLifecycleStats);
-      auto it = m_mapClassLifecycleStats.find(className);
+      std::map<std::string, LifecycleStats>::iterator it =
+         m_mapClassLifecycleStats.find(className);
       if (it != m_mapClassLifecycleStats.end()) {
          LifecycleStats& stats = it->second;
          ++stats.m_instancesCreated;
@@ -118,10 +122,11 @@ void StdLogger::logInstanceCreate(const std::string& className) noexcept {
 
 //******************************************************************************
 
-void StdLogger::logInstanceDestroy(const std::string& className) noexcept {
+void StdLogger::logInstanceDestroy(const std::string& className) {
    if (m_lockLifecycleStats) {
       MutexLock lock(*m_lockLifecycleStats);
-      auto it = m_mapClassLifecycleStats.find(className);
+      std::map<std::string, LifecycleStats>::iterator it =
+         m_mapClassLifecycleStats.find(className);
       if (it != m_mapClassLifecycleStats.end()) {
          LifecycleStats& stats = it->second;
          ++stats.m_instancesDestroyed;
@@ -143,7 +148,7 @@ void StdLogger::populateClassLifecycleStats(std::map<std::string,
 
 void StdLogger::populateOccurrences(std::map<std::string,
                                              std::map<std::string,
-                                                      long long>>& mapOccurrences) {
+                                                      long long> >& mapOccurrences) {
    MutexLock lock(*m_lockOccurrences);
    mapOccurrences = m_mapOccurrences;
 }
@@ -151,12 +156,14 @@ void StdLogger::populateOccurrences(std::map<std::string,
 //******************************************************************************
 
 void StdLogger::logOccurrence(const std::string& occurrenceType,
-                              const std::string& occurrenceName) noexcept {
+                              const std::string& occurrenceName) {
    MutexLock lock(*m_lockOccurrences);
-   auto it = m_mapOccurrences.find(occurrenceType);
+   std::map<std::string, std::map<std::string, long long> >::iterator it =
+      m_mapOccurrences.find(occurrenceType);
    if (it != m_mapOccurrences.end()) {
       std::map<std::string, long long>& mapOccurrencesByType = it->second;
-      auto itName = mapOccurrencesByType.find(occurrenceName);
+      std::map<std::string, long long>::iterator itName =
+         mapOccurrencesByType.find(occurrenceName);
       if (itName != mapOccurrencesByType.end()) {
          ++(itName->second);
       } else {
@@ -165,8 +172,7 @@ void StdLogger::logOccurrence(const std::string& occurrenceType,
    } else {
       std::map<std::string, long long> mapOccurences;
       mapOccurences[occurrenceName] = 1L;
-      
-      m_mapOccurrences[occurrenceType] = std::move(mapOccurences);
+      m_mapOccurrences[occurrenceType] = mapOccurences;
    }
 }
 

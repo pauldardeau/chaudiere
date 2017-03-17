@@ -25,17 +25,17 @@ public:
     * @return boolean
     * @see Mutex()
     */
-   virtual bool wait(Mutex* mutex) noexcept = 0;
+   virtual bool wait(Mutex* mutex) = 0;
    
    /**
     * Notify (wake up) a single waiting thread that the condition has occurred
     */
-   virtual void notifyOne() noexcept = 0;
+   virtual void notifyOne() = 0;
    
    /**
     * Notify (wake up) all threads waiting that the condition has occurred
     */
-   virtual void notifyAll() noexcept = 0;
+   virtual void notifyAll() = 0;
    
 };
 

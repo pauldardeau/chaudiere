@@ -16,48 +16,50 @@ const std::string FileLogger::prefixVerbose  = "Verbose:";
 
 //******************************************************************************
 
-FileLogger::FileLogger(const std::string& filePath) noexcept :
-   FileLogger(filePath, Logger::LogLevel::Debug) {
+FileLogger::FileLogger(const std::string& filePath) :
+   m_filePath(filePath),
+   f(NULL),
+   m_logLevel(Debug) {
 }
 
 //******************************************************************************
 
-FileLogger::FileLogger(const std::string& filePath, LogLevel logLevel) noexcept :
+FileLogger::FileLogger(const std::string& filePath, LogLevel logLevel) :
    m_filePath(filePath),
-   f(nullptr),
+   f(NULL),
    m_logLevel(logLevel) {
 }
 
 //******************************************************************************
 
-FileLogger::~FileLogger() noexcept {
-   if (f != nullptr) {
+FileLogger::~FileLogger() {
+   if (f != NULL) {
       ::fclose(f);
    }
 }
 
 //******************************************************************************
 
-Logger::LogLevel FileLogger::getLogLevel() const noexcept {
+LogLevel FileLogger::getLogLevel() const {
    return m_logLevel;
 }
 
 //******************************************************************************
 
-void FileLogger::setLogLevel(LogLevel logLevel) noexcept {
+void FileLogger::setLogLevel(LogLevel logLevel) {
    m_logLevel = logLevel;
 }
 
 //******************************************************************************
 
 void FileLogger::logMessage(LogLevel logLevel,
-                            const std::string& logMessage) noexcept {
+                            const std::string& logMessage) {
    if (isLogging(logLevel)) {
-      if (f == nullptr) {
+      if (f == NULL) {
          f = ::fopen(m_filePath.c_str(), "a+");
       }
       
-      if (f != nullptr) {
+      if (f != NULL) {
          ::fprintf(f, "%s %s\n",
                       logLevelPrefix(logLevel).c_str(),
                       logMessage.c_str());
@@ -67,25 +69,25 @@ void FileLogger::logMessage(LogLevel logLevel,
 
 //******************************************************************************
 
-bool FileLogger::isLoggingLevel(LogLevel logLevel) const noexcept {
+bool FileLogger::isLoggingLevel(LogLevel logLevel) const {
    return (logLevel <= m_logLevel);
 }
 
 //******************************************************************************
 
-const std::string& FileLogger::logLevelPrefix(LogLevel level) const noexcept {
+const std::string& FileLogger::logLevelPrefix(LogLevel level) const {
    switch (level) {
-      case Logger::LogLevel::Critical:
+      case Critical:
          return prefixCritical;
-      case Logger::LogLevel::Error:
+      case Error:
          return prefixError;
-      case Logger::LogLevel::Warning:
+      case Warning:
          return prefixWarning;
-      case Logger::LogLevel::Info:
+      case Info:
          return prefixInfo;
-      case Logger::LogLevel::Verbose:
+      case Verbose:
          return prefixVerbose;
-      case Logger::LogLevel::Debug:
+      case Debug:
       default:
          return prefixDebug;
    }
@@ -93,29 +95,29 @@ const std::string& FileLogger::logLevelPrefix(LogLevel level) const noexcept {
 
 //******************************************************************************
 
-bool FileLogger::isLoggingInstanceLifecycles() const noexcept {
+bool FileLogger::isLoggingInstanceLifecycles() const {
    return false;
 }
 
 //******************************************************************************
 
-void FileLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) noexcept {
+void FileLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) {
 }
 
 //******************************************************************************
 
-void FileLogger::logInstanceCreate(const std::string& className) noexcept {
+void FileLogger::logInstanceCreate(const std::string& className) {
 }
 
 //******************************************************************************
 
-void FileLogger::logInstanceDestroy(const std::string& className) noexcept {
+void FileLogger::logInstanceDestroy(const std::string& className) {
 }
 
 //******************************************************************************
 
 void FileLogger::logOccurrence(const std::string& occurrenceType,
-                               const std::string& occurrenceName) noexcept {
+                               const std::string& occurrenceName) {
 }
 
 //******************************************************************************

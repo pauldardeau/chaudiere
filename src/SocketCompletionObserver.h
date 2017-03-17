@@ -21,13 +21,13 @@ public:
    /**
     * Destructor
     */
-   virtual ~SocketCompletionObserver() noexcept {}
+   virtual ~SocketCompletionObserver() {}
    
    /**
     * Notifies the observer that the specified socket is being closed
     * @param socket the socket that is being closed
     */
-   virtual void notifySocketComplete(Socket* socket) noexcept = 0;
+   virtual void notifySocketComplete(Socket* socket) = 0;
 
 };
 

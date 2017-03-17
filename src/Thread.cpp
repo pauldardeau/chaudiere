@@ -19,42 +19,48 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-Thread::Thread(Mutex* mutexAlive) noexcept :
-   Thread(mutexAlive, nullptr) {
+Thread::Thread(Mutex* mutexAlive) :
+   m_runnable(NULL),
+   m_isAlive(false),
+   m_isPoolWorker(false),
+   m_mutexAlive(mutexAlive) {
 }
 
 //******************************************************************************
 
-Thread::Thread(Runnable* runnable) noexcept :
-   Thread(nullptr, runnable) {
+Thread::Thread(Runnable* runnable) :
+   m_runnable(runnable),
+   m_isAlive(false),
+   m_isPoolWorker(false),
+   m_mutexAlive(NULL) {
 }
 
 //******************************************************************************
 
-Thread::Thread(Mutex* mutexAlive, Runnable* runnable) noexcept :
+Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
    m_runnable(runnable),
    m_isAlive(false),
    m_isPoolWorker(false),
    m_mutexAlive(mutexAlive) {
-   if (Logger::isLogging(Logger::LogLevel::Debug)) {
+   if (Logger::isLogging(Debug)) {
       Logger::debug("new thread created");
    }
 }
 
 //******************************************************************************
 
-Thread::~Thread() noexcept {
+Thread::~Thread() {
 }
 
 //******************************************************************************
 
-void Thread::setPoolWorkerStatus(bool isPoolWorker) noexcept {
+void Thread::setPoolWorkerStatus(bool isPoolWorker) {
    m_isPoolWorker = isPoolWorker;
 }
 
 //******************************************************************************
 
-bool Thread::isPoolWorker() const noexcept {
+bool Thread::isPoolWorker() const {
    return m_isPoolWorker;
 }
 
@@ -68,12 +74,12 @@ void Thread::run() {
 
 //******************************************************************************
 
-bool Thread::isAlive() const noexcept {
+bool Thread::isAlive() const {
    bool rc;
    
    {
       Thread* pThis = const_cast<Thread*>(this);
-      if (nullptr != pThis->m_mutexAlive) {
+      if (NULL != pThis->m_mutexAlive) {
          MutexLock lockMutexAlive(*pThis->m_mutexAlive);
          rc = m_isAlive;
       } else {
@@ -86,8 +92,8 @@ bool Thread::isAlive() const noexcept {
 
 //******************************************************************************
 
-void Thread::setAlive(bool isAlive) noexcept {
-   if (nullptr != m_mutexAlive) {
+void Thread::setAlive(bool isAlive) {
+   if (NULL != m_mutexAlive) {
       MutexLock lockMutexAlive(*m_mutexAlive);
       m_isAlive = isAlive;
    } else {
@@ -97,19 +103,19 @@ void Thread::setAlive(bool isAlive) noexcept {
 
 //******************************************************************************
 
-void Thread::registerThreadCompletionObserver(ThreadCompletionObserver* observer) noexcept {
+void Thread::registerThreadCompletionObserver(ThreadCompletionObserver* observer) {
    m_threadCompletionObserver = observer;
 }
 
 //******************************************************************************
 
-void Thread::clearThreadCompletionObserver() noexcept {
-   m_threadCompletionObserver = nullptr;
+void Thread::clearThreadCompletionObserver() {
+   m_threadCompletionObserver = NULL;
 }
 
 //******************************************************************************
 
-void Thread::notifyOnCompletion() noexcept {
+void Thread::notifyOnCompletion() {
    if (m_threadCompletionObserver) {
       m_threadCompletionObserver->notifyThreadComplete(this);
    }
@@ -117,20 +123,20 @@ void Thread::notifyOnCompletion() noexcept {
 
 //******************************************************************************
 
-Runnable* Thread::getRunnable() noexcept {
+Runnable* Thread::getRunnable() {
    return m_runnable;
 }
 
 //******************************************************************************
 
 void Thread::setAttribute(const std::string& key,
-                          const std::string& value) noexcept {
+                          const std::string& value) {
    m_attributes.addPair(key, value);
 }
 
 //******************************************************************************
 
-bool Thread::hasAttribute(const std::string& key) const noexcept {
+bool Thread::hasAttribute(const std::string& key) const {
    return m_attributes.hasKey(key);
 }
 
@@ -143,19 +149,19 @@ const std::string& Thread::getAttribute(const std::string& key) const {
 
 //******************************************************************************
 
-void Thread::clearAttribute(const std::string& key) noexcept {
+void Thread::clearAttribute(const std::string& key) {
    m_attributes.removePair(key);
 }
 
 //******************************************************************************
 
-void Thread::setThreadId(const std::string& threadId) noexcept {
+void Thread::setThreadId(const std::string& threadId) {
    setAttribute(ATTR_THREAD_ID, threadId);
 }
 
 //******************************************************************************
 
-bool Thread::hasThreadId() const noexcept {
+bool Thread::hasThreadId() const {
    return hasAttribute(ATTR_THREAD_ID);
 }
 
@@ -171,13 +177,13 @@ const std::string& Thread::getThreadId() const {
 
 //******************************************************************************
 
-void Thread::setWorkerId(const std::string& workerId) noexcept {
+void Thread::setWorkerId(const std::string& workerId) {
    setAttribute(ATTR_WORKER_ID, workerId);
 }
 
 //******************************************************************************
 
-bool Thread::hasWorkerId() const noexcept {
+bool Thread::hasWorkerId() const {
    return hasAttribute(ATTR_WORKER_ID);
 }
 

@@ -18,7 +18,7 @@ class DynamicLibrary
       /**
        * Default constructor
        */
-      DynamicLibrary() noexcept;
+      DynamicLibrary();
    
       /**
        * Opens the specified dynamic library
@@ -30,26 +30,26 @@ class DynamicLibrary
       /**
        * Destructor (closes the library if open)
        */
-      ~DynamicLibrary() noexcept;
+      ~DynamicLibrary();
 
       /**
        * Retrieves a function pointer for the specified function name
        * @param functionName the name of the function in the dynamic library
-       * @return pointer to function (if present), or nullptr if not
+       * @return pointer to function (if present), or NULL if not
        */
-      void* resolve(const std::string& functionName) noexcept;
+      void* resolve(const std::string& functionName);
    
       /**
        * Opens the specified dynamic library file
        * @param libraryName the name of the dynamic library file to open
        * @return boolean indicating whether the dynamic library was opened
        */
-      bool open(const std::string& libraryName) noexcept;
+      bool open(const std::string& libraryName);
    
       /**
        * Closes the dynamic library (if open)
        */
-      void close() noexcept;
+      void close();
    
 
    private:

@@ -20,12 +20,12 @@ public:
    /**
     * Constructs a PthreadsThreadingFactory instance
     */
-   PthreadsThreadingFactory() noexcept;
+   PthreadsThreadingFactory();
    
    /**
     * Destructor
     */
-   ~PthreadsThreadingFactory() noexcept;
+   ~PthreadsThreadingFactory();
    
   /**
    * Create a new named PthreadsMutex
@@ -40,7 +40,7 @@ public:
    * @return pointer to newly created Thread
    * @see Thread()
    */
-  virtual Thread* createThread(const std::string& name) noexcept;
+  virtual Thread* createThread(const std::string& name);
   
   /**
    * Creates a new PthreadsThread to run the specified Runnable
@@ -50,7 +50,7 @@ public:
    * @see Runnable()
    */
   virtual Thread* createThread(Runnable* runnable,
-                               const std::string& name) noexcept;
+                               const std::string& name);
   
   /**
    * Create a new PthreadsConditionVariable
@@ -65,7 +65,7 @@ public:
    * @return pointer to newly created ThreadPoolDispatcher
    */
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
-             const std::string& name) noexcept;
+             const std::string& name);
    
 private:
    // disallow copies

@@ -5,17 +5,17 @@
 
 using namespace chaudiere;
 
-ThreadingFactory* ThreadingFactory::threadingFactoryInstance = nullptr;
+ThreadingFactory* ThreadingFactory::threadingFactoryInstance = NULL;
 
 //******************************************************************************
 
-void ThreadingFactory::setThreadingFactory(ThreadingFactory* threadingFactory) noexcept {
+void ThreadingFactory::setThreadingFactory(ThreadingFactory* threadingFactory) {
    threadingFactoryInstance = threadingFactory;
 }
 
 //******************************************************************************
 
-ThreadingFactory* ThreadingFactory::getThreadingFactory() noexcept {
+ThreadingFactory* ThreadingFactory::getThreadingFactory() {
    return threadingFactoryInstance;
 }
 

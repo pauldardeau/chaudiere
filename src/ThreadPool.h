@@ -29,37 +29,37 @@ public:
     *
     * @param numberWorkers
     */
-   explicit ThreadPool(int numberWorkers) noexcept;
+   explicit ThreadPool(int numberWorkers);
 
-   explicit ThreadPool(int numberWorkers, const std::string& name) noexcept;
+   explicit ThreadPool(int numberWorkers, const std::string& name);
    
    /**
     *
     * @param threadingFactory
     * @param numberWorkers
     */
-   ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers) noexcept;
+   ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers);
 
    ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers,
-              const std::string& name) noexcept;
+              const std::string& name);
 
    /**
     * Destructor
     */
-   ~ThreadPool() noexcept;
+   ~ThreadPool();
    
    // ThreadPoolDispatcher
    /**
     *
     * @return
     */
-   virtual bool start() noexcept override;
+   virtual bool start();
    
    /**
     *
     * @return
     */
-   virtual bool stop() noexcept override;
+   virtual bool stop();
    
    /**
     *
@@ -67,7 +67,7 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(Runnable* runnableRequest) noexcept override;
+   virtual bool addRequest(Runnable* runnableRequest);
    
    /**
     *
@@ -76,27 +76,27 @@ public:
     * @see Runnable()
     * @see Thread()
     */
-   virtual Thread* createThreadWithRunnable(Runnable* runnable) noexcept;
+   virtual Thread* createThreadWithRunnable(Runnable* runnable);
    
    /**
     *
     * @return
     */
-   int getNumberWorkers() const noexcept;
+   int getNumberWorkers() const;
    
    /**
     *
     * @param numberNewWorkers
     */
-   void addWorkers(int numberNewWorkers) noexcept;
+   void addWorkers(int numberNewWorkers);
    
    /**
     *
     * @param numberWorkersToRemove
     */
-   void removeWorkers(int numberWorkersToRemove) noexcept;
+   void removeWorkers(int numberWorkersToRemove);
 
-   const std::string& getName() const noexcept;
+   const std::string& getName() const;
    
    
 protected:
@@ -104,7 +104,7 @@ protected:
     *
     * @param numberToAddOrDelete
     */
-   void adjustNumberWorkers(int numberToAddOrDelete) noexcept;
+   void adjustNumberWorkers(int numberToAddOrDelete);
    
 private:
    ThreadingFactory* m_threadingFactory;

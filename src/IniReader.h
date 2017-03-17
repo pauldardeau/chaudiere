@@ -32,7 +32,7 @@ public:
    /**
     * Destructor
     */
-   virtual ~IniReader() noexcept;
+   virtual ~IniReader();
    
    /**
     * Reads the key/value pairs of the specified section
@@ -42,7 +42,7 @@ public:
     * @return boolean indicating whether the specified section could be read
     */
    virtual bool readSection(const std::string& section,
-                            chaudiere::KeyValuePairs& mapSectionValues) const noexcept override;
+                            chaudiere::KeyValuePairs& mapSectionValues) const;
 
    /**
     * Retrieves the value associated with the specified key within the specified section
@@ -53,14 +53,14 @@ public:
     */
    virtual bool getSectionKeyValue(const std::string& section,
                                    const std::string& key,
-                                   std::string& value) const noexcept override;
+                                   std::string& value) const;
    
    /**
     * Determines whether the specified section name exists in the INI file
     * @param section the name of the section whose existence is being tested
     * @return boolean indicating whether the specified section exists
     */
-   virtual bool hasSection(const std::string& section) const noexcept override;
+   virtual bool hasSection(const std::string& section) const;
     
     
 protected:
@@ -68,14 +68,14 @@ protected:
     * Reads the file from the filesystem (file name/path specified in constructor)
     * @return boolean indicating if the file was read successfully
     */
-   bool readFile() noexcept;
+   bool readFile();
    
    /**
     * Retrieves the string identifier in the INI file for the specified section name
     * @param sectionName the name of the section whose identifier is to be constructed
     * @return the section identifier for the specified section name
     */
-   std::string bracketedSection(const std::string& sectionName) const noexcept;
+   std::string bracketedSection(const std::string& sectionName) const;
    
     
 private:

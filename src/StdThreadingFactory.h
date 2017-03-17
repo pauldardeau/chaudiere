@@ -20,12 +20,12 @@ public:
    /**
     * Constructs a StdThreadingFactory instance
     */
-   StdThreadingFactory() noexcept;
+   StdThreadingFactory();
    
    /**
     * Destructor
     */
-   ~StdThreadingFactory() noexcept;
+   ~StdThreadingFactory();
 
   /**
    * Create a new named StdMutex
@@ -40,7 +40,7 @@ public:
    * @return pointer to newly created Thread
    * @see Thread()
    */
-  virtual Thread* createThread(const std::string& name) noexcept;
+  virtual Thread* createThread(const std::string& name);
   
   /**
    * Creates a new StdThread to run the specified Runnable
@@ -50,7 +50,7 @@ public:
    * @see Runnable()
    */
   virtual Thread* createThread(Runnable* runnable,
-                               const std::string& name) noexcept;
+                               const std::string& name);
   
   /**
    * Create a new StdConditionVariable
@@ -65,7 +65,7 @@ public:
    * @return pointer to newly created ThreadPoolDispatcher
    */
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
-             const std::string& name) noexcept; 
+             const std::string& name); 
 
 private:
    // disallow copies

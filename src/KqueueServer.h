@@ -29,19 +29,19 @@ public:
     * Determines if the current platform supports the kqueue mechanism
     * @return boolean indicating if kqueue mechanism is supported
     */
-   static bool isSupportedPlatform() noexcept;
+   static bool isSupportedPlatform();
    
    /**
     *
     * @param fdMutex
     * @param hwmConnectionsMutex
     */
-   KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) noexcept;
+   KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex);
    
    /**
     * Destructor
     */
-   ~KqueueServer() noexcept;
+   ~KqueueServer();
    
    // KernelEventServer
    /**
@@ -54,56 +54,56 @@ public:
     */
    virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
-                     int maxConnections) noexcept override;
+                     int maxConnections);
    
    /**
     *
     * @param maxConnections
     * @return
     */
-   virtual int getKernelEvents(int maxConnections) noexcept override;
+   virtual int getKernelEvents(int maxConnections);
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual int fileDescriptorForEventIndex(int eventIndex) noexcept override;
+   virtual int fileDescriptorForEventIndex(int eventIndex);
    
    /**
     *
     * @param fileDescriptor
     * @return
     */
-   virtual bool addFileDescriptorForRead(int fileDescriptor) noexcept override;
+   virtual bool addFileDescriptorForRead(int fileDescriptor);
    
    /**
     *
     * @param fileDescriptor
     * @return
     */
-   virtual bool removeFileDescriptorFromRead(int fileDescriptor) noexcept override;
+   virtual bool removeFileDescriptorFromRead(int fileDescriptor);
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventDisconnect(int eventIndex) noexcept override;
+   virtual bool isEventDisconnect(int eventIndex);
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventReadClose(int eventIndex) noexcept override;
+   virtual bool isEventReadClose(int eventIndex);
 
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventRead(int eventIndex) noexcept override;
+   virtual bool isEventRead(int eventIndex);
    
    
 private:

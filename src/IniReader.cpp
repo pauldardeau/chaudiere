@@ -31,16 +31,16 @@ IniReader::IniReader(const std::string& iniFile) :
 
 //******************************************************************************
 
-IniReader::~IniReader() noexcept {
+IniReader::~IniReader() {
    Logger::logInstanceDestroy("IniReader");
 }
 
 //******************************************************************************
 
 bool IniReader::readSection(const std::string& section,
-                            KeyValuePairs& mapSectionValues) const noexcept {
+                            KeyValuePairs& mapSectionValues) const {
    const std::string sectionId = bracketedSection(section);
-   auto posSection = m_fileContents.find(sectionId);
+   std::size_t posSection = m_fileContents.find(sectionId);
     
    if (posSection == std::string::npos) {
       return false;
@@ -100,7 +100,7 @@ bool IniReader::readSection(const std::string& section,
 
 bool IniReader::getSectionKeyValue(const std::string& section,
                                    const std::string& key,
-                                   std::string& value) const noexcept {
+                                   std::string& value) const {
    KeyValuePairs map;
     
    if (!readSection(section, map)) {
@@ -111,7 +111,7 @@ bool IniReader::getSectionKeyValue(const std::string& section,
    const std::string strippedKey = StrUtils::strip(key);
     
    if (!map.hasKey(strippedKey)) {
-      if (Logger::isLogging(Logger::LogLevel::Debug)) {
+      if (Logger::isLogging(Debug)) {
          char msg[128];
          std::snprintf(msg, 128, "map does not contain key '%s'", key.c_str());
          Logger::debug(std::string(msg));
@@ -126,16 +126,16 @@ bool IniReader::getSectionKeyValue(const std::string& section,
 
 //******************************************************************************
 
-bool IniReader::hasSection(const std::string& section) const noexcept {
+bool IniReader::hasSection(const std::string& section) const {
    const std::string sectionId = bracketedSection(section);
    return (std::string::npos != m_fileContents.find(sectionId));
 }
 
 //******************************************************************************
 
-bool IniReader::readFile() noexcept {
+bool IniReader::readFile() {
    FILE* f = ::fopen(m_iniFile.c_str(), "rb");
-   if (f == nullptr) {
+   if (f == NULL) {
       return false;
    }
     
@@ -143,7 +143,7 @@ bool IniReader::readFile() noexcept {
    const long fileBytes = ::ftell(f);
    ::fseek(f, 0, SEEK_SET);
    
-   char* fileContents = nullptr;
+   char* fileContents = NULL;
    size_t numObjectsRead = 0;
 
    if (fileBytes > 0L) {
@@ -154,7 +154,7 @@ bool IniReader::readFile() noexcept {
    ::fclose(f);
     
    if (numObjectsRead < 1) {
-      if (fileContents != nullptr) {
+      if (fileContents != NULL) {
          delete [] fileContents;
       }
       
@@ -166,7 +166,7 @@ bool IniReader::readFile() noexcept {
    m_fileContents = fileContents;
    
    delete [] fileContents;
-   fileContents = nullptr;
+   fileContents = NULL;
    
    // strip out any comments
    bool strippingComments = true;
@@ -225,7 +225,7 @@ bool IniReader::readFile() noexcept {
 
 //******************************************************************************
 
-std::string IniReader::bracketedSection(const std::string& sectionName) const noexcept {
+std::string IniReader::bracketedSection(const std::string& sectionName) const {
    return OPEN_BRACKET + StrUtils::strip(sectionName) + CLOSE_BRACKET;
 }
 

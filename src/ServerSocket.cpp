@@ -20,7 +20,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-bool ServerSocket::setReuseAddr(int socketFD) noexcept {
+bool ServerSocket::setReuseAddr(int socketFD) {
    int val_to_set = 1;
    
    if (0 == ::setsockopt(socketFD,
@@ -36,7 +36,7 @@ bool ServerSocket::setReuseAddr(int socketFD) noexcept {
 
 //******************************************************************************
 
-bool ServerSocket::listen(int socketFD, int backlog) noexcept {
+bool ServerSocket::listen(int socketFD, int backlog) {
    if (::listen(socketFD, backlog) != 0) {
       Logger::error("unable to listen on server socket");
       return false;
@@ -47,7 +47,7 @@ bool ServerSocket::listen(int socketFD, int backlog) noexcept {
 
 //******************************************************************************
 
-bool ServerSocket::bind(int socketFD, int port) noexcept {
+bool ServerSocket::bind(int socketFD, int port) {
    struct sockaddr_in serverAddr;
    ::memset((void *) &serverAddr, 0, sizeof(serverAddr));
    
@@ -124,14 +124,14 @@ ServerSocket::ServerSocket(int port) :
 
 //******************************************************************************
 
-ServerSocket::~ServerSocket() noexcept {
+ServerSocket::~ServerSocket() {
    Logger::logInstanceDestroy("ServerSocket");
    close();
 }
 
 //******************************************************************************
 
-bool ServerSocket::create() noexcept {
+bool ServerSocket::create() {
    m_serverSocket = Socket::createSocket();
 
    if (m_serverSocket < 0) {
@@ -145,13 +145,13 @@ bool ServerSocket::create() noexcept {
 
 //******************************************************************************
 
-bool ServerSocket::listen() noexcept {
+bool ServerSocket::listen() {
    return ServerSocket::listen(m_serverSocket, BACKLOG);
 }
 
 //******************************************************************************
 
-Socket* ServerSocket::accept() noexcept {
+Socket* ServerSocket::accept() {
    struct sockaddr_in clientAddr;
    SOCKLEN_T namelen = sizeof(clientAddr);
 
@@ -160,7 +160,7 @@ Socket* ServerSocket::accept() noexcept {
                                          &namelen);
 
    if (connectionSocket < 0) {
-      return nullptr;
+      return NULL;
    } else {
       return new Socket(connectionSocket);
    }
@@ -168,7 +168,7 @@ Socket* ServerSocket::accept() noexcept {
 
 //******************************************************************************
 
-void ServerSocket::close() noexcept {
+void ServerSocket::close() {
    m_serverSocket = -1;
 }
 

@@ -18,14 +18,14 @@ public:
    /**
     * Destructor
     */
-   virtual ~ThreadCompletionObserver() noexcept {}
+   virtual ~ThreadCompletionObserver() {}
    
    /**
     *
     * @param thread
     * @see Thread()
     */
-   virtual void notifyThreadComplete(Thread* thread) noexcept = 0;
+   virtual void notifyThreadComplete(Thread* thread) = 0;
 };
 
 }

@@ -22,7 +22,7 @@ public:
     * Constructs a new ThreadInfo with the specified thread id
     * @param theThreadId the id for the thread
     */
-   explicit ThreadInfo(const std::string& theThreadId) noexcept :
+   explicit ThreadInfo(const std::string& theThreadId) :
       threadId(theThreadId),
       isBusy(false) {
    }
@@ -31,7 +31,7 @@ public:
     * Copy constructor
     * @param copy the source of the copy
     */
-   ThreadInfo(const ThreadInfo& copy) noexcept :
+   ThreadInfo(const ThreadInfo& copy) :
       threadId(copy.threadId),
       isBusy(copy.isBusy) {
    }
@@ -39,7 +39,7 @@ public:
    /**
     * Destructor
     */
-   ~ThreadInfo() noexcept {
+   ~ThreadInfo() {
    }
    
    /**
@@ -47,7 +47,7 @@ public:
     * @param copy the source of the copy
     * @return reference to the target of the copy
     */
-   ThreadInfo& operator=(const ThreadInfo& copy) noexcept {
+   ThreadInfo& operator=(const ThreadInfo& copy) {
       if (this == &copy) {
          return *this;
       }

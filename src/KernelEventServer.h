@@ -30,12 +30,12 @@ public:
     */
    KernelEventServer(Mutex& fdMutex,
                      Mutex& hwmConnectionsMutex,
-                     const std::string& serverName) noexcept;
+                     const std::string& serverName);
                      
    /**
     * Destructor
     */
-   virtual ~KernelEventServer() noexcept;
+   virtual ~KernelEventServer();
    
    /**
     *
@@ -47,68 +47,68 @@ public:
     */
    virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
-                     int maxConnections) noexcept;
+                     int maxConnections);
                      
    /**
     *
     */
-   virtual void run() noexcept;
+   virtual void run();
 
    /**
     *
     * @param maxConnections
     * @return
     */
-   virtual int getKernelEvents(int maxConnections) noexcept = 0;
+   virtual int getKernelEvents(int maxConnections) = 0;
 
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual int fileDescriptorForEventIndex(int eventIndex) noexcept = 0;
+   virtual int fileDescriptorForEventIndex(int eventIndex) = 0;
    
    /**
     *
     * @param fileDescriptor
     * @return
     */
-   virtual bool addFileDescriptorForRead(int fileDescriptor) noexcept = 0;
+   virtual bool addFileDescriptorForRead(int fileDescriptor) = 0;
    
    /**
     *
     * @param fileDescriptor
     * @return
     */
-   virtual bool removeFileDescriptorFromRead(int fileDescriptor) noexcept = 0;
+   virtual bool removeFileDescriptorFromRead(int fileDescriptor) = 0;
 
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventReadClose(int eventIndex) noexcept = 0;
+   virtual bool isEventReadClose(int eventIndex) = 0;
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventDisconnect(int eventIndex) noexcept = 0;
+   virtual bool isEventDisconnect(int eventIndex) = 0;
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventRead(int eventIndex) noexcept = 0;
+   virtual bool isEventRead(int eventIndex) = 0;
    
    // SocketCompletionObserver
    /**
     *
     * @param socket
     */
-   void notifySocketComplete(Socket* socket) noexcept override;
+   void notifySocketComplete(Socket* socket);
 
    
 protected:
@@ -116,7 +116,7 @@ protected:
     *
     * @return
     */
-   int getListenerSocketFileDescriptor() const noexcept;
+   int getListenerSocketFileDescriptor() const;
 
 
 private:

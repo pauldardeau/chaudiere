@@ -38,7 +38,7 @@ class SocketServer
       /**
        * Destructor
        */
-      virtual ~SocketServer() noexcept;
+      virtual ~SocketServer();
 
       /**
        *
@@ -64,31 +64,31 @@ class SocketServer
        * Retrieves the current time in Greenwich Mean Time (GMT)
        * @return current time in GMT
        */
-      std::string getSystemDateGMT() const noexcept;
+      std::string getSystemDateGMT() const;
    
       /**
        * Retrieves the current time for server in local time
        * @return current time as local server time
        */
-      std::string getLocalDateTime() const noexcept;
+      std::string getLocalDateTime() const;
 
       /**
        * Runs the built-in socket server
        * @return exit code for the server process
        */
-      int runSocketServer() noexcept;
+      int runSocketServer();
    
       /**
        * Runs a kernel event server (e.g., kqueue or epoll)
        * @return exit code for the server process
        */
-      int runKernelEventServer() noexcept;
+      int runKernelEventServer();
    
       /**
        * Runs the server using either the built-in socket server or a kernel event server
        * @return exit code for the server process
        */
-      int run() noexcept;
+      int run();
 
       /**
        * Retrieves the configuration data source of configuration settings
@@ -101,25 +101,25 @@ class SocketServer
        * Retrieves the size of the socket send buffer
        * @return size of the socket send buffers
        */
-      int getSocketSendBufferSize() const noexcept;
+      int getSocketSendBufferSize() const;
    
       /**
        * Retrieves the size of the socket receive buffer
        * @return size of the socket receive buffers
        */
-      int getSocketReceiveBufferSize() const noexcept;
+      int getSocketReceiveBufferSize() const;
    
       /**
        * Retrieves the identifier for the server
        * @return server identifier
        */
-      const std::string& getServerId() const noexcept;
+      const std::string& getServerId() const;
    
       /**
        * Retrieves the size in bytes of a generic (void*) pointer
        * @return platform pointer size
        */
-      int platformPointerSizeBits() const noexcept;
+      int platformPointerSizeBits() const;
 
       /**
        * Service a request for a socket when using a kernel event server
@@ -136,7 +136,7 @@ class SocketServer
        * @return boolean value (or false if value cannot be retrieved or converted)
        */
       bool hasTrueValue(const KeyValuePairs& kvp,
-                        const std::string& setting) const noexcept;
+                        const std::string& setting) const;
    
       /**
        * Convenience method to retrieve a setting and convert it to an integer
@@ -146,7 +146,7 @@ class SocketServer
        * @return integer value (or -1 if value cannot be retrieved or converted)
        */
       int getIntValue(const KeyValuePairs& kvp,
-                      const std::string& setting) const noexcept;
+                      const std::string& setting) const;
    
       /**
        * Convenience method to replace all occurrences of keys in collection with their values
@@ -154,26 +154,26 @@ class SocketServer
        * @param s the string to search and replace all variables in
        */
       void replaceVariables(const KeyValuePairs& kvp,
-                            std::string& s) const noexcept;
+                            std::string& s) const;
    
       /**
        * Determines if compression is turned on for the specified mime type
        * @param mimeType the mime type to check whether to compress
        * @return boolean indicating whether the specified mime type is to be compressed
        */
-      bool compressResponse(const std::string& mimeType) const noexcept;
+      bool compressResponse(const std::string& mimeType) const;
    
       /**
        * Determines if gzip compression is enabled for the server
        * @return boolean indicating if gzip compression is enabled
        */
-      bool compressionEnabled() const noexcept;
+      bool compressionEnabled() const;
    
       /**
        * Retrieves the minimum size of the response payload to be compressed
        * @return minimum size of response payload (in bytes) to be compressed
        */
-      int minimumCompressionSize() const noexcept;
+      int minimumCompressionSize() const;
 
    
    protected:

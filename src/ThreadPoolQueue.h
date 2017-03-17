@@ -27,12 +27,12 @@ public:
     * @param threadingFactory
     * @see ThreadingFactory()
     */
-   explicit ThreadPoolQueue(ThreadingFactory* threadingFactory) noexcept;
+   explicit ThreadPoolQueue(ThreadingFactory* threadingFactory);
    
    /**
     * Destructor
     */
-   virtual ~ThreadPoolQueue() noexcept;
+   virtual ~ThreadPoolQueue();
    
    /**
     *
@@ -40,37 +40,37 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(Runnable* runnableRequest) noexcept;
+   virtual bool addRequest(Runnable* runnableRequest);
    
    /**
     *
     * @return
     * @see Runnable()
     */
-   virtual Runnable* takeRequest() noexcept;
+   virtual Runnable* takeRequest();
    
    /**
     *
     */
-   virtual void shutDown() noexcept;
-   
-   /**
-    *
-    * @return
-    */
-   virtual bool isRunning() const noexcept;
+   virtual void shutDown();
    
    /**
     *
     * @return
     */
-   virtual bool isEmpty() const noexcept;
+   virtual bool isRunning() const;
    
    /**
     *
     * @return
     */
-   virtual bool isInitialized() const noexcept;
+   virtual bool isEmpty() const;
+   
+   /**
+    *
+    * @return
+    */
+   virtual bool isInitialized() const;
    
    
 private:

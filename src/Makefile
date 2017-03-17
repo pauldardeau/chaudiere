@@ -1,8 +1,8 @@
 # Copyright Paul Dardeau, SwampBits LLC 2014
 # BSD License
 
-CC = clang++
-CC_OPTS = -c -Wall -O2 -pthread -fblocks -std=c++11 -I./ThirdParty/zlib -I/usr/local/include
+CC = g++
+CC_OPTS = -c -Wall -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
@@ -43,10 +43,7 @@ ServiceInfo.o \
 Socket.o \
 SocketRequest.o \
 SocketServer.o \
-StdConditionVariable.o \
 StdLogger.o \
-StdMutex.o \
-StdThread.o \
 StrUtils.o \
 StringTokenizer.o \
 SystemInfo.o \
@@ -57,8 +54,7 @@ ThreadPoolDispatch.o \
 ThreadPoolQueue.o \
 ThreadPoolWorker.o \
 ThreadingFactory.o \
-PthreadsThreadingFactory.o \
-StdThreadingFactory.o
+PthreadsThreadingFactory.o
 
 all : $(LIB_NAME)
 

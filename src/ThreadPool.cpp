@@ -11,28 +11,43 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-ThreadPool::ThreadPool(int numberWorkers) noexcept :
-   ThreadPool(ThreadingFactory::getThreadingFactory(), numberWorkers) {
+ThreadPool::ThreadPool(int numberWorkers) :
+   m_threadingFactory(ThreadingFactory::getThreadingFactory()),
+   m_queue(m_threadingFactory),
+   m_workerCount(numberWorkers),
+   m_workersCreated(0),
+   m_isRunning(false),
+   m_name("") {
 }
 
 //******************************************************************************
 
-ThreadPool::ThreadPool(int numberWorkers, const std::string& name) noexcept :
-   ThreadPool(ThreadingFactory::getThreadingFactory(), numberWorkers, name) {
+ThreadPool::ThreadPool(int numberWorkers, const std::string& name) :
+   m_threadingFactory(ThreadingFactory::getThreadingFactory()),
+   m_queue(m_threadingFactory),
+   m_workerCount(numberWorkers),
+   m_workersCreated(0),
+   m_isRunning(false),
+   m_name(name) {
 }
 
 //*****************************************************************************
 
 ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
-                       int numberWorkers) noexcept :
-   ThreadPool(threadingFactory, numberWorkers, "") {
+                       int numberWorkers) :
+   m_threadingFactory(threadingFactory),
+   m_queue(m_threadingFactory),
+   m_workerCount(numberWorkers),
+   m_workersCreated(0),
+   m_isRunning(false),
+   m_name("") {
 }
 
 //*****************************************************************************
 
 ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
                        int numberWorkers,
-                       const std::string& name) noexcept :
+                       const std::string& name) :
    m_threadingFactory(threadingFactory),
    m_queue(m_threadingFactory),
    m_workerCount(numberWorkers),
@@ -44,7 +59,7 @@ ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
 
 //******************************************************************************
 
-ThreadPool::~ThreadPool() noexcept {
+ThreadPool::~ThreadPool() {
    Logger::logInstanceDestroy("ThreadPool");
 
    if (m_isRunning) {
@@ -61,7 +76,7 @@ ThreadPool::~ThreadPool() noexcept {
 
 //******************************************************************************
 
-bool ThreadPool::start() noexcept {
+bool ThreadPool::start() {
    for (int i = 0; i < m_workerCount; ++i) {
       ++m_workersCreated;
       ThreadPoolWorker* worker =
@@ -76,11 +91,15 @@ bool ThreadPool::start() noexcept {
 
 //******************************************************************************
 
-bool ThreadPool::stop() noexcept {
+bool ThreadPool::stop() {
    m_queue.shutDown();
-   
-   for (ThreadPoolWorker* worker : m_listWorkers) {
-      worker->stop();
+  
+   std::list<ThreadPoolWorker*>::iterator it = m_listWorkers.begin();
+   const std::list<ThreadPoolWorker*>::const_iterator itEnd =
+      m_listWorkers.end();
+ 
+   for (; it != itEnd; it++) {
+      (*it)->stop();
    }
    
    m_isRunning = false;
@@ -89,7 +108,7 @@ bool ThreadPool::stop() noexcept {
 
 //******************************************************************************
 
-bool ThreadPool::addRequest(Runnable* runnableRequest) noexcept {
+bool ThreadPool::addRequest(Runnable* runnableRequest) {
    if (!m_isRunning) {
       return false;
    }
@@ -101,31 +120,31 @@ bool ThreadPool::addRequest(Runnable* runnableRequest) noexcept {
 
 //******************************************************************************
 
-Thread* ThreadPool::createThreadWithRunnable(Runnable* runnable) noexcept {
+Thread* ThreadPool::createThreadWithRunnable(Runnable* runnable) {
    return m_threadingFactory->createThread(runnable, "threadpool");
 }
 
 //******************************************************************************
 
-int ThreadPool::getNumberWorkers() const noexcept {
+int ThreadPool::getNumberWorkers() const {
    return m_workerCount;
 }
 
 //******************************************************************************
 
-void ThreadPool::addWorkers(int numberNewWorkers) noexcept {
+void ThreadPool::addWorkers(int numberNewWorkers) {
    adjustNumberWorkers(numberNewWorkers);
 }
 
 //******************************************************************************
 
-void ThreadPool::removeWorkers(int numberWorkersToRemove) noexcept {
+void ThreadPool::removeWorkers(int numberWorkersToRemove) {
    adjustNumberWorkers(-numberWorkersToRemove);
 }
 
 //******************************************************************************
 
-void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) noexcept {
+void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
    if (numberToAddOrDelete > 0) {   // adding?
 
       const int newNumberWorkers = m_workerCount + numberToAddOrDelete;
@@ -151,7 +170,7 @@ void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) noexcept {
 
 //******************************************************************************
 
-const std::string& ThreadPool::getName() const noexcept {
+const std::string& ThreadPool::getName() const {
    return m_name;
 }
 
