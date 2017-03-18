@@ -89,6 +89,15 @@ std::string StrUtils::toString(long l) {
 
 //******************************************************************************
 
+std::string StrUtils::toString(unsigned long l) {
+   char buffer[40];
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%lu", l);
+   return std::string(buffer);
+}
+
+//******************************************************************************
+
 void StrUtils::toLowerCase(std::string& s) {
    if (!s.empty()) {
       for (std::size_t i = 0; i < s.length(); i++) {

@@ -57,6 +57,12 @@ public:
     */
    static std::string toString(long l);
 
+   /**
+    * Construct a string from an unsigned long
+    * @param l unsigned long value to convert to string
+    * @return string version of unsigned long value
+    */
+   static std::string toString(unsigned long l);
    
    /**
     *
