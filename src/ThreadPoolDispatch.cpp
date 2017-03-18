@@ -1,6 +1,7 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+/*
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #define HAVE_GCD 1
 // libdispatch (core of Apple's Grand Central Dispatch)
@@ -9,6 +10,7 @@
 #else
 #undef HAVE_GCD
 #endif
+*/
 
 #include "ThreadPoolDispatch.h"
 #include "Runnable.h"

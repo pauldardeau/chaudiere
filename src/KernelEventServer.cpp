@@ -124,7 +124,7 @@ void KernelEventServer::run() {
       m_numberEventsReturned = getKernelEvents(m_maxConnections);
       
       if (isLoggingDebug) {
-         std::snprintf(msg, 128, "KernelEventServer::run, numberEventsReturned = %d",
+         ::snprintf(msg, 128, "KernelEventServer::run, numberEventsReturned = %d",
                   m_numberEventsReturned);
          Logger::debug(msg);
       }
@@ -138,7 +138,7 @@ void KernelEventServer::run() {
          int client_fd = fileDescriptorForEventIndex(index);
          
          if (isLoggingDebug) {
-            std::snprintf(msg, 128, "KernelEventServer::run waiting for locks fd=%d",
+            ::snprintf(msg, 128, "KernelEventServer::run waiting for locks fd=%d",
                      client_fd);
             Logger::debug(msg);
          }
@@ -153,7 +153,7 @@ void KernelEventServer::run() {
                Logger::warning("server accept failed");
             } else {
                if (isLoggingDebug) {
-                  std::snprintf(msg, 128, "client %d connected", newfd);
+                  ::snprintf(msg, 128, "client %d connected", newfd);
                   Logger::debug(msg);
                }
                
@@ -164,7 +164,7 @@ void KernelEventServer::run() {
          } else {
             if (isEventReadClose(index)) {
                if (isLoggingDebug) {
-                  std::snprintf(msg, 128, "client closed read %d", client_fd);
+                  ::snprintf(msg, 128, "client closed read %d", client_fd);
                   Logger::debug(msg);
                }
                
@@ -179,7 +179,7 @@ void KernelEventServer::run() {
             }
             else if (isEventDisconnect(index)) {
                if (isLoggingDebug) {
-                  std::snprintf(msg, 128, "client disconnected %d", client_fd);
+                  ::snprintf(msg, 128, "client disconnected %d", client_fd);
                   Logger::debug(msg);
                }
                
@@ -200,13 +200,13 @@ void KernelEventServer::run() {
                
                if (!isAlreadyBusy) {
                   if (isLoggingDebug) {
-                     std::snprintf(msg, 128, "handling read for socket %d", client_fd);
+                     ::snprintf(msg, 128, "handling read for socket %d", client_fd);
                      Logger::debug(msg);
                   }
                   
                   // remove file descriptor from watch
                   if (isLoggingDebug) {
-                     std::snprintf(msg, 128, "removing socket from watch for read (%d)",
+                     ::snprintf(msg, 128, "removing socket from watch for read (%d)",
                               client_fd);
                      Logger::debug(msg);
                   }
@@ -221,7 +221,7 @@ void KernelEventServer::run() {
                   
                   // give up our lock
                   if (isLoggingDebug) {
-                     std::snprintf(msg, 128, "giving up locks and dispatching request for socket %d",
+                     ::snprintf(msg, 128, "giving up locks and dispatching request for socket %d",
                               client_fd);
                      Logger::debug(msg);
                   }
@@ -245,7 +245,7 @@ void KernelEventServer::run() {
                   addFileDescriptorForRead(client_fd);
                   
                } else {
-                  std::snprintf(msg, 128, "already busy with socket %d", client_fd);
+                  ::snprintf(msg, 128, "already busy with socket %d", client_fd);
                   Logger::warning(msg);
                }
             }
@@ -267,7 +267,7 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
    const int socketFD = socket->getFileDescriptor();
    
    if (isLoggingDebug) {
-      std::snprintf(msg, 128, "completed request with socket %d", socketFD);
+      ::snprintf(msg, 128, "completed request with socket %d", socketFD);
       Logger::debug(msg);
    }
    
@@ -288,11 +288,11 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
       
       // remove file descriptor and close socket
       if (isLoggingDebug) {
-         std::snprintf(msg, 128, "notifySocketComplete: client disconnect %d",
+         ::snprintf(msg, 128, "notifySocketComplete: client disconnect %d",
                   socketFD);
          Logger::debug(msg);
 
-         std::snprintf(msg, 128, "removing file descriptor %d", socketFD);
+         ::snprintf(msg, 128, "removing file descriptor %d", socketFD);
          Logger::debug(msg);
       }
       
@@ -305,7 +305,7 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
       // it's still connected
       
       if (isLoggingDebug) {
-         std::snprintf(msg, 128, "adding socket back to watch for read (%d)",
+         ::snprintf(msg, 128, "adding socket back to watch for read (%d)",
                   socketFD);
          Logger::debug(msg);
       }

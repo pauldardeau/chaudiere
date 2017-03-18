@@ -1,7 +1,7 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include <cstdio>
+#include <stdio.h>
 #include <string>
 
 #include "PthreadsThread.h"
@@ -64,7 +64,7 @@ void* PthreadsThread::runThread(void* pArgs) {
    }
 
    char threadId[128];
-   std::snprintf(threadId, 128, "%lx", (long unsigned int) pThread);
+   ::snprintf(threadId, 128, "%lx", (long unsigned int) pThread);
    pThread->setThreadId(threadId);
    
    unsigned long rc = 0L;

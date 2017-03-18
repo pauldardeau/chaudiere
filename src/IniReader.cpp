@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 
 #include "IniReader.h"
 #include "StrUtils.h"
@@ -113,7 +113,7 @@ bool IniReader::getSectionKeyValue(const std::string& section,
    if (!map.hasKey(strippedKey)) {
       if (Logger::isLogging(Debug)) {
          char msg[128];
-         std::snprintf(msg, 128, "map does not contain key '%s'", key.c_str());
+         ::snprintf(msg, 128, "map does not contain key '%s'", key.c_str());
          Logger::debug(std::string(msg));
       }
       return false;

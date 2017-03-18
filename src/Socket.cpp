@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
-#include <cerrno>
+#include <errno.h>
 
 #include "Socket.h"
 #include "SocketCompletionObserver.h"
@@ -407,7 +407,7 @@ bool Socket::readLine(std::string& line) {
 
       if (Logger::isLogging(Debug)) {
          char msg[128];
-         std::snprintf(msg, 128, "readline: bytes from recv = %zd", bytes);
+         ::snprintf(msg, 128, "readline: bytes from recv = %zd", bytes);
          Logger::debug(std::string(msg));
          buffer[bytes] = '\0';
          Logger::debug("just read from socket recv (next line)");
@@ -455,7 +455,7 @@ bool Socket::readLine(std::string& line) {
          if (Logger::isLogging(Debug)) {
             Logger::debug("Socket::readLine holding onto following text in line input buffer");
             char msg[256];
-            std::snprintf(msg, 256, "buffer: '%s'", m_lineInputBuffer.c_str());
+            ::snprintf(msg, 256, "buffer: '%s'", m_lineInputBuffer.c_str());
             Logger::debug(std::string(msg));
          }
             
@@ -563,7 +563,7 @@ bool Socket::readSocket(char* buffer, int bytesToRead) {
       
       //if (Logger::isLogging(Logger::LogLevel::Debug)) {
       //   char msg[128];
-      //   std::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
+      //   ::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
       //   Logger::debug(std::string(msg));
       //}
         
@@ -631,7 +631,7 @@ bool Socket::write(const char* buffer, unsigned long bufsize) {
    const ssize_t rc = ::send(m_socketFD, buffer, bufsize, 0);
    if (rc < 0) {
       char msg[128];
-      std::snprintf(msg, 128, "socket send failed, rc = %zd", rc);
+      ::snprintf(msg, 128, "socket send failed, rc = %zd", rc);
       Logger::warning(std::string(msg));
    }
      

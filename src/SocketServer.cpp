@@ -4,9 +4,9 @@
 #include <string>
 #include <exception>
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 
 #include "SocketServer.h"
@@ -271,7 +271,7 @@ bool SocketServer::init(int port)
                
                if (isLoggingDebug) {
                   char msg[128];
-                  std::snprintf(msg, 128, "port number=%d", port);
+                  ::snprintf(msg, 128, "port number=%d", port);
                   Logger::debug(std::string(msg));
                }
             }
@@ -417,7 +417,7 @@ bool SocketServer::init(int port)
       try {
          if (isLoggingDebug) {
             char msg[128];
-            std::snprintf(msg, 128, "creating server socket on port=%d", port);
+            ::snprintf(msg, 128, "creating server socket on port=%d", port);
             Logger::debug(std::string(msg));
          }
       
@@ -468,7 +468,7 @@ bool SocketServer::init(int port)
          concurrencyModel += " [libdispatch]";
       } else {
          char numberThreads[128];
-         std::snprintf(numberThreads, 128, " [%d threads]",
+         ::snprintf(numberThreads, 128, " [%d threads]",
                        m_threadPoolSize);
          concurrencyModel += numberThreads;
       }
@@ -493,7 +493,7 @@ bool SocketServer::init(int port)
    startupMsg += m_sockets;
    startupMsg += ")";
 
-   std::printf("%s\n", startupMsg.c_str());
+   ::printf("%s\n", startupMsg.c_str());
 
    m_isFullyInitialized = true;
    
@@ -533,7 +533,7 @@ std::string SocketServer::getSystemDateGMT() const {
    struct tm* timeptr = ::gmtime(&currentGMT);
    char dateBuffer[128];
    
-   std::snprintf(dateBuffer, 128,
+   ::snprintf(dateBuffer, 128,
                  "%.3s, %02d %.3s %d %.2d:%.2d:%.2d GMT",
                  LOG_WEEKDAY_NAME[timeptr->tm_wday],
                  timeptr->tm_mday,
@@ -555,7 +555,7 @@ std::string SocketServer::getLocalDateTime() const {
    struct tm* timeptr = ::localtime(&currentTime);
    char dateBuffer[128];
    
-   std::snprintf(dateBuffer, 128,
+   ::snprintf(dateBuffer, 128,
                  "%d-%02d-%02d %.2d:%.2d:%.2d",
                  1900 + timeptr->tm_year,
                  timeptr->tm_mon + 1,
