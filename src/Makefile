@@ -2,11 +2,11 @@
 # BSD License
 
 CC = g++
-CC_OPTS = -c -Wall -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
+CC_OPTS = -c -Wall -shared -fPIC -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
-LIB_NAME = libchaudiere.a
+LIB_NAME = chaudiere.so
 
 ZLIB_OBJS = ./ThirdParty/zlib/adler32.o \
 ./ThirdParty/zlib/compress.o \
@@ -67,7 +67,7 @@ $(ZLIB_OBJS) :
 	cd ThirdParty/zlib && make
 
 $(LIB_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(ARCHIVE_CMD) $(ARCHIVE_OPTS) $(LIB_NAME) $(OBJS) $(ZLIB_OBJS)
+	$(CC) -shared -fPIC $(OBJS) $(ZLIB_OBJS) -o $(LIB_NAME)
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

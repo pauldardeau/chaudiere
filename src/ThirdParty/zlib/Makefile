@@ -2,7 +2,7 @@
 # BSD License
 
 CC = gcc
-CC_OPTS = -c
+CC_OPTS = -c -shared -fPIC
 
 OBJS = adler32.o \
 compress.o \
