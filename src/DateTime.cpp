@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "DateTime.h"
+#include "StrUtils.h"
 
 using namespace chaudiere;
 
@@ -246,12 +247,12 @@ DateTime::DateTime(const std::string& dateTime) :
       const std::string minute = dateTime.substr(10, 2);
       const std::string second = dateTime.substr(12, 2);
       
-      m_year = ::atoi(year.c_str());
-      m_month = ::atoi(month.c_str());
-      m_day = ::atoi(day.c_str());
-      m_hour = ::atoi(hour.c_str());
-      m_minute = ::atoi(minute.c_str());
-      m_second = ::atoi(second.c_str());
+      m_year = StrUtils::parseInt(year);
+      m_month = StrUtils::parseInt(month);
+      m_day = StrUtils::parseInt(day);
+      m_hour = StrUtils::parseInt(hour);
+      m_minute = StrUtils::parseInt(minute);
+      m_second = StrUtils::parseInt(second);
    }
 }
 
