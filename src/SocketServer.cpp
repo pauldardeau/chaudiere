@@ -32,7 +32,7 @@
 #include "ThreadPoolDispatcher.h"
 #include "ThreadingFactory.h"
 #include "PthreadsThreadingFactory.h"
-#include "StdThreadingFactory.h"
+//#include "StdThreadingFactory.h"
 
 // kernel events
 #include "EpollServer.h"
@@ -442,11 +442,11 @@ bool SocketServer::init(int port)
       
       if (m_threading == CFG_THREADING_PTHREADS) {
          m_threadingFactory = new PthreadsThreadingFactory();
-      } else if (m_threading == CFG_THREADING_CPP11) {
-         m_threadingFactory = new StdThreadingFactory();
-      } else if (m_threading == CFG_THREADING_GCD_LIBDISPATCH) {
-         isUsingLibDispatch = true;
-         m_threadingFactory = new PthreadsThreadingFactory();
+      //} else if (m_threading == CFG_THREADING_CPP11) {
+      //   m_threadingFactory = new StdThreadingFactory();
+      //} else if (m_threading == CFG_THREADING_GCD_LIBDISPATCH) {
+      //   isUsingLibDispatch = true;
+      //   m_threadingFactory = new PthreadsThreadingFactory();
       } else {
          m_threadingFactory = new PthreadsThreadingFactory();
       }
