@@ -19,7 +19,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-int StrUtils::parseInt(const std::string& s) {
+bool OnlyIntegerDigits(const std::string& s) {
    // scan for valid characters (0-9, and possibly '-' in first position)
    for (int i = 0; i < s.length(); ++i) {
       char c = s[i];
@@ -28,9 +28,18 @@ int StrUtils::parseInt(const std::string& s) {
          if (0 == i && c == '-') {
             // a minus sign as first character is our only exception to 0-9
          } else {
-            throw NumberFormatException(s);
+            return false;
          }
       }
+   }
+   return true;
+}
+
+//******************************************************************************
+
+int StrUtils::parseInt(const std::string& s) {
+   if (!OnlyIntegerDigits(s)) {
+      throw NumberFormatException(s);
    }
 
    int intValue = ::atoi(s.c_str());
@@ -45,9 +54,36 @@ int StrUtils::parseInt(const std::string& s) {
 
 //******************************************************************************
 
+long StrUtils::parseLong(const std::string& s) {
+   if (!OnlyIntegerDigits(s)) {
+      throw NumberFormatException(s);
+   }
+
+   long longValue = ::atol(s.c_str());
+   if (longValue == 0) {
+      if (s != ZERO) {
+         throw NumberFormatException(s);
+      }
+   }
+
+   return longValue;
+}
+
+//******************************************************************************
+
 std::string StrUtils::toString(int i) {
    char buffer[40];
-   snprintf(buffer, sizeof(buffer), "%d", i);
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%d", i);
+   return std::string(buffer);
+}
+
+//******************************************************************************
+
+std::string StrUtils::toString(long l) {
+   char buffer[40];
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%ld", l);
    return std::string(buffer);
 }
 

@@ -21,6 +21,27 @@ public:
     * @return integer value
     */
    static int parseInt(const std::string& s);
+
+   /**
+    * Parse a string for long value
+    * @param s the string to parse for long
+    * @return long value
+    */
+   static long parseLong(const std::string& s);
+
+   /**
+    * Parse a string for float value
+    * @param s the string to parse for float
+    * @return float value
+    */
+   static float parseFloat(const std::string& s);
+
+   /**
+    * Parse a string for double value
+    * @param s the string to parse for double
+    * @return double value
+    */
+   static double parseDouble(const std::string& s);
    
    /**
     * Construct a string from an integer
@@ -28,6 +49,14 @@ public:
     * @return string version of integer value
     */
    static std::string toString(int i);
+
+   /**
+    * Construct a string from a long
+    * @param l long value to convert to string
+    * @return string version of long value
+    */
+   static std::string toString(long l);
+
    
    /**
     *
