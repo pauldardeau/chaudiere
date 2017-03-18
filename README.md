@@ -12,17 +12,14 @@ BSD
 
 Platforms/Compilers
 -------------------
-This project is implemented with C++11. It is tested with clang and
-g++ compilers. It is also tested on Mac OS X, FreeBSD 10, PC-BSD 10,
-and Ubuntu 14.04 Server.
+This project is implemented with C++ (pre c++11). It is tested with
+g++ compiler on Linux (primarily Ubuntu 14.04 server), FreeBSD, and
+OpenBSD.
 
 Threading Options
 -----------------
 This project was initially coded to use Posix threads (pthreads).
-Since C++11 has built-in support for threading, that was recently
-added and is still being tweaked. Additionally, Apple's libdispatch
-(foundation of Grand Central Dispatch [GCD]) is available on Mac
-OS X, as well as on some other systems.
+Apple's libdispatch is available on Mac OSX and FreeBSD.
 
 Socket Options
 --------------
@@ -37,8 +34,8 @@ slowly get there.
 
 C++ Standards
 -------------
-The code is somewhat C++11 compliant. The intention is to make it more
-and more C++11 compliant over time.
+The code is pre-C++11. This is intentional to provide maximum
+portability.
 
 Coding Style
 ------------
