@@ -5,14 +5,13 @@
 #define CHAUDIERE_SOCKETSERVER_H
 
 #include <string>
-#include <map>
 
 #include "KernelEventServer.h"
+#include "KeyValuePairs.h"
 
 
 namespace chaudiere
 {
-   class KeyValuePairs;
    class RequestHandler;
    class ServerSocket;
    class Socket;
@@ -192,7 +191,7 @@ class SocketServer
       ServerSocket* m_serverSocket;
       ThreadPoolDispatcher* m_threadPool; //weak
       ThreadingFactory* m_threadingFactory;
-      std::map<std::string, std::string> m_mapProperties;
+      KeyValuePairs m_properties;
       std::string m_logLevel;
       std::string m_concurrencyModel;
       std::string m_configFilePath;
