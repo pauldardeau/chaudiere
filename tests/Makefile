@@ -1,11 +1,11 @@
 # Copyright Paul Dardeau, SwampBits LLC 2014
 # BSD License
 
-CC = clang++
-CC_OPTS = -c -fblocks -pthread -std=c++11 -I../src
+CC = g++
+CC_OPTS = -c -pthread -I../src
 
 EXE_NAME = test_chaudiere
-LIB_NAME = ../src/libchaudiere.a
+LIB_NAME = ../src/chaudiere.so
 
 OBJS = MockSocket.o \
 TestAutoPointer.o \
@@ -20,7 +20,6 @@ TestPthreadsMutex.o \
 TestServerSocket.o \
 TestSocket.o \
 TestSocketRequest.o \
-TestStdMutex.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
 TestSuite.o \
@@ -40,7 +39,7 @@ clean :
 	rm -f $(EXE_NAME)
 	
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) -o $(EXE_NAME) $(OBJS) $(LIB_NAME) -lpthread
+	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAME) -lpthread -ldl
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

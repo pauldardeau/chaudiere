@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <stdio.h>
+
 #include "TestIniReader.h"
 #include "IniReader.h"
 #include "KeyValuePairs.h"
@@ -32,26 +34,26 @@ void TestIniReader::setupSuite() {
    m_filePath = getTempFile();
    
    if (!m_filePath.empty()) {
-      FILE *f = std::fopen(m_filePath.c_str(), "wt");
-      if (f != nullptr) {
-         std::fprintf(f, "# this is a comment line\n");
-         std::fprintf(f, "[stooges]\n");
-         std::fprintf(f, "stooge1 = Moe\n");
-         std::fprintf(f, "stooge2 = Larry\n");
-         std::fprintf(f, "stooge3 = Curly\n");
-         std::fprintf(f, "\n");
-         std::fprintf(f, "# [birds]\n");
-         std::fprintf(f, "# state_bird = Pelican\n");
-         std::fprintf(f, "# woodeater = Woodpecker\n");
-         std::fprintf(f, "# nofly = Ostrich\n");
-         std::fprintf(f, "\n");
-         std::fprintf(f, "[artists]\n");
-         std::fprintf(f, "painter1 = Monet\n");
-         std::fprintf(f, "painter2 = Van Gogh\n");
-         std::fprintf(f, "painter3 = Rembrandt\n");
-         std::fprintf(f, "\n");
+      FILE *f = ::fopen(m_filePath.c_str(), "wt");
+      if (f != NULL) {
+         ::fprintf(f, "# this is a comment line\n");
+         ::fprintf(f, "[stooges]\n");
+         ::fprintf(f, "stooge1 = Moe\n");
+         ::fprintf(f, "stooge2 = Larry\n");
+         ::fprintf(f, "stooge3 = Curly\n");
+         ::fprintf(f, "\n");
+         ::fprintf(f, "# [birds]\n");
+         ::fprintf(f, "# state_bird = Pelican\n");
+         ::fprintf(f, "# woodeater = Woodpecker\n");
+         ::fprintf(f, "# nofly = Ostrich\n");
+         ::fprintf(f, "\n");
+         ::fprintf(f, "[artists]\n");
+         ::fprintf(f, "painter1 = Monet\n");
+         ::fprintf(f, "painter2 = Van Gogh\n");
+         ::fprintf(f, "painter3 = Rembrandt\n");
+         ::fprintf(f, "\n");
 
-         std::fclose(f);
+         ::fclose(f);
       }
    }
 }

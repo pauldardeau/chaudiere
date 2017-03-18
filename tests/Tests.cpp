@@ -14,7 +14,7 @@
 #include "TestServerSocket.h"
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
-#include "TestStdMutex.h"
+//#include "TestStdMutex.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
 #include "TestSystemInfo.h"
@@ -52,8 +52,8 @@ void Tests::run() {
    TestPthreadsMutex testPthreadsMutex;
    testPthreadsMutex.run();
 
-   TestStdMutex testStdMutex;
-   testStdMutex.run();
+   //TestStdMutex testStdMutex;
+   //testStdMutex.run();
 
    TestServerSocket testServerSocket;
    testServerSocket.run();
