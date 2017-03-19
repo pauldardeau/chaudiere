@@ -9,6 +9,7 @@
 static const std::string emptyString = "";
 
 using namespace chaudiere;
+using namespace poivre;
 
 //******************************************************************************
 

@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestStdMutex : public TestSuite
+class TestStdMutex : public poivre::TestSuite
 {
 protected:
    void runTests();

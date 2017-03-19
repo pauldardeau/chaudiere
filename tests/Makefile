@@ -2,15 +2,14 @@
 # BSD License
 
 CC = g++
-CC_OPTS = -c -pthread -I../src
+CC_OPTS = -c -pthread -I../src -I../../poivre
 
 EXE_NAME = test_chaudiere
-LIB_NAME = ../src/chaudiere.so
+LIB_NAMES = ../src/chaudiere.so ../../poivre/poivre.so
 
 OBJS = MockSocket.o \
 TestAutoPointer.o \
 TestByteBuffer.o \
-TestCase.o \
 TestIniReader.o \
 TestInvalidKeyException.o \
 TestKeyValuePairs.o \
@@ -22,7 +21,6 @@ TestSocket.o \
 TestSocketRequest.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
-TestSuite.o \
 TestSystemInfo.o \
 TestSystemStats.o \
 TestThread.o \
@@ -39,7 +37,7 @@ clean :
 	rm -f $(EXE_NAME)
 	
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAME) -lpthread -ldl
+	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@
