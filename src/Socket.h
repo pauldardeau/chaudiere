@@ -9,6 +9,8 @@
 #include <string>
 #include <memory>
 
+#include "CharBuffer.h"
+
 
 namespace chaudiere
 {
@@ -251,7 +253,7 @@ private:
    int m_port;
    bool m_isConnected;
    bool m_includeMessageSize;
-   char* m_inputBuffer; // allocated with "new char[]"
+   CharBuffer m_inputBuffer;
    int m_inBufferSize;
    int m_lastReadSize;
 };

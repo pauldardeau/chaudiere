@@ -9,6 +9,7 @@
 #include "KeyValuePairs.h"
 #include "BasicException.h"
 #include "Logger.h"
+#include "CharBuffer.h"
 
 static const std::string EOL_LF             = "\n";
 static const std::string EOL_CR             = "\r";
@@ -143,30 +144,23 @@ bool IniReader::readFile() {
    const long fileBytes = ::ftell(f);
    ::fseek(f, 0, SEEK_SET);
    
-   char* fileContents = NULL;
+   CharBuffer fileContents;
    size_t numObjectsRead = 0;
 
    if (fileBytes > 0L) {
-      fileContents = new char[fileBytes + 1];
-      numObjectsRead = ::fread(fileContents, fileBytes, 1, f);
+      fileContents.ensureCapacity(fileBytes + 1);
+      numObjectsRead = ::fread(fileContents.data(), fileBytes, 1, f);
    }
    
    ::fclose(f);
     
    if (numObjectsRead < 1) {
-      if (fileContents != NULL) {
-         delete [] fileContents;
-      }
-      
       Logger::error("reading from ini file failed");
       return false;
    }
-    
-   fileContents[fileBytes] = '\0';
-   m_fileContents = fileContents;
    
-   delete [] fileContents;
-   fileContents = NULL;
+   fileContents.nullAt(fileBytes); 
+   m_fileContents = fileContents.data();
    
    // strip out any comments
    bool strippingComments = true;

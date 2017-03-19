@@ -46,7 +46,6 @@ Socket::Socket(const std::string& address, int port) :
    m_port(port),
    m_isConnected(false),
    m_includeMessageSize(false),
-   m_inputBuffer(NULL),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
 
@@ -63,7 +62,7 @@ Socket::Socket(int socketFD) :
    m_userIndex(-1),
    m_isConnected(true),
    m_includeMessageSize(false),
-   m_inputBuffer(new char[DEFAULT_BUFFER_SIZE]),
+   m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
 }
@@ -77,7 +76,7 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
    m_userIndex(-1),
    m_isConnected(true),
    m_includeMessageSize(false),
-   m_inputBuffer(new char[DEFAULT_BUFFER_SIZE]),
+   m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
 }
@@ -86,9 +85,6 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
 
 Socket::~Socket() {
    Logger::logInstanceDestroy("Socket");
-   if (m_inputBuffer) {
-      delete [] m_inputBuffer;
-   }
 }
 
 //******************************************************************************
@@ -511,7 +507,7 @@ bool Socket::read(char* buffer, int bufsize) {
       return (bytesAlreadyRead > 0);
    }
     
-   ::memcpy(buffer + bytesAlreadyRead, m_inputBuffer, length);
+   ::memcpy(buffer + bytesAlreadyRead, m_inputBuffer.data(), length);
     
    return true;
 }
@@ -523,23 +519,11 @@ bool Socket::readMsg(int length) {
       Logger::warning("unable to read message size, socket is closed");
       return false;
    }
+   
+   m_inputBuffer.ensureCapacity(m_inBufferSize); 
     
-   if (!m_inputBuffer) {
-      // we don't have a buffer
-      m_inBufferSize = length + 1;
-      m_inputBuffer = new char[m_inBufferSize];
-   } else {
-      // we have a buffer. is it big enough?
-      if ((length + 1) > m_inBufferSize) {
-         // we need a larger buffer
-         //TODO: copy existing to new
-         m_inBufferSize = length + 1;
-         m_inputBuffer = new char[m_inBufferSize];
-      }
-   }
-    
-   if (readSocket(m_inputBuffer, length)) {
-      m_inputBuffer[length] = '\0';
+   if (readSocket(m_inputBuffer.data(), length)) {
+      m_inputBuffer.data()[length] = '\0';
       m_lastReadSize = length;
       return true;
    } else {
