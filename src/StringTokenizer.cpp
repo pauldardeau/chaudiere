@@ -25,6 +25,10 @@ StringTokenizer::StringTokenizer(const std::string& withTokens) :
    m_isConstructing(true),
    m_numberTokens(0),
    m_indexToken(0) {
+
+   Logger::logInstanceCreate("StringTokenizer");
+   parse();
+   m_isConstructing = false;
 }
 
 //******************************************************************************
@@ -40,20 +44,9 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
    m_isConstructing(true),
    m_numberTokens(0),
    m_indexToken(0) {
-   Logger::logInstanceCreate("StringTokenizer");
 
-   if (m_withTokens.empty()) {
-      m_posCurrent = std::string::npos;
-   } else {
-      m_posCurrent = ::strspn(m_posTokens, m_posDelimiter);
-         
-      while (m_posCurrent != std::string::npos) { // while (hasMoreTokens()) {
-         m_tokens.push_back(extractNextToken());
-      }
-         
-      m_numberTokens = m_tokens.size();
-   }
-      
+   Logger::logInstanceCreate("StringTokenizer");
+   parse();
    m_isConstructing = false;
 }
 
@@ -61,6 +54,22 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
 
 StringTokenizer::~StringTokenizer() {
    Logger::logInstanceDestroy("StringTokenizer");
+}
+
+//******************************************************************************
+
+void StringTokenizer::parse() {
+   if (m_withTokens.empty()) {
+      m_posCurrent = std::string::npos;
+   } else {
+      m_posCurrent = ::strspn(m_posTokens, m_posDelimiter);
+
+      while (m_posCurrent != std::string::npos) { // while (hasMoreTokens()) {
+         m_tokens.push_back(extractNextToken());
+      }
+
+      m_numberTokens = m_tokens.size();
+   }
 }
 
 //******************************************************************************

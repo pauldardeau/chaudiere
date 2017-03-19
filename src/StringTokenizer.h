@@ -36,6 +36,10 @@ class StringTokenizer
       ~StringTokenizer();
 
       /**
+       */
+      void parse();
+
+      /**
        * Determines whether more tokens are present
        * @return boolean indicating if there are more tokens available
        */

@@ -27,7 +27,7 @@ void TestStringTokenizer::runTests() {
 void TestStringTokenizer::testConstructor() {
    TEST_CASE("testConstructor");
    
-   StringTokenizer stLetters("a b c");
+   StringTokenizer stLetters("a,b,c", ",");
    require(stLetters.countTokens() == 3, "3 tokens");
 
    StringTokenizer stNames("John Paul George Ringo");

@@ -1,9 +1,10 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "TestSuite.h"
 #include "BasicException.h"
@@ -75,6 +76,7 @@ void TestSuite::suiteTearDown() {
 //******************************************************************************
 
 void TestSuite::run() {
+   printf("+++++++++++++ running suite: %s +++++++++++\n", m_suiteName.c_str());
    suiteSetup();
    runTests();
    suiteTearDown();
@@ -83,13 +85,17 @@ void TestSuite::run() {
 //******************************************************************************
 
 std::string TestSuite::getTempFile() const {
+   return "testsuite.txt";
+   /*
    char fileTemplate[] = "/tmp/fileXXXXXX.test";
    const int fd = ::mkstemp(fileTemplate);
    if (-1 != fd) {
       return std::string(fileTemplate);
    } else {
+      printf("error: mkstemp failed. errno=%d\n", errno);
       return std::string("");
    }
+   */
 }
 
 //******************************************************************************
@@ -102,7 +108,7 @@ bool TestSuite::deleteFile(const std::string& filePath) {
 //******************************************************************************
 
 void TestSuite::startingTestCase(const TestCase& testCase) {
-   std::printf("starting test case %s\n", testCase.getName().c_str());
+   printf("starting test case %s\n", testCase.getName().c_str());
    setup();
 }
 
@@ -110,7 +116,7 @@ void TestSuite::startingTestCase(const TestCase& testCase) {
 
 void TestSuite::endingTestCase(const TestCase& testCase) {
    tearDown();
-   std::printf("ending test case %s\n", testCase.getName().c_str());
+   //printf("ending test case %s\n", testCase.getName().c_str());
 }
 
 //******************************************************************************
@@ -118,7 +124,7 @@ void TestSuite::endingTestCase(const TestCase& testCase) {
 void TestSuite::require(bool expression, const std::string& testDesc) {
    if (!expression) {
       ++m_numFailures;
-      std::printf("*** failure: expected true, got false (%s)\n",
+      printf("*** failure: expected true, got false (%s)\n",
              testDesc.c_str());
    }
    
@@ -130,7 +136,7 @@ void TestSuite::require(bool expression, const std::string& testDesc) {
 void TestSuite::requireFalse(bool expression, const std::string& testDesc) {
    if (expression) {
       ++m_numFailures;
-      std::printf("*** failure: expected false, got true (%s)\n",
+      printf("*** failure: expected false, got true (%s)\n",
              testDesc.c_str());
    }
    
@@ -144,7 +150,7 @@ void TestSuite::requireStringEquals(const std::string& expected,
                                     const std::string& testDesc) {
    if (expected != actual) {
       ++m_numFailures;
-      std::printf("*** failure: expected '%s', actual='%s' (%s)\n",
+      printf("*** failure: expected '%s', actual='%s' (%s)\n",
              expected.c_str(),
              actual.c_str(),
              testDesc.c_str());
@@ -159,7 +165,7 @@ void TestSuite::requireNonEmptyString(const std::string& actual,
                                       const std::string& testDesc) {
    if (actual.empty()) {
       ++m_numFailures;
-      std::printf("*** failure: expected non-empty string (%s)\n",
+      printf("*** failure: expected non-empty string (%s)\n",
              testDesc.c_str());
    }
    
