@@ -32,6 +32,7 @@ void TestIniReader::runTests() {
 
 void TestIniReader::setupSuite() {
    m_filePath = getTempFile();
+   printf("TestIniReader::setupSuite, temp file ='%s'\n", m_filePath.c_str());
    
    if (!m_filePath.empty()) {
       FILE *f = ::fopen(m_filePath.c_str(), "wt");
