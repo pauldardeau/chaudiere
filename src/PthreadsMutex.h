@@ -34,7 +34,10 @@ public:
     */
    ~PthreadsMutex();
 
-   // Mutex
+   /**
+    */
+   void initialize();
+
    /**
     *
     * @return

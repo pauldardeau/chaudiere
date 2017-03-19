@@ -18,6 +18,8 @@ PthreadsMutex::PthreadsMutex() :
    m_mutexName(EMPTY_STRING),
    m_haveValidMutex(false),
    m_isLocked(false) {
+
+   initialize();
 }
 
 //******************************************************************************
@@ -27,6 +29,25 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
    m_haveValidMutex(false),
    m_isLocked(false) {
 
+   initialize();
+}
+
+//******************************************************************************
+
+PthreadsMutex::~PthreadsMutex() {
+   Logger::logInstanceDestroy("PthreadsMutex");
+
+   if (m_haveValidMutex) {
+      if (m_isLocked) {
+         unlock();
+      }
+      ::pthread_mutex_destroy(&m_mutex);
+   }
+}
+
+//******************************************************************************
+
+void PthreadsMutex::initialize() {
    Logger::logInstanceCreate("PthreadsMutex");
    char buffer[128];
    int rc;
@@ -38,9 +59,9 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
 
       if (0 == rc) {
          rc = ::pthread_mutex_init(&m_mutex, &attr);
-         
+
          ::pthread_mutexattr_destroy(&attr);
-      
+
          if (0 == rc) {
             m_haveValidMutex = true;
          } else {
@@ -57,19 +78,6 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
       snprintf(buffer, 128, "unable to initialize mutex attributes, rc=%d", rc);
       Logger::error(buffer);
       throw BasicException(buffer);
-   }
-}
-
-//******************************************************************************
-
-PthreadsMutex::~PthreadsMutex() {
-   Logger::logInstanceDestroy("PthreadsMutex");
-
-   if (m_haveValidMutex) {
-      if (m_isLocked) {
-         unlock();
-      }
-      ::pthread_mutex_destroy(&m_mutex);
    }
 }
 
