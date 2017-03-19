@@ -40,11 +40,7 @@ public:
    T& operator->() { return m_object; }
    
    T& operator()() { return m_object; }
-   
-   /**
-    *
-    */
-   T& operator*() { return *m_object; }
+
    
    /**
     * Assigns new object to be owned by the AutoPointer. Deletes old one if present.
@@ -67,9 +63,10 @@ public:
    bool haveObject() const {
       return (NULL != m_object);
    }
-   
+
+   T m_object;   
+
 private:
-   T m_object;
    
    // no copies
    AutoPointer(const AutoPointer<T>&);
