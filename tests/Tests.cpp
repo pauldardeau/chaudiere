@@ -1,8 +1,6 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include "Tests.h"
-
 #include "TestAutoPointer.h"
 #include "TestByteBuffer.h"
 #include "TestIniReader.h"
@@ -27,72 +25,37 @@
 
 using namespace chaudiere;
 
-void Tests::run() {
-   TestAutoPointer testAutoPointer;
-   testAutoPointer.run();
-   
-   TestByteBuffer testByteBuffer;
-   testByteBuffer.run();
-   
-   TestIniReader testIniReader;
-   testIniReader.run();
-   
-   TestInvalidKeyException testIKE;
-   testIKE.run();
-   
-   TestKeyValuePairs testKVP;
-   testKVP.run();
-   
-   TestKqueueServer testKqueueServer;
-   testKqueueServer.run();
-   
-   TestOptionParser testOptionParser;
-   testOptionParser.run();
-   
-   TestPthreadsMutex testPthreadsMutex;
-   testPthreadsMutex.run();
+void run_test(poivre::TestSuite* test_suite) {
+   if (NULL != test_suite) {
+      test_suite->run();
+      delete test_suite;
+   }
+}
 
-   //TestStdMutex testStdMutex;
-   //testStdMutex.run();
-
-   TestServerSocket testServerSocket;
-   testServerSocket.run();
-   
-   TestSocket testSocket;
-   testSocket.run();
-   
-   TestSocketRequest testSocketRequest;
-   testSocketRequest.run();
-   
-   TestStringTokenizer testStringTokenizer;
-   testStringTokenizer.run();
-   
-   TestStrUtils testStrUtils;
-   testStrUtils.run();
-   
-   TestSystemInfo testSystemInfo;
-   testSystemInfo.run();
-   
-   TestSystemStats testSystemStats;
-   testSystemStats.run();
-   
-   TestThread testThread;
-   testThread.run();
-   
-   TestThreadInfo testThreadInfo;
-   testThreadInfo.run();
-   
-   TestThreadPool testThreadPool;
-   testThreadPool.run();
-
-   TestThreadPoolQueue testThreadPoolQueue;
-   testThreadPoolQueue.run();
-
-   TestThreadPoolWorker testThreadPoolWorker;
-   testThreadPoolWorker.run();
+void run_tests() {
+   run_test(new TestAutoPointer);
+   run_test(new TestByteBuffer);
+   run_test(new TestIniReader);
+   run_test(new TestInvalidKeyException);
+   run_test(new TestKeyValuePairs);
+   run_test(new TestKqueueServer);
+   run_test(new TestOptionParser);
+   run_test(new TestPthreadsMutex);
+   //run_test(new TestStdMutex);
+   run_test(new TestServerSocket);
+   run_test(new TestSocket);
+   run_test(new TestSocketRequest);
+   run_test(new TestStringTokenizer);
+   run_test(new TestStrUtils);
+   run_test(new TestSystemInfo);
+   run_test(new TestSystemStats);
+   run_test(new TestThread);
+   run_test(new TestThreadInfo);
+   run_test(new TestThreadPool);
+   run_test(new TestThreadPoolQueue);
+   run_test(new TestThreadPoolWorker);
 }
 
 int main(int argc, char* argv[]) {
-   Tests tests;
-   tests.run();
+   run_tests();
 }
