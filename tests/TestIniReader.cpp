@@ -8,6 +8,7 @@
 #include "KeyValuePairs.h"
 
 using namespace chaudiere;
+using namespace poivre;
 
 //******************************************************************************
 
@@ -70,13 +71,44 @@ void TestIniReader::tearDownSuite() {
 
 //******************************************************************************
 
+class IniReaderCtorRunner : public Runnable {
+public:
+   explicit IniReaderCtorRunner(const std::string& arg) :
+      m_arg(arg) {
+   }
+
+   IniReaderCtorRunner(const IniReaderCtorRunner& copy) :
+      m_arg(copy.m_arg) {
+   }
+
+   IniReaderCtorRunner& operator=(const IniReaderCtorRunner& copy) {
+      if (this == &copy) {
+         return *this;
+      }
+
+      m_arg = copy.m_arg;
+
+      return *this;
+   }
+
+   void run() {
+      IniReader reader(m_arg);
+   }
+
+private:
+   std::string m_arg;
+};
+
 void TestIniReader::testConstructor() {
    TEST_CASE("testConstructor");
 
    //IniReader(const std::string& iniFile);
    IniReader reader(m_filePath);
-   
-   //TODO: test with non-existing file
+
+   //test with non-existing file
+   requireException("BasicException",
+                    new IniReaderCtorRunner("ljsfa/asdflkj/sadflkjx"),
+                    "non-existing file");
 }
 
 //******************************************************************************
