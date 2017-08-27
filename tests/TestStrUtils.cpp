@@ -376,10 +376,10 @@ void TestStrUtils::testPadRight() {
    TEST_CASE("padRight");
    
    //static void padRight(std::string& s, char padChar, int paddedLength);
-   std::string empty;
+   std::string startedEmpty;
    const std::string tenChars = "xxxxxxxxxx";
-   StrUtils::padRight(empty, 'x', 10);
-   requireStringEquals(tenChars, empty, "empty");
+   StrUtils::padRight(startedEmpty, 'x', 10);
+   requireStringEquals(tenChars, startedEmpty, "empty");
    
    std::string noPaddingNeeded = "xxxxxxxxxx";
    StrUtils::padRight(noPaddingNeeded, 'x', 10);
@@ -399,7 +399,26 @@ void TestStrUtils::testPadRight() {
 //******************************************************************************
 
 void TestStrUtils::testPadLeft() {
-   //TODO: implement testPadLeft
+   TEST_CASE("padLeft");
+
+   std::string startedEmpty;
+   const std::string tenChars = "xxxxxxxxxx";
+   StrUtils::padLeft(startedEmpty, 'x', 10);
+   requireStringEquals(tenChars, startedEmpty, "empty");
+
+   std::string noPaddingNeeded = "xxxxxxxxxx";
+   StrUtils::padLeft(noPaddingNeeded, 'x', 10);
+   requireStringEquals(tenChars, noPaddingNeeded, "no padding needed");
+
+   std::string onePadCharNeeded = "...";
+   const std::string fourChars = "....";
+   StrUtils::padLeft(onePadCharNeeded, '.', 4);
+   requireStringEquals(fourChars, onePadCharNeeded, "one pad char needed");
+
+   std::string threePadCharsNeeded = "888    ";
+   const std::string spacePadded = "   888    ";
+   StrUtils::padLeft(threePadCharsNeeded, ' ', 10);
+   requireStringEquals(spacePadded, threePadCharsNeeded, "three pad chars needed");
 }
 
 //******************************************************************************
