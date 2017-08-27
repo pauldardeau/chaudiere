@@ -367,7 +367,8 @@ void TestStrUtils::testTrimLeadingSpaces() {
 //******************************************************************************
 
 void TestStrUtils::testTrim() {
-   //TODO: implement testTrim
+   TEST_CASE("trim");
+   // trim is just alias for strip. strip tested elsewhere
 }
 
 //******************************************************************************
