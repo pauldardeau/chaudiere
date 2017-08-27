@@ -17,12 +17,14 @@ TestByteBuffer::TestByteBuffer() :
 //******************************************************************************
 
 void TestByteBuffer::testDefaultConstructor() {
+   TEST_CASE("testDefaultConstructor");
    ByteBuffer b;
 }
 
 //******************************************************************************
 
 void TestByteBuffer::testSizeConstructor() {
+   TEST_CASE("testSizeConstructor");
    std::size_t buffSize = 256;
    ByteBuffer b(buffSize);
    require(buffSize == b.size(), "matching size");
@@ -32,6 +34,7 @@ void TestByteBuffer::testSizeConstructor() {
 //******************************************************************************
 
 void TestByteBuffer::testCopyConstructor() {
+   TEST_CASE("testCopyConstructor");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
@@ -40,12 +43,14 @@ void TestByteBuffer::testCopyConstructor() {
    ByteBuffer b2(b);
    void* b2Raw = b2.data();
    require(buffSize == b2.size(), "size after copy constructor");
-   require(0 == memcmp(raw, b2Raw, buffSize), "matching data contents after copy constructor");
+   require(0 == memcmp(raw, b2Raw, buffSize),
+           "matching data contents after copy constructor");
 }
 
 //******************************************************************************
 
 void TestByteBuffer::testAssignmentOperator() {
+   TEST_CASE("testAssignmentOperator");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
@@ -55,12 +60,14 @@ void TestByteBuffer::testAssignmentOperator() {
    b2 = b;
    void* b2Raw = b2.data();
    require(buffSize == b2.size(), "size after assignment operator");
-   require(0 == memcmp(raw, b2Raw, buffSize), "matching data contents after assignment operator");
+   require(0 == memcmp(raw, b2Raw, buffSize),
+           "matching data contents after assignment operator");
 }
 
 //******************************************************************************
 
 void TestByteBuffer::testTake() {
+   TEST_CASE("testTake");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
@@ -73,6 +80,7 @@ void TestByteBuffer::testTake() {
 //******************************************************************************
 
 void TestByteBuffer::testRelease() {
+   TEST_CASE("testRelease");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
@@ -85,6 +93,7 @@ void TestByteBuffer::testRelease() {
 //******************************************************************************
 
 void TestByteBuffer::testData() {
+   TEST_CASE("testData");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
@@ -96,6 +105,7 @@ void TestByteBuffer::testData() {
 //******************************************************************************
 
 void TestByteBuffer::testSize() {
+   TEST_CASE("testSize");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
@@ -107,6 +117,7 @@ void TestByteBuffer::testSize() {
 //******************************************************************************
 
 void TestByteBuffer::testClear() {
+   TEST_CASE("testClear");
    std::size_t buffSize = 1024;
    void* raw = ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
