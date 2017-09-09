@@ -19,15 +19,26 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-bool OnlyIntegerDigits(const std::string& s) {
-   // scan for valid characters (0-9, and possibly '-' in first position)
-   for (int i = 0; i < s.length(); ++i) {
-      char c = s[i];
-      int digit_value = c - '0';
-      if (digit_value < 0 || digit_value > 9) {
-         if (0 == i && c == '-') {
-            // a minus sign as first character is our only exception to 0-9
-         } else {
+bool OnlyIntegerDigits(const std::string& s, bool allow_decimal=false) {
+   // scan for valid characters (0-9)
+   // '-' is allowed as first character only
+   // if allow_decimal is true, '.' may only have single occurrence
+   int decimals_found = 0;
+   const int s_length = s.length();
+   for (int i = 0; i < s_length; ++i) {
+      const char c = s[i];
+      if (c == '-') {
+         if (i > 0) {
+            return false;
+         }
+      } else if (allow_decimal && (c == '.')) {
+         decimals_found++;
+         if (decimals_found > 1) {
+            return false;
+         }
+      } else {
+         const int digit_value = c - '0';
+         if (digit_value < 0 || digit_value > 9) {
             return false;
          }
       }
@@ -42,7 +53,7 @@ int StrUtils::parseInt(const std::string& s) {
       throw NumberFormatException(s);
    }
 
-   int intValue = ::atoi(s.c_str());
+   const int intValue = ::atoi(s.c_str());
    if (intValue == 0) {
       if (s != ZERO) {
          throw NumberFormatException(s);
@@ -59,7 +70,7 @@ long StrUtils::parseLong(const std::string& s) {
       throw NumberFormatException(s);
    }
 
-   long longValue = ::atol(s.c_str());
+   const long longValue = ::atol(s.c_str());
    if (longValue == 0) {
       if (s != ZERO) {
          throw NumberFormatException(s);
@@ -67,6 +78,40 @@ long StrUtils::parseLong(const std::string& s) {
    }
 
    return longValue;
+}
+
+//******************************************************************************
+
+float StrUtils::parseFloat(const std::string& s) {
+   if (!OnlyIntegerDigits(s, true)) {
+      throw NumberFormatException(s);
+   }
+
+   const float floatValue = ::atof(s.c_str());
+   if (floatValue == 0) {
+      if (s != ZERO) {
+         throw NumberFormatException(s);
+      }
+   }
+
+   return floatValue;
+}
+
+//******************************************************************************
+
+double StrUtils::parseDouble(const std::string& s) {
+   if (!OnlyIntegerDigits(s, true)) {
+      throw NumberFormatException(s);
+   }
+
+   const double doubleValue = ::atof(s.c_str());
+   if (doubleValue == 0) {
+      if (s != ZERO) {
+         throw NumberFormatException(s);
+      }
+   }
+
+   return doubleValue;
 }
 
 //******************************************************************************
