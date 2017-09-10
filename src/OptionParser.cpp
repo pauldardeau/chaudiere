@@ -37,20 +37,24 @@ OptionParser& OptionParser::operator=(const OptionParser& copy) {
 
 //******************************************************************************
 
-void OptionParser::addBooleanOption(const std::string& option,
+bool OptionParser::addBooleanOption(const std::string& option,
                                     const std::string& destVariable) {
    if (!option.empty() && !destVariable.empty()) {
       m_kvpBooleanDefs.addPair(option, destVariable);
+      return true;
    }
+   return false;
 }
 
 //******************************************************************************
 
-void OptionParser::addOption(const std::string& option,
+bool OptionParser::addOption(const std::string& option,
                              const std::string& destVariable) {
    if (!option.empty() && !destVariable.empty()) {
       m_kvpStringDefs.addPair(option, destVariable);
+      return true;
    }
+   return false;
 }
 
 //******************************************************************************

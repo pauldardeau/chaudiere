@@ -53,16 +53,18 @@ namespace chaudiere
        * Adds an option that simply flags a feature/capability as present/enabled or not
        * @param option the name of option as specified on command line
        * @param destVariable the destination to populate if the option is present
+       * @return boolean indicating whether option was added
        */
-      void addBooleanOption(const std::string& option,
+      bool addBooleanOption(const std::string& option,
                             const std::string& destVariable);
       
       /**
        * Adds a string option that may be present on the command line
        * @param option the name of the option as specified on the command line
        * @param destVariable the destination to populate if the option is present
+       * @return boolean indicating whether option was added
        */
-      void addOption(const std::string& option,
+      bool addOption(const std::string& option,
                      const std::string& destVariable);
    
       /**
