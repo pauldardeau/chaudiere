@@ -5,7 +5,6 @@
 #define CHAUDIERE_OPTIONPARSER_H
 
 #include <string>
-#include <vector>
 
 #include "KeyValuePairs.h"
 
