@@ -2,7 +2,6 @@
 // BSD License
 
 #include "TestOptionParser.h"
-#include "Thread.h"
 
 using namespace chaudiere;
 
@@ -16,6 +15,8 @@ TestOptionParser::TestOptionParser() :
 
 void TestOptionParser::runTests() {
    testConstructor();
+   testCopyConstructor();
+   testAssignmentOperator();
    testAddBooleanOption();
    testAddOption();
    testHasOption();
@@ -29,6 +30,20 @@ void TestOptionParser::runTests() {
 void TestOptionParser::testConstructor() {
    TEST_CASE("testConstructor");
    //TODO: implement testConstructor
+}
+
+//******************************************************************************
+
+void TestOptionParser::testCopyConstructor() {
+   TEST_CASE("testCopyConstructor");
+   //TODO: implement testCopyConstructor
+}
+
+//******************************************************************************
+
+void TestOptionParser::testAssignmentOperator() {
+   TEST_CASE("testAssignmentOperator");
+   //TODO: implement testAssignmentOperator
 }
 
 //******************************************************************************

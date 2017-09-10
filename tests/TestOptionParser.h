@@ -15,6 +15,8 @@ protected:
    void runTests();
    
    void testConstructor();
+   void testCopyConstructor();
+   void testAssignmentOperator();
    void testAddBooleanOption();
    void testAddOption();
    void testHasOption();
