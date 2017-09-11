@@ -89,13 +89,13 @@ namespace chaudiere
        * @return boolean indicating if the option is present
        */
       bool hasBooleanOption(const std::string& option) const;
-   
+
       /**
        * Parses the command line arguments
-       * @param argc address of integer containing the number of arguments
-       * @param argv address of array of strings for command line arguments
+       * @param argc number of arguments
+       * @param argv command line arguments
        */
-      void parseArgs(int* argc, char** argv[]);
+      void parseArgs(int argc, const char* argv[]);
    };
 
 }

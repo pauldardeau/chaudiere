@@ -81,31 +81,31 @@ bool OptionParser::hasBooleanOption(const std::string& option) const {
 
 //******************************************************************************
 
-void OptionParser::parseArgs(int* argc, char** argv[]) {
+void OptionParser::parseArgs(int argc, const char* argv[]) {
    // first argument is program name, skip over it
-   --(*argc);
-   ++(*argv);
+   --argc;
+   ++argv;
    
    bool parsing = true;
    
    while (parsing) {
-      if (*argc > 0) {
-         std::string arg = (*argv)[0];
+      if (argc > 0) {
+         std::string arg = argv[0];
          
          // is it a boolean option?
          if (m_kvpBooleanDefs.hasKey(arg)) {
             const std::string& destVar = m_kvpBooleanDefs.getValue(arg);
             m_kvpBooleanValues.addPair(destVar, "true");
-            --(*argc);
-            ++(*argv);
+            --argc;
+            ++argv;
          } else if (m_kvpStringDefs.hasKey(arg)) {
-            if (*argc > 1) {
-               std::string argValue = (*argv)[1];
+            if (argc > 1) {
+               std::string argValue = argv[1];
                const std::string& destVar = m_kvpStringDefs.getValue(arg);
                m_kvpStringValues.addPair(destVar, argValue);
-               (*argc) -= 2;
-               ++(*argv);
-               ++(*argv);
+               argc -= 2;
+               ++argv;
+               ++argv;
             } else {
                parsing = false;
             }
