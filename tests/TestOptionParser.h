@@ -1,8 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2015
 // BSD License
 
-#ifndef CHAUDIERE_OPTIONPARSER_H
-#define CHAUDIERE_OPTIONPARSER_H
+#ifndef CHAUDIERE_TESTOPTIONPARSER_H
+#define CHAUDIERE_TESTOPTIONPARSER_H
 
 #include "TestSuite.h"
 
@@ -17,11 +17,11 @@ protected:
    void testConstructor();
    void testCopyConstructor();
    void testAssignmentOperator();
-   void testAddBooleanOption();
+   void testAddFlag();
    void testAddOption();
    void testHasOption();
    void testGetOptionValue();
-   void testHasBooleanOption();
+   void testHasFlag();
    void testParseArgs();
    
 public:
