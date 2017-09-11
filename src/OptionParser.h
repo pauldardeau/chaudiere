@@ -5,6 +5,7 @@
 #define CHAUDIERE_OPTIONPARSER_H
 
 #include <string>
+#include <set>
 
 #include "KeyValuePairs.h"
 
@@ -13,15 +14,13 @@ namespace chaudiere
 {
 
    /**
-    * OptionParser is a utility class for parsing command-line options. It's
-    * inspired by Python's OptionParser in optparse module.
+    * OptionParser is a utility class for parsing command-line options.
     */
    class OptionParser
    {
    private:
-      KeyValuePairs m_kvpBooleanDefs;
-      KeyValuePairs m_kvpStringDefs;
-      KeyValuePairs m_kvpBooleanValues;
+      std::set<std::string> m_flags;
+      std::set<std::string> m_flagsPresent;
       KeyValuePairs m_kvpStringValues;
 
 
@@ -50,22 +49,28 @@ namespace chaudiere
       OptionParser& operator=(const OptionParser& copy);
       
       /**
-       * Adds an option that simply flags a feature/capability as present/enabled or not
+       * Adds an option that simply flags a feature/capability as
+       * present/enabled or not
        * @param option the name of option as specified on command line
-       * @param destVariable the destination to populate if the option is present
        * @return boolean indicating whether option was added
        */
-      bool addBooleanOption(const std::string& option,
-                            const std::string& destVariable);
+      bool addFlagOption(const std::string& option);
+
+      /**
+       * Determines whether a flag name is defined
+       * @param flag the name of the flag
+       * @return boolean indicating whether flag is defined
+       */
+      bool acceptsFlag(const std::string& flag) const;
       
       /**
        * Adds a string option that may be present on the command line
        * @param option the name of the option as specified on the command line
-       * @param destVariable the destination to populate if the option is present
+       * @param defaultValue the default value to use if not specified
        * @return boolean indicating whether option was added
        */
       bool addOption(const std::string& option,
-                     const std::string& destVariable);
+                     const std::string& defaultValue);
    
       /**
        * Determines if the specified string option is present
@@ -88,7 +93,7 @@ namespace chaudiere
        * @param option the name of the option (as specified on the command line)
        * @return boolean indicating if the option is present
        */
-      bool hasBooleanOption(const std::string& option) const;
+      bool hasFlag(const std::string& option) const;
 
       /**
        * Parses the command line arguments

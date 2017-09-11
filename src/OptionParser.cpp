@@ -14,9 +14,8 @@ OptionParser::OptionParser() {
 //******************************************************************************
 
 OptionParser::OptionParser(const OptionParser& copy) :
-   m_kvpBooleanDefs(copy.m_kvpBooleanDefs),
-   m_kvpStringDefs(copy.m_kvpStringDefs),
-   m_kvpBooleanValues(copy.m_kvpBooleanValues),
+   m_flags(copy.m_flags),
+   m_flagsPresent(copy.m_flagsPresent),
    m_kvpStringValues(copy.m_kvpStringValues) {
 }
 
@@ -27,9 +26,8 @@ OptionParser& OptionParser::operator=(const OptionParser& copy) {
       return *this;
    }
    
-   m_kvpBooleanDefs = copy.m_kvpBooleanDefs;
-   m_kvpStringDefs = copy.m_kvpStringDefs;
-   m_kvpBooleanValues = copy.m_kvpBooleanValues;
+   m_flags = copy.m_flags;
+   m_flagsPresent = copy.m_flagsPresent;
    m_kvpStringValues = copy.m_kvpStringValues;
    
    return *this;
@@ -37,10 +35,9 @@ OptionParser& OptionParser::operator=(const OptionParser& copy) {
 
 //******************************************************************************
 
-bool OptionParser::addBooleanOption(const std::string& option,
-                                    const std::string& destVariable) {
-   if (!option.empty() && !destVariable.empty()) {
-      m_kvpBooleanDefs.addPair(option, destVariable);
+bool OptionParser::addFlagOption(const std::string& option) {
+   if (!option.empty()) {
+      m_flags.insert(option);
       return true;
    }
    return false;
@@ -49,9 +46,9 @@ bool OptionParser::addBooleanOption(const std::string& option,
 //******************************************************************************
 
 bool OptionParser::addOption(const std::string& option,
-                             const std::string& destVariable) {
-   if (!option.empty() && !destVariable.empty()) {
-      m_kvpStringDefs.addPair(option, destVariable);
+                             const std::string& defaultValue) {
+   if (!option.empty()) {
+      m_kvpStringValues.addPair(option, defaultValue);
       return true;
    }
    return false;
@@ -75,11 +72,17 @@ const std::string& OptionParser::getOptionValue(const std::string& option) const
 
 //******************************************************************************
 
-bool OptionParser::hasBooleanOption(const std::string& option) const {
-   return m_kvpBooleanValues.hasKey(option);
+bool OptionParser::hasFlag(const std::string& option) const {
+   return m_flagsPresent.find(option) != m_flagsPresent.end();
 }
 
 //******************************************************************************
+
+bool OptionParser::acceptsFlag(const std::string& flag) const {
+   return m_flags.find(flag) != m_flags.end();
+}
+
+//*****************************************************************************
 
 void OptionParser::parseArgs(int argc, const char* argv[]) {
    // first argument is program name, skip over it
@@ -93,24 +96,20 @@ void OptionParser::parseArgs(int argc, const char* argv[]) {
          std::string arg = argv[0];
          
          // is it a boolean option?
-         if (m_kvpBooleanDefs.hasKey(arg)) {
-            const std::string& destVar = m_kvpBooleanDefs.getValue(arg);
-            m_kvpBooleanValues.addPair(destVar, "true");
+         if (acceptsFlag(arg)) {
+            m_flagsPresent.insert(arg);
             --argc;
             ++argv;
-         } else if (m_kvpStringDefs.hasKey(arg)) {
+         } else {
             if (argc > 1) {
                std::string argValue = argv[1];
-               const std::string& destVar = m_kvpStringDefs.getValue(arg);
-               m_kvpStringValues.addPair(destVar, argValue);
+               m_kvpStringValues.addPair(arg, argValue);
                argc -= 2;
                ++argv;
                ++argv;
             } else {
                parsing = false;
             }
-         } else {
-            parsing = false;
          }
       } else {
          parsing = false;
