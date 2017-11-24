@@ -1,7 +1,7 @@
 # Copyright Paul Dardeau, SwampBits LLC 2014
 # BSD License
 
-CC = g++
+CC = c++
 CC_OPTS = -c -Wall -shared -fPIC -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
@@ -54,7 +54,8 @@ ThreadPoolDispatch.o \
 ThreadPoolQueue.o \
 ThreadPoolWorker.o \
 ThreadingFactory.o \
-PthreadsThreadingFactory.o
+PthreadsThreadingFactory.o \
+Utils.o
 
 all : $(LIB_NAME)
 
