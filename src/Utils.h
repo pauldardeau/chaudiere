@@ -4,12 +4,14 @@
 #include <string>
 #include "ByteBuffer.h"
 
-
 namespace chaudiere {
 
 class Utils {
 public:
-   static void writeFile(const std::string& filePath, const ByteBuffer& blob);
+   static void WriteFile(const std::string& filePath, const ByteBuffer& blob);
+   static void WriteLine(const std::string& s);
+   static ByteBuffer* ReadFile(const std::string& filePath);
+   static std::string Md5ForFile(const std::string& filePath);
 };
 
 }

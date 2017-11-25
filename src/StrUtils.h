@@ -5,6 +5,7 @@
 #define CHAUDIERE_STRUTILS_H
 
 #include <string>
+#include <vector>
 
 namespace chaudiere
 {
@@ -188,17 +189,34 @@ public:
 
    /**
     *
-    * @param s
+    * @param
+    * @param
     * @return
     */
-   static std::string gzipCompress(const std::string& s);
+   static std::string makeStringOfChar(char ch, int length);
+
+   /**
+    *
+    * @param s
+    * @param delim
+    * @return
+    */
+   static std::vector<std::string> split(const std::string& s,
+                                         const std::string& delim);
 
    /**
     *
     * @param s
     * @return
     */
-   static std::string gzipDecompress(const std::string& s);
+   //static std::string gzipCompress(const std::string& s);
+
+   /**
+    *
+    * @param s
+    * @return
+    */
+   //static std::string gzipDecompress(const std::string& s);
    
 };
 

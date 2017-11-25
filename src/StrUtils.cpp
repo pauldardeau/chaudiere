@@ -9,6 +9,7 @@
 
 #include "StrUtils.h"
 #include "NumberFormatException.h"
+#include "StringTokenizer.h"
 #include "zlib.h"
 
 static const std::string EMPTY = "";
@@ -354,7 +355,7 @@ std::string& StrUtils::replaceAll(std::string& s,
 }
 
 //******************************************************************************
-
+/*
 std::string StrUtils::gzipCompress(const std::string& str) {
    z_stream zs;
    ::memset(&zs, 0, sizeof(zs));
@@ -422,9 +423,9 @@ std::string StrUtils::gzipCompress(const std::string& str) {
 
    return outstring;
 }
-
+*/
 //******************************************************************************
-
+/*
 std::string StrUtils::gzipDecompress(const std::string& str) {
    z_stream zs;                        // z_stream is zlib's control structure
    memset(&zs, 0, sizeof(zs));
@@ -465,7 +466,7 @@ std::string StrUtils::gzipDecompress(const std::string& str) {
    
    return outstring;
 }
-
+*/
 //******************************************************************************
 
 void StrUtils::padRight(std::string& s, char padChar, std::string::size_type paddedLength) {
@@ -480,6 +481,30 @@ void StrUtils::padLeft(std::string& s, char padChar, std::string::size_type padd
    if (s.length() < paddedLength) {
       s.insert(0, std::string(paddedLength - s.length(), padChar));
    }
+}
+
+//******************************************************************************
+
+std::string StrUtils::makeStringOfChar(char ch, int length) {
+   if (length > 0) {
+      return std::string(length, ch);
+   } else {
+      return EMPTY;
+   }
+}
+
+//******************************************************************************
+
+std::vector<std::string> StrUtils::split(const std::string& s,
+                                         const std::string& delim) {
+   std::vector<std::string> components;
+   StringTokenizer st(s, delim);
+
+   while (st.hasMoreTokens()) {
+      components.push_back(st.nextToken());
+   }
+
+   return components;
 }
 
 //******************************************************************************

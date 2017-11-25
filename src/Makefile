@@ -62,13 +62,12 @@ all : $(LIB_NAME)
 clean :
 	rm -f *.o
 	rm -f $(LIB_NAME)
-	cd ThirdParty/zlib && make clean
 	
 $(ZLIB_OBJS) :
 	cd ThirdParty/zlib && make
 
-$(LIB_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) -shared -fPIC $(OBJS) $(ZLIB_OBJS) -o $(LIB_NAME)
+$(LIB_NAME) : $(OBJS)
+	$(CC) -shared -fPIC $(OBJS) -o $(LIB_NAME)
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

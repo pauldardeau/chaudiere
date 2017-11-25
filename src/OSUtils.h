@@ -5,6 +5,8 @@
 #define CHAUDIERE_OSUTILS_H
 
 #include <string>
+#include <vector>
+
 
 namespace chaudiere
 {
@@ -57,7 +59,67 @@ namespace chaudiere
       * @return boolean indicating if the directory was created
       */
      static bool createPrivateDirectory(const std::string& directory);
-      
+
+     /**
+      *
+      * @param
+      */
+     static void programExit(int exitCode);
+
+     /**
+      *
+      * @param
+      * @return
+      */
+     static long getFileSize(const std::string& filePath);
+
+     /**
+      *
+      * @param
+      * @return
+      */
+     static bool deleteFile(const std::string& filePath);
+     
+     /**
+      *
+      * @param
+      * @param
+      * @return
+      */
+     static bool renameFile(const std::string& oldFilePath, const std::string& newFilePath); 
+
+     /**
+      *
+      * @return
+      */
+     static std::string sysPlatform();
+
+     /**
+      *
+      * @return
+      */
+     static std::string osName();
+
+     /**
+      *
+      * @param filePath
+      * @return
+      */
+     static std::vector<std::string> splitExt(const std::string& filePath);
+
+     /**
+      *
+      * @return
+      */
+     static long currentTimeMillis();
+
+     /**
+      *
+      * @param dirPath
+      * @return
+      */
+     static std::vector<std::string> listFilesInDirectory(const std::string& dirPath);
+
       /**
        *
        * @param inCrc32

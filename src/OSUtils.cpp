@@ -134,6 +134,84 @@ bool OSUtils::createPrivateDirectory(const std::string& directory) {
 
 //******************************************************************************
 
+void OSUtils::programExit(int exitCode) {
+   exit(exitCode);
+}
+
+//******************************************************************************
+
+long OSUtils::getFileSize(const std::string& filePath) {
+   long fileSize = -1L;
+   FILE* f = fopen(filePath.c_str(), "r");
+   if (NULL != f) {
+      fseek(f, 0L, SEEK_END);
+      fileSize = ftell(f);
+      fclose(f);
+   }
+   return fileSize;
+}
+
+//******************************************************************************
+
+bool OSUtils::deleteFile(const std::string& filePath) {
+   return (0 == unlink(filePath.c_str()));
+}
+
+//******************************************************************************
+
+bool OSUtils::renameFile(const std::string& oldFilePath,
+                         const std::string& newFilePath) {
+   return (0 == rename(oldFilePath.c_str(), newFilePath.c_str()));
+}
+
+//******************************************************************************
+
+std::string OSUtils::sysPlatform() {
+   std::string name;
+   //TODO: retrieve OS platform name
+   return name;
+}
+
+//******************************************************************************
+
+std::string OSUtils::osName() {
+   //TODO: add support for non-posix
+   return "posix";
+}
+
+//******************************************************************************
+
+std::vector<std::string> OSUtils::splitExt(const std::string& filePath) {
+   std::vector<std::string> parts;
+   const std::string::size_type posLastDot = filePath.find_last_of(".");
+   if (posLastDot != std::string::npos) {
+      parts.push_back(filePath.substr(0, posLastDot));  // root
+      parts.push_back(filePath.substr(posLastDot, std::string::npos));  // ext
+   } else {
+      parts.push_back(filePath);
+      parts.push_back(std::string(""));
+   }
+
+   return parts;
+}
+
+//******************************************************************************
+
+long OSUtils::currentTimeMillis() {
+   //TODO: implement OSUtils::currentTimeMillis
+   return 0L;
+}
+
+//******************************************************************************
+
+std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPath) {
+   std::vector<std::string> listFiles;
+   //TODO: implement OSUtils::listFilesInDirectory
+   return listFiles;
+}
+
+//******************************************************************************
+
 unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
                                       const void *buf,
                                       size_t bufLen) {
