@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "OSUtils.h"
 #include "StrUtils.h"
@@ -168,15 +170,34 @@ bool OSUtils::renameFile(const std::string& oldFilePath,
 
 std::string OSUtils::sysPlatform() {
    std::string name;
-   //TODO: retrieve OS platform name
+
+#ifdef __linux__
+   name = "linux";
+#elif defined(__APPLE__)
+   name = "mac";  // darwin, osx
+#elif defined(__FreeBSD__)
+   name = "freebsd";
+#elif defined(__NetBSD__)
+   name = "netbsd";
+#elif defined(__OpenBSD__)
+   name = "openbsd";
+#elif defined(_WIN32)
+   name = "windows";
+#else
+   name = "unknown";
+#endif
+
    return name;
 }
 
 //******************************************************************************
 
 std::string OSUtils::osName() {
-   //TODO: add support for non-posix
-   return "posix";
+#if defined(_POSIX_VERSION)
+   return std::string("posix");
+#else
+   return std::string("unknown");
+#endif
 }
 
 //******************************************************************************
@@ -206,7 +227,28 @@ long OSUtils::currentTimeMillis() {
 
 std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPath) {
    std::vector<std::string> listFiles;
-   //TODO: implement OSUtils::listFilesInDirectory
+   struct dirent* entry;
+   DIR* dir = ::opendir(dirPath.c_str());
+   if (dir != NULL) {
+      while ((entry = ::readdir(dir)) != NULL) {
+         bool entryIsFile = false;
+         if (entry->d_type == DT_REG) {
+            entryIsFile = true;
+         } else if (entry->d_type == DT_UNKNOWN) {
+            struct stat stbuf;
+            int rc = ::stat(entry->d_name, &stbuf);
+            if (rc == 0) {
+               entryIsFile = S_ISREG(stbuf.st_mode);
+            }
+         }
+
+         if (entryIsFile) {
+            listFiles.push_back(std::string(entry->d_name));
+         }
+      }
+      ::closedir(dir);
+   }
+
    return listFiles;
 }
 
