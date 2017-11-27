@@ -111,6 +111,14 @@ public:
    void* data() {
       return m_buffer;
    }
+
+   /**
+    * Retrieve const pointer to raw data buffer
+    * @return const pointer to raw data buffer
+    */
+   const void* const_data() const {
+      return m_buffer;
+   }
    
    /**
     * Retrieve size of data buffer
