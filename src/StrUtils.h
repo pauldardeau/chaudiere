@@ -64,6 +64,13 @@ public:
     * @return string version of unsigned long value
     */
    static std::string toString(unsigned long l);
+
+   /**
+    * Construct a string from a single character
+    * @param c the character to use as string
+    * @return string verion of character value
+    */
+   static std::string charToString(char c);
    
    /**
     *

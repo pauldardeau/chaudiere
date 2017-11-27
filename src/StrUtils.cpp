@@ -144,6 +144,15 @@ std::string StrUtils::toString(unsigned long l) {
 
 //******************************************************************************
 
+std::string StrUtils::charToString(char c) {
+   char buffer[2];
+   buffer[0] = c;
+   buffer[1] = '\0';
+   return std::string(buffer);
+}
+
+//******************************************************************************
+
 void StrUtils::toLowerCase(std::string& s) {
    if (!s.empty()) {
       for (std::size_t i = 0; i < s.length(); i++) {
