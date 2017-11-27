@@ -61,6 +61,12 @@ void TestStrUtils::runTests() {
    // gzip
    //TODO: testGzipCompress();
    //TODO: testGzipDecompress();
+
+   // makeStringOfChar
+   testMakeStringOfChar();
+
+   // split
+   testSplit();
 }
 
 //******************************************************************************
@@ -709,5 +715,38 @@ void TestStrUtils::testGzipDecompress() {
    requireStringEquals(original, uncompressed, "uncompressed match original");
 }
 */
+//******************************************************************************
+
+void TestStrUtils::testMakeStringOfChar() {
+   TEST_CASE("makeStringOfChar");
+
+   requireStringEquals(std::string("xxx"),
+                       StrUtils::makeStringOfChar('x', 3),
+                       "simple construction");
+   requireStringEquals(std::string(""),
+                       StrUtils::makeStringOfChar('z', 0),
+                       "zero-length");
+}
+
+//******************************************************************************
+
+void TestStrUtils::testSplit() {
+   TEST_CASE("split");
+
+   std::vector<std::string> r;
+
+   r = StrUtils::split("comma,separated,values", ",");
+   require(r.size() == 3, "comma separated values");
+
+   r = StrUtils::split("/usr/local/bin", "/");
+   require(r.size() == 3, "leading delimiter");
+
+   r = StrUtils::split("/usr/local/bin", ":");
+   require(r.size() == 1, "missing delimiter");
+
+   r = StrUtils::split("abc:def:ghi:", ":");
+   require(r.size() == 3, "trailing delimiter");
+}
+
 //******************************************************************************
 

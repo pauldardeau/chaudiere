@@ -54,6 +54,12 @@ protected:
    void testGzipCompress();
    void testGzipDecompress();
 
+   // makeStringOfChar
+   void testMakeStringOfChar();
+
+   // split
+   void testSplit();
+
 public:
    TestStrUtils();
    
