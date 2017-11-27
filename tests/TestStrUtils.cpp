@@ -683,6 +683,7 @@ void PopulateCompressionTestString(char* buffer, int buffer_len) {
 
 //*****************************************************************************
 //
+/*
 void TestStrUtils::testGzipCompress() {
    TEST_CASE("gzipCompress");
 
@@ -694,9 +695,9 @@ void TestStrUtils::testGzipCompress() {
    require(compressed.length() < original.length(),
            "compressed len < uncompressed len");
 }
-
+*/
 //******************************************************************************
-
+/*
 void TestStrUtils::testGzipDecompress() {
    TEST_CASE("gzipDecompress");
 
@@ -707,6 +708,6 @@ void TestStrUtils::testGzipDecompress() {
    std::string uncompressed = StrUtils::gzipDecompress(compressed);
    requireStringEquals(original, uncompressed, "uncompressed match original");
 }
-
+*/
 //******************************************************************************
 

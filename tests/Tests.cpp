@@ -39,7 +39,7 @@ void run_tests() {
    run_test(new TestInvalidKeyException);
    run_test(new TestKeyValuePairs);
    run_test(new TestKqueueServer);
-   run_test(new TestOptionParser);
+   //run_test(new TestOptionParser);
    run_test(new TestPthreadsMutex);
    //run_test(new TestStdMutex);
    run_test(new TestServerSocket);
