@@ -2,7 +2,7 @@
 # BSD License
 
 CC = c++
-CC_OPTS = -c -Wall -shared -fPIC -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
+CC_OPTS = -c -Wall -fPIC -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 

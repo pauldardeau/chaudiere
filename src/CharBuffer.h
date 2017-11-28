@@ -46,7 +46,7 @@ public:
    }
 
    void nullAt(const std::size_t offset) {
-      if ((offset >= 0) && (offset < m_bufferSize)) {
+      if (offset < m_bufferSize) {
          m_buffer[offset] = '\0';
       }
    }
