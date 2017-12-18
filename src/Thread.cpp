@@ -23,7 +23,8 @@ Thread::Thread(Mutex* mutexAlive) :
    m_runnable(NULL),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(mutexAlive) {
+   m_mutexAlive(mutexAlive),
+   m_threadCompletionObserver(NULL) {
 }
 
 //******************************************************************************
@@ -32,7 +33,8 @@ Thread::Thread(Runnable* runnable) :
    m_runnable(runnable),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(NULL) {
+   m_mutexAlive(NULL),
+   m_threadCompletionObserver(NULL) {
 }
 
 //******************************************************************************
@@ -41,7 +43,8 @@ Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
    m_runnable(runnable),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(mutexAlive) {
+   m_mutexAlive(mutexAlive),
+   m_threadCompletionObserver(NULL) {
    if (Logger::isLogging(Debug)) {
       Logger::debug("new thread created");
    }
@@ -116,7 +119,7 @@ void Thread::clearThreadCompletionObserver() {
 //******************************************************************************
 
 void Thread::notifyOnCompletion() {
-   if (m_threadCompletionObserver) {
+   if (m_threadCompletionObserver != NULL) {
       m_threadCompletionObserver->notifyThreadComplete(this);
    }
 }
