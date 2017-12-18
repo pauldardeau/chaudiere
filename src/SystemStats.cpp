@@ -81,8 +81,14 @@ bool SystemStats::getLoadAverages(double& oneMinute,
 
 bool SystemStats::getNumberProcesses(int& numberProcesses) {
    bool success = false;
+
+#ifdef __NetBSD__
+   //TODO: port for NetBSD
+   return false;
+#endif
    
 #ifndef __linux__
+#ifndef __NetBSD__
    int rc;
    size_t length = 0;
    static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
@@ -116,6 +122,7 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
          ::free(proc_list);
       }
    }
+#endif
 #endif
       
    return success;
