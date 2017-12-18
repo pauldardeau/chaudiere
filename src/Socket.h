@@ -103,7 +103,7 @@ public:
     * @param bytesToRead
     * @return
     */
-   bool readSocket(char* buffer, int bytesToRead);
+   int readSocket(char* buffer, int bytesToRead);
    
    /**
     *

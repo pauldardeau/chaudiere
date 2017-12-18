@@ -429,7 +429,6 @@ bool Socket::readLine(std::string& line) {
       }
         
       buffer[bytes] = '\0';
-        
       posCRLF = ::strstr(buffer, "\r\n");
         
       if (posCRLF) {
@@ -521,8 +520,8 @@ bool Socket::readMsg(int length) {
    }
    
    m_inputBuffer.ensureCapacity(m_inBufferSize); 
-    
-   if (readSocket(m_inputBuffer.data(), length)) {
+   int bytes_read = readSocket(m_inputBuffer.data(), length);
+   if (bytes_read == length) {
       m_inputBuffer.data()[length] = '\0';
       m_lastReadSize = length;
       return true;
@@ -534,7 +533,7 @@ bool Socket::readMsg(int length) {
 
 //******************************************************************************
 
-bool Socket::readSocket(char* buffer, int bytesToRead) {
+int Socket::readSocket(char* buffer, int bytesToRead) {
    int total_bytes_rcvd = 0;
    ssize_t bytes = 0;
    char* currentBufferDest = buffer;
@@ -557,7 +556,11 @@ bool Socket::readSocket(char* buffer, int bytesToRead) {
             // more we can do!!!
             Logger::debug("connection reset by peer");
             close();
-            return false;
+            if (total_bytes_rcvd == 0) {
+               return -1;
+            } else {
+               return total_bytes_rcvd;
+            }
          } else {
             if (EINTR == errno) {  // interrupted?
                // not really an error
@@ -566,8 +569,12 @@ bool Socket::readSocket(char* buffer, int bytesToRead) {
                Logger::warning("recv returned an error");
             }
          }
-            
-         return false;
+
+         if (total_bytes_rcvd == 0) {
+            return -1;
+         } else {
+            return total_bytes_rcvd;
+         }
       }
         
       total_bytes_rcvd += bytes;
@@ -575,7 +582,7 @@ bool Socket::readSocket(char* buffer, int bytesToRead) {
         
    } while (total_bytes_rcvd < bytesToRead);
     
-   return true;
+   return total_bytes_rcvd;
 }
 
 //******************************************************************************
