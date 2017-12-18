@@ -85,7 +85,7 @@ public:
     * This should only be called AFTER the run method has completed
     */
    virtual void notifyOnCompletion() {
-      if (m_completionObserver) {
+      if (m_completionObserver != NULL) {
          m_completionObserver->notifyRunComplete(this);
       }
    }
