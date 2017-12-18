@@ -32,7 +32,7 @@ public:
    explicit ByteBuffer(const std::size_t bufferSize) :
       m_bufferSize(bufferSize) {
       if (m_bufferSize > 0) {
-         m_buffer = ::calloc(1, m_bufferSize);
+         m_buffer = (char*) ::calloc(1, m_bufferSize);
       } else {
          m_buffer = NULL;
       }
@@ -45,7 +45,7 @@ public:
    ByteBuffer(const ByteBuffer& copy) :
       m_bufferSize(copy.m_bufferSize) {
       if (m_bufferSize > 0) {
-         m_buffer = ::calloc(1, m_bufferSize);
+         m_buffer = (char*) ::calloc(1, m_bufferSize);
          ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);   
       } else {
          m_buffer = NULL;
@@ -72,7 +72,7 @@ public:
       clear();
       m_bufferSize = copy.m_bufferSize;
       if (m_bufferSize > 0) {
-         m_buffer = ::calloc(1, m_bufferSize);
+         m_buffer = (char*) ::calloc(1, m_bufferSize);
          ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);   
       }
       
@@ -83,7 +83,7 @@ public:
     * Take on ownership of an existing data buffer
     * @param sourceBuffer the new data buffer
     */
-   void take(void* sourceBuffer, std::size_t bufferSize) {
+   void take(char* sourceBuffer, std::size_t bufferSize) {
       if (m_buffer != NULL) {
          ::free(m_buffer);
          m_bufferSize = 0;
@@ -97,8 +97,8 @@ public:
     * Releases ownership of existing buffer
     * @return pointer to released data buffer
     */
-   void* release() {
-      void* releasedBuffer = m_buffer;
+   char* release() {
+      char* releasedBuffer = m_buffer;
       m_buffer = NULL;
       m_bufferSize = 0;
       return releasedBuffer;
@@ -108,7 +108,7 @@ public:
     * Retrieve pointer to raw data buffer
     * @return pointer to raw data buffer
     */
-   void* data() {
+   char* data() {
       return m_buffer;
    }
 
@@ -116,7 +116,7 @@ public:
     * Retrieve const pointer to raw data buffer
     * @return const pointer to raw data buffer
     */
-   const void* const_data() const {
+   const char* const_data() const {
       return m_buffer;
    }
    
@@ -141,7 +141,7 @@ public:
 
 
 private:
-   void* m_buffer;
+   char* m_buffer;
    std::size_t m_bufferSize;
 };
 
