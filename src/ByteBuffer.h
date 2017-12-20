@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 
 namespace chaudiere
@@ -29,10 +30,20 @@ public:
     * Constructs a new ByteBuffer of the specified size
     * @param bufferSize the size needed for the buffer
     */
-   explicit ByteBuffer(const std::size_t bufferSize) :
+   explicit ByteBuffer(size_t bufferSize) :
       m_bufferSize(bufferSize) {
       if (m_bufferSize > 0) {
          m_buffer = (char*) ::calloc(1, m_bufferSize);
+      } else {
+         m_buffer = NULL;
+      }
+   }
+
+   ByteBuffer(const std::string& s) :
+      m_bufferSize(s.length()) {
+      if (m_bufferSize > 0) {
+         m_buffer = (char*) ::calloc(1, m_bufferSize);
+         ::memcpy(m_buffer, s.data(), m_bufferSize);
       } else {
          m_buffer = NULL;
       }
@@ -51,7 +62,7 @@ public:
          m_buffer = NULL;
       }
    }
-   
+
    /**
     * Destructor
     */
@@ -83,7 +94,7 @@ public:
     * Take on ownership of an existing data buffer
     * @param sourceBuffer the new data buffer
     */
-   void take(char* sourceBuffer, std::size_t bufferSize) {
+   void take(char* sourceBuffer, size_t bufferSize) {
       if (m_buffer != NULL) {
          ::free(m_buffer);
          m_bufferSize = 0;
@@ -124,7 +135,7 @@ public:
     * Retrieve size of data buffer
     * @return size of data buffer in bytes
     */
-   std::size_t size() const {
+   size_t size() const {
       return m_bufferSize;
    }
    
@@ -142,7 +153,7 @@ public:
 
 private:
    char* m_buffer;
-   std::size_t m_bufferSize;
+   size_t m_bufferSize;
 };
 
 }
