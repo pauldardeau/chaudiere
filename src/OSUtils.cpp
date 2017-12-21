@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -202,18 +203,16 @@ std::string OSUtils::osName() {
 
 //******************************************************************************
 
-std::vector<std::string> OSUtils::splitExt(const std::string& filePath) {
-   std::vector<std::string> parts;
+void OSUtils::splitExt(const std::string& filePath,
+                       std::vector<std::string>& pathParts) {
    const std::string::size_type posLastDot = filePath.find_last_of(".");
    if (posLastDot != std::string::npos) {
-      parts.push_back(filePath.substr(0, posLastDot));  // root
-      parts.push_back(filePath.substr(posLastDot, std::string::npos));  // ext
+      pathParts.push_back(filePath.substr(0, posLastDot));  // root
+      pathParts.push_back(filePath.substr(posLastDot, std::string::npos));  // ext
    } else {
-      parts.push_back(filePath);
-      parts.push_back(std::string(""));
+      pathParts.push_back(filePath);
+      pathParts.push_back(std::string(""));
    }
-
-   return parts;
 }
 
 //******************************************************************************
@@ -236,6 +235,7 @@ std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPat
             entryIsFile = true;
          } else if (entry->d_type == DT_UNKNOWN) {
             struct stat stbuf;
+            memset(&stbuf, 0, sizeof(struct stat));
             int rc = ::stat(entry->d_name, &stbuf);
             if (rc == 0) {
                entryIsFile = S_ISREG(stbuf.st_mode);

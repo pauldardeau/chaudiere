@@ -105,7 +105,8 @@ namespace chaudiere
       * @param filePath
       * @return
       */
-     static std::vector<std::string> splitExt(const std::string& filePath);
+     static void splitExt(const std::string& filePath,
+                          std::vector<std::string>& pathParts);
 
      /**
       *
