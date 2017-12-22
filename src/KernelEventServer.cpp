@@ -33,8 +33,10 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
    m_socketServiceHandler(NULL),
    m_listBusyFlags(NULL),
    m_serverPort(0),
+   m_maxConnections(0),
    m_listenBacklog(10),
    m_listenerFD(-1),
+   m_fdmax(0),
    m_numberEventsReturned(0) {
 }
 
