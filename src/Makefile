@@ -6,7 +6,7 @@ CC_OPTS = -c -Wall -fPIC -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
-LIB_NAME = chaudiere.so
+LIB_NAME = libchaudiere.so
 
 ZLIB_OBJS = ./ThirdParty/zlib/adler32.o \
 ./ThirdParty/zlib/compress.o \
