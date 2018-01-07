@@ -135,3 +135,7 @@ std::string StringTokenizer::extractNextToken() {
 }
 
 //******************************************************************************
+
+const std::vector<std::string>& StringTokenizer::getTokens() const {
+   return m_tokens;
+}

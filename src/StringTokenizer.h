@@ -57,6 +57,12 @@ class StringTokenizer
        * @return the number of tokens
        */
       std::size_t countTokens() const;
+
+      /**
+       * Retrieve list of tokens found
+       * @return the list of parsed tokens
+       */
+      const std::vector<std::string>& getTokens() const;
    
 
    
