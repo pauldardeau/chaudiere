@@ -159,7 +159,7 @@ void TestStrUtils::testParseInt() {
    // try largest (absolute value) signed value for 32 bits
    require(2147483647 == StrUtils::parseInt("2147483647"),
            "large positive int");
-   require(-2147483648 == StrUtils::parseInt("-2147483648"),
+   require(-2147483648UL == StrUtils::parseInt("-2147483648"),
            "negative int with large absolute value");
 
    requireException("NumberFormatException", new ParseIntRunner(""),
@@ -187,7 +187,7 @@ void TestStrUtils::testParseLong() {
    // try largest (absolute value) signed value for 32 bits
    require(2147483647L == StrUtils::parseLong("2147483647"),
            "large positive long");
-   require(-2147483648L == StrUtils::parseLong("-2147483648"),
+   require(-2147483648UL == StrUtils::parseLong("-2147483648"),
            "negative long with large absolute value");
 
    requireException("NumberFormatException", new ParseLongRunner(""),
