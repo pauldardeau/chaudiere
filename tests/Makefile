@@ -5,7 +5,7 @@ CC = c++
 CC_OPTS = -c -pthread -I../src -I../../poivre
 
 EXE_NAME = test_chaudiere
-LIB_NAMES = ../src/chaudiere.so ../../poivre/poivre.so
+LIB_NAMES = ../src/libchaudiere.so ../../poivre/poivre.so
 
 OBJS = MockSocket.o \
 TestAutoPointer.o \
@@ -37,7 +37,7 @@ clean :
 	rm -f $(EXE_NAME)
 	
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread
+	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@

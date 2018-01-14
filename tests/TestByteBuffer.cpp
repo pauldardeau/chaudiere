@@ -36,7 +36,7 @@ void TestByteBuffer::testSizeConstructor() {
 void TestByteBuffer::testCopyConstructor() {
    TEST_CASE("testCopyConstructor");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
@@ -52,7 +52,7 @@ void TestByteBuffer::testCopyConstructor() {
 void TestByteBuffer::testAssignmentOperator() {
    TEST_CASE("testAssignmentOperator");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
@@ -69,7 +69,7 @@ void TestByteBuffer::testAssignmentOperator() {
 void TestByteBuffer::testTake() {
    TEST_CASE("testTake");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
@@ -82,7 +82,7 @@ void TestByteBuffer::testTake() {
 void TestByteBuffer::testRelease() {
    TEST_CASE("testRelease");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
@@ -95,7 +95,7 @@ void TestByteBuffer::testRelease() {
 void TestByteBuffer::testData() {
    TEST_CASE("testData");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
@@ -107,7 +107,7 @@ void TestByteBuffer::testData() {
 void TestByteBuffer::testSize() {
    TEST_CASE("testSize");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
@@ -119,7 +119,7 @@ void TestByteBuffer::testSize() {
 void TestByteBuffer::testClear() {
    TEST_CASE("testClear");
    std::size_t buffSize = 1024;
-   void* raw = ::malloc(buffSize);
+   char* raw = (char*) ::malloc(buffSize);
    ::memset(raw, 'x', buffSize);
    ByteBuffer b;
    b.take(raw, buffSize);
