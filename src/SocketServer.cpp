@@ -632,14 +632,13 @@ int SocketServer::runSocketServer() {
       }
 
       try {
+         RequestHandler* handler = handlerForSocket(socket);
          if (m_isThreaded && (NULL != m_threadPool)) {
-            RequestHandler* handler = handlerForSocket(socket);
             handler->setThreadPooling(true);
 
             // give it to the thread pool
             m_threadPool->addRequest(handler);
          } else {
-            RequestHandler* handler = handlerForSocket(socket);
             handler->run();
          }
       } catch (const BasicException& be) {
