@@ -12,7 +12,7 @@ namespace chaudiere
    class SocketRequest;
 
 /**
- * SocketServiceHandler is an interface for a handler the processes a SocketRequest
+ * SocketServiceHandler is an interface for a handler that processes a SocketRequest
  */
 class SocketServiceHandler
 {
