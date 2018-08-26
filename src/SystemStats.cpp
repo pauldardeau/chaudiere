@@ -11,12 +11,11 @@
 #include <kvm.h>
 #include <sys/param.h>
 #include <sys/user.h>
+#include <sys/sysctl.h>
 #endif
 
 #ifdef __linux__
 #include <sys/sysinfo.h>
-#else
-#include <sys/sysctl.h>
 #endif
 
 #include "SystemStats.h"
@@ -39,6 +38,7 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
       success = true;
    }
 #else
+#if defined(__FreeBSD__)
    struct timeval boottime;
    size_t len = sizeof(boottime);
    int mib[2] = { CTL_KERN, KERN_BOOTTIME };
@@ -53,6 +53,7 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
    
    success = true;
 #endif
+#endif
           
    return success;
 }
@@ -63,7 +64,7 @@ bool SystemStats::getLoadAverages(double& oneMinute,
                                   double& fiveMinute,
                                   double& fifteenMinute) {
    bool retrievedLoadAverages = false;
-   
+#ifndef __sun
    double load[3];
    const int numSamples = ::getloadavg(load, 3);
    
@@ -73,7 +74,7 @@ bool SystemStats::getLoadAverages(double& oneMinute,
       fifteenMinute = load[2];
       retrievedLoadAverages = true;
    }
-   
+#endif
    return retrievedLoadAverages;
 }
 
@@ -89,6 +90,7 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
    
 #ifndef __linux__
 #ifndef __NetBSD__
+#ifndef __sun
    int rc;
    size_t length = 0;
    static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
@@ -122,6 +124,7 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
          ::free(proc_list);
       }
    }
+#endif
 #endif
 #endif
       

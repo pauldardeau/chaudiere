@@ -231,6 +231,14 @@ std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPat
    if (dir != NULL) {
       while ((entry = ::readdir(dir)) != NULL) {
          bool entryIsFile = false;
+#if defined(__sun)
+         struct stat s;
+         stat(entry->d_name, &s);
+         if (s.st_mode & S_IFDIR) {
+         } else {
+            entryIsFile = true;
+         }
+#else
          if (entry->d_type == DT_REG) {
             entryIsFile = true;
          } else if (entry->d_type == DT_UNKNOWN) {
@@ -241,7 +249,7 @@ std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPat
                entryIsFile = S_ISREG(stbuf.st_mode);
             }
          }
-
+#endif
          if (entryIsFile) {
             listFiles.push_back(std::string(entry->d_name));
          }
