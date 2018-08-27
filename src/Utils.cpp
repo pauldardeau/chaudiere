@@ -13,7 +13,7 @@ bool Utils::WriteFile(const string& filePath, const ByteBuffer& buffer) {
    if (f != NULL) {
       size_t bytesWritten = 0;
       if (buffer.size() > 0) {
-         bytesWritten = fwrite(buffer.const_data(), buffer.size(), 1, f);
+         bytesWritten = fwrite(buffer.const_data(), 1, buffer.size(), f);
          fflush(f);
       }
       fclose(f);
