@@ -60,13 +60,14 @@ using namespace chaudiere;
 
 std::string OSUtils::getCurrentDirectory() {
    std::string currentDirectory;
+   char currentDir[2048];
+   memset(currentDir, 0, sizeof(currentDir));
    
    // this call to getcwd will allocate memory buffer
-   char* buffCurrentDir = ::getcwd(NULL, 0);
+   char* buffCurrentDir = ::getcwd(currentDir, sizeof(currentDir));
    
    if (buffCurrentDir != NULL) {
       currentDirectory = buffCurrentDir;
-      free(buffCurrentDir);
    }
    
    return currentDirectory; 
