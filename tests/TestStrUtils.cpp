@@ -548,6 +548,8 @@ void TestStrUtils::testStripTrailing() {
    std::string withTrailingPunctuation = "now is the time,";
    std::string leadingAndTrailing = "...now is the time...";
    std::string alreadyTrimmed = "now is the time";
+   std::string onlyTrimChars = "xxxxxxxxxx";
+   const std::string empty = "";
    
    requireStringEquals(target, StrUtils::stripTrailing(withSingleTrailingSpace,
                                                        ' '),
@@ -562,6 +564,8 @@ void TestStrUtils::testStripTrailing() {
            "trimmed string has leading strip chars");
    requireStringEquals(target, StrUtils::stripTrailing(alreadyTrimmed, ' '),
                        "no alteration of already trimmed string");
+   requireStringEquals(empty, StrUtils::stripTrailing(onlyTrimChars, 'x'),
+                       "string containing only char to strip");
 }
 
 //******************************************************************************
