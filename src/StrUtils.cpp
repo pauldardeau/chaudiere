@@ -247,9 +247,10 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) {
    }
     
    ++newLength;
+   const std::string::size_type newLengthUnsigned = newLength;
     
    // Did we not have any characters to strip?
-   if (newLength == stringLen) {
+   if (newLengthUnsigned == stringLen) {
       return s;
    }
    
