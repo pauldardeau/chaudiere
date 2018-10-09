@@ -38,6 +38,9 @@ public:
     * @param runnable
     */
    Thread(Mutex* mutexAlive, Runnable* runnable);
+
+   Thread(const Thread&) = delete;
+   Thread& operator=(const Thread&) = delete;
    
    /**
     * Destructor
@@ -177,11 +180,6 @@ private:
    Mutex* m_mutexAlive; // weak
    ThreadCompletionObserver* m_threadCompletionObserver;
    KeyValuePairs m_attributes;
-   
-   // disallow copying
-   Thread(const Thread&);
-   Thread& operator=(const Thread&);
-
 };
 
 }

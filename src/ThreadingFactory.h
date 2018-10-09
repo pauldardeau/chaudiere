@@ -37,6 +37,9 @@ public:
     * Constructs a ThreadingFactory instance
     */
    ThreadingFactory() {}
+
+   ThreadingFactory(const ThreadingFactory&) = delete;
+   ThreadingFactory& operator=(const ThreadingFactory&) = delete;
    
    /**
     * Destructor
@@ -84,10 +87,6 @@ public:
    
 
 private:
-   // disallow copies
-   ThreadingFactory(const ThreadingFactory&);
-   ThreadingFactory& operator=(const ThreadingFactory&);
-
    static ThreadingFactory* threadingFactoryInstance;
 
 };

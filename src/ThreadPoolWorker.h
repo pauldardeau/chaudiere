@@ -33,6 +33,9 @@ class ThreadPoolWorker : public Runnable
       ThreadPoolWorker(ThreadingFactory* threadingFactory,
                        ThreadPoolQueue& queue,
                        int workerId);
+
+      ThreadPoolWorker(const ThreadPoolWorker&) = delete;
+      ThreadPoolWorker& operator=(const ThreadPoolWorker&) = delete;
                        
       /**
        * Destructor
@@ -61,11 +64,6 @@ class ThreadPoolWorker : public Runnable
       ThreadPoolQueue& m_poolQueue;
       int m_workerId;
       bool m_isRunning;
-      
-      // disallow copies
-      ThreadPoolWorker(const ThreadPoolWorker&);
-      ThreadPoolWorker& operator=(const ThreadPoolWorker&);
-
 };
 
 }

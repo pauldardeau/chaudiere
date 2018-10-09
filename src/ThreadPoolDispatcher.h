@@ -23,6 +23,9 @@ public:
     * Default constructor
     */
    ThreadPoolDispatcher() {}
+
+   ThreadPoolDispatcher(const ThreadPoolDispatcher&) = delete;
+   ThreadPoolDispatcher& operator=(const ThreadPoolDispatcher&) = delete;
    
    /**
     * Destructor
@@ -49,12 +52,6 @@ public:
     */
    virtual bool addRequest(Runnable* runnableRequest) = 0;
    
-
-private:
-   // disallow copies
-   ThreadPoolDispatcher(const ThreadPoolDispatcher&);
-   ThreadPoolDispatcher& operator=(const ThreadPoolDispatcher&);
-
 };
 
 }

@@ -43,6 +43,9 @@ public:
    ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers,
               const std::string& name);
 
+   ThreadPool(const ThreadPool&) = delete;
+   ThreadPool& operator=(const ThreadPool&) = delete;
+
    /**
     * Destructor
     */
@@ -114,10 +117,6 @@ private:
    int m_workersCreated;
    bool m_isRunning;
    std::string m_name;
-   
-   // disallow copies
-   ThreadPool(const ThreadPool&);
-   ThreadPool& operator=(const ThreadPool&);
 };
 
 }

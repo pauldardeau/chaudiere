@@ -73,6 +73,9 @@ public:
     * @param logLevel
     */
    StdLogger(LogLevel logLevel);
+
+   StdLogger(const StdLogger&) = delete;
+   StdLogger& operator=(const StdLogger&) = delete;
    
    /**
     *
@@ -171,11 +174,6 @@ private:
    static const std::string prefixInfo;
    static const std::string prefixDebug;
    static const std::string prefixVerbose;
-   
-   // disallow copies
-   StdLogger(const StdLogger&);
-   StdLogger& operator=(const StdLogger&);
-
 };
 
 }

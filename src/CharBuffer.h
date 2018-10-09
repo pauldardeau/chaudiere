@@ -35,6 +35,9 @@ public:
          allocateBuffer(bufferSize);
       }
    }
+
+   CharBuffer(const CharBuffer&) = delete;
+   CharBuffer& operator=(const CharBuffer&) = delete;
    
    /**
     * Destructor
@@ -93,10 +96,6 @@ public:
 private:
    char* m_buffer;
    std::size_t m_bufferSize;
-
-   // disallow copies
-   CharBuffer(const CharBuffer& copy);
-   CharBuffer& operator=(const CharBuffer& copy);
 };
 
 }

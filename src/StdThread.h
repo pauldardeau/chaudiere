@@ -34,6 +34,9 @@ public:
    explicit StdThread(Runnable* runnable);
 
    explicit StdThread(Runnable* runnable, const std::string& name);
+
+   StdThread(const StdThread&) = delete;
+   StdThread& operator=(const StdThread&) = delete;
    
    /**
     * Destructor
@@ -73,14 +76,9 @@ public:
    
    
 private:
-   // disallow copying
-   StdThread(const StdThread&);
-   StdThread& operator=(const StdThread&);
-
    std::thread m_thread;
    StdMutex m_mutexAlive;
    std::string m_name;
-   
 };
 
 }

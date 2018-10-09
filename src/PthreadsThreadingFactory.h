@@ -21,7 +21,10 @@ public:
     * Constructs a PthreadsThreadingFactory instance
     */
    PthreadsThreadingFactory();
-   
+
+   PthreadsThreadingFactory(const PthreadsThreadingFactory&) = delete;
+   PthreadsThreadingFactory& operator=(const PthreadsThreadingFactory&) = delete;
+
    /**
     * Destructor
     */
@@ -67,11 +70,6 @@ public:
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
              const std::string& name);
    
-private:
-   // disallow copies
-   PthreadsThreadingFactory(const PthreadsThreadingFactory&);
-   PthreadsThreadingFactory& operator=(const PthreadsThreadingFactory&);
-
 };
 
 }

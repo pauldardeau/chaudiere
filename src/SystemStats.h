@@ -19,6 +19,9 @@ public:
     * Default constructor
     */
    SystemStats();
+
+   SystemStats(const SystemStats&) = delete;
+   SystemStats& operator=(const SystemStats&) = delete;
    
    /**
     * Destructor
@@ -50,13 +53,6 @@ public:
     */
    static bool getNumberProcesses(int& numberProcesses);
 
-
-private:   
-   // disallow copies
-   SystemStats(const SystemStats& copy);
-   SystemStats& operator=(const SystemStats& copy);
-   
-   
 };
 
 }

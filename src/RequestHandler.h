@@ -19,10 +19,6 @@ namespace chaudiere
 class RequestHandler : public Runnable
 {
 private:
-   // disallow copies
-   RequestHandler(const RequestHandler&);
-   RequestHandler& operator=(const RequestHandler&);
-
    Socket* m_socket;
    SocketRequest* m_socketRequest;
    bool m_isThreadPooling;
@@ -42,6 +38,9 @@ public:
     * @see Socket()
     */
    RequestHandler(Socket* socket);
+
+   RequestHandler(const RequestHandler&) = delete;
+   RequestHandler& operator=(const RequestHandler&) = delete;
    
    /**
     * Destructor

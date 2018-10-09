@@ -28,7 +28,10 @@ public:
     * @see ThreadingFactory()
     */
    explicit ThreadPoolQueue(ThreadingFactory* threadingFactory);
-   
+
+   ThreadPoolQueue(const ThreadPoolQueue&) = delete;
+   ThreadPoolQueue& operator=(const ThreadPoolQueue&) = delete;
+
    /**
     * Destructor
     */
@@ -80,11 +83,6 @@ private:
    ConditionVariable* m_condQueueNotEmpty;
    bool m_isInitialized;
    bool m_isRunning;
-
-   // disallow copies
-   ThreadPoolQueue(const ThreadPoolQueue&);
-   ThreadPoolQueue& operator=(const ThreadPoolQueue&);
-
 };
 
 }

@@ -20,6 +20,10 @@ class FileLogger : public Logger
 public:
    FileLogger(const std::string& filePath);
    FileLogger(const std::string& filePath, LogLevel logLevel);
+
+   FileLogger(const FileLogger&) = delete;
+   FileLogger& operator=(const FileLogger&) = delete;
+
    virtual ~FileLogger();
    
    virtual LogLevel getLogLevel() const;
@@ -51,11 +55,6 @@ private:
    static const std::string prefixInfo;
    static const std::string prefixDebug;
    static const std::string prefixVerbose;
-   
-   // disallow copies
-   FileLogger(const FileLogger&);
-   FileLogger& operator=(const FileLogger&);
-
 };
 
 }

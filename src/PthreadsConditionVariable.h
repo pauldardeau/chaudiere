@@ -24,6 +24,9 @@ public:
    PthreadsConditionVariable();
 
    PthreadsConditionVariable(const std::string& name);
+
+   PthreadsConditionVariable(const PthreadsConditionVariable&) = delete;
+   PthreadsConditionVariable& operator=(const PthreadsConditionVariable&) = delete;
    
    /**
     * Destructor
@@ -52,10 +55,6 @@ public:
 
    
 private:
-   // disallow copies
-   PthreadsConditionVariable(const PthreadsConditionVariable&);
-   PthreadsConditionVariable& operator=(const PthreadsConditionVariable&);
-
    pthread_cond_t m_cond;
    bool m_initialized;
    std::string m_name;

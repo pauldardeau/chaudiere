@@ -24,6 +24,9 @@ public:
    StdConditionVariable();
 
    StdConditionVariable(const std::string& name);
+
+   StdConditionVariable(const StdConditionVariable&) = delete;
+   StdConditionVariable& operator=(const StdConditionVariable&) = delete;
    
    /**
     * Destructor
@@ -52,10 +55,6 @@ public:
    
 
 private:
-   // disallow copies
-   StdConditionVariable(const StdConditionVariable&);
-   StdConditionVariable& operator=(const StdConditionVariable&);
-
    std::condition_variable m_cond;
    std::string m_name;
 };

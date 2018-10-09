@@ -21,6 +21,9 @@ public:
     * Constructs a StdThreadingFactory instance
     */
    StdThreadingFactory();
+
+   StdThreadingFactory(const StdThreadingFactory&) = delete;
+   StdThreadingFactory& operator=(const StdThreadingFactory&) = delete;
    
    /**
     * Destructor
@@ -66,11 +69,6 @@ public:
    */
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
              const std::string& name); 
-
-private:
-   // disallow copies
-   StdThreadingFactory(const StdThreadingFactory&);
-   StdThreadingFactory& operator=(const StdThreadingFactory&);
 
 };
 

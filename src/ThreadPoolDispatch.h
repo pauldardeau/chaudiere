@@ -21,6 +21,9 @@ public:
     * Default constructor
     */
    ThreadPoolDispatch();
+
+   ThreadPoolDispatch(const ThreadPoolDispatch&) = delete;
+   ThreadPoolDispatch& operator=(const ThreadPoolDispatch&) = delete;
    
    /**
     * Destructor
@@ -52,11 +55,6 @@ public:
    
 private:
    bool m_isRunning;
-
-   // disallow copies
-   ThreadPoolDispatch(const ThreadPoolDispatch&);
-   ThreadPoolDispatch& operator=(const ThreadPoolDispatch&);
-   
 };
 
 }

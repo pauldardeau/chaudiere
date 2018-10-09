@@ -27,6 +27,10 @@ class PthreadsThread : public Thread
       explicit PthreadsThread(const std::string& name);
       explicit PthreadsThread(Runnable* runnable);
       explicit PthreadsThread(Runnable* runnable, const std::string& name);
+
+      PthreadsThread(const PthreadsThread&) = delete;
+      PthreadsThread& operator=(const PthreadsThread&) = delete;
+
       virtual ~PthreadsThread();
 
       virtual bool start();
@@ -38,10 +42,6 @@ class PthreadsThread : public Thread
 
 
    private:
-      // disallow copying
-      PthreadsThread(const PthreadsThread&);
-      PthreadsThread& operator=(const PthreadsThread&);
-
       static void* runThread(void* pArgs);
       PthreadsMutex         m_mutexAlive;
       PthreadsMutex         m_mutexExitCode;
