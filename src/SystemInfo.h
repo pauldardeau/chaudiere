@@ -25,6 +25,12 @@ public:
     * @param copy the source of the copy
     */
    SystemInfo(const SystemInfo& copy);
+
+   /**
+    * Move constructor
+    * @param move the source of the move
+    */
+   SystemInfo(const SystemInfo&& move);
    
    /**
     * Destructor
@@ -32,12 +38,19 @@ public:
    ~SystemInfo();
    
    /**
-    * Copy operator
+    * Copy assignment operator
     * @param copy the source of the copy
     * @return reference to the updated instance
     */
    SystemInfo& operator=(const SystemInfo& copy);
-   
+  
+   /**
+    * Move assignment operator
+    * @param move the source of the copy
+    * @return reference to the updated instance
+    */
+   SystemInfo& operator=(const SystemInfo&& move);
+ 
    /**
     * Retrieves the system name (sysname)
     * @return the system name

@@ -32,8 +32,44 @@ IniReader::IniReader(const std::string& iniFile) :
 
 //******************************************************************************
 
+IniReader::IniReader(const IniReader& copy) :
+   m_iniFile(copy.m_iniFile),
+   m_fileContents(copy.m_fileContents) {
+}
+
+//******************************************************************************
+
+IniReader::IniReader(const IniReader&& move) :
+   m_iniFile(std::move(move.m_iniFile)),
+   m_fileContents(std::move(move.m_fileContents)) {
+}
+
+//******************************************************************************
+
 IniReader::~IniReader() {
    Logger::logInstanceDestroy("IniReader");
+}
+
+//******************************************************************************
+
+IniReader& IniReader::operator=(const IniReader& copy) {
+   if (this == &copy) {
+      return *this;
+   }
+
+   m_iniFile = copy.m_iniFile;
+   m_fileContents = copy.m_fileContents;
+
+   return *this;
+}
+
+//******************************************************************************
+
+IniReader& IniReader::operator=(const IniReader&& move) {
+   m_iniFile = std::move(move.m_iniFile);
+   m_fileContents = std::move(move.m_fileContents);
+
+   return *this;
 }
 
 //******************************************************************************

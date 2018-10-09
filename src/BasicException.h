@@ -39,7 +39,15 @@ public:
     * @param copy the source of the copy
     */
    BasicException(const BasicException& copy) :
-      m_what( copy.m_what ) {
+      m_what(copy.m_what) {
+   }
+
+   /**
+    * Move constructor
+    * @param move the source of the move
+    */
+   BasicException(const BasicException&& move) :
+      m_what(std::move(move.m_what)) {
    }
 
    /**
@@ -56,7 +64,7 @@ public:
    }
 
    /**
-    * Copy operator
+    * Assignment copy operator
     * @param copy the source of the copy
     * @return reference to the updated instance
     */
@@ -67,6 +75,16 @@ public:
         
       m_what = copy.m_what;
         
+      return *this;
+   }
+
+   /**
+    * Assignment move operator
+    * @param move the source of the move
+    * @return reference to the updated instance
+    */
+   BasicException& operator=(const BasicException&& move) {
+      m_what = std::move(move.m_what);
       return *this;
    }
 

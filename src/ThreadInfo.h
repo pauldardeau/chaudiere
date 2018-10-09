@@ -35,6 +35,15 @@ public:
       threadId(copy.threadId),
       isBusy(copy.isBusy) {
    }
+
+   /**
+    * Move constructor
+    * @param move the source of the move
+    */
+   ThreadInfo(const ThreadInfo&& move) :
+      threadId(std::move(move.threadId)),
+      isBusy(move.isBusy) {
+   }
    
    /**
     * Destructor
@@ -57,7 +66,18 @@ public:
       
       return *this;
    }
-   
+
+   /**
+    * Assignment move operator
+    * @param move the source of the move
+    * @return reference to the target of the move
+    */
+   ThreadInfo& operator=(const ThreadInfo&& move) {
+      threadId = std::move(move.threadId);
+      isBusy = move.isBusy;
+      return *this;
+   }
+
 };
 
 }

@@ -22,6 +22,9 @@ public:
     * Destructor
     */
    virtual ~Mutex() {}
+
+   Mutex(const Mutex&) = delete;
+   Mutex& operator=(const Mutex&) = delete;
    
    /**
     * Unlocks the mutex
@@ -49,12 +52,6 @@ public:
 
    virtual const std::string& getName() const = 0;
 
-   
-private:
-   // copying not allowed
-   Mutex(const Mutex&);
-   Mutex& operator=(const Mutex&);   
-   
 };
 
 }

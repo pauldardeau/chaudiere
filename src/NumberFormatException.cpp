@@ -29,6 +29,13 @@ NumberFormatException::NumberFormatException(const NumberFormatException& copy) 
 
 //******************************************************************************
 
+NumberFormatException::NumberFormatException(const NumberFormatException&& move) :
+   BasicException(move) {
+   Logger::logInstanceCreate("NumberFormatException");
+}
+
+//******************************************************************************
+
 NumberFormatException::~NumberFormatException() throw () {
    Logger::logInstanceDestroy("NumberFormatException");
 }
@@ -42,6 +49,13 @@ NumberFormatException& NumberFormatException::operator=(const NumberFormatExcept
    
    BasicException::operator=(copy);
    
+   return *this;
+}
+
+//******************************************************************************
+
+NumberFormatException& NumberFormatException::operator=(const NumberFormatException&& move) {
+   BasicException::operator=(move);
    return *this;
 }
 

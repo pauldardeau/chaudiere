@@ -39,6 +39,18 @@ SystemInfo::SystemInfo(const SystemInfo& copy) :
 
 //******************************************************************************
 
+SystemInfo::SystemInfo(const SystemInfo&& move) :
+   m_sysName(std::move(move.m_sysName)),
+   m_nodeName(std::move(move.m_nodeName)),
+   m_release(std::move(move.m_release)),
+   m_version(std::move(move.m_version)),
+   m_machine(std::move(move.m_machine)),
+   m_retrievedSystemInfo(std::move(move.m_retrievedSystemInfo)) {
+   Logger::logInstanceCreate("SystemInfo");
+}
+
+//******************************************************************************
+
 SystemInfo::~SystemInfo() {
    Logger::logInstanceDestroy("SystemInfo");
 }
@@ -46,7 +58,7 @@ SystemInfo::~SystemInfo() {
 //******************************************************************************
 
 SystemInfo& SystemInfo::operator=(const SystemInfo& copy) {
-   if (this ==&copy) {
+   if (this == &copy) {
       return *this;
    }
    
@@ -57,6 +69,19 @@ SystemInfo& SystemInfo::operator=(const SystemInfo& copy) {
    m_machine = copy.m_machine;
    m_retrievedSystemInfo = copy.m_retrievedSystemInfo;
    
+   return *this;
+}
+
+//******************************************************************************
+
+SystemInfo& SystemInfo::operator=(const SystemInfo&& move) {
+   m_sysName = std::move(move.m_sysName);
+   m_nodeName = std::move(move.m_nodeName);
+   m_release = std::move(move.m_release);
+   m_version = std::move(move.m_version);
+   m_machine = std::move(move.m_machine);
+   m_retrievedSystemInfo = std::move(move.m_retrievedSystemInfo);
+
    return *this;
 }
 

@@ -34,6 +34,9 @@ public:
     */
    ~PthreadsMutex();
 
+   PthreadsMutex(const PthreadsMutex&) = delete;
+   PthreadsMutex& operator=(const PthreadsMutex&) = delete;
+
    /**
     */
    void initialize();
@@ -66,8 +69,7 @@ public:
     * Retrieves the primitive data type for the underlying platform
     * @return the platform's primitive data type for the mutex
     */
-   pthread_mutex_t& getPlatformPrimitive()
-   {
+   pthread_mutex_t& getPlatformPrimitive() {
       return m_mutex;
    }
    
@@ -79,10 +81,6 @@ public:
 
     
 private:
-   // copying not allowed
-   PthreadsMutex(const PthreadsMutex&);
-   PthreadsMutex& operator=(const PthreadsMutex&);
-
    pthread_mutex_t m_mutex;
    std::string m_mutexName;
    bool m_haveValidMutex;

@@ -28,12 +28,18 @@ public:
     * @throw BasicException
     */
    explicit IniReader(const std::string& iniFile);
+
+   IniReader(const IniReader& copy);
+   IniReader(const IniReader&& move);
    
    /**
     * Destructor
     */
    virtual ~IniReader();
-   
+  
+   IniReader& operator=(const IniReader& copy);
+   IniReader& operator=(const IniReader&& move);
+ 
    /**
     * Reads the key/value pairs of the specified section
     * @param section the name of the section to read

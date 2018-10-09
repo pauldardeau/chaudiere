@@ -98,19 +98,19 @@ namespace chaudiere
        * @param copy the source of the copy
        */
       DateTime(const DateTime& copy);
-      
+
       /**
        * Destructor
        */
       ~DateTime() {}
       
       /**
-       * Copy operator
+       * Assignment copy operator
        * @param copy the source of the copy
        * @return reference to the destination of the copy
        */
       DateTime& operator=(const DateTime& copy);
-      
+
       /**
        * Equality operator
        * @param compare the DateTime instance to test for equality

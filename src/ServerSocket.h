@@ -57,6 +57,9 @@ class ServerSocket
        */
       ~ServerSocket();
 
+      ServerSocket(const ServerSocket&) = delete;
+      ServerSocket& operator=(const ServerSocket&) = delete;
+
       /**
        * Accepts a new client socket connection
        * @see Socket()
@@ -72,10 +75,6 @@ class ServerSocket
 
    
    private:
-      // copying not allowed
-      ServerSocket(const ServerSocket&);
-      ServerSocket& operator=(const ServerSocket&);
-
       /**
        * Creates the server socket and binds on the specified port
        * @return boolean indicating whether the creation succeeded

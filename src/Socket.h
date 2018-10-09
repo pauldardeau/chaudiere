@@ -54,6 +54,9 @@ public:
     *
     */
    ~Socket();
+
+   Socket(const Socket&) = delete;
+   Socket& operator=(const Socket&) = delete;
     
    /**
     *
@@ -240,10 +243,6 @@ protected:
 
     
 private:
-   // copying not allowed
-   Socket(const Socket&);
-   Socket& operator=(const Socket&);
-
    SocketCompletionObserver* m_completionObserver;
    std::string m_lineInputBuffer;
    std::string m_serverAddress;

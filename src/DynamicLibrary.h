@@ -32,6 +32,9 @@ class DynamicLibrary
        */
       ~DynamicLibrary();
 
+      DynamicLibrary(const DynamicLibrary&) = delete;
+      DynamicLibrary& operator=(const DynamicLibrary&) = delete;
+
       /**
        * Retrieves a function pointer for the specified function name
        * @param functionName the name of the function in the dynamic library
@@ -56,10 +59,6 @@ class DynamicLibrary
       typedef void* HDLL;
       HDLL m_hDll;
       
-      // copies not allowed
-      DynamicLibrary(const DynamicLibrary&);
-      DynamicLibrary& operator=(const DynamicLibrary&);
-
 };
 
 }

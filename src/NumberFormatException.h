@@ -32,6 +32,12 @@ public:
     * @param copy the source of the copy
     */
    NumberFormatException(const NumberFormatException& copy);
+
+   /**
+    * Move constructor
+    * @param move the source of the move
+    */
+   NumberFormatException(const NumberFormatException&& move);
    
    /**
     * Destructor
@@ -47,11 +53,18 @@ public:
    }
    
    /**
-    * Copy operator
+    * Assignment copy operator
     * @param copy the source of the copy
     * @return reference to the updated reference
     */
    NumberFormatException& operator=(const NumberFormatException& copy);
+
+   /**
+    * Assignment move operator
+    * @param move the source of the move
+    * @return reference to the updated reference
+    */
+   NumberFormatException& operator=(const NumberFormatException&& move);
    
 };
 

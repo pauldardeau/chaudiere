@@ -37,6 +37,15 @@ ServiceInfo::ServiceInfo(const ServiceInfo& copy) :
 
 //******************************************************************************
 
+ServiceInfo::ServiceInfo(const ServiceInfo&& move) :
+   m_serviceName(std::move(move.m_serviceName)),
+   m_host(std::move(move.m_host)),
+   m_port(move.m_port),
+   m_persistentConnection(move.m_persistentConnection) {
+}
+
+//******************************************************************************
+
 ServiceInfo::~ServiceInfo() {
 }
 
@@ -52,6 +61,16 @@ ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy) {
    m_port = copy.m_port;
    m_persistentConnection = copy.m_persistentConnection;
    
+   return *this;
+}
+
+//******************************************************************************
+
+ServiceInfo& ServiceInfo::operator=(const ServiceInfo&& move) {
+   m_serviceName = std::move(move.m_serviceName);
+   m_host = std::move(move.m_host);
+   m_port = move.m_port;
+   m_persistentConnection = move.m_persistentConnection;
    return *this;
 }
 

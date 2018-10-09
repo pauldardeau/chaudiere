@@ -35,6 +35,12 @@ namespace chaudiere
        * @param copy the source of the copy
        */
       OptionParser(const OptionParser& copy);
+
+      /**
+       * Move constructor
+       * @param move the source of the move
+       */
+      OptionParser(const OptionParser&& move);
       
       /**
        * Destructor
@@ -42,11 +48,18 @@ namespace chaudiere
       ~OptionParser() {}
    
       /**
-       * Copy operator
+       * Assignment copy operator
        * @param copy the source of the copy
        * @return reference to the target of the copy
        */
       OptionParser& operator=(const OptionParser& copy);
+
+      /**
+       * Assignment move operator
+       * @param move the source of the move
+       * @return reference to the target of the move
+       */
+      OptionParser& operator=(const OptionParser&& move);
       
       /**
        * Adds an option that simply flags a feature/capability as

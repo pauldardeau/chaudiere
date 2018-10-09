@@ -32,6 +32,9 @@ public:
     * Destructor
     */
    ~SocketRequest();
+
+   SocketRequest(const SocketRequest&) = delete;
+   SocketRequest& operator=(const SocketRequest&) = delete;
    
    /**
     * Services the socket using the specified handler
@@ -61,9 +64,6 @@ private:
    Socket* m_socket;
    SocketServiceHandler* m_handler;
 
-   // copies not allowed
-   SocketRequest(const SocketRequest&);
-   SocketRequest& operator=(const SocketRequest&);
 };
 
 }

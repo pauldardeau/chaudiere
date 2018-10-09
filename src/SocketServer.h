@@ -39,6 +39,9 @@ class SocketServer
        */
       virtual ~SocketServer();
 
+      SocketServer(const SocketServer&) = delete;
+      SocketServer& operator=(const SocketServer&) = delete;
+
       /**
        *
        * @param socket
@@ -211,10 +214,6 @@ class SocketServer
       int m_socketSendBufferSize;
       int m_socketReceiveBufferSize;
       int m_minimumCompressionSize;
-
-      // copies not allowed
-      SocketServer(const SocketServer&);
-      SocketServer& operator=(const SocketServer&);
 
 };
 

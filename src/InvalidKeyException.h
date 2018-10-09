@@ -27,6 +27,12 @@ public:
     * @param copy the source of the copy
     */
    InvalidKeyException(const InvalidKeyException& copy);
+
+   /**
+    * Move constructor
+    * @param move the source of the move
+    */
+   InvalidKeyException(const InvalidKeyException&& move);
    
    /**
     * Destructor
@@ -42,11 +48,18 @@ public:
    }
    
    /**
-    * Copy operator
+    * Assignment copy operator
     * @param copy the source of the copy
     * @return reference to the updated reference
     */
    InvalidKeyException& operator=(const InvalidKeyException& copy);
+
+   /**
+    * Assignment move operator
+    * @param move the source of the move
+    * @return reference to the updated reference
+    */
+   InvalidKeyException& operator=(const InvalidKeyException&& move);
    
    /**
     * Retrieves the name of the invalid key

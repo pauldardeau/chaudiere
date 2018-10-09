@@ -24,6 +24,14 @@ InvalidKeyException::InvalidKeyException(const InvalidKeyException& copy) :
 
 //******************************************************************************
 
+InvalidKeyException::InvalidKeyException(const InvalidKeyException&& move) :
+   BasicException(move),
+   m_key(std::move(move.m_key)) {
+   Logger::logInstanceCreate("InvalidKeyException");
+}
+
+//******************************************************************************
+
 InvalidKeyException::~InvalidKeyException() throw () {
    Logger::logInstanceDestroy("InvalidKeyException");
 }
@@ -38,6 +46,14 @@ InvalidKeyException& InvalidKeyException::operator=(const InvalidKeyException& c
    BasicException::operator=(copy);
    m_key = copy.m_key;
    
+   return *this;
+}
+
+//******************************************************************************
+
+InvalidKeyException& InvalidKeyException::operator=(const InvalidKeyException&& move) {
+   BasicException::operator=(move);
+   m_key = std::move(move.m_key);
    return *this;
 }
 

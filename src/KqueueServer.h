@@ -41,6 +41,9 @@ public:
     * Destructor
     */
    ~KqueueServer();
+
+   KqueueServer(const KqueueServer&) = delete;
+   KqueueServer& operator=(const KqueueServer&) = delete;
    
    // KernelEventServer
    /**
@@ -111,10 +114,6 @@ private:
 #endif
    int m_kqfd;
    
-   // copying not allowed
-   KqueueServer(const KqueueServer&);
-   KqueueServer& operator=(const KqueueServer&);
-
 };
 
 }

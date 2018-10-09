@@ -42,6 +42,9 @@ public:
     * Destructor
     */
    ~EpollServer();
+
+   EpollServer(const EpollServer&) = delete;
+   EpollServer& operator=(const EpollServer&) = delete;
    
    // KernelEventServer
    /**
@@ -111,10 +114,6 @@ private:
 #endif
    int m_epfd;
    
-   // copying not allowed
-   EpollServer(const EpollServer&);
-   EpollServer& operator=(const EpollServer&);
-
 };
 
 }

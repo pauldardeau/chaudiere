@@ -305,7 +305,7 @@ DateTime::DateTime(const DateTime& copy) :
 }
 
 //******************************************************************************
-      
+
 DateTime& DateTime::operator=(const DateTime& copy) {
    if (this == &copy) {
       return *this;

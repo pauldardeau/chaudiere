@@ -34,6 +34,9 @@ public:
     * Destructor
     */
    ~StdMutex();
+
+   StdMutex(const StdMutex&) = delete;
+   StdMutex& operator=(const StdMutex&) = delete;
    
    /**
     *
@@ -77,11 +80,7 @@ public:
    
    
 private:
-   // copying not allowed
-   StdMutex(const StdMutex&);
-   StdMutex& operator=(const StdMutex&);
-
-   std::mutex  m_mutex;
+   std::mutex m_mutex;
    std::string m_mutexName;
    bool m_isLocked;
    
