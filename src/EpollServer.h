@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_EPOLLSERVER_H
 #define CHAUDIERE_EPOLLSERVER_H
 
+#include <memory>
 #include "KernelEventServer.h"
 
 
@@ -54,7 +55,7 @@ public:
     * @param maxConnections
     * @return
     */
-   virtual bool init(SocketServiceHandler* socketServiceHandler,
+   virtual bool init(std::unique_ptr<SocketServiceHandler>& socketServiceHandler,
                      int serverPort,
                      int maxConnections);
    

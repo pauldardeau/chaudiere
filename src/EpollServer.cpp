@@ -11,6 +11,7 @@
 #include "EpollServer.h"
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -53,7 +54,7 @@ EpollServer::~EpollServer() {
 
 //******************************************************************************
 
-bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
+bool EpollServer::init(unique_ptr<SocketServiceHandler>& socketServiceHandler,
                        int serverPort,
                        int maxConnections) {
 #ifndef EPOLL_SUPPORT

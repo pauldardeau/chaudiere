@@ -22,7 +22,7 @@
 #include "ServerSocket.h"
 #include "BasicException.h"
 
-
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -30,7 +30,7 @@ using namespace chaudiere;
 KernelEventServer::KernelEventServer(Mutex& fdMutex,
                                      Mutex& hwmConnectionsMutex,
                                      const std::string& serverName) :
-   m_socketServiceHandler(NULL),
+   m_socketServiceHandler(nullptr),
    m_listBusyFlags(NULL),
    m_serverPort(0),
    m_maxConnections(0),
@@ -43,9 +43,6 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
 //******************************************************************************
 
 KernelEventServer::~KernelEventServer() {
-   
-   delete m_socketServiceHandler;
-   
    if (NULL != m_listBusyFlags) {
       ::free(m_listBusyFlags);
       m_listBusyFlags = NULL;
@@ -58,14 +55,14 @@ KernelEventServer::~KernelEventServer() {
 
 //******************************************************************************
 
-bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
+bool KernelEventServer::init(unique_ptr<SocketServiceHandler>& socketServiceHandler,
                              int serverPort,
                              int maxConnections) {
-   m_socketServiceHandler = socketServiceHandler;
+   m_socketServiceHandler = std::move(socketServiceHandler);
    m_serverPort = serverPort;
    m_maxConnections = maxConnections;
    
-   if (NULL == m_socketServiceHandler) {
+   if (nullptr == m_socketServiceHandler) {
       Logger::critical("no socket service handler set");
       return false;
    }
@@ -231,7 +228,8 @@ void KernelEventServer::run() {
                   Socket clientSocket(this, client_fd);
                   clientSocket.setUserIndex(index);
 
-                  SocketRequest socketRequest(&clientSocket, m_socketServiceHandler);
+                  SocketRequest socketRequest(&clientSocket,
+                                              m_socketServiceHandler.get());
 
                   try {
                      m_socketServiceHandler->serviceSocket(&socketRequest);

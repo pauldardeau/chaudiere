@@ -325,9 +325,9 @@ bool SocketServer::init(int port)
             if (!m_logLevel.empty()) {
                StrUtils::toLowerCase(m_logLevel);
                Logger::info(std::string("log level: ") + m_logLevel);
-               Logger* logger = Logger::getLogger();
+               shared_ptr<Logger> logger = Logger::getLogger();
                
-               if (logger != NULL) {
+               if (logger != nullptr) {
                   if (m_logLevel == CFG_LOGGING_CRITICAL) {
                      logger->setLogLevel(Critical);
                   } else if (m_logLevel == CFG_LOGGING_ERROR) {
@@ -681,10 +681,11 @@ int SocketServer::runKernelEventServer() {
          Logger::critical("no kernel event server available for platform");
          rc = 1;
       }
-      
+     
+      /* 
       if (m_kernelEventServer != NULL) {
          try {
-            SocketServiceHandler* serviceHandler = createSocketServiceHandler();
+            unique_ptr<SocketServiceHandler> serviceHandler(createSocketServiceHandler());
 
             if (m_kernelEventServer->init(serviceHandler, m_serverPort, MAX_CON)) {
                m_kernelEventServer->run();
@@ -701,6 +702,7 @@ int SocketServer::runKernelEventServer() {
             Logger::critical("unidentified exception running kernel event server");
          }
       }
+      */
    } else {
       Logger::critical("no threading factory configured");
       rc = 1;

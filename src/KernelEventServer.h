@@ -48,7 +48,7 @@ public:
     * @return
     * @see SocketServiceHandler()
     */
-   virtual bool init(SocketServiceHandler* socketServiceHandler,
+   virtual bool init(std::unique_ptr<SocketServiceHandler>& socketServiceHandler,
                      int serverPort,
                      int maxConnections);
                      
@@ -123,7 +123,7 @@ protected:
 
 
 private:
-   SocketServiceHandler* m_socketServiceHandler;
+   std::unique_ptr<SocketServiceHandler> m_socketServiceHandler;
    bool* m_listBusyFlags;
    int m_serverPort;
    int m_maxConnections;

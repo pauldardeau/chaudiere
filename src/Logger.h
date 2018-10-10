@@ -98,13 +98,13 @@ public:
     *
     * @param logger
     */
-   static void setLogger(Logger* logger);
+   static void setLogger(std::shared_ptr<Logger>& logger);
    
    /**
     *
     * @return
     */
-   static Logger* getLogger();
+   static std::shared_ptr<Logger> getLogger();
    
    /**
     *
@@ -188,7 +188,7 @@ public:
    
    
 private:
-   static Logger* loggerInstance;
+   static std::shared_ptr<Logger> loggerInstance;
    
 };
 

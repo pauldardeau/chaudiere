@@ -3,28 +3,28 @@
 
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
-Logger* Logger::loggerInstance = NULL;
+shared_ptr<Logger> Logger::loggerInstance(nullptr);
 
 //******************************************************************************
 
 void Logger::shutdown() {
-   if (NULL != loggerInstance) {
-      delete loggerInstance;
-      loggerInstance = NULL;
+   if (nullptr != loggerInstance) {
+      loggerInstance = nullptr;
    }
 }
 
 //******************************************************************************
 
-void Logger::setLogger(Logger* logger) {
+void Logger::setLogger(shared_ptr<Logger>& logger) {
    loggerInstance = logger;
 }
 
 //******************************************************************************
 
-Logger* Logger::getLogger() {
+shared_ptr<Logger> Logger::getLogger() {
    return loggerInstance;
 }
 

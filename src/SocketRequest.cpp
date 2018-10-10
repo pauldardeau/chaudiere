@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include "BasicException.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
