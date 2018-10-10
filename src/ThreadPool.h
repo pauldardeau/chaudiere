@@ -111,7 +111,7 @@ protected:
    
 private:
    ThreadingFactory* m_threadingFactory;
-   std::list<ThreadPoolWorker*> m_listWorkers;
+   std::list<std::unique_ptr<ThreadPoolWorker>> m_listWorkers;
    ThreadPoolQueue m_queue;
    int m_workerCount;
    int m_workersCreated;

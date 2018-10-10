@@ -67,11 +67,6 @@ ThreadPool::~ThreadPool() {
       stop();
    }
    
-   std::list<ThreadPoolWorker*>::iterator it;
-   for (it = m_listWorkers.begin(); it != m_listWorkers.end(); ++it) {
-       delete *it;
-   }
-   
    m_listWorkers.clear();
 }
 
@@ -80,10 +75,10 @@ ThreadPool::~ThreadPool() {
 bool ThreadPool::start() {
    for (int i = 0; i < m_workerCount; ++i) {
       ++m_workersCreated;
-      ThreadPoolWorker* worker =
-         new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
+      unique_ptr<ThreadPoolWorker> worker(
+         new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated));
       worker->start();
-      m_listWorkers.push_back(worker);
+      m_listWorkers.push_back(std::move(worker));
    }
 
    m_isRunning = true;
@@ -94,15 +89,11 @@ bool ThreadPool::start() {
 
 bool ThreadPool::stop() {
    m_queue.shutDown();
-  
-   std::list<ThreadPoolWorker*>::iterator it = m_listWorkers.begin();
-   const std::list<ThreadPoolWorker*>::const_iterator itEnd =
-      m_listWorkers.end();
  
-   for (; it != itEnd; it++) {
-      (*it)->stop();
+   for (unique_ptr<ThreadPoolWorker>& w : m_listWorkers) {
+      w->stop();
    }
-   
+
    m_isRunning = false;
    return true;
 }
@@ -153,14 +144,14 @@ void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
       for (int i = m_workerCount; i < newNumberWorkers; ++i) {
          ++m_workersCreated;
          ++m_workerCount;
-         ThreadPoolWorker* worker =
-            new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
+         unique_ptr<ThreadPoolWorker> worker(
+            new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated));
 
          if (m_isRunning) {
             worker->start();
          }
 
-         m_listWorkers.push_back(worker);
+         m_listWorkers.push_back(std::move(worker));
       }
    } else if (numberToAddOrDelete < 0) {  // removing?
       if (m_isRunning) {
