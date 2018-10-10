@@ -54,7 +54,7 @@ unique_ptr<ConditionVariable> StdThreadingFactory::createConditionVariable(const
 //******************************************************************************
 
 unique_ptr<ThreadPoolDispatcher> StdThreadingFactory::createThreadPoolDispatcher(int numberThreads, const std::string& name) {
-   return unique_ptr<ThreadPoolDispatcher>(new ThreadPool(this, numberThreads, name));
+   return unique_ptr<ThreadPoolDispatcher>(new ThreadPool(numberThreads, name));
 }
 
 //******************************************************************************

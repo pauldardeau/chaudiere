@@ -6,6 +6,7 @@
 #include "BasicException.h"
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -32,7 +33,7 @@ StdConditionVariable::~StdConditionVariable() {
 bool StdConditionVariable::wait(unique_ptr<Mutex>& mutex) {
    if (mutex) {
       StdMutex* stdMutex =
-         dynamic_cast<StdMutex*>(mutex);
+         dynamic_cast<StdMutex*>(mutex.get());
       
       if (stdMutex) {
          std::unique_lock<std::mutex> lock(stdMutex->getPlatformPrimitive());

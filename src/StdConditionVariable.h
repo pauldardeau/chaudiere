@@ -40,7 +40,7 @@ public:
     * @return
     * @see Mutex()
     */
-   virtual bool wait(unique_ptr<Mutex>& mutex);
+   virtual bool wait(std::unique_ptr<Mutex>& mutex);
    
    /**
     *
