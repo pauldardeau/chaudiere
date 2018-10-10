@@ -127,7 +127,7 @@ using namespace chaudiere;
 SocketServer::SocketServer(const std::string& serverName,
                            const std::string& serverVersion,
                            const std::string& configFilePath) :
-   m_kernelEventServer(NULL),
+   m_kernelEventServer(nullptr),
    m_serverSocket(nullptr),
    m_threadPool(nullptr),
    m_threadingFactory(nullptr),
@@ -502,10 +502,6 @@ SocketServer::~SocketServer() {
       m_serverSocket->close();
    }
    
-   if (m_kernelEventServer) {
-      delete m_kernelEventServer;
-   }
-
    if (m_threadPool) {
       m_threadPool->stop();
    }
@@ -655,16 +651,15 @@ int SocketServer::runKernelEventServer() {
          m_threadingFactory->createMutex("hwmConnectionsMutex"));
       
       if (m_kernelEventServer) {
-         delete m_kernelEventServer;
-         m_kernelEventServer = NULL;
+         m_kernelEventServer.reset();
       }
       
       if (KqueueServer::isSupportedPlatform()) {
-         m_kernelEventServer =
-            new KqueueServer(*mutexFD, *mutexHWMConnections);
+         m_kernelEventServer.reset(
+            new KqueueServer(*mutexFD, *mutexHWMConnections));
       } else if (EpollServer::isSupportedPlatform()) {
-         m_kernelEventServer =
-            new EpollServer(*mutexFD, *mutexHWMConnections);
+         m_kernelEventServer.reset(
+            new EpollServer(*mutexFD, *mutexHWMConnections));
       } else {
          Logger::critical("no kernel event server available for platform");
          rc = 1;

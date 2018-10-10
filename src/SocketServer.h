@@ -191,7 +191,7 @@ class SocketServer
 
 
    private:
-      KernelEventServer* m_kernelEventServer;
+      std::unique_ptr<KernelEventServer> m_kernelEventServer;
       std::unique_ptr<ServerSocket> m_serverSocket;
       std::unique_ptr<ThreadPoolDispatcher> m_threadPool;
       std::shared_ptr<ThreadingFactory> m_threadingFactory;
