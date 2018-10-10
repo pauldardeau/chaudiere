@@ -72,7 +72,7 @@ Socket* SocketRequest::getSocket() {
 //******************************************************************************
 
 void SocketRequest::requestComplete() {
-   if (NULL != m_socket) {
+   if (nullptr != m_socket) {
       m_socket->requestComplete();
    }
 }

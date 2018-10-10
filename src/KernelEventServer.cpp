@@ -31,7 +31,7 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
                                      Mutex& hwmConnectionsMutex,
                                      const std::string& serverName) :
    m_socketServiceHandler(nullptr),
-   m_listBusyFlags(NULL),
+   m_listBusyFlags(nullptr),
    m_serverPort(0),
    m_maxConnections(0),
    m_listenBacklog(10),
@@ -43,9 +43,9 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
 //******************************************************************************
 
 KernelEventServer::~KernelEventServer() {
-   if (NULL != m_listBusyFlags) {
+   if (nullptr != m_listBusyFlags) {
       ::free(m_listBusyFlags);
-      m_listBusyFlags = NULL;
+      m_listBusyFlags = nullptr;
    }
    
    if (-1 != m_listenerFD) {

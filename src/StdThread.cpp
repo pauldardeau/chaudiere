@@ -48,17 +48,17 @@ void StdThread::runThread(StdThread* thread)
 //******************************************************************************
 
 StdThread::StdThread() :
-   StdThread(NULL, "") {
+   StdThread(nullptr, "") {
 }
 
 StdThread::StdThread(const std::string& name) :
-   StdThread(NULL, name) {
+   StdThread(nullptr, name) {
 }
 
 //******************************************************************************
 
 StdThread::StdThread(Runnable* runnable) :
-   StdThread(NULL, "") {
+   StdThread(nullptr, "") {
 }
 
 StdThread::StdThread(Runnable* runnable, const std::string& name) :

@@ -32,13 +32,13 @@ unique_ptr<Mutex> StdThreadingFactory::createMutex(const std::string& name) {
 //******************************************************************************
 
 unique_ptr<Thread> StdThreadingFactory::createThread(const std::string& name) {
-   return createThread(NULL, name);
+   return createThread(nullptr, name);
 }
 
 //******************************************************************************
 
 unique_ptr<Thread> StdThreadingFactory::createThread(Runnable* runnable, const std::string& name) {
-   if (runnable != NULL) {
+   if (runnable != nullptr) {
       return unique_ptr<Thread>(new StdThread(runnable, name));
    } else {
       return unique_ptr<Thread>(new StdThread(name));

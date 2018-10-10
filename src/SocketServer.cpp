@@ -232,7 +232,7 @@ bool SocketServer::init(int port)
    
    m_serverPort = port;
 	
-   AutoPointer<SectionedConfigDataSource*> configDataSource(NULL);
+   AutoPointer<SectionedConfigDataSource*> configDataSource(nullptr);
    
    try {
       configDataSource.assign(getConfigDataSource());
@@ -581,7 +581,7 @@ int SocketServer::platformPointerSizeBits() const {
 //******************************************************************************
 
 void SocketServer::serviceSocket(SocketRequest* socketRequest) {
-   if (NULL != m_threadPool) {
+   if (nullptr != m_threadPool) {
       // Hand off the request to the thread pool for asynchronous processing
       RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->setThreadPooling(true);
@@ -616,7 +616,7 @@ int SocketServer::runSocketServer() {
 
       try {
          RequestHandler* handler = handlerForSocket(socket.get());
-         if (m_isThreaded && (NULL != m_threadPool)) {
+         if (m_isThreaded && (nullptr != m_threadPool)) {
             handler->setThreadPooling(true);
 
             // give it to the thread pool
@@ -645,7 +645,7 @@ int SocketServer::runKernelEventServer() {
    
    int rc = 0;
    
-   if (m_threadingFactory != NULL) {
+   if (m_threadingFactory != nullptr) {
       unique_ptr<Mutex> mutexFD(m_threadingFactory->createMutex("fdMutex"));
       unique_ptr<Mutex> mutexHWMConnections(
          m_threadingFactory->createMutex("hwmConnectionsMutex"));
@@ -666,7 +666,7 @@ int SocketServer::runKernelEventServer() {
       }
      
       /* 
-      if (m_kernelEventServer != NULL) {
+      if (m_kernelEventServer != nullptr) {
          try {
             unique_ptr<SocketServiceHandler> serviceHandler(createSocketServiceHandler());
 

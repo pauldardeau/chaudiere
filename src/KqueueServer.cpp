@@ -28,7 +28,7 @@ bool KqueueServer::isSupportedPlatform() {
 KqueueServer::KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) :
    KernelEventServer(fdMutex, hwmConnectionsMutex, "KqueueServer"),
 #ifdef KQUEUE_SUPPORT
-   m_events(NULL),
+   m_events(nullptr),
 #endif
    m_kqfd(-1) {
    Logger::logInstanceCreate("KqueueServer");
@@ -40,9 +40,9 @@ KqueueServer::~KqueueServer() {
    Logger::logInstanceDestroy("KqueueServer");
 
 #ifdef KQUEUE_SUPPORT
-   if (NULL != m_events) {
+   if (nullptr != m_events) {
       ::free(m_events);
-      m_events = NULL;
+      m_events = nullptr;
    }
 #endif
    
@@ -61,9 +61,9 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
 #endif
 
 #ifdef KQUEUE_SUPPORT
-   if (m_events != NULL) {
+   if (m_events != nullptr) {
       ::free(m_events);
-      m_events = NULL;
+      m_events = nullptr;
    }
    
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
@@ -82,9 +82,9 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
              getListenerSocketFileDescriptor(),
              EVFILT_READ,
              EV_ADD,
-             0, 0, NULL);
+             0, 0, nullptr);
       
-      if (::kevent(m_kqfd, &ev, 1, 0, 0, NULL) < 0) {
+      if (::kevent(m_kqfd, &ev, 1, 0, 0, nullptr) < 0) {
          Logger::critical("kevent failed for adding read filter");
          return false;
       } else {
@@ -102,7 +102,7 @@ int KqueueServer::getKernelEvents(int maxConnections) {
 #ifdef KQUEUE_SUPPORT
    const int numberEventsReturned =
       ::kevent(m_kqfd,
-               NULL, 0,
+               nullptr, 0,
                m_events, maxConnections,
                (struct timespec*) 0);
    if (-1 == numberEventsReturned) {
@@ -135,9 +135,9 @@ int KqueueServer::fileDescriptorForEventIndex(int eventIndex) {
 bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
-   EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_ADD, 0, 0, NULL);
+   EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_ADD, 0, 0, nullptr);
    
-   if (::kevent(m_kqfd, &ev, 1, NULL, 0, NULL) < 0) {
+   if (::kevent(m_kqfd, &ev, 1, nullptr, 0, nullptr) < 0) {
       Logger::critical("kevent failed adding read filter");
    } else {
       return true;
@@ -152,9 +152,9 @@ bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) {
 bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
-   EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+   EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
    
-   if (::kevent(m_kqfd, &ev, 1, NULL, 0, NULL) < 0) {
+   if (::kevent(m_kqfd, &ev, 1, nullptr, 0, nullptr) < 0) {
       Logger::warning("kevent failed to delete read filter");
       return false;
    } else {

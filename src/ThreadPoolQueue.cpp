@@ -29,16 +29,16 @@ ThreadPoolQueue::ThreadPoolQueue(shared_ptr<ThreadingFactory>& threadingFactory)
       m_mutex = m_threadingFactory->createMutex("ThreadPoolQueue");
       m_condQueueNotEmpty = m_threadingFactory->createConditionVariable("queue-not-empty");
          
-      if ((m_mutex != NULL) &&
-          (m_condQueueNotEmpty != NULL)) {
+      if ((m_mutex != nullptr) &&
+          (m_condQueueNotEmpty != nullptr)) {
          m_isInitialized = true;
          m_isRunning = true;
       } else {
          Logger::error("unable to initialize ThreadPoolQueue");
-         if (NULL == m_mutex) {
+         if (nullptr == m_mutex) {
             Logger::error("unable to create mutex");
          }
-         if (NULL == m_condQueueNotEmpty) {
+         if (nullptr == m_condQueueNotEmpty) {
             Logger::error("unable to create queue not empty condition variable");
          }
          printf("error: unable to initialize thread pool queue, aborting\n");
@@ -69,7 +69,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    }
 
    if (!runnableRequest) {
-      Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting NULL request");
+      Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting nullptr request");
       return false;
    }
   
@@ -107,14 +107,14 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
 Runnable* ThreadPoolQueue::takeRequest() {
    if (!m_isInitialized) {
       Logger::log(Warning, "ThreadPoolQueue::takeRequest queue not initialized");
-      return NULL;
+      return nullptr;
    }
 
    MutexLock lock(*m_mutex, "ThreadPoolQueue::takeRequest");
 
    // is the queue shut down?
    if (!m_isRunning) {
-      return NULL;
+      return nullptr;
    }
    
    //if (!m_mutex->haveValidMutex()) {
@@ -122,7 +122,7 @@ Runnable* ThreadPoolQueue::takeRequest() {
    //   exit(1);
    //}
    
-   Runnable* request = NULL;
+   Runnable* request = nullptr;
   
    // is the queue empty?
    while (m_queue.empty()) { // && m_isRunning) {

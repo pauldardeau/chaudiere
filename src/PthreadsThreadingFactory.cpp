@@ -32,7 +32,7 @@ unique_ptr<Mutex> PthreadsThreadingFactory::createMutex(const std::string& name)
 //******************************************************************************
 
 unique_ptr<Thread> PthreadsThreadingFactory::createThread(const std::string& name) {
-   return createThread(NULL, name);
+   return createThread(nullptr, name);
 }
 
 //******************************************************************************

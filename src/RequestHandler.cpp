@@ -14,7 +14,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 RequestHandler::RequestHandler(SocketRequest* socketRequest) :
-   m_socket(NULL),
+   m_socket(nullptr),
    m_socketRequest(socketRequest),
    m_isThreadPooling(false) {
    Logger::logInstanceCreate("RequestHandler");
@@ -24,7 +24,7 @@ RequestHandler::RequestHandler(SocketRequest* socketRequest) :
 
 RequestHandler::RequestHandler(Socket* socket) :
    m_socket(socket),
-   m_socketRequest(NULL),
+   m_socketRequest(nullptr),
    m_isThreadPooling(false) {
    Logger::logInstanceCreate("RequestHandler");
 }
@@ -54,7 +54,7 @@ bool RequestHandler::isThreadPooling() const {
 //******************************************************************************
 
 Socket* RequestHandler::getSocket() {
-   Socket* socket = NULL;
+   Socket* socket = nullptr;
 
    if (m_socket) {
       socket = m_socket;

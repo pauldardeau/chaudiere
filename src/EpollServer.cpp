@@ -29,7 +29,7 @@ bool EpollServer::isSupportedPlatform() {
 EpollServer::EpollServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) :
    KernelEventServer(fdMutex, hwmConnectionsMutex, "EpollServer"),
 #ifdef EPOLL_SUPPORT
-   m_events(NULL),
+   m_events(nullptr),
 #endif
    m_epfd(-1) {
    Logger::logInstanceCreate("EpollServer");
@@ -41,9 +41,9 @@ EpollServer::~EpollServer() {
    Logger::logInstanceDestroy("EpollServer");
 
 #ifdef EPOLL_SUPPORT
-   if (NULL != m_events) {
+   if (nullptr != m_events) {
       ::free(m_events);
-      m_events = NULL;
+      m_events = nullptr;
    }
 #endif
    
@@ -64,7 +64,7 @@ bool EpollServer::init(unique_ptr<SocketServiceHandler>& socketServiceHandler,
 #ifdef EPOLL_SUPPORT
    if (m_events) {
       ::free(m_events);
-      m_events = NULL;
+      m_events = nullptr;
    }
    
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
