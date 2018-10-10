@@ -9,6 +9,7 @@
 #include "DateTime.h"
 #include "StrUtils.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -165,14 +166,14 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
 
 //******************************************************************************
 
-DateTime* DateTime::gmtDateTime() {
+unique_ptr<DateTime> DateTime::gmtDateTime() {
    time_t currentGMT;
    ::time(&currentGMT);
    
    struct tm* timeptr = ::gmtime(&currentGMT);
    if (timeptr != NULL) {
       // caller responsible for deleting
-      DateTime* dt = new DateTime(0);
+      unique_ptr<DateTime> dt(new DateTime(0));
       dt->m_year = timeptr->tm_year + 1900;
       dt->m_month = timeptr->tm_mon + 1;
       dt->m_day = timeptr->tm_mday;
@@ -185,7 +186,7 @@ DateTime* DateTime::gmtDateTime() {
       return dt;
    }
    
-   return NULL;
+   return unique_ptr<DateTime>(nullptr);
 }
 
 //******************************************************************************

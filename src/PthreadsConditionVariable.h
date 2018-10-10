@@ -5,6 +5,7 @@
 #define CHAUDIERE_PTHREADSCONDITIONVARIABLE_H
 
 #include <pthread.h>
+#include <memory>
 #include <string>
 
 #include "ConditionVariable.h"
@@ -39,7 +40,7 @@ public:
     * @return
     * @see Mutex()
     */
-   virtual bool wait(Mutex* mutex);
+   virtual bool wait(std::unique_ptr<Mutex>& mutex);
    
    /**
     *

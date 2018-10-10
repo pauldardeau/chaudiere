@@ -6,6 +6,7 @@
 #include "BasicException.h"
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -48,11 +49,11 @@ PthreadsConditionVariable::~PthreadsConditionVariable() {
 
 //******************************************************************************
 
-bool PthreadsConditionVariable::wait(Mutex* mutex) {
+bool PthreadsConditionVariable::wait(unique_ptr<Mutex>& mutex) {
    if (m_initialized) {
       if (mutex) {
          PthreadsMutex* pthreadsMutex =
-            dynamic_cast<PthreadsMutex*>(mutex);
+            dynamic_cast<PthreadsMutex*>(mutex.get());
          
          if (pthreadsMutex) {
             if (0 != ::pthread_cond_wait(&m_cond,

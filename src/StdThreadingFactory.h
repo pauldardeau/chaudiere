@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_STDTHREADINGFACTORY_H
 #define CHAUDIERE_STDTHREADINGFACTORY_H
 
+#include <memory>
 #include "ThreadingFactory.h"
 
 
@@ -36,14 +37,14 @@ public:
    * @return pointer to the newly created Mutex
    * @see Mutex()
    */
-  virtual Mutex* createMutex(const std::string& name);
+  virtual std::unique_ptr<Mutex> createMutex(const std::string& name);
   
   /**
    * Create a new StdThread
    * @return pointer to newly created Thread
    * @see Thread()
    */
-  virtual Thread* createThread(const std::string& name);
+  virtual std::unique_ptr<Thread> createThread(const std::string& name);
   
   /**
    * Creates a new StdThread to run the specified Runnable
@@ -52,22 +53,22 @@ public:
    * @see Thread()
    * @see Runnable()
    */
-  virtual Thread* createThread(Runnable* runnable,
-                               const std::string& name);
+  virtual std::unique_ptr<Thread> createThread(Runnable* runnable,
+                                               const std::string& name);
   
   /**
    * Create a new StdConditionVariable
    * @return pointer to the newly created ConditionVariable
    * @see ConditionVariable()
    */
-  virtual ConditionVariable* createConditionVariable(const std::string& name);
+  virtual std::unique_ptr<ConditionVariable> createConditionVariable(const std::string& name);
   
   /**
    * Creates a new Std C++11 compatible ThreadPool
    * @param numberThreads the number of threads to initialize in the pool dispatcher
    * @return pointer to newly created ThreadPoolDispatcher
    */
-  virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
+  virtual std::unique_ptr<ThreadPoolDispatcher> createThreadPoolDispatcher(int numberThreads,
              const std::string& name); 
 
 };

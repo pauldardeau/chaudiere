@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "PthreadsConditionVariable.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -24,34 +25,34 @@ PthreadsThreadingFactory::~PthreadsThreadingFactory() {
 
 //******************************************************************************
 
-Mutex* PthreadsThreadingFactory::createMutex(const std::string& name) {
-   return new PthreadsMutex(name);
+unique_ptr<Mutex> PthreadsThreadingFactory::createMutex(const std::string& name) {
+   return unique_ptr<Mutex>(new PthreadsMutex(name));
 }
 
 //******************************************************************************
 
-Thread* PthreadsThreadingFactory::createThread(const std::string& name) {
+unique_ptr<Thread> PthreadsThreadingFactory::createThread(const std::string& name) {
    return createThread(NULL, name);
 }
 
 //******************************************************************************
 
-Thread* PthreadsThreadingFactory::createThread(Runnable* runnable,
+unique_ptr<Thread> PthreadsThreadingFactory::createThread(Runnable* runnable,
            const std::string& name) {
-   return new PthreadsThread(runnable, name);
+   return unique_ptr<Thread>(new PthreadsThread(runnable, name));
 }
 
 //******************************************************************************
 
-ConditionVariable* PthreadsThreadingFactory::createConditionVariable(const std::string& name) {
-   return new PthreadsConditionVariable(name);
+unique_ptr<ConditionVariable> PthreadsThreadingFactory::createConditionVariable(const std::string& name) {
+   return unique_ptr<ConditionVariable>(new PthreadsConditionVariable(name));
 }
 
 //******************************************************************************
 
-ThreadPoolDispatcher* PthreadsThreadingFactory::createThreadPoolDispatcher(int numberThreads,
+unique_ptr<ThreadPoolDispatcher> PthreadsThreadingFactory::createThreadPoolDispatcher(int numberThreads,
                                                                            const std::string& name) {
-   return new ThreadPool(this, numberThreads, name);
+   return unique_ptr<ThreadPoolDispatcher>(new ThreadPool(this, numberThreads, name));
 }
 
 

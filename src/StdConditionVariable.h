@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_STDCONDITIONVARIABLE_H
 #define CHAUDIERE_STDCONDITIONVARIABLE_H
 
+#include <memory>
 #include <string>
 #include <condition_variable>
 
@@ -39,7 +40,7 @@ public:
     * @return
     * @see Mutex()
     */
-   virtual bool wait(Mutex* mutex);
+   virtual bool wait(unique_ptr<Mutex>& mutex);
    
    /**
     *

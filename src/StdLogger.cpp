@@ -37,8 +37,6 @@ StdLogger::StdLogger(LogLevel logLevel) :
 //******************************************************************************
 
 StdLogger::~StdLogger() {
-   delete m_lockLifecycleStats;
-   delete m_lockOccurrences;
 }
 
 //******************************************************************************

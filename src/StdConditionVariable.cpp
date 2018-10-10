@@ -29,7 +29,7 @@ StdConditionVariable::~StdConditionVariable() {
 
 //******************************************************************************
 
-bool StdConditionVariable::wait(Mutex* mutex) {
+bool StdConditionVariable::wait(unique_ptr<Mutex>& mutex) {
    if (mutex) {
       StdMutex* stdMutex =
          dynamic_cast<StdMutex*>(mutex);

@@ -17,8 +17,8 @@ using namespace chaudiere;
 
 ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
    m_threadingFactory(threadingFactory),
-   m_mutex(NULL),
-   m_condQueueNotEmpty(NULL),
+   m_mutex(nullptr),
+   m_condQueueNotEmpty(nullptr),
    m_isInitialized(false),
    m_isRunning(false) {
 
@@ -57,12 +57,6 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
 ThreadPoolQueue::~ThreadPoolQueue() {
    Logger::logInstanceDestroy("ThreadPoolQueue");
    m_isRunning = false;
-   if (NULL != m_mutex) {
-      delete m_mutex;
-   }
-   if (NULL != m_condQueueNotEmpty) {
-      delete m_condQueueNotEmpty;
-   }
 }
 
 //******************************************************************************

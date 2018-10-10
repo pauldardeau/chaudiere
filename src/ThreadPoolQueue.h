@@ -79,8 +79,8 @@ public:
 private:
    ThreadingFactory* m_threadingFactory;
    std::deque<Runnable*> m_queue;
-   Mutex* m_mutex;
-   ConditionVariable* m_condQueueNotEmpty;
+   std::unique_ptr<Mutex> m_mutex;
+   std::unique_ptr<ConditionVariable> m_condQueueNotEmpty;
    bool m_isInitialized;
    bool m_isRunning;
 };
@@ -88,3 +88,4 @@ private:
 }
 
 #endif
+

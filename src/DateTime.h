@@ -5,6 +5,8 @@
 #define CHAUDIERE_DATETIME_H
 
 #include <string>
+#include <memory>
+
 
 namespace chaudiere
 {
@@ -53,7 +55,7 @@ namespace chaudiere
        * Retrieves current date and time as GMT in a newly created object
        * @return DateTime instance with GMT date time (caller must delete)
        */
-      static DateTime* gmtDateTime();
+      static std::unique_ptr<DateTime> gmtDateTime();
       
       /**
        * Default constructor. Retrieves local (system) date and time.
@@ -237,3 +239,4 @@ namespace chaudiere
 }
 
 #endif
+

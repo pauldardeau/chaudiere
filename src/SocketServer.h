@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_SOCKETSERVER_H
 #define CHAUDIERE_SOCKETSERVER_H
 
+#include <memory>
 #include <string>
 
 #include "KernelEventServer.h"
@@ -192,7 +193,7 @@ class SocketServer
    private:
       KernelEventServer* m_kernelEventServer;
       ServerSocket* m_serverSocket;
-      ThreadPoolDispatcher* m_threadPool; //weak
+      std::unique_ptr<ThreadPoolDispatcher> m_threadPool;
       ThreadingFactory* m_threadingFactory;
       KeyValuePairs m_properties;
       std::string m_logLevel;

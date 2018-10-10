@@ -1,6 +1,7 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <memory>
 #include <string>
 #include <exception>
 
@@ -117,6 +118,7 @@ static const char* LOG_MONTH_NAME[12] = {
    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -127,7 +129,7 @@ SocketServer::SocketServer(const std::string& serverName,
                            const std::string& configFilePath) :
    m_kernelEventServer(NULL),
    m_serverSocket(NULL),
-   m_threadPool(NULL),
+   m_threadPool(nullptr),
    m_threadingFactory(NULL),
    m_configFilePath(configFilePath),
    m_serverName(serverName),
@@ -453,10 +455,6 @@ bool SocketServer::init(int port)
       
       ThreadingFactory::setThreadingFactory(m_threadingFactory);
       
-      if (m_threadPool) {
-         delete m_threadPool;
-      }
-      
       m_threadPool =
          m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize, "threadpool");
       m_threadPool->start();
@@ -516,7 +514,6 @@ SocketServer::~SocketServer() {
 
    if (m_threadPool) {
       m_threadPool->stop();
-      delete m_threadPool;
    }
    
    if (m_threadingFactory) {
@@ -665,9 +662,9 @@ int SocketServer::runKernelEventServer() {
    int rc = 0;
    
    if (m_threadingFactory != NULL) {
-      Mutex* mutexFD = m_threadingFactory->createMutex("fdMutex");
-      Mutex* mutexHWMConnections =
-         m_threadingFactory->createMutex("hwmConnectionsMutex");
+      unique_ptr<Mutex> mutexFD(m_threadingFactory->createMutex("fdMutex"));
+      unique_ptr<Mutex> mutexHWMConnections(
+         m_threadingFactory->createMutex("hwmConnectionsMutex"));
       
       if (m_kernelEventServer) {
          delete m_kernelEventServer;

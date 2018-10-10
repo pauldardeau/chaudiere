@@ -7,6 +7,7 @@
 #include "ThreadPoolQueue.h"
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -120,7 +121,7 @@ bool ThreadPool::addRequest(Runnable* runnableRequest) {
 
 //******************************************************************************
 
-Thread* ThreadPool::createThreadWithRunnable(Runnable* runnable) {
+unique_ptr<Thread> ThreadPool::createThreadWithRunnable(Runnable* runnable) {
    return m_threadingFactory->createThread(runnable, "threadpool");
 }
 

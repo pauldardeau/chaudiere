@@ -25,7 +25,7 @@ public:
     * @return boolean
     * @see Mutex()
     */
-   virtual bool wait(Mutex* mutex) = 0;
+   virtual bool wait(std::unique_ptr<Mutex>& mutex) = 0;
    
    /**
     * Notify (wake up) a single waiting thread that the condition has occurred
@@ -42,3 +42,4 @@ public:
 }
 
 #endif
+

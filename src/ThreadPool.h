@@ -79,7 +79,7 @@ public:
     * @see Runnable()
     * @see Thread()
     */
-   virtual Thread* createThreadWithRunnable(Runnable* runnable);
+   virtual std::unique_ptr<Thread> createThreadWithRunnable(Runnable* runnable);
    
    /**
     *

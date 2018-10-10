@@ -12,6 +12,7 @@
 #include "BasicException.h"
 #include "Logger.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -20,7 +21,7 @@ ThreadPoolWorker::ThreadPoolWorker(ThreadingFactory* threadingFactory,
                                    ThreadPoolQueue& queue,
                                    int workerId) :
    m_threadingFactory(threadingFactory),
-   m_workerThread(NULL),
+   m_workerThread(nullptr),
    m_poolQueue(queue),
    m_workerId(workerId),
    m_isRunning(false) {
