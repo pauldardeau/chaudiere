@@ -61,11 +61,8 @@ void KeyValuePairs::getKeys(std::vector<std::string>& keys) const {
    }
 
    keys.reserve(m_keyValues.size());
-   const map<string,string>::const_iterator itEnd = m_keyValues.end();
-   map<string,string>::const_iterator it = m_keyValues.begin();
-   
-   for ( ; it != itEnd; it++) {
-      keys.push_back((*it).first);
+   for (auto& kv : m_keyValues) {
+      keys.push_back(kv.first);
    }
 }
 
