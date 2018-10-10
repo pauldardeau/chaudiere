@@ -212,11 +212,7 @@ void SocketServer::replaceVariables(const KeyValuePairs& kvp,
    if (!s.empty()) {
       std::vector<std::string> keys;
       kvp.getKeys(keys);
-      const std::vector<std::string>::const_iterator itEnd = keys.end();
-      std::vector<std::string>::const_iterator it = keys.begin();
-      
-      for (; it != itEnd; it++) {
-         const std::string& key = *it;
+      for (const std::string& key : keys) {
          if (StrUtils::containsString(s, key)) {
             StrUtils::replaceAll(s, key, kvp.getValue(key));
          }
