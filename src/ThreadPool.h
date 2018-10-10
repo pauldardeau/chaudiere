@@ -33,16 +33,6 @@ public:
 
    explicit ThreadPool(int numberWorkers, const std::string& name);
    
-   /**
-    *
-    * @param threadingFactory
-    * @param numberWorkers
-    */
-   ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers);
-
-   ThreadPool(ThreadingFactory* threadingFactory, int numberWorkers,
-              const std::string& name);
-
    ThreadPool(const ThreadPool&) = delete;
    ThreadPool& operator=(const ThreadPool&) = delete;
 
@@ -110,7 +100,7 @@ protected:
    void adjustNumberWorkers(int numberToAddOrDelete);
    
 private:
-   ThreadingFactory* m_threadingFactory;
+   std::shared_ptr<ThreadingFactory> m_threadingFactory;
    std::list<std::unique_ptr<ThreadPoolWorker>> m_listWorkers;
    ThreadPoolQueue m_queue;
    int m_workerCount;
@@ -122,3 +112,4 @@ private:
 }
 
 #endif
+

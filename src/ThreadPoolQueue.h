@@ -27,7 +27,7 @@ public:
     * @param threadingFactory
     * @see ThreadingFactory()
     */
-   explicit ThreadPoolQueue(ThreadingFactory* threadingFactory);
+   explicit ThreadPoolQueue(std::shared_ptr<ThreadingFactory>& threadingFactory);
 
    ThreadPoolQueue(const ThreadPoolQueue&) = delete;
    ThreadPoolQueue& operator=(const ThreadPoolQueue&) = delete;
@@ -77,7 +77,7 @@ public:
    
    
 private:
-   ThreadingFactory* m_threadingFactory;
+   std::shared_ptr<ThreadingFactory> m_threadingFactory;
    std::deque<Runnable*> m_queue;
    std::unique_ptr<Mutex> m_mutex;
    std::unique_ptr<ConditionVariable> m_condQueueNotEmpty;

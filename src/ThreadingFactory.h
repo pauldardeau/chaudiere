@@ -26,13 +26,13 @@ public:
     * Retrieves the class singleton instance
     * @return the class singleton instance
     */
-   static ThreadingFactory* getThreadingFactory();
+   static std::shared_ptr<ThreadingFactory>& getThreadingFactory();
    
    /**
     * Sets the specified ThreadingFactory instance to be the class singleton
     * @param threadingFactory the instance to use for the new class singleton
     */
-   static void setThreadingFactory(ThreadingFactory* threadingFactory);
+   static void setThreadingFactory(std::shared_ptr<ThreadingFactory>& threadingFactory);
 
    /**
     * Constructs a ThreadingFactory instance
@@ -88,10 +88,11 @@ public:
    
 
 private:
-   static ThreadingFactory* threadingFactoryInstance;
+   static std::shared_ptr<ThreadingFactory> threadingFactoryInstance;
 
 };
 
 }
 
 #endif
+

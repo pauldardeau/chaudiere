@@ -3,19 +3,20 @@
 
 #include "ThreadingFactory.h"
 
+using namespace std;
 using namespace chaudiere;
 
-ThreadingFactory* ThreadingFactory::threadingFactoryInstance = NULL;
+shared_ptr<ThreadingFactory> ThreadingFactory::threadingFactoryInstance(nullptr);
 
 //******************************************************************************
 
-void ThreadingFactory::setThreadingFactory(ThreadingFactory* threadingFactory) {
+void ThreadingFactory::setThreadingFactory(shared_ptr<ThreadingFactory>& threadingFactory) {
    threadingFactoryInstance = threadingFactory;
 }
 
 //******************************************************************************
 
-ThreadingFactory* ThreadingFactory::getThreadingFactory() {
+shared_ptr<ThreadingFactory>& ThreadingFactory::getThreadingFactory() {
    return threadingFactoryInstance;
 }
 

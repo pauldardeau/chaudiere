@@ -128,9 +128,9 @@ SocketServer::SocketServer(const std::string& serverName,
                            const std::string& serverVersion,
                            const std::string& configFilePath) :
    m_kernelEventServer(NULL),
-   m_serverSocket(NULL),
+   m_serverSocket(nullptr),
    m_threadPool(nullptr),
-   m_threadingFactory(NULL),
+   m_threadingFactory(nullptr),
    m_configFilePath(configFilePath),
    m_serverName(serverName),
    m_serverVersion(serverVersion),
@@ -422,12 +422,7 @@ bool SocketServer::init(int port)
             ::snprintf(msg, 128, "creating server socket on port=%d", port);
             Logger::debug(std::string(msg));
          }
-      
-         if (m_serverSocket != NULL) {
-            delete m_serverSocket;
-         }
-         
-         m_serverSocket = new ServerSocket(port);
+         m_serverSocket.reset(new ServerSocket(port));
       } catch (...) {
          std::string exception = "unable to open server socket port '";
          exception += StrUtils::toString(port);
@@ -443,14 +438,14 @@ bool SocketServer::init(int port)
       bool isUsingLibDispatch = false;
       
       if (m_threading == CFG_THREADING_PTHREADS) {
-         m_threadingFactory = new PthreadsThreadingFactory();
+         m_threadingFactory.reset(new PthreadsThreadingFactory());
       //} else if (m_threading == CFG_THREADING_CPP11) {
-      //   m_threadingFactory = new StdThreadingFactory();
+      //   m_threadingFactory.reset(new StdThreadingFactory());
       //} else if (m_threading == CFG_THREADING_GCD_LIBDISPATCH) {
       //   isUsingLibDispatch = true;
-      //   m_threadingFactory = new PthreadsThreadingFactory();
+      //   m_threadingFactory.reset(new PthreadsThreadingFactory());
       } else {
-         m_threadingFactory = new PthreadsThreadingFactory();
+         m_threadingFactory.reset(new PthreadsThreadingFactory());
       }
       
       ThreadingFactory::setThreadingFactory(m_threadingFactory);
@@ -505,7 +500,6 @@ SocketServer::~SocketServer() {
 
    if (m_serverSocket) {
       m_serverSocket->close();
-      delete m_serverSocket;
    }
    
    if (m_kernelEventServer) {
@@ -514,10 +508,6 @@ SocketServer::~SocketServer() {
 
    if (m_threadPool) {
       m_threadPool->stop();
-   }
-   
-   if (m_threadingFactory) {
-      delete m_threadingFactory;
    }
 }
 
@@ -617,9 +607,9 @@ int SocketServer::runSocketServer() {
    
    while (!m_isDone) {
       
-      Socket* socket = m_serverSocket->accept();
+      unique_ptr<Socket> socket(m_serverSocket->accept());
 
-      if (NULL == socket) {
+      if (nullptr == socket) {
          continue;
       }
 
@@ -629,7 +619,7 @@ int SocketServer::runSocketServer() {
       }
 
       try {
-         RequestHandler* handler = handlerForSocket(socket);
+         RequestHandler* handler = handlerForSocket(socket.get());
          if (m_isThreaded && (NULL != m_threadPool)) {
             handler->setThreadPooling(true);
 
@@ -647,8 +637,6 @@ int SocketServer::runSocketServer() {
       } catch (...) {
          Logger::error("SocketServer runServer unknown exception caught");
       }
-      
-      delete socket;
    }
    
    return 0;

@@ -17,7 +17,7 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-ThreadPoolWorker::ThreadPoolWorker(ThreadingFactory* threadingFactory,
+ThreadPoolWorker::ThreadPoolWorker(shared_ptr<ThreadingFactory>& threadingFactory,
                                    ThreadPoolQueue& queue,
                                    int workerId) :
    m_threadingFactory(threadingFactory),

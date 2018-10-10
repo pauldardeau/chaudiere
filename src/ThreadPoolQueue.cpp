@@ -11,11 +11,12 @@
 #include "Logger.h"
 #include "BasicException.h"
 
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
 
-ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
+ThreadPoolQueue::ThreadPoolQueue(shared_ptr<ThreadingFactory>& threadingFactory) :
    m_threadingFactory(threadingFactory),
    m_mutex(nullptr),
    m_condQueueNotEmpty(nullptr),

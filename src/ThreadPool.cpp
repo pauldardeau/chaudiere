@@ -34,32 +34,6 @@ ThreadPool::ThreadPool(int numberWorkers, const std::string& name) :
 
 //*****************************************************************************
 
-ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
-                       int numberWorkers) :
-   m_threadingFactory(threadingFactory),
-   m_queue(m_threadingFactory),
-   m_workerCount(numberWorkers),
-   m_workersCreated(0),
-   m_isRunning(false),
-   m_name("") {
-}
-
-//*****************************************************************************
-
-ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
-                       int numberWorkers,
-                       const std::string& name) :
-   m_threadingFactory(threadingFactory),
-   m_queue(m_threadingFactory),
-   m_workerCount(numberWorkers),
-   m_workersCreated(0),
-   m_isRunning(false),
-   m_name(name) {
-   Logger::logInstanceCreate("ThreadPool");
-}
-
-//******************************************************************************
-
 ThreadPool::~ThreadPool() {
    Logger::logInstanceDestroy("ThreadPool");
 

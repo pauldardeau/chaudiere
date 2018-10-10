@@ -30,7 +30,7 @@ class ThreadPoolWorker : public Runnable
        * @see ThreadingFactory()
        * @see ThreadPoolQueue()
        */
-      ThreadPoolWorker(ThreadingFactory* threadingFactory,
+      ThreadPoolWorker(std::shared_ptr<ThreadingFactory>& threadingFactory,
                        ThreadPoolQueue& queue,
                        int workerId);
 
@@ -59,7 +59,7 @@ class ThreadPoolWorker : public Runnable
 
 
    private:
-      ThreadingFactory* m_threadingFactory;
+      std::shared_ptr<ThreadingFactory> m_threadingFactory;
       std::unique_ptr<Thread> m_workerThread;
       ThreadPoolQueue& m_poolQueue;
       int m_workerId;
