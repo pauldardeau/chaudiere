@@ -54,7 +54,7 @@ bool OnlyIntegerDigits(const std::string& s, bool allow_decimal=false) {
 //******************************************************************************
 
 int StrUtils::parseInt(const std::string& s) {
-   if (!OnlyIntegerDigits(s)) {
+   if (std::string::npos != s.find_first_not_of("0123456789-")) {
       throw NumberFormatException(s);
    }
 
@@ -71,7 +71,7 @@ int StrUtils::parseInt(const std::string& s) {
 //******************************************************************************
 
 long StrUtils::parseLong(const std::string& s) {
-   if (!OnlyIntegerDigits(s)) {
+   if (std::string::npos != s.find_first_not_of("0123456789-")) {
       throw NumberFormatException(s);
    }
 
@@ -175,18 +175,11 @@ void StrUtils::toUpperCase(std::string& s) {
 
 bool StrUtils::startsWith(const std::string& haystack,
                           const std::string& needle) {
+   // C++20 will have starts_with method
    if (!haystack.empty() && !needle.empty()) {
-      const std::string::size_type haystackLength = haystack.length();
       const std::string::size_type needleLength = needle.length();
-        
-      if (haystackLength >= needleLength) {
-         for (std::string::size_type i = 0; i < needleLength; ++i) {
-            if (haystack[i] != needle[i]) {
-               return false;
-            }
-         }
-            
-         return true;
+      if (haystack.length() >= needleLength) {
+         return (0 == haystack.compare(0, needleLength, needle));
       }
    }
    
@@ -202,15 +195,9 @@ bool StrUtils::endsWith(const std::string& haystack,
       const std::string::size_type needleLength = needle.length();
         
       if (haystackLength >= needleLength) {
-         unsigned long int haystackIndex = haystackLength - 1;
-         
-         for (long i = needleLength-1; i >= 0; --i) {
-            if (haystack[haystackIndex--] != needle[i]) {
-               return false;
-            }
-         }
-            
-         return true;
+         return (0 == haystack.compare(haystackLength - needleLength,
+                                       needleLength,
+                                       needle));
       }
    }
 
@@ -262,21 +249,9 @@ std::string& StrUtils::stripTrailing(std::string& s, char strip) {
 //******************************************************************************
 
 std::string& StrUtils::stripLeading(std::string& s, char stripChar) {
-   if (s.empty()) {
-      return s;
-   }
-   
-   const std::string::size_type stringLen = s.length();
-   std::string::size_type leadingStripChars = 0;
-   
-   while ((leadingStripChars < stringLen) &&
-          (s[leadingStripChars] == stripChar)) {
-      ++leadingStripChars;
-   }
-    
-   // Any leading characters to strip?
-   if (leadingStripChars > 0) {
-      s = s.substr(leadingStripChars);
+   const std::string::size_type pos_non_matching = s.find_first_not_of(stripChar);
+   if ((std::string::npos != pos_non_matching) && (pos_non_matching > 0)) {
+      s.erase(0, pos_non_matching);
    }
    
    return s;
@@ -286,7 +261,6 @@ std::string& StrUtils::stripLeading(std::string& s, char stripChar) {
 
 std::string& StrUtils::trimLeadingSpaces(std::string& s) {
    const std::string::size_type posFirstNonSpace = s.find_first_not_of(SPACE);
-    
    if ((std::string::npos != posFirstNonSpace) && (posFirstNonSpace > 0)) {
       s.erase(0, posFirstNonSpace);
    }
@@ -314,19 +288,10 @@ std::string StrUtils::strip(const std::string& s, char strip) {
    }
    
    const std::string::size_type len = s.length();
-    
-   std::string::size_type leadingChars = 0;
-    
-   for (std::string::size_type i = 0; i < len; ++i) {
-      if (s[i] == strip) {
-         ++leadingChars;
-      } else {
-         break;
-      }
-   }
+   std::string::size_type leadingChars = s.find_first_not_of(strip);
     
    if (leadingChars == len) {
-      return std::string(EMPTY);
+      return EMPTY;
    }
     
    int trailingChars = 0;
@@ -405,3 +370,4 @@ std::vector<std::string> StrUtils::split(const std::string& s,
 }
 
 //******************************************************************************
+
