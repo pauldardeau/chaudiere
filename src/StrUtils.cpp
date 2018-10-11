@@ -59,10 +59,8 @@ int StrUtils::parseInt(const std::string& s) {
    }
 
    const int intValue = ::atoi(s.c_str());
-   if (intValue == 0) {
-      if (s != ZERO) {
-         throw NumberFormatException(s);
-      }
+   if ((0 == intValue) && (s != ZERO)) {
+      throw NumberFormatException(s);
    }
 
    return intValue;
@@ -76,10 +74,8 @@ long StrUtils::parseLong(const std::string& s) {
    }
 
    const long longValue = ::atol(s.c_str());
-   if (longValue == 0) {
-      if (s != ZERO) {
-         throw NumberFormatException(s);
-      }
+   if ((0 == longValue) && (s != ZERO)) {
+      throw NumberFormatException(s);
    }
 
    return longValue;
@@ -93,10 +89,8 @@ float StrUtils::parseFloat(const std::string& s) {
    }
 
    const float floatValue = ::atof(s.c_str());
-   if (floatValue == 0) {
-      if (s != ZERO) {
-         throw NumberFormatException(s);
-      }
+   if ((0 == floatValue) && (s != ZERO)) {
+      throw NumberFormatException(s);
    }
 
    return floatValue;
@@ -110,10 +104,8 @@ double StrUtils::parseDouble(const std::string& s) {
    }
 
    const double doubleValue = ::atof(s.c_str());
-   if (doubleValue == 0) {
-      if (s != ZERO) {
-         throw NumberFormatException(s);
-      }
+   if ((0 == doubleValue) && (s != ZERO)) {
+      throw NumberFormatException(s);
    }
 
    return doubleValue;
