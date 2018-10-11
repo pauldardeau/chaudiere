@@ -58,12 +58,11 @@ int StrUtils::parseInt(const std::string& s) {
       throw NumberFormatException(s);
    }
 
-   const int intValue = ::atoi(s.c_str());
-   if ((0 == intValue) && (s != ZERO)) {
+   try {
+      return std::stoi(s);
+   } catch (const std::invalid_argument& e) {
       throw NumberFormatException(s);
    }
-
-   return intValue;
 }
 
 //******************************************************************************
@@ -73,12 +72,11 @@ long StrUtils::parseLong(const std::string& s) {
       throw NumberFormatException(s);
    }
 
-   const long longValue = ::atol(s.c_str());
-   if ((0 == longValue) && (s != ZERO)) {
+   try {
+      return std::stol(s);
+   } catch (const std::invalid_argument& e) {
       throw NumberFormatException(s);
    }
-
-   return longValue;
 }
 
 //******************************************************************************
@@ -88,12 +86,11 @@ float StrUtils::parseFloat(const std::string& s) {
       throw NumberFormatException(s);
    }
 
-   const float floatValue = ::atof(s.c_str());
-   if ((0 == floatValue) && (s != ZERO)) {
+   try {
+      return std::stof(s);
+   } catch (const std::invalid_argument& e) {
       throw NumberFormatException(s);
    }
-
-   return floatValue;
 }
 
 //******************************************************************************
@@ -103,48 +100,35 @@ double StrUtils::parseDouble(const std::string& s) {
       throw NumberFormatException(s);
    }
 
-   const double doubleValue = ::atof(s.c_str());
-   if ((0 == doubleValue) && (s != ZERO)) {
+   try {
+      return std::stod(s);
+   } catch (const std::invalid_argument& e) {
       throw NumberFormatException(s);
    }
-
-   return doubleValue;
 }
 
 //******************************************************************************
 
 std::string StrUtils::toString(int i) {
-   char buffer[40];
-   ::memset(buffer, 0, sizeof(buffer));
-   ::snprintf(buffer, sizeof(buffer), "%d", i);
-   return std::string(buffer);
+   return std::to_string(i);
 }
 
 //******************************************************************************
 
 std::string StrUtils::toString(long l) {
-   char buffer[40];
-   ::memset(buffer, 0, sizeof(buffer));
-   ::snprintf(buffer, sizeof(buffer), "%ld", l);
-   return std::string(buffer);
+   return std::to_string(l);
 }
 
 //******************************************************************************
 
 std::string StrUtils::toString(unsigned long l) {
-   char buffer[40];
-   ::memset(buffer, 0, sizeof(buffer));
-   ::snprintf(buffer, sizeof(buffer), "%lu", l);
-   return std::string(buffer);
+   return std::to_string(l);
 }
 
 //******************************************************************************
 
 std::string StrUtils::charToString(char c) {
-   char buffer[2];
-   buffer[0] = c;
-   buffer[1] = '\0';
-   return std::string(buffer);
+   return std::string(1, c);
 }
 
 //******************************************************************************
