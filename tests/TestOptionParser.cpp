@@ -3,8 +3,26 @@
 
 #include "OptionParser.h"
 #include "TestOptionParser.h"
+#include "Runnable.h"
 
 using namespace chaudiere;
+
+class RunGetOptionValue : public poivre::Runnable {
+private:
+   OptionParser& m_op;
+   std::string m_key;
+
+public:
+   RunGetOptionValue(OptionParser& op, const std::string& key) :
+      m_op(op),
+      m_key(key) {
+   }
+
+   virtual ~RunGetOptionValue() {}
+   void run() {
+      m_op.getOptionValue(m_key);
+   }
+};
 
 //******************************************************************************
 
@@ -155,7 +173,12 @@ void TestOptionParser::testGetOptionValue() {
    requireStringEquals(optionValue, op.getOptionValue(option),
                        "option value matches command line value");
 
-   //TODO: test non-existing option (InvalidKeyException)
+   option = "not-there";
+   RunGetOptionValue runnable(op, option);
+   std::string test_cond("exception thrown for invalid key");
+   requireException("InvalidKeyException",
+                    &runnable,
+                    test_cond);
 }
 
 //******************************************************************************
