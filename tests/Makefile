@@ -2,7 +2,7 @@
 # BSD License
 
 CC = c++
-CC_OPTS = -c -pthread -I../src -I../../poivre
+CC_OPTS = -c -pthread -I../../poivre -I../src
 
 EXE_NAME = test_chaudiere
 LIB_NAMES = ../src/libchaudiere.so ../../poivre/poivre.so
@@ -37,7 +37,7 @@ clean :
 	rm -f $(EXE_NAME)
 	
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl
+	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl -lsocket -lnls
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@
