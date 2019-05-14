@@ -88,23 +88,25 @@ public:
     *
     * @param numberNewWorkers
     */
-   void addWorkers(int numberNewWorkers);
+   bool addWorkers(int numberNewWorkers);
    
    /**
     *
     * @param numberWorkersToRemove
     */
-   void removeWorkers(int numberWorkersToRemove);
+   bool removeWorkers(int numberWorkersToRemove);
 
    const std::string& getName() const;
-   
-   
+  
+   bool isRunning() const; 
+  
+ 
 protected:
    /**
     *
     * @param numberToAddOrDelete
     */
-   void adjustNumberWorkers(int numberToAddOrDelete);
+   bool adjustNumberWorkers(int numberToAddOrDelete);
    
 private:
    ThreadingFactory* m_threadingFactory;

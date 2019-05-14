@@ -18,6 +18,7 @@ ThreadPool::ThreadPool(int numberWorkers) :
    m_workersCreated(0),
    m_isRunning(false),
    m_name("") {
+   start();
 }
 
 //******************************************************************************
@@ -29,6 +30,7 @@ ThreadPool::ThreadPool(int numberWorkers, const std::string& name) :
    m_workersCreated(0),
    m_isRunning(false),
    m_name(name) {
+   start();
 }
 
 //*****************************************************************************
@@ -41,6 +43,7 @@ ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
    m_workersCreated(0),
    m_isRunning(false),
    m_name("") {
+   start();
 }
 
 //*****************************************************************************
@@ -55,6 +58,7 @@ ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
    m_isRunning(false),
    m_name(name) {
    Logger::logInstanceCreate("ThreadPool");
+   start();
 }
 
 //******************************************************************************
@@ -77,45 +81,65 @@ ThreadPool::~ThreadPool() {
 //******************************************************************************
 
 bool ThreadPool::start() {
-   for (int i = 0; i < m_workerCount; ++i) {
-      ++m_workersCreated;
-      ThreadPoolWorker* worker =
-         new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
-      worker->start();
-      m_listWorkers.push_back(worker);
+   bool didStart = false;
+   int oldCreatedCount = m_workersCreated;
+
+   if (!m_isRunning) {
+      for (int i = 0; i < m_workerCount; ++i) {
+         ++m_workersCreated;
+         ThreadPoolWorker* worker =
+            new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
+         worker->start();
+         m_listWorkers.push_back(worker);
+      }
+
+      int newCreatedCount = m_workersCreated - oldCreatedCount;
+
+      if (newCreatedCount > 0) {
+         if (m_queue.startUp()) {
+            m_isRunning = true;
+            didStart = true;
+         }
+      }
    }
 
-   m_isRunning = true;
-   return true;
+   return didStart;
 }
 
 //******************************************************************************
 
 bool ThreadPool::stop() {
-   m_queue.shutDown();
+   bool didStop = false;
+
+   if (m_isRunning) {
+      m_queue.shutDown();
   
-   std::list<ThreadPoolWorker*>::iterator it = m_listWorkers.begin();
-   const std::list<ThreadPoolWorker*>::const_iterator itEnd =
-      m_listWorkers.end();
+      std::list<ThreadPoolWorker*>::iterator it = m_listWorkers.begin();
+      const std::list<ThreadPoolWorker*>::const_iterator itEnd =
+         m_listWorkers.end();
  
-   for (; it != itEnd; it++) {
-      (*it)->stop();
-   }
+      for (; it != itEnd; it++) {
+         (*it)->stop();
+      }
    
-   m_isRunning = false;
-   return true;
+      m_isRunning = false;
+      didStop = true;
+   }
+
+   return didStop;
 }
 
 //******************************************************************************
 
 bool ThreadPool::addRequest(Runnable* runnableRequest) {
-   if (!m_isRunning) {
-      return false;
+   bool requestAdded = false;
+
+   if (m_isRunning && (NULL != runnableRequest)) {
+      m_queue.addRequest(runnableRequest);
+      requestAdded = true;
    }
    
-   m_queue.addRequest(runnableRequest);
-   
-   return true;
+   return requestAdded;
 }
 
 //******************************************************************************
@@ -132,19 +156,29 @@ int ThreadPool::getNumberWorkers() const {
 
 //******************************************************************************
 
-void ThreadPool::addWorkers(int numberNewWorkers) {
-   adjustNumberWorkers(numberNewWorkers);
+bool ThreadPool::addWorkers(int numberNewWorkers) {
+   if (numberNewWorkers > 0) {
+      return adjustNumberWorkers(numberNewWorkers);
+   } else {
+      return false;
+   }
 }
 
 //******************************************************************************
 
-void ThreadPool::removeWorkers(int numberWorkersToRemove) {
-   adjustNumberWorkers(-numberWorkersToRemove);
+bool ThreadPool::removeWorkers(int numberWorkersToRemove) {
+   if (numberWorkersToRemove > 0) {
+      return adjustNumberWorkers(-numberWorkersToRemove);
+   } else {
+      return false;
+   }
 }
 
 //******************************************************************************
 
-void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
+bool ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
+   bool requestSatisfied = false;
+
    if (numberToAddOrDelete > 0) {   // adding?
 
       const int newNumberWorkers = m_workerCount + numberToAddOrDelete;
@@ -161,11 +195,28 @@ void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
 
          m_listWorkers.push_back(worker);
       }
+      requestSatisfied = true;
    } else if (numberToAddOrDelete < 0) {  // removing?
       if (m_isRunning) {
-         //TODO: add support for terminating some threads
+         int numToRemove = -numberToAddOrDelete;
+         if (numToRemove <= m_workerCount) {
+            while (numToRemove > 0) {
+               ThreadPoolWorker* lastWorker = m_listWorkers.back();
+               m_listWorkers.pop_back();
+               --m_workerCount;
+               --numToRemove;
+               lastWorker->stop();
+               delete lastWorker;
+            }
+            requestSatisfied = true;
+         } 
       }
+   } else {
+      // caller asked for no adjustment and we satisfied request
+      requestSatisfied = true; 
    }
+
+   return requestSatisfied;
 }
 
 //******************************************************************************
@@ -173,4 +224,12 @@ void ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
 const std::string& ThreadPool::getName() const {
    return m_name;
 }
+
+//******************************************************************************
+
+bool ThreadPool::isRunning() const {
+   return m_isRunning;
+}
+
+//******************************************************************************
 
