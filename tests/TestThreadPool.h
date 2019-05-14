@@ -13,7 +13,7 @@ class TestThreadPool : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testStart();
    void testStop();
@@ -21,6 +21,8 @@ protected:
    void testGetNumberWorkers();
    void testAddWorkers();
    void testRemoveWorkers();
+   void testGetName();
+   void testIsRunning();
 
 public:
    TestThreadPool();   
