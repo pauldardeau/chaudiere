@@ -26,7 +26,7 @@ public:
     * @return the class singleton instance
     */
    static ThreadingFactory* getThreadingFactory();
-   
+
    /**
     * Sets the specified ThreadingFactory instance to be the class singleton
     * @param threadingFactory the instance to use for the new class singleton

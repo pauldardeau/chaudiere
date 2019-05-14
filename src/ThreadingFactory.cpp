@@ -2,10 +2,11 @@
 // BSD License
 
 #include "ThreadingFactory.h"
+#include "PthreadsThreadingFactory.h"
 
 using namespace chaudiere;
 
-ThreadingFactory* ThreadingFactory::threadingFactoryInstance = NULL;
+ThreadingFactory* ThreadingFactory::threadingFactoryInstance = new PthreadsThreadingFactory;
 
 //******************************************************************************
 
