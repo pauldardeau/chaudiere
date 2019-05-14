@@ -147,7 +147,7 @@ Runnable* ThreadPoolQueue::takeRequest() {
 //******************************************************************************
 
 bool ThreadPoolQueue::startUp() {
-   bool wasStarted = true;
+   bool wasStarted = false;
    printf("ThreadPoolQueue::startUp\n");
    if (m_isInitialized && !m_isRunning) {
       MutexLock lock(*m_mutex, "ThreadPoolQueue::startUp");
