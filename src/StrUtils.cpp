@@ -10,7 +10,6 @@
 #include "StrUtils.h"
 #include "NumberFormatException.h"
 #include "StringTokenizer.h"
-#include "zlib.h"
 
 static const std::string EMPTY = "";
 static const std::string SPACE = " ";
@@ -364,119 +363,6 @@ std::string& StrUtils::replaceAll(std::string& s,
    return s;
 }
 
-//******************************************************************************
-/*
-std::string StrUtils::gzipCompress(const std::string& str) {
-   z_stream zs;
-   ::memset(&zs, 0, sizeof(zs));
-
-   zs.zalloc = Z_NULL;
-   zs.zfree = Z_NULL;
-   zs.opaque = Z_NULL;
-   zs.total_out = 0;
-   zs.next_in = (Bytef*)str.data();
-   zs.avail_in = str.size();           // set the z_stream's input
-
-   // compression levels
-   //Z_NO_COMPRESSION
-   //Z_BEST_SPEED
-   //Z_BEST_COMPRESSION
-   //Z_DEFAULT_COMPRESSION
-
-   const int compressionLevel = Z_DEFAULT_COMPRESSION;
-   
-   const int windowBits = 15;
-   const int GZIP_ENCODING = 16;
-   int rc;
-   
-   rc = deflateInit2(&zs,
-                     compressionLevel,
-                     Z_DEFLATED,
-                     windowBits | GZIP_ENCODING,
-                     8,
-                     Z_DEFAULT_STRATEGY);
-   
-   if (rc != Z_OK) {
-      throw std::runtime_error("deflateInit2 failed while compressing");
-   }
-   
-   char outbuffer[16384];
-   std::string outstring;
-   std::string::size_type outstringSize = 0;
-   std::string::size_type blockDataSize = 0;
-   
-   // retrieve the compressed bytes blockwise
-   do {
-      zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
-      zs.avail_out = sizeof(outbuffer);
-      
-      rc = deflate(&zs, Z_FINISH);
-      
-      if ((rc != Z_OK) && (rc != Z_STREAM_END)) {
-         throw std::runtime_error("deflate failed while compressing");
-      }
-      
-      if (outstringSize < zs.total_out) {
-         // append the block to the output string
-         blockDataSize = zs.total_out - outstringSize;
-         outstring.append(outbuffer,
-                          blockDataSize);
-         outstringSize += blockDataSize;
-      }
-   } while (zs.avail_out == 0);
-   
-   rc = deflateEnd(&zs);
-
-   if (rc != Z_OK) {
-      throw std::runtime_error("deflateEnd failed while compressing");
-   }
-
-   return outstring;
-}
-*/
-//******************************************************************************
-/*
-std::string StrUtils::gzipDecompress(const std::string& str) {
-   z_stream zs;                        // z_stream is zlib's control structure
-   memset(&zs, 0, sizeof(zs));
-   
-   if (inflateInit(&zs) != Z_OK) {
-      throw(std::runtime_error("inflateInit failed while decompressing."));
-   }
-   
-   zs.next_in = (Bytef*)str.data();
-   zs.avail_in = str.size();
-   
-   int ret;
-   char outbuffer[32768];
-   std::string outstring;
-   
-   // get the decompressed bytes blockwise using repeated calls to inflate
-   do {
-      zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
-      zs.avail_out = sizeof(outbuffer);
-      
-      ret = inflate(&zs, 0);
-      
-      if (outstring.size() < zs.total_out) {
-         outstring.append(outbuffer,
-                          zs.total_out - outstring.size());
-      }
-      
-   } while (ret == Z_OK);
-   
-   inflateEnd(&zs);
-   
-   if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
-      std::ostringstream oss;
-      oss << "Exception during zlib decompression: (" << ret << ") "
-      << zs.msg;
-      throw(std::runtime_error(oss.str()));
-   }
-   
-   return outstring;
-}
-*/
 //******************************************************************************
 
 void StrUtils::padRight(std::string& s, char padChar, std::string::size_type paddedLength) {

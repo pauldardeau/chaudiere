@@ -50,10 +50,6 @@ protected:
    void testPadRight();
    void testPadLeft();
 
-   // gzip
-   void testGzipCompress();
-   void testGzipDecompress();
-
    // makeStringOfChar
    void testMakeStringOfChar();
 

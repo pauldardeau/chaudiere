@@ -58,10 +58,6 @@ void TestStrUtils::runTests() {
    testPadRight();
    testPadLeft();
 
-   // gzip
-   //TODO: testGzipCompress();
-   //TODO: testGzipDecompress();
-
    // makeStringOfChar
    testMakeStringOfChar();
 
@@ -672,53 +668,6 @@ void TestStrUtils::testPadLeft() {
                        "three pad chars needed");
 }
 
-//******************************************************************************
-
-void PopulateCompressionTestString(char* buffer, int buffer_len) {
-   char ch;
-   int char_count = 40;
-   int offset = 0;
-
-   ch = 'a';
-   while ((offset + char_count) < buffer_len) {
-      memset(buffer+offset, ch, char_count);
-      if (ch == 'z') {
-         ch = 'a';
-      } else {
-         ch += 1;
-      }
-      offset += char_count;
-   }
-}
-
-//*****************************************************************************
-//
-/*
-void TestStrUtils::testGzipCompress() {
-   TEST_CASE("gzipCompress");
-
-   char buffer[4096];
-   PopulateCompressionTestString(buffer, 4096);
-   std::string original(buffer);
-   std::string compressed = StrUtils::gzipCompress(original);
-   require(compressed.length() > 0, "compressed not empty");
-   require(compressed.length() < original.length(),
-           "compressed len < uncompressed len");
-}
-*/
-//******************************************************************************
-/*
-void TestStrUtils::testGzipDecompress() {
-   TEST_CASE("gzipDecompress");
-
-   char buffer[4096];
-   PopulateCompressionTestString(buffer, 4096);
-   std::string original(buffer);
-   std::string compressed = StrUtils::gzipCompress(original);
-   std::string uncompressed = StrUtils::gzipDecompress(compressed);
-   requireStringEquals(original, uncompressed, "uncompressed match original");
-}
-*/
 //******************************************************************************
 
 void TestStrUtils::testMakeStringOfChar() {

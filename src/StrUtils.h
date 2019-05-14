@@ -211,20 +211,6 @@ public:
    static std::vector<std::string> split(const std::string& s,
                                          const std::string& delim);
 
-   /**
-    *
-    * @param s
-    * @return
-    */
-   //static std::string gzipCompress(const std::string& s);
-
-   /**
-    *
-    * @param s
-    * @return
-    */
-   //static std::string gzipDecompress(const std::string& s);
-   
 };
 
 }
