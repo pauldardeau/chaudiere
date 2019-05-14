@@ -48,11 +48,18 @@ public:
     * @see Runnable()
     */
    virtual Runnable* takeRequest();
+
+   /**
+    *
+    * @return
+    */
+   virtual bool startUp();
    
    /**
     *
+    * @return
     */
-   virtual void shutDown();
+   virtual bool shutDown();
    
    /**
     *

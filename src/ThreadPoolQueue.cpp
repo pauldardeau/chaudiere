@@ -146,12 +146,28 @@ Runnable* ThreadPoolQueue::takeRequest() {
 
 //******************************************************************************
 
-void ThreadPoolQueue::shutDown() {
+bool ThreadPoolQueue::startUp() {
+   bool wasStarted = true;
+   printf("ThreadPoolQueue::startUp\n");
+   if (m_isInitialized && !m_isRunning) {
+      MutexLock lock(*m_mutex, "ThreadPoolQueue::startUp");
+      m_isRunning = true;
+      wasStarted = true;
+   }
+   return wasStarted;
+}
+
+//******************************************************************************
+
+bool ThreadPoolQueue::shutDown() {
+   bool wasShutDown = false;
    printf("ThreadPoolQueue::shutDown\n");
    if (m_isInitialized && m_isRunning) {
       MutexLock lock(*m_mutex, "ThreadPoolQueue::shutDown");
       m_isRunning = false;
+      wasShutDown = true;
    }
+   return wasShutDown;
 }
 
 //******************************************************************************
