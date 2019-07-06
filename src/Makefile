@@ -2,24 +2,11 @@
 # BSD License
 
 CC = c++
-CC_OPTS = -c -Wall -fPIC -O2 -pthread -I./ThirdParty/zlib -I/usr/local/include
+CC_OPTS = -c -Wall -fPIC -O2 -pthread -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
 LIB_NAME = libchaudiere.so
-
-ZLIB_OBJS = ./ThirdParty/zlib/adler32.o \
-./ThirdParty/zlib/compress.o \
-./ThirdParty/zlib/crc32.o \
-./ThirdParty/zlib/deflate.o \
-./ThirdParty/zlib/gzlib.o \
-./ThirdParty/zlib/gzwrite.o \
-./ThirdParty/zlib/inffast.o \
-./ThirdParty/zlib/inflate.o \
-./ThirdParty/zlib/inftrees.o \
-./ThirdParty/zlib/trees.o \
-./ThirdParty/zlib/zutil.o
-
 
 OBJS = DateTime.o \
 DynamicLibrary.o \
@@ -63,9 +50,6 @@ clean :
 	rm -f *.o
 	rm -f $(LIB_NAME)
 	
-$(ZLIB_OBJS) :
-	cd ThirdParty/zlib && make
-
 $(LIB_NAME) : $(OBJS)
 	$(CC) -shared -fPIC $(OBJS) -o $(LIB_NAME)
 

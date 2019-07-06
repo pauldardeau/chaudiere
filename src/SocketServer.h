@@ -155,24 +155,6 @@ class SocketServer
       void replaceVariables(const KeyValuePairs& kvp,
                             std::string& s) const;
    
-      /**
-       * Determines if compression is turned on for the specified mime type
-       * @param mimeType the mime type to check whether to compress
-       * @return boolean indicating whether the specified mime type is to be compressed
-       */
-      bool compressResponse(const std::string& mimeType) const;
-   
-      /**
-       * Determines if gzip compression is enabled for the server
-       * @return boolean indicating if gzip compression is enabled
-       */
-      bool compressionEnabled() const;
-   
-      /**
-       * Retrieves the minimum size of the response payload to be compressed
-       * @return minimum size of response payload (in bytes) to be compressed
-       */
-      int minimumCompressionSize() const;
 
    
    protected:
@@ -205,12 +187,10 @@ class SocketServer
       bool m_isThreaded;
       bool m_isUsingKernelEventServer;
       bool m_isFullyInitialized;
-      bool m_compressionEnabled;
       int m_threadPoolSize;
       int m_serverPort;
       int m_socketSendBufferSize;
       int m_socketReceiveBufferSize;
-      int m_minimumCompressionSize;
 
       // copies not allowed
       SocketServer(const SocketServer&);

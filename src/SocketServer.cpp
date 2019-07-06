@@ -136,10 +136,8 @@ SocketServer::SocketServer(const std::string& serverName,
    m_isThreaded(true),
    m_isUsingKernelEventServer(false),
    m_isFullyInitialized(false),
-   m_compressionEnabled(true),
    m_threadPoolSize(CFG_DEFAULT_THREAD_POOL_SIZE),
-   m_serverPort(CFG_DEFAULT_PORT_NUMBER),
-   m_minimumCompressionSize(1000) {
+   m_serverPort(CFG_DEFAULT_PORT_NUMBER) {
    Logger::logInstanceCreate("SocketServer");
    init(CFG_DEFAULT_PORT_NUMBER);
 }
@@ -565,28 +563,6 @@ std::string SocketServer::getLocalDateTime() const {
                  timeptr->tm_sec);
    
    return std::string(dateBuffer);
-}
-
-//******************************************************************************
-
-bool SocketServer::compressResponse(const std::string& mimeType) const {
-   //TODO: make this configurable through config file
-   return (mimeType == MIME_TEXT_HTML) ||
-          (mimeType == MIME_TEXT_PLAIN) ||
-          (mimeType == MIME_APPLICATION_JSON) ||
-          (mimeType == MIME_APPLICATION_XML);
-}
-
-//******************************************************************************
-
-bool SocketServer::compressionEnabled() const {
-   return m_compressionEnabled;
-}
-
-//******************************************************************************
-
-int SocketServer::minimumCompressionSize() const {
-   return m_minimumCompressionSize;
 }
 
 //******************************************************************************
