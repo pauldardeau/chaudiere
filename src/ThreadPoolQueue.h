@@ -4,6 +4,8 @@
 #ifndef CHAUDIERE_THREADPOOLQUEUE_H
 #define CHAUDIERE_THREADPOOLQUEUE_H
 
+#include <pthread.h>
+
 #include <deque>
 #include <memory>
 
@@ -53,12 +55,6 @@ public:
     *
     * @return
     */
-   virtual bool startUp();
-   
-   /**
-    *
-    * @return
-    */
    virtual bool shutDown();
    
    /**
@@ -83,8 +79,16 @@ public:
 private:
    ThreadingFactory* m_threadingFactory;
    std::deque<Runnable*> m_queue;
-   Mutex* m_mutex;
-   ConditionVariable* m_condQueueNotEmpty;
+
+   pthread_mutex_t m_queue_lock;
+   pthread_cond_t m_cond_queue_not_empty;
+   pthread_cond_t m_cond_queue_not_full;
+   pthread_cond_t m_cond_queue_empty;
+
+   //Mutex* m_mutex;
+   //ConditionVariable* m_condQueueNotEmpty;
+   //ConditionVariable* m_condQueueNotFull;
+   //ConditionVariable* m_condQueueEmpty;
    bool m_isInitialized;
    bool m_isRunning;
 
@@ -97,3 +101,4 @@ private:
 }
 
 #endif
+

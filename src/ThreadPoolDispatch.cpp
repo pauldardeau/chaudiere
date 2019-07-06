@@ -49,7 +49,10 @@ bool ThreadPoolDispatch::stop() {
 //******************************************************************************
 
 bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) {
+   printf("ThreadPoolDispatch::addRequest entered\n");
+
    if (!m_isRunning || !runnableRequest) {
+      printf("ThreadPoolDispatch::addRequest not running or NULL request\n");
       return false;
    }
    
@@ -73,6 +76,7 @@ bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) {
    
    return true;
 #else
+   printf("ThreadPoolDispatch::addRequest no GCD, returning false\n");
    return false;
 #endif
 }
