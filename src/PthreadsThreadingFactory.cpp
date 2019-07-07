@@ -53,7 +53,7 @@ ConditionVariable* PthreadsThreadingFactory::createConditionVariable(const std::
 
 ThreadPoolDispatcher* PthreadsThreadingFactory::createThreadPoolDispatcher(int numberThreads,
                                                                            const std::string& name) {
-   printf("PthreadsThreadingFactory::createThreadPoolDispatcher creating ThreadPool\n");
+   //printf("PthreadsThreadingFactory::createThreadPoolDispatcher creating ThreadPool\n");
    return new ThreadPool(this, numberThreads, name);
 }
 

@@ -214,7 +214,7 @@ Runnable* ThreadPoolQueue::takeRequest() {
 
       // did we just empty the queue?
       if (m_queue.empty()) {
-         printf("we just emptied queue, signal it\n");
+         //printf("we just emptied queue, signal it\n");
          //m_condQueueEmpty->notifyOne();
          pthread_cond_signal(&m_cond_queue_empty);
       }
