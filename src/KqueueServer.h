@@ -6,8 +6,10 @@
 
 #include "KernelEventServer.h"
 
-
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(__APPLE__) || \
+    defined(__FreeBSD__) || \
+    defined(__OpenBSD__) || \
+    defined(__NetBSD__)
 #define KQUEUE_SUPPORT 1
 #include <sys/event.h>
 #endif
