@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2015
 // BSD License
 
+#include <stdio.h>
+
 #include "PthreadsThreadingFactory.h"
 #include "PthreadsMutex.h"
 #include "PthreadsThread.h"

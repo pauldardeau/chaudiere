@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <stdio.h>
+
 /*
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #define HAVE_GCD 1
