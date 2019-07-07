@@ -60,11 +60,11 @@ void ThreadPoolWorker::stop() {
 
 void ThreadPoolWorker::run() {
    while (m_isRunning) {
-      if (Logger::isLogging(Debug)) {
-         char message[128];
-         ::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
-         Logger::debug(std::string(message));
-      }
+      //if (Logger::isLogging(Debug)) {
+      //   char message[128];
+      //   ::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
+      //   Logger::debug(std::string(message));
+      //}
 
       Runnable* runnable = m_poolQueue.takeRequest();
       if (runnable) {
@@ -88,13 +88,13 @@ void ThreadPoolWorker::run() {
                Logger::error("run method of runnable threw exception");
             }
 
-            if (Logger::isLogging(Debug)) {
-               char message[128];
-               ::snprintf(message, 128,
-                             "ending processing request on thread %d",
-                             m_workerId);
-               Logger::debug(std::string(message));
-            }
+            //if (Logger::isLogging(Debug)) {
+            //   char message[128];
+            //   ::snprintf(message, 128,
+            //                 "ending processing request on thread %d",
+            //                 m_workerId);
+            //   Logger::debug(std::string(message));
+            //}
          }
       }
    }

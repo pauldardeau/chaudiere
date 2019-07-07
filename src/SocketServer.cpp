@@ -602,10 +602,10 @@ int SocketServer::runSocketServer() {
          continue;
       }
 
-      if (Logger::isLogging(Debug)) {
-         Logger::debug("*****************************************");
-         Logger::debug("client connected");
-      }
+      //if (Logger::isLogging(Debug)) {
+      //   Logger::debug("*****************************************");
+      //   Logger::debug("client connected");
+      //}
 
       try {
          RequestHandler* handler = handlerForSocket(socket);

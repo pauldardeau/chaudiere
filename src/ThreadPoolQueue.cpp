@@ -118,7 +118,7 @@ ThreadPoolQueue::~ThreadPoolQueue() {
 //******************************************************************************
 
 bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
-   printf("ThreadPoolQueue::addRequest entered\n");
+   //printf("ThreadPoolQueue::addRequest entered\n");
 
    if (!m_isInitialized) {
       Logger::log(Warning, "ThreadPoolQueue::addRequest queue not initialized");
@@ -132,10 +132,10 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
       return false;
    }
  
-   printf("addRequest, obtaining lock\n"); 
+   //printf("addRequest, obtaining lock\n"); 
    //MutexLock lock(*m_mutex, "ThreadPoolQueue::addRequest");
    pthread_mutex_lock(&m_queue_lock);
-   printf("addRequest, have lock\n");
+   //printf("addRequest, have lock\n");
    
    if (!m_isRunning) {
       Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting request, queue is shutting down");
@@ -149,27 +149,27 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    //   ::exit(1);
    //}
 
-   Logger::log(Debug, "ThreadPoolQueue::addRequest accepting request");
+   //Logger::log(Debug, "ThreadPoolQueue::addRequest accepting request");
    
    const bool wasEmpty = m_queue.empty();
   
-   printf("adding new request to queue\n"); 
+   //printf("adding new request to queue\n"); 
    // add new request to the queue
    m_queue.push_back(runnableRequest);
    
    // did we just transition from QUEUE_EMPTY to QUEUE_NOT_EMPTY?
    if (wasEmpty) {
       // signal QUEUE_NOT_EMPTY (wake up a worker thread)
-      Logger::log(Debug, "signalling queue_not_empty");
+      //Logger::log(Debug, "signalling queue_not_empty");
       //m_condQueueNotEmpty->notifyAll();
-      printf("addRequest: broadcast queue not empty\n");
+      //printf("addRequest: broadcast queue not empty\n");
       pthread_cond_broadcast(&m_cond_queue_not_empty);
    } else {
-      printf("addRequest: no transition from empty to not-empty\n");
+      //printf("addRequest: no transition from empty to not-empty\n");
    }
  
    pthread_mutex_unlock(&m_queue_lock); 
-   printf("addRequest returning\n");
+   //printf("addRequest returning\n");
    return true;
 }
 
@@ -219,13 +219,13 @@ Runnable* ThreadPoolQueue::takeRequest() {
          pthread_cond_signal(&m_cond_queue_empty);
       }
    } else {
-      printf("queue is empty\n");
+      //printf("queue is empty\n");
    }
 
    pthread_mutex_unlock(&m_queue_lock);
 
    if (request != NULL) {
-      printf("takeRequest returning non-NULL Runnable\n");
+      //printf("takeRequest returning non-NULL Runnable\n");
    } else {
       printf("takeRequest returning NULL\n");
    }

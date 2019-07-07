@@ -81,10 +81,10 @@ ThreadPool::~ThreadPool() {
 //******************************************************************************
 
 bool ThreadPool::start() {
-   printf("ThreadPool::start entered\n");
+   //printf("ThreadPool::start entered\n");
    bool didStart = false;
    int oldCreatedCount = m_workersCreated;
-   printf("ThreadPool::start oldCreatedCount=%d\n", oldCreatedCount);
+   //printf("ThreadPool::start oldCreatedCount=%d\n", oldCreatedCount);
 
    if (!m_isRunning) {
       for (int i = 0; i < m_workerCount; ++i) {
@@ -96,10 +96,10 @@ bool ThreadPool::start() {
       }
 
       int newCreatedCount = m_workersCreated - oldCreatedCount;
-      printf("ThreadPool::start newCreatedCount = %d\n", newCreatedCount);
+      //printf("ThreadPool::start newCreatedCount = %d\n", newCreatedCount);
 
       if (newCreatedCount > 0) {
-         printf("ThreadPool::start positive newCreatedCount\n");
+         //printf("ThreadPool::start positive newCreatedCount\n");
          m_isRunning = true;
          didStart = true;
       } else {
@@ -136,13 +136,13 @@ bool ThreadPool::stop() {
 //******************************************************************************
 
 bool ThreadPool::addRequest(Runnable* runnableRequest) {
-   printf("ThreadPool::addRequest entered\n");
+   //printf("ThreadPool::addRequest entered\n");
    bool requestAdded = false;
 
    if (m_isRunning && (NULL != runnableRequest)) {
-      printf("ThreadPool::addRequest adding request to queue\n");
+      //printf("ThreadPool::addRequest adding request to queue\n");
       m_queue.addRequest(runnableRequest);
-      printf("ThreadPool::addRequest back from adding to queue\n");
+      //printf("ThreadPool::addRequest back from adding to queue\n");
       requestAdded = true;
    } else {
       if (!m_isRunning) {
