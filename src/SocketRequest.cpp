@@ -17,7 +17,8 @@ SocketRequest::SocketRequest(Socket* socket,
                              SocketServiceHandler* handler) :
    Runnable(),
    m_socket(socket),
-   m_handler(handler) {
+   m_handler(handler),
+   m_socketOwned(true) {
    Logger::logInstanceCreate("SocketRequest");
 }
 
@@ -77,3 +78,12 @@ void SocketRequest::requestComplete() {
 }
 
 //******************************************************************************
+
+bool SocketRequest::isSocketOwned() const {
+   return m_socketOwned;
+}
+
+void SocketRequest::setSocketOwned(bool socketOwned) {
+   m_socketOwned = socketOwned;
+}
+

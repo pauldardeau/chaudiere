@@ -26,6 +26,7 @@ private:
    Socket* m_socket;
    SocketRequest* m_socketRequest;
    bool m_isThreadPooling;
+   bool m_socketOwned;
 
    
 public:
@@ -66,7 +67,9 @@ public:
     * @see Socket()
     */
    Socket* getSocket();
-   
+  
+   bool isSocketOwned() const;
+   void setSocketOwned(bool socketOwned); 
 };
 
 }

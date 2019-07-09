@@ -56,10 +56,21 @@ public:
     */
    void requestComplete();
 
+   /**
+    * @return
+    */
+   bool isSocketOwned() const;
+
+   /**
+    *
+    */
+   void setSocketOwned(bool socketOwned);
+
    
 private:
    Socket* m_socket;
    SocketServiceHandler* m_handler;
+   bool m_socketOwned;
 
    // copies not allowed
    SocketRequest(const SocketRequest&);

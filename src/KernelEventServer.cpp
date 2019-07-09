@@ -121,15 +121,15 @@ void KernelEventServer::run() {
    
    for (;;) {
       
-      const bool isLoggingDebug = Logger::isLogging(Debug);
+      //const bool isLoggingDebug = Logger::isLogging(Debug);
       
       m_numberEventsReturned = getKernelEvents(m_maxConnections);
       
-      if (isLoggingDebug) {
-         ::snprintf(msg, 128, "KernelEventServer::run, numberEventsReturned = %d",
-                  m_numberEventsReturned);
-         Logger::debug(msg);
-      }
+      //if (isLoggingDebug) {
+      //   ::snprintf(msg, 128, "KernelEventServer::run, numberEventsReturned = %d",
+      //            m_numberEventsReturned);
+      //   Logger::debug(msg);
+      //}
       
       if (m_numberEventsReturned < 1) {
          continue;
@@ -139,25 +139,25 @@ void KernelEventServer::run() {
          
          int client_fd = fileDescriptorForEventIndex(index);
          
-         if (isLoggingDebug) {
-            ::snprintf(msg, 128, "KernelEventServer::run waiting for locks fd=%d",
-                     client_fd);
-            Logger::debug(msg);
-         }
+         //if (isLoggingDebug) {
+         //   ::snprintf(msg, 128, "KernelEventServer::run waiting for locks fd=%d",
+         //            client_fd);
+         //   Logger::debug(msg);
+         //}
          
-         if (isLoggingDebug) {
-            Logger::debug("KernelEventServer::run have locks");
-         }
+         //if (isLoggingDebug) {
+         //   Logger::debug("KernelEventServer::run have locks");
+         //}
          
          if (client_fd == m_listenerFD) {
             newfd = ::accept(m_listenerFD, (struct sockaddr *)&clientaddr, &addrlen);
             if (newfd == -1) {
                Logger::warning("server accept failed");
             } else {
-               if (isLoggingDebug) {
-                  ::snprintf(msg, 128, "client %d connected", newfd);
-                  Logger::debug(msg);
-               }
+               //if (isLoggingDebug) {
+               //   ::snprintf(msg, 128, "client %d connected", newfd);
+               //   Logger::debug(msg);
+               //}
                
                if (!addFileDescriptorForRead(newfd)) {
                   Logger::critical("kernel event server failed adding read filter");
@@ -165,10 +165,10 @@ void KernelEventServer::run() {
             }
          } else {
             if (isEventReadClose(index)) {
-               if (isLoggingDebug) {
-                  ::snprintf(msg, 128, "client closed read %d", client_fd);
-                  Logger::debug(msg);
-               }
+               //if (isLoggingDebug) {
+               //   ::snprintf(msg, 128, "client closed read %d", client_fd);
+               //   Logger::debug(msg);
+               //}
                
                // was it busy?
                if (m_listBusyFlags[index]) {
@@ -180,10 +180,10 @@ void KernelEventServer::run() {
                }
             }
             else if (isEventDisconnect(index)) {
-               if (isLoggingDebug) {
-                  ::snprintf(msg, 128, "client disconnected %d", client_fd);
-                  Logger::debug(msg);
-               }
+               //if (isLoggingDebug) {
+               //   ::snprintf(msg, 128, "client disconnected %d", client_fd);
+               //   Logger::debug(msg);
+               //}
                
                // was it busy?
                if (m_listBusyFlags[index]) {
@@ -201,17 +201,17 @@ void KernelEventServer::run() {
                const bool isAlreadyBusy = m_listBusyFlags[index];
                
                if (!isAlreadyBusy) {
-                  if (isLoggingDebug) {
-                     ::snprintf(msg, 128, "handling read for socket %d", client_fd);
-                     Logger::debug(msg);
-                  }
+                  //if (isLoggingDebug) {
+                  //   ::snprintf(msg, 128, "handling read for socket %d", client_fd);
+                  //   Logger::debug(msg);
+                  //}
                   
                   // remove file descriptor from watch
-                  if (isLoggingDebug) {
-                     ::snprintf(msg, 128, "removing socket from watch for read (%d)",
-                              client_fd);
-                     Logger::debug(msg);
-                  }
+                  //if (isLoggingDebug) {
+                  //   ::snprintf(msg, 128, "removing socket from watch for read (%d)",
+                  //            client_fd);
+                  //   Logger::debug(msg);
+                  //}
 
                   if (!removeFileDescriptorFromRead(client_fd)) {
                      Logger::error("unable to remove file descriptor from read");
@@ -222,16 +222,17 @@ void KernelEventServer::run() {
                   //TODO: grab stats (connections, requests)
                   
                   // give up our lock
-                  if (isLoggingDebug) {
-                     ::snprintf(msg, 128, "giving up locks and dispatching request for socket %d",
-                              client_fd);
-                     Logger::debug(msg);
-                  }
+                  //if (isLoggingDebug) {
+                  //   ::snprintf(msg, 128, "giving up locks and dispatching request for socket %d",
+                  //            client_fd);
+                  //   Logger::debug(msg);
+                  //}
                   
                   Socket clientSocket(this, client_fd);
                   clientSocket.setUserIndex(index);
 
                   SocketRequest socketRequest(&clientSocket, m_socketServiceHandler);
+		  socketRequest.setSocketOwned(false);
 
                   try {
                      m_socketServiceHandler->serviceSocket(&socketRequest);
@@ -253,9 +254,9 @@ void KernelEventServer::run() {
             }
          }
          
-         if (isLoggingDebug) {
-            Logger::debug("KernelEventServer::run finished iteration of inner loop");
-         }
+         //if (isLoggingDebug) {
+         //   Logger::debug("KernelEventServer::run finished iteration of inner loop");
+         //}
       }
    }  // for (;;)
 }

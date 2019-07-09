@@ -16,6 +16,7 @@
 #include "Socket.h"
 
 #include "RequestHandler.h"
+#include "SocketRequest.h"
 
 // utils
 #include "BasicException.h"
@@ -578,6 +579,7 @@ void SocketServer::serviceSocket(SocketRequest* socketRequest) {
       // Hand off the request to the thread pool for asynchronous processing
       RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->setThreadPooling(true);
+      requestHandler->setSocketOwned(socketRequest->isSocketOwned());
       m_threadPool->addRequest(requestHandler);
    } else {
       // no thread pool available -- process it synchronously

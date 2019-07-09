@@ -16,7 +16,8 @@ using namespace chaudiere;
 RequestHandler::RequestHandler(SocketRequest* socketRequest) :
    m_socket(NULL),
    m_socketRequest(socketRequest),
-   m_isThreadPooling(false) {
+   m_isThreadPooling(false),
+   m_socketOwned(true) {
    Logger::logInstanceCreate("RequestHandler");
 }
 
@@ -25,7 +26,8 @@ RequestHandler::RequestHandler(SocketRequest* socketRequest) :
 RequestHandler::RequestHandler(Socket* socket) :
    m_socket(socket),
    m_socketRequest(NULL),
-   m_isThreadPooling(false) {
+   m_isThreadPooling(false),
+   m_socketOwned(true) {
    Logger::logInstanceCreate("RequestHandler");
 }
 
@@ -66,3 +68,12 @@ Socket* RequestHandler::getSocket() {
 }
 
 //******************************************************************************
+
+bool RequestHandler::isSocketOwned() const {
+   return m_socketOwned;
+}
+
+void RequestHandler::setSocketOwned(bool socketOwned) {
+   m_socketOwned = socketOwned;
+}
+
