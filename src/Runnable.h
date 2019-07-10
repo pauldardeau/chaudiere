@@ -26,7 +26,8 @@ public:
     */
    Runnable() :
       m_completionObserver(NULL),
-      m_runByThreadId(0) {
+      m_runByThreadId(0),
+      m_autoDelete(false) {
    }
 
    /**
@@ -89,11 +90,20 @@ public:
          m_completionObserver->notifyRunComplete(this);
       }
    }
+
+   bool isAutoDelete() const {
+      return m_autoDelete;
+   }
+
+   void setAutoDelete() {
+      m_autoDelete = true;
+   }
    
 private:
    RunCompletionObserver* m_completionObserver;
    std::string m_runByThreadWorkerId;
    int m_runByThreadId;
+   bool m_autoDelete;
 
    // disallow copies
    Runnable(const Runnable&);

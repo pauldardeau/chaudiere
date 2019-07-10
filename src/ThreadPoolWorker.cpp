@@ -97,6 +97,10 @@ void ThreadPoolWorker::run() {
             //}
          }
       }
+
+      if (runnable->isAutoDelete()) {
+         delete runnable;
+      }
    }
 }
 
