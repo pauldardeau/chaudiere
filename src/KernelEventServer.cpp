@@ -250,23 +250,23 @@ void KernelEventServer::run() {
 void KernelEventServer::notifySocketComplete(Socket* socket) {
    //printf("KernelEventServer::notifySocketComplete\n");
 
-   char msg[128];
-   const bool isLoggingDebug = Logger::isLogging(Debug);
+   //char msg[128];
+   //const bool isLoggingDebug = Logger::isLogging(Debug);
   
    const int socketFD = socket->getFileDescriptor();
   
-   if (isLoggingDebug) {
-      ::snprintf(msg, 128, "completed request with socket %d", socketFD);
-      Logger::debug(msg);
-   }
+   //if (isLoggingDebug) {
+   //   ::snprintf(msg, 128, "completed request with socket %d", socketFD);
+   //   Logger::debug(msg);
+   //}
    
-   if (isLoggingDebug) {
-      Logger::debug("notifySocketComplete: waiting for locks");
-   }
+   //if (isLoggingDebug) {
+   //   Logger::debug("notifySocketComplete: waiting for locks");
+   //}
    
-   if (isLoggingDebug) {
-      Logger::debug("notifySocketComplete: have locks");
-   }
+   //if (isLoggingDebug) {
+   //   Logger::debug("notifySocketComplete: have locks");
+   //}
    
    // mark the fd as not being busy anymore
    setBusyFD(socketFD, false);
@@ -274,14 +274,14 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
    if (!socket->isConnected()) {
       
       // remove file descriptor and close socket
-      if (isLoggingDebug) {
-         ::snprintf(msg, 128, "notifySocketComplete: client disconnect %d",
-                  socketFD);
-         Logger::debug(msg);
+      //if (isLoggingDebug) {
+      //   ::snprintf(msg, 128, "notifySocketComplete: client disconnect %d",
+      //            socketFD);
+      //   Logger::debug(msg);
 
-         ::snprintf(msg, 128, "removing file descriptor %d", socketFD);
-         Logger::debug(msg);
-      }
+      //   ::snprintf(msg, 128, "removing file descriptor %d", socketFD);
+      //   Logger::debug(msg);
+      //}
       
       if (!removeFileDescriptorFromRead(socketFD)) {
          Logger::error("unable to remove file descriptor from read");
@@ -291,11 +291,11 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
    } else {
       // it's still connected
       
-      if (isLoggingDebug) {
-         ::snprintf(msg, 128, "adding socket back to watch for read (%d)",
-                  socketFD);
-         Logger::debug(msg);
-      }
+      //if (isLoggingDebug) {
+      //   ::snprintf(msg, 128, "adding socket back to watch for read (%d)",
+      //            socketFD);
+      //   Logger::debug(msg);
+      //}
 
       // add socket back to watch
       if (!addFileDescriptorForRead(socketFD)) {
