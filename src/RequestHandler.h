@@ -70,6 +70,8 @@ public:
   
    bool isSocketOwned() const;
    void setSocketOwned(bool socketOwned); 
+
+   virtual void notifyOnCompletion();
 };
 
 }

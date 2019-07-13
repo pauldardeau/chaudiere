@@ -39,6 +39,10 @@ RequestHandler::~RequestHandler() {
    if (m_socket) {
       m_socket->close();
    }
+
+   if ((NULL != m_socketRequest) && m_socketRequest->isAutoDelete()) {
+      delete m_socketRequest;
+   }
 }
 
 //******************************************************************************
@@ -73,7 +77,20 @@ bool RequestHandler::isSocketOwned() const {
    return m_socketOwned;
 }
 
+//******************************************************************************
+
 void RequestHandler::setSocketOwned(bool socketOwned) {
    m_socketOwned = socketOwned;
 }
+
+//******************************************************************************
+
+void RequestHandler::notifyOnCompletion() {
+   Runnable::notifyOnCompletion();
+   if (NULL != m_socketRequest) {
+      m_socketRequest->notifyOnCompletion();
+   }
+}
+
+//******************************************************************************
 
