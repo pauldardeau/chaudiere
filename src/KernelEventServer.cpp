@@ -22,7 +22,7 @@
 #include "ServerSocket.h"
 #include "BasicException.h"
 
-
+using namespace std;
 using namespace chaudiere;
 
 //******************************************************************************
@@ -31,12 +31,10 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
                                      Mutex& hwmConnectionsMutex,
                                      const std::string& serverName) :
    m_socketServiceHandler(NULL),
-   m_listBusyFlags(NULL),
    m_serverPort(0),
    m_maxConnections(0),
    m_listenBacklog(10),
    m_listenerFD(-1),
-   m_fdmax(0),
    m_numberEventsReturned(0) {
 }
 
@@ -45,11 +43,6 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
 KernelEventServer::~KernelEventServer() {
    
    delete m_socketServiceHandler;
-   
-   if (NULL != m_listBusyFlags) {
-      ::free(m_listBusyFlags);
-      m_listBusyFlags = NULL;
-   }
    
    if (-1 != m_listenerFD) {
       ::close(m_listenerFD);
@@ -101,9 +94,6 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
       return false;
    }
    
-   m_fdmax = m_listenerFD; // so far, it's this one
-   m_listBusyFlags = (bool*) ::calloc(m_maxConnections, sizeof(bool));
-   
    return true;
 }
 
@@ -137,8 +127,9 @@ void KernelEventServer::run() {
       
       for (int index = 0; index < m_numberEventsReturned; ++index) {
          
-         int client_fd = fileDescriptorForEventIndex(index);
-         
+         const int client_fd = fileDescriptorForEventIndex(index);
+         //printf("have event for fd=%d\n", client_fd);
+
          //if (isLoggingDebug) {
          //   ::snprintf(msg, 128, "KernelEventServer::run waiting for locks fd=%d",
          //            client_fd);
@@ -158,7 +149,7 @@ void KernelEventServer::run() {
                //   ::snprintf(msg, 128, "client %d connected", newfd);
                //   Logger::debug(msg);
                //}
-               
+
                if (!addFileDescriptorForRead(newfd)) {
                   Logger::critical("kernel event server failed adding read filter");
                }
@@ -169,26 +160,23 @@ void KernelEventServer::run() {
                //   ::snprintf(msg, 128, "client closed read %d", client_fd);
                //   Logger::debug(msg);
                //}
-               
-               // was it busy?
-               if (m_listBusyFlags[index]) {
-                  m_listBusyFlags[index] = false;
-               }
+
+               //printf("event is read close\n");
+             
+               removeBusyFD(client_fd); 
                
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
-            }
-            else if (isEventDisconnect(index)) {
+            } else if (isEventDisconnect(index)) {
                //if (isLoggingDebug) {
                //   ::snprintf(msg, 128, "client disconnected %d", client_fd);
                //   Logger::debug(msg);
                //}
-               
-               // was it busy?
-               if (m_listBusyFlags[index]) {
-                  m_listBusyFlags[index] = false;
-               }
+
+               //printf("event is disconnect\n");
+              
+               removeBusyFD(client_fd); 
                
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
@@ -196,9 +184,11 @@ void KernelEventServer::run() {
                
                ::close(client_fd);
             } else if (isEventRead(index)) {
+
+               //printf("event is read\n");
                
                // are we already busy with this socket?
-               const bool isAlreadyBusy = m_listBusyFlags[index];
+               const bool isAlreadyBusy = isBusyFD(client_fd);
                
                if (!isAlreadyBusy) {
                   //if (isLoggingDebug) {
@@ -217,7 +207,7 @@ void KernelEventServer::run() {
                      Logger::error("unable to remove file descriptor from read");
                   }
                   
-                  m_listBusyFlags[index] = true;
+                  setBusyFD(client_fd, true);
                   
                   //TODO: grab stats (connections, requests)
                   
@@ -228,14 +218,15 @@ void KernelEventServer::run() {
                   //   Logger::debug(msg);
                   //}
                   
-                  Socket clientSocket(this, client_fd);
-                  clientSocket.setUserIndex(index);
-
-                  SocketRequest socketRequest(&clientSocket, m_socketServiceHandler);
-		  socketRequest.setSocketOwned(false);
+                  SocketRequest* socketRequest =
+                     new SocketRequest(this, client_fd, NULL);
+		  socketRequest->setSocketOwned(false);
+                  socketRequest->setUserIndex(index);
+                  socketRequest->setAutoDelete();
 
                   try {
-                     m_socketServiceHandler->serviceSocket(&socketRequest);
+                     //printf("invoking serviceSocket on handler\n");
+                     m_socketServiceHandler->serviceSocket(socketRequest);
                   } catch (const BasicException& be) {
                      Logger::error("exception in serviceSocket on handler: " + be.whatString());
                   } catch (const std::exception& e) {
@@ -243,20 +234,13 @@ void KernelEventServer::run() {
                   } catch (...) {
                      Logger::error("exception in serviceSocket on handler");
                   }
-                  
-                  m_listBusyFlags[index] = false;
-                  addFileDescriptorForRead(client_fd);
-                  
                } else {
+                  printf("already busy, ignoring event\n");
                   ::snprintf(msg, 128, "already busy with socket %d", client_fd);
                   Logger::warning(msg);
                }
             }
          }
-         
-         //if (isLoggingDebug) {
-         //   Logger::debug("KernelEventServer::run finished iteration of inner loop");
-         //}
       }
    }  // for (;;)
 }
@@ -264,17 +248,17 @@ void KernelEventServer::run() {
 //******************************************************************************
 
 void KernelEventServer::notifySocketComplete(Socket* socket) {
+   //printf("KernelEventServer::notifySocketComplete\n");
+
    char msg[128];
    const bool isLoggingDebug = Logger::isLogging(Debug);
-   
+  
    const int socketFD = socket->getFileDescriptor();
-   
+  
    if (isLoggingDebug) {
       ::snprintf(msg, 128, "completed request with socket %d", socketFD);
       Logger::debug(msg);
    }
-   
-   const int userIndex = socket->getUserIndex();
    
    if (isLoggingDebug) {
       Logger::debug("notifySocketComplete: waiting for locks");
@@ -285,7 +269,7 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
    }
    
    // mark the fd as not being busy anymore
-   m_listBusyFlags[userIndex] = false;
+   setBusyFD(socketFD, false);
    
    if (!socket->isConnected()) {
       
@@ -324,6 +308,37 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
 
 int KernelEventServer::getListenerSocketFileDescriptor() const {
    return m_listenerFD;
+}
+
+//******************************************************************************
+
+bool KernelEventServer::isBusyFD(int fd) const {
+   unordered_map<int,bool>::const_iterator it = m_busyFlags.find(fd);
+   if (it != m_busyFlags.end()) {
+      return it->second;
+   } else {
+      return false;
+   }
+}
+
+//******************************************************************************
+
+void KernelEventServer::setBusyFD(int fd, bool busy) {
+   unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
+   if (it != m_busyFlags.end()) {
+      it->second = busy;
+   } else {
+      m_busyFlags[fd] = busy;
+   }
+}
+
+//******************************************************************************
+
+void KernelEventServer::removeBusyFD(int fd) {
+   unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
+   if (it != m_busyFlags.end()) {
+      m_busyFlags.erase(it);
+   }
 }
 
 //******************************************************************************

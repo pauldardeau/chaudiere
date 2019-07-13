@@ -5,6 +5,7 @@
 #define CHAUDIERE_KERNELEVENTSERVER_H
 
 #include <memory>
+#include <unordered_map>
 
 #include "Socket.h"
 #include "SocketCompletionObserver.h"
@@ -118,15 +119,34 @@ protected:
     */
    int getListenerSocketFileDescriptor() const;
 
+   /**
+    *
+    * @param fd
+    * @return
+    */
+   bool isBusyFD(int fd) const;
+
+   /**
+    *
+    * @param fd
+    * @param busy
+    */
+   void setBusyFD(int fd, bool busy);
+
+   /**
+    *
+    * @param fd
+    */
+   void removeBusyFD(int fd);
+
 
 private:
    SocketServiceHandler* m_socketServiceHandler;
-   bool* m_listBusyFlags;
+   std::unordered_map<int,bool> m_busyFlags;
    int m_serverPort;
    int m_maxConnections;
    int m_listenBacklog;
    int m_listenerFD;
-   int m_fdmax;
    int m_numberEventsReturned;
 
    // copying not allowed
