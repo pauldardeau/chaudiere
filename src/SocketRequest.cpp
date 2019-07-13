@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #include "SocketRequest.h"
-#include "Socket.h"
 #include "SocketServiceHandler.h"
 #include "Logger.h"
 #include "BasicException.h"
@@ -17,9 +16,26 @@ SocketRequest::SocketRequest(Socket* socket,
                              SocketServiceHandler* handler) :
    Runnable(),
    m_socket(socket),
+   m_borrowedSocket(socket),
    m_handler(handler),
+   m_containedSocket(-1),  // not used
    m_socketOwned(true) {
    Logger::logInstanceCreate("SocketRequest");
+}
+
+//******************************************************************************
+
+SocketRequest::SocketRequest(SocketCompletionObserver* completionObserver,
+                             int socketFD,
+                             SocketServiceHandler* handler) :
+   Runnable(),
+   m_socket(NULL),
+   m_borrowedSocket(NULL),  // not used
+   m_handler(handler),
+   m_containedSocket(completionObserver, socketFD),
+   m_socketOwned(false) {
+   Logger::logInstanceCreate("SocketRequest");
+   m_socket = &m_containedSocket;
 }
 
 //******************************************************************************
@@ -83,7 +99,25 @@ bool SocketRequest::isSocketOwned() const {
    return m_socketOwned;
 }
 
+//******************************************************************************
+
 void SocketRequest::setSocketOwned(bool socketOwned) {
    m_socketOwned = socketOwned;
 }
+
+//******************************************************************************
+
+void SocketRequest::setUserIndex(int userIndex) {
+   m_socket->setUserIndex(userIndex);
+}
+
+//******************************************************************************
+
+void SocketRequest::notifyOnCompletion() {
+   requestComplete();
+   Runnable::notifyOnCompletion();
+   //requestComplete();
+}
+
+//******************************************************************************
 

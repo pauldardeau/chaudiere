@@ -6,12 +6,13 @@
 
 #include <memory>
 #include "Runnable.h"
+#include "Socket.h"
 
 
 namespace chaudiere
 {
-   class Socket;
    class SocketServiceHandler;
+   class SocketCompletionObserver;
 
 /**
  *
@@ -27,6 +28,10 @@ public:
     * @see SocketServiceHandler()
     */
    SocketRequest(Socket* socket, SocketServiceHandler* handler);
+
+   SocketRequest(SocketCompletionObserver* completionObserver,
+                 int socketFD,
+                 SocketServiceHandler* handler);
    
    /**
     * Destructor
@@ -63,13 +68,26 @@ public:
 
    /**
     *
+    * @param socketOwned
     */
    void setSocketOwned(bool socketOwned);
 
+   /**
+    *
+    * @param index
+    */
+   void setUserIndex(int index);
+
+   /**
+    *
+    */
+   virtual void notifyOnCompletion();
    
 private:
    Socket* m_socket;
+   Socket* m_borrowedSocket;
    SocketServiceHandler* m_handler;
+   Socket m_containedSocket;
    bool m_socketOwned;
 
    // copies not allowed
