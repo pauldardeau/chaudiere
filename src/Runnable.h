@@ -78,7 +78,7 @@ public:
     * @param completionObserver
     * @see RunCompletionObserver()
     */
-   void setCompletionObserver(RunCompletionObserver* completionObserver) {
+   virtual void setCompletionObserver(RunCompletionObserver* completionObserver) {
        m_completionObserver = completionObserver;
    }
    
@@ -91,11 +91,11 @@ public:
       }
    }
 
-   bool isAutoDelete() const {
+   virtual bool isAutoDelete() const {
       return m_autoDelete;
    }
 
-   void setAutoDelete() {
+   virtual void setAutoDelete() {
       m_autoDelete = true;
    }
    
