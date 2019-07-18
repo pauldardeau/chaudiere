@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 
 #include <string>
 
@@ -21,6 +22,7 @@
 #include "Logger.h"
 #include "ServerSocket.h"
 #include "BasicException.h"
+#include "ThreadingFactory.h"
 
 using namespace std;
 using namespace chaudiere;
@@ -72,6 +74,9 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
       Logger::critical("maxConnections must be positive, non-zero value");
       return false;
    }
+
+   ThreadingFactory* tf = ThreadingFactory::getThreadingFactory();
+   m_busyFlagsMutex = tf->createMutex("busyFlags");
    
    m_listenerFD = Socket::createSocket();
    if (m_listenerFD == -1) {
@@ -99,6 +104,12 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
 
 //******************************************************************************
 
+bool KernelEventServer::isValidDescriptor(int fd) const {
+   return ::fcntl(fd, F_GETFD) != EBADF;
+}
+
+//******************************************************************************
+
 void KernelEventServer::run() {
    struct sockaddr_in clientaddr;
    socklen_t addrlen = sizeof(clientaddr);
@@ -111,15 +122,7 @@ void KernelEventServer::run() {
    
    for (;;) {
       
-      //const bool isLoggingDebug = Logger::isLogging(Debug);
-      
       m_numberEventsReturned = getKernelEvents(m_maxConnections);
-      
-      //if (isLoggingDebug) {
-      //   ::snprintf(msg, 128, "KernelEventServer::run, numberEventsReturned = %d",
-      //            m_numberEventsReturned);
-      //   Logger::debug(msg);
-      //}
       
       if (m_numberEventsReturned < 1) {
          continue;
@@ -128,117 +131,85 @@ void KernelEventServer::run() {
       for (int index = 0; index < m_numberEventsReturned; ++index) {
          
          const int client_fd = fileDescriptorForEventIndex(index);
-         //printf("have event for fd=%d\n", client_fd);
 
-         //if (isLoggingDebug) {
-         //   ::snprintf(msg, 128, "KernelEventServer::run waiting for locks fd=%d",
-         //            client_fd);
-         //   Logger::debug(msg);
-         //}
-         
-         //if (isLoggingDebug) {
-         //   Logger::debug("KernelEventServer::run have locks");
-         //}
-         
          if (client_fd == m_listenerFD) {
             newfd = ::accept(m_listenerFD, (struct sockaddr *)&clientaddr, &addrlen);
             if (newfd == -1) {
                Logger::warning("server accept failed");
             } else {
-               //if (isLoggingDebug) {
-               //   ::snprintf(msg, 128, "client %d connected", newfd);
-               //   Logger::debug(msg);
-               //}
-
                if (!addFileDescriptorForRead(newfd)) {
                   Logger::critical("kernel event server failed adding read filter");
                }
             }
          } else {
+            if (client_fd == 0) {
+               continue;
+            }
+
+            //printf("fd=%d\n", client_fd);
+            if (!isValidDescriptor(client_fd)) {
+               printf("invalid file descriptor, removing\n");
+               removeBusyFD(client_fd);
+	       removeFileDescriptorFromRead(client_fd);
+               continue;
+            }
+
             if (isEventReadClose(index)) {
-               //if (isLoggingDebug) {
-               //   ::snprintf(msg, 128, "client closed read %d", client_fd);
-               //   Logger::debug(msg);
-               //}
-
-               //printf("event is read close\n");
+               //printf("----------- event is read close, fd=%d\n", client_fd);
              
-               removeBusyFD(client_fd); 
-               
+               removeBusyFD(client_fd);
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
+	       ::close(client_fd);
             } else if (isEventDisconnect(index)) {
-               //if (isLoggingDebug) {
-               //   ::snprintf(msg, 128, "client disconnected %d", client_fd);
-               //   Logger::debug(msg);
-               //}
-
-               //printf("event is disconnect\n");
+               //printf("xxxxxxxxxxxxx event is disconnect, fd=%d\n", client_fd);
               
-               removeBusyFD(client_fd); 
-               
+               removeBusyFD(client_fd);
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
-               
-               ::close(client_fd);
+	       ::close(client_fd);
             } else if (isEventRead(index)) {
+               //printf("event is read, fd=%d\n", client_fd);
 
-               //printf("event is read\n");
+	       if (removeFileDescriptorFromRead(client_fd)) {
+                  // are we already busy with this socket?
+                  const bool isAlreadyBusy = isBusyFD(client_fd);
                
-               // are we already busy with this socket?
-               const bool isAlreadyBusy = isBusyFD(client_fd);
-               
-               if (!isAlreadyBusy) {
-                  //if (isLoggingDebug) {
-                  //   ::snprintf(msg, 128, "handling read for socket %d", client_fd);
-                  //   Logger::debug(msg);
-                  //}
+                  if (!isAlreadyBusy) {
+                     //if (!removeFileDescriptorFromRead(client_fd)) {
+                     //   Logger::error("unable to remove file descriptor from read");
+                     //}
+                 
+                     //printf("setting busy, fd=%d\n", client_fd); 
+                     setBusyFD(client_fd, true);
                   
-                  // remove file descriptor from watch
-                  //if (isLoggingDebug) {
-                  //   ::snprintf(msg, 128, "removing socket from watch for read (%d)",
-                  //            client_fd);
-                  //   Logger::debug(msg);
-                  //}
+                     SocketRequest* socketRequest =
+                        new SocketRequest(this, client_fd, NULL);
+		     socketRequest->setSocketOwned(false);
+                     socketRequest->setUserIndex(index);
+                     socketRequest->setAutoDelete();
 
-                  if (!removeFileDescriptorFromRead(client_fd)) {
-                     Logger::error("unable to remove file descriptor from read");
+                     try {
+                        m_socketServiceHandler->serviceSocket(socketRequest);
+                     } catch (const BasicException& be) {
+                        Logger::error("exception in serviceSocket on handler: " + be.whatString());
+                     } catch (const std::exception& e) {
+                        Logger::error("exception in serviceSocket on handler: " + std::string(e.what()));
+                     } catch (...) {
+                        Logger::error("exception in serviceSocket on handler");
+                     }
+                  } else {
+                     //printf("already busy, ignoring event fd=%d\n", client_fd);
+                     //::snprintf(msg, 128, "already busy with socket %d", client_fd);
+                     //Logger::warning(msg);
                   }
-                  
-                  setBusyFD(client_fd, true);
-                  
-                  //TODO: grab stats (connections, requests)
-                  
-                  // give up our lock
-                  //if (isLoggingDebug) {
-                  //   ::snprintf(msg, 128, "giving up locks and dispatching request for socket %d",
-                  //            client_fd);
-                  //   Logger::debug(msg);
-                  //}
-                  
-                  SocketRequest* socketRequest =
-                     new SocketRequest(this, client_fd, NULL);
-		  socketRequest->setSocketOwned(false);
-                  socketRequest->setUserIndex(index);
-                  socketRequest->setAutoDelete();
+	       } else {
+                  //printf("attempt to remove descriptor failed, fd=%d\n", client_fd);
+		  removeBusyFD(client_fd);
+	       }
 
-                  try {
-                     //printf("invoking serviceSocket on handler\n");
-                     m_socketServiceHandler->serviceSocket(socketRequest);
-                  } catch (const BasicException& be) {
-                     Logger::error("exception in serviceSocket on handler: " + be.whatString());
-                  } catch (const std::exception& e) {
-                     Logger::error("exception in serviceSocket on handler: " + std::string(e.what()));
-                  } catch (...) {
-                     Logger::error("exception in serviceSocket on handler");
-                  }
-               } else {
-                  printf("already busy, ignoring event\n");
-                  ::snprintf(msg, 128, "already busy with socket %d", client_fd);
-                  Logger::warning(msg);
-               }
             }
          }
       }
@@ -250,56 +221,32 @@ void KernelEventServer::run() {
 void KernelEventServer::notifySocketComplete(Socket* socket) {
    //printf("KernelEventServer::notifySocketComplete\n");
 
-   //char msg[128];
-   //const bool isLoggingDebug = Logger::isLogging(Debug);
-  
    const int socketFD = socket->getFileDescriptor();
+   //printf("KernelEventServer::notifySocketComplete, fd=%d\n", socketFD);
+   if (socketFD == -1) {
+      //printf("$$$$$$$$ socketFD is -1. this shouldn't happen. exiting\n");
+      //exit(1);
+      return;
+   }
   
-   //if (isLoggingDebug) {
-   //   ::snprintf(msg, 128, "completed request with socket %d", socketFD);
-   //   Logger::debug(msg);
-   //}
-   
-   //if (isLoggingDebug) {
-   //   Logger::debug("notifySocketComplete: waiting for locks");
-   //}
-   
-   //if (isLoggingDebug) {
-   //   Logger::debug("notifySocketComplete: have locks");
-   //}
-   
    // mark the fd as not being busy anymore
    setBusyFD(socketFD, false);
    
-   if (!socket->isConnected()) {
-      
-      // remove file descriptor and close socket
-      //if (isLoggingDebug) {
-      //   ::snprintf(msg, 128, "notifySocketComplete: client disconnect %d",
-      //            socketFD);
-      //   Logger::debug(msg);
-
-      //   ::snprintf(msg, 128, "removing file descriptor %d", socketFD);
-      //   Logger::debug(msg);
+   if (!isValidDescriptor(socketFD)) {
+      //if (!removeFileDescriptorFromRead(socketFD)) {
+      //   Logger::error("unable to remove file descriptor from read");
       //}
-      
-      if (!removeFileDescriptorFromRead(socketFD)) {
-         Logger::error("unable to remove file descriptor from read");
-      }
-      
-      ::close(socketFD);
+      removeBusyFD(socketFD);
    } else {
-      // it's still connected
-      
-      //if (isLoggingDebug) {
-      //   ::snprintf(msg, 128, "adding socket back to watch for read (%d)",
-      //            socketFD);
-      //   Logger::debug(msg);
-      //}
-
       // add socket back to watch
-      if (!addFileDescriptorForRead(socketFD)) {
-         Logger::critical("kernel event add read filter failed");
+      if (socket->isOpen()) {
+         //printf("adding for read, fd=%d\n", socketFD);
+         if (!addFileDescriptorForRead(socketFD)) {
+            Logger::critical("kernel event add read filter failed");
+         }
+      } else {
+         //printf("*** not adding for read, socket closed\n");
+	 removeBusyFD(socketFD);
       }
    }
 }
@@ -313,6 +260,7 @@ int KernelEventServer::getListenerSocketFileDescriptor() const {
 //******************************************************************************
 
 bool KernelEventServer::isBusyFD(int fd) const {
+   MutexLock locker(*m_busyFlagsMutex);
    unordered_map<int,bool>::const_iterator it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
       return it->second;
@@ -324,6 +272,8 @@ bool KernelEventServer::isBusyFD(int fd) const {
 //******************************************************************************
 
 void KernelEventServer::setBusyFD(int fd, bool busy) {
+   //printf("setting busy = %s for fd=%d\n", busy ? "true" : "false", fd);
+   MutexLock locker(*m_busyFlagsMutex);
    unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
       it->second = busy;
@@ -334,10 +284,17 @@ void KernelEventServer::setBusyFD(int fd, bool busy) {
 
 //******************************************************************************
 
-void KernelEventServer::removeBusyFD(int fd) {
+bool KernelEventServer::removeBusyFD(int fd) {
+   //printf("removing busy entry for fd=%d\n", fd);
+   MutexLock locker(*m_busyFlagsMutex);
    unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
+      //printf("actually removing entry, fd=%d\n", fd);
       m_busyFlags.erase(it);
+      return true;
+   } else {
+      //printf("no busy entry for fd=%d\n", fd);
+      return false;
    }
 }
 

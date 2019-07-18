@@ -95,8 +95,7 @@ bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
 
 int EpollServer::getKernelEvents(int maxConnections) {
 #ifdef EPOLL_SUPPORT
-   ::epoll_wait(m_epfd, m_events, maxConnections, -1);
-   return maxConnections;
+   return ::epoll_wait(m_epfd, m_events, maxConnections, -1);
 #else
    return 0;
 #endif
@@ -128,17 +127,17 @@ bool EpollServer::addFileDescriptorForRead(int fileDescriptor) {
    if (::epoll_ctl(m_epfd, EPOLL_CTL_ADD, fileDescriptor, &ev) < 0) {
       Logger::critical("epoll_ctl failed in add filter");
       if (errno == EBADF) {
-         printf("EBADF\n");
+         printf("epoll_ctl EBADF, fd=%d\n", fileDescriptor);
       } else if (errno == EEXIST) {
-         printf("EEXIST\n");
+         printf("epoll_ctl EEXIST, fd=%d\n", fileDescriptor);
       } else if (errno == EINVAL) {
-         printf("EINVAL\n");
+         printf("epoll_ctl EINVAL, fd=%d\n", fileDescriptor);
       } else if (errno == ENOMEM) {
-         printf("ENOMEM\n");
+         printf("epoll_ctl ENOMEM, fd=%d\n", fileDescriptor);
       } else if (errno == ENOSPC) {
-         printf("ENOSPC\n");
+         printf("epoll_ctl ENOSPC, fd=%d\n", fileDescriptor);
       } else if (errno == EPERM) {
-         printf("EPERM\n");
+         printf("epoll_ctl EPERM, fd=%d\n", fileDescriptor);
       } else {
          printf("unrecognized error for EPOLL_CTL_ADD\n");
       }
@@ -161,21 +160,21 @@ bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) {
    if (::epoll_ctl(m_epfd, EPOLL_CTL_DEL, fileDescriptor, &ev) < 0) {
       Logger::critical("epoll_ctl failed in delete filter");
       if (errno == EBADF) {
-         printf("EBADF\n");
+         printf("removeFileDescriptorFromRead EBADF, fd=%d\n", fileDescriptor);
       } else if (errno == EEXIST) {
-         printf("EEXIST\n");
+         printf("removeFileDescriptorFromRead EEXIST, fd=%d\n", fileDescriptor);
       } else if (errno == EINVAL) {
-         printf("EINVAL\n");
+         printf("removeFileDescriptorFromRead EINVAL, fd=%d\n", fileDescriptor);
       } else if (errno == ENOENT) {
-         printf("ENOENT\n");
+         printf("removeFileDescriptorFromRead ENOENT, fd=%d\n", fileDescriptor);
       } else if (errno == ENOMEM) {
-         printf("ENOMEM\n");
+         printf("removeFileDescriptorFromRead ENOMEM, fd=%d\n", fileDescriptor);
       } else if (errno == ENOSPC) {
-         printf("ENOSPC\n");
+         printf("removeFileDescriptorFromRead ENOSPC, fd=%d\n", fileDescriptor);
       } else if (errno == EPERM) {
-         printf("EPERM\n");
+         printf("removeFileDescriptorFromRead EPERM, fd=%d\n", fileDescriptor);
       } else {
-         printf("unrecognized error for EPOLL_CTL_DEL\n");
+         printf("unrecognized error for EPOLL_CTL_DEL (removeFileDescriptorFromRead)\n");
       }
       return false;
    } else {
