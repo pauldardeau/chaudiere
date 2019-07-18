@@ -105,7 +105,12 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
 //******************************************************************************
 
 bool KernelEventServer::isValidDescriptor(int fd) const {
+#ifdef __linux__
    return ::fcntl(fd, F_GETFD) != EBADF;
+#else
+   //TODO: put non-linux test of descriptor
+   return true;
+#endif
 }
 
 //******************************************************************************
