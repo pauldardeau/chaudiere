@@ -228,7 +228,12 @@ public:
     */
    void setIncludeMessageSize(bool isSizeIncluded);
 
-   
+   /**
+    *
+    * @return
+    */
+   bool isDescriptorBorrowed() const;
+
 protected:
    bool readMsg(int length);
    //bool readSocket(char* buffer, int bytesToRead);
@@ -253,6 +258,7 @@ private:
    int m_port;
    bool m_isConnected;
    bool m_includeMessageSize;
+   bool m_borrowedDescriptor;
    CharBuffer m_inputBuffer;
    int m_inBufferSize;
    int m_lastReadSize;

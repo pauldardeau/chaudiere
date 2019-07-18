@@ -46,6 +46,7 @@ Socket::Socket(const std::string& address, int port) :
    m_port(port),
    m_isConnected(false),
    m_includeMessageSize(false),
+   m_borrowedDescriptor(false),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
 
@@ -62,6 +63,7 @@ Socket::Socket(int socketFD) :
    m_userIndex(-1),
    m_isConnected(true),
    m_includeMessageSize(false),
+   m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
@@ -76,6 +78,7 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
    m_userIndex(-1),
    m_isConnected(true),
    m_includeMessageSize(false),
+   m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
    Logger::logInstanceCreate("Socket");
@@ -152,9 +155,7 @@ ssize_t Socket::receive(void* receiveBuffer,
       ::recv(m_socketFD, receiveBuffer, bufferLength, flags);
     
    if (0 == bytesReceived) {
-      //::close(m_socketFD);
-      m_socketFD = -1;
-      m_isConnected = false;
+      close();
    }
     
    return bytesReceived;
@@ -171,7 +172,9 @@ void Socket::closeConnection() {
 void Socket::close() {
    if (m_socketFD > -1) {
       ::close(m_socketFD);
-      m_socketFD = -1;
+      if (!m_borrowedDescriptor) {
+         m_socketFD = -1;
+      }
       m_isConnected = false;
    }
 }
@@ -588,7 +591,7 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
 //******************************************************************************
 
 bool Socket::isOpen() const {
-   return (m_socketFD != -1);
+   return m_isConnected;
 }
 
 //******************************************************************************
@@ -660,3 +663,10 @@ void Socket::appendLineInputBuffer(const std::string& s) {
 }
 
 //******************************************************************************
+
+bool Socket::isDescriptorBorrowed() const {
+   return m_borrowedDescriptor;
+}
+
+//******************************************************************************
+
