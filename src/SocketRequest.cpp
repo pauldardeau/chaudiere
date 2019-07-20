@@ -43,7 +43,6 @@ SocketRequest::SocketRequest(SocketCompletionObserver* completionObserver,
 SocketRequest::~SocketRequest() {
    Logger::logInstanceDestroy("SocketRequest");
    if (NULL != m_borrowedSocket) {
-      //printf("SocketRequest::~SocketRequest deleting m_borrowedSocket\n");
       delete m_borrowedSocket;
       m_borrowedSocket = NULL;
       m_socket = NULL;
@@ -106,7 +105,6 @@ bool SocketRequest::isSocketOwned() const {
 //******************************************************************************
 
 void SocketRequest::setSocketOwned(bool socketOwned) {
-   //printf("SocketRequest::setSocketOwned %s\n", socketOwned ? "true" : "false");
    m_socketOwned = socketOwned;
 }
 

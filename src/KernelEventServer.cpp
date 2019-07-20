@@ -151,33 +151,25 @@ void KernelEventServer::run() {
                continue;
             }
 
-            //printf("fd=%d\n", client_fd);
             if (!isValidDescriptor(client_fd)) {
-               printf("invalid file descriptor, removing\n");
                removeBusyFD(client_fd);
 	       removeFileDescriptorFromRead(client_fd);
                continue;
             }
 
             if (isEventReadClose(index)) {
-               //printf("----------- event is read close, fd=%d\n", client_fd);
-             
                removeBusyFD(client_fd);
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
 	       ::close(client_fd);
             } else if (isEventDisconnect(index)) {
-               //printf("xxxxxxxxxxxxx event is disconnect, fd=%d\n", client_fd);
-              
                removeBusyFD(client_fd);
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
 	       ::close(client_fd);
             } else if (isEventRead(index)) {
-               //printf("event is read, fd=%d\n", client_fd);
-
 	       if (removeFileDescriptorFromRead(client_fd)) {
                   // are we already busy with this socket?
                   const bool isAlreadyBusy = isBusyFD(client_fd);
@@ -187,7 +179,6 @@ void KernelEventServer::run() {
                      //   Logger::error("unable to remove file descriptor from read");
                      //}
                  
-                     //printf("setting busy, fd=%d\n", client_fd); 
                      setBusyFD(client_fd, true);
                   
                      SocketRequest* socketRequest =
@@ -206,12 +197,10 @@ void KernelEventServer::run() {
                         Logger::error("exception in serviceSocket on handler");
                      }
                   } else {
-                     //printf("already busy, ignoring event fd=%d\n", client_fd);
                      //::snprintf(msg, 128, "already busy with socket %d", client_fd);
                      //Logger::warning(msg);
                   }
 	       } else {
-                  //printf("attempt to remove descriptor failed, fd=%d\n", client_fd);
 		  removeBusyFD(client_fd);
 	       }
 
@@ -224,13 +213,8 @@ void KernelEventServer::run() {
 //******************************************************************************
 
 void KernelEventServer::notifySocketComplete(Socket* socket) {
-   //printf("KernelEventServer::notifySocketComplete\n");
-
    const int socketFD = socket->getFileDescriptor();
-   //printf("KernelEventServer::notifySocketComplete, fd=%d\n", socketFD);
    if (socketFD == -1) {
-      //printf("$$$$$$$$ socketFD is -1. this shouldn't happen. exiting\n");
-      //exit(1);
       return;
    }
   
@@ -245,12 +229,10 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
    } else {
       // add socket back to watch
       if (socket->isOpen()) {
-         //printf("adding for read, fd=%d\n", socketFD);
          if (!addFileDescriptorForRead(socketFD)) {
             Logger::critical("kernel event add read filter failed");
          }
       } else {
-         //printf("*** not adding for read, socket closed\n");
 	 removeBusyFD(socketFD);
       }
    }
@@ -277,7 +259,6 @@ bool KernelEventServer::isBusyFD(int fd) const {
 //******************************************************************************
 
 void KernelEventServer::setBusyFD(int fd, bool busy) {
-   //printf("setting busy = %s for fd=%d\n", busy ? "true" : "false", fd);
    MutexLock locker(*m_busyFlagsMutex);
    unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
@@ -290,15 +271,12 @@ void KernelEventServer::setBusyFD(int fd, bool busy) {
 //******************************************************************************
 
 bool KernelEventServer::removeBusyFD(int fd) {
-   //printf("removing busy entry for fd=%d\n", fd);
    MutexLock locker(*m_busyFlagsMutex);
    unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
-      //printf("actually removing entry, fd=%d\n", fd);
       m_busyFlags.erase(it);
       return true;
    } else {
-      //printf("no busy entry for fd=%d\n", fd);
       return false;
    }
 }

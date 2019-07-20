@@ -83,7 +83,6 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
 
 int KqueueServer::getKernelEvents(int maxConnections) {
 #ifdef KQUEUE_SUPPORT
-   //printf("waiting on kevent\n");
    const int numberEventsReturned =
       ::kevent(m_kqfd,
                NULL, 0,
@@ -94,7 +93,6 @@ int KqueueServer::getKernelEvents(int maxConnections) {
       return -1;
    }
 
-   //printf("have kevent\n");
    return numberEventsReturned;
 #else
    return 0;
@@ -117,7 +115,6 @@ int KqueueServer::fileDescriptorForEventIndex(int eventIndex) {
 
 bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) {
 #ifdef KQUEUE_SUPPORT
-   //printf("adding fd=%d\n", fileDescriptor);
    struct kevent ev;
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_ADD, 0, 0, NULL);
    
@@ -136,7 +133,6 @@ bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) {
 bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
-   //printf("removing fd=%d\n", fileDescriptor);
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_DELETE, 0, 0, NULL);
    
    if (::kevent(m_kqfd, &ev, 1, NULL, 0, NULL) < 0) {

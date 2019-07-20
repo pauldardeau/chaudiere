@@ -68,7 +68,6 @@ void ThreadPoolWorker::run() {
 
       Runnable* runnable = m_poolQueue.takeRequest();
       if (runnable) {
-         //printf("new request being processed by threadpool worker\n");
          // has our thread been notified to shut down?
          if (!m_workerThread->isAlive()) {
             // put the request back on the front of the queue
@@ -89,7 +88,6 @@ void ThreadPoolWorker::run() {
                Logger::error("run method of runnable threw exception");
             }
 
-            //printf("threadpool request completed\n");
             runnable->notifyOnCompletion();
 
             //if (Logger::isLogging(Debug)) {
