@@ -14,6 +14,11 @@
 #include <sys/sysctl.h>
 #endif
 
+#ifdef __APPLE__
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #ifdef __OpenBSD__
 #include <sys/types.h>
 #include <sys/sysctl.h>
