@@ -19,13 +19,13 @@ StdMutex::StdMutex() :
 StdMutex::StdMutex(const std::string& mutexName) :
    m_mutexName(mutexName),
    m_isLocked(false) {
-   Logger::logInstanceCreate("StdMutex");
+   LOG_INSTANCE_CREATE("StdMutex")
 }
 
 //******************************************************************************
 
 StdMutex::~StdMutex() {
-   Logger::logInstanceDestroy("StdMutex");
+   LOG_INSTANCE_DESTROY("StdMutex")
 
    if (m_isLocked) {
       unlock();

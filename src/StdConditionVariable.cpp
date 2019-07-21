@@ -11,20 +11,20 @@ using namespace chaudiere;
 //******************************************************************************
 
 StdConditionVariable::StdConditionVariable() {
-   Logger::logInstanceCreate("StdConditionVariable");
+   LOG_INSTANCE_CREATE("StdConditionVariable")
 }
 
 //******************************************************************************
 
 StdConditionVariable::StdConditionVariable(const std::string& name) :
    m_name(name) {
-   Logger::logInstanceCreate("StdConditionVariable");
+   LOG_INSTANCE_CREATE("StdConditionVariable")
 }
 
 //******************************************************************************
 
 StdConditionVariable::~StdConditionVariable() {
-   Logger::logInstanceDestroy("StdConditionVariable");
+   LOG_INSTANCE_DESTROY("StdConditionVariable")
 }
 
 //******************************************************************************
@@ -39,10 +39,10 @@ bool StdConditionVariable::wait(Mutex* mutex) {
          m_cond.wait(lock);
          return true;
       } else {
-         Logger::error("mutex must be an instance of StdMutex");
+         LOG_ERROR("mutex must be an instance of StdMutex")
       }
    } else {
-      Logger::error("no mutex given to wait on");
+      LOG_ERROR("no mutex given to wait on")
    }
    
    return false;
@@ -66,3 +66,4 @@ const std::string& StdConditionVariable::getName() const {
    return m_name;
 }
 
+//******************************************************************************

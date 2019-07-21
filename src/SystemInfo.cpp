@@ -12,7 +12,7 @@ using namespace chaudiere;
 
 SystemInfo::SystemInfo() :
    m_retrievedSystemInfo(false) {
-   Logger::logInstanceCreate("SystemInfo");
+   LOG_INSTANCE_CREATE("SystemInfo")
 
    struct utsname sysinfo;
    if (0 == ::uname(&sysinfo)) {
@@ -34,13 +34,13 @@ SystemInfo::SystemInfo(const SystemInfo& copy) :
    m_version(copy.m_version),
    m_machine(copy.m_machine),
    m_retrievedSystemInfo(copy.m_retrievedSystemInfo) {
-   Logger::logInstanceCreate("SystemInfo");
+   LOG_INSTANCE_CREATE("SystemInfo")
 }
 
 //******************************************************************************
 
 SystemInfo::~SystemInfo() {
-   Logger::logInstanceDestroy("SystemInfo");
+   LOG_INSTANCE_DESTROY("SystemInfo")
 }
 
 //******************************************************************************

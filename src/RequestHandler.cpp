@@ -18,7 +18,7 @@ RequestHandler::RequestHandler(SocketRequest* socketRequest) :
    m_socketRequest(socketRequest),
    m_isThreadPooling(false),
    m_socketOwned(true) {
-   Logger::logInstanceCreate("RequestHandler");
+   LOG_INSTANCE_CREATE("RequestHandler")
 }
 
 //******************************************************************************
@@ -28,13 +28,13 @@ RequestHandler::RequestHandler(Socket* socket) :
    m_socketRequest(NULL),
    m_isThreadPooling(false),
    m_socketOwned(true) {
-   Logger::logInstanceCreate("RequestHandler");
+   LOG_INSTANCE_CREATE("RequestHandler")
 }
 
 //******************************************************************************
 
 RequestHandler::~RequestHandler() {
-   Logger::logInstanceDestroy("RequestHandler");
+   LOG_INSTANCE_DESTROY("RequestHandler")
 
    if (m_socket) {
       m_socket->close();

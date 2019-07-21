@@ -35,7 +35,7 @@ PthreadsMutex::PthreadsMutex(const std::string& mutexName) :
 //******************************************************************************
 
 PthreadsMutex::~PthreadsMutex() {
-   Logger::logInstanceDestroy("PthreadsMutex");
+   LOG_INSTANCE_DESTROY("PthreadsMutex")
 
    if (m_haveValidMutex) {
       if (m_isLocked) {
@@ -48,7 +48,7 @@ PthreadsMutex::~PthreadsMutex() {
 //******************************************************************************
 
 void PthreadsMutex::initialize() {
-   Logger::logInstanceCreate("PthreadsMutex");
+   LOG_INSTANCE_CREATE("PthreadsMutex")
    char buffer[128];
    int rc;
 
@@ -66,17 +66,17 @@ void PthreadsMutex::initialize() {
             m_haveValidMutex = true;
          } else {
             snprintf(buffer, 128, "unable to create pthreads mutex, rc=%d", rc);
-            Logger::error(buffer);
+            LOG_ERROR(buffer)
             throw BasicException(buffer);
          }
       } else {
          snprintf(buffer, 128, "unable to set pthreads mutex type, rc=%d", rc);
-         Logger::error(buffer);
+         LOG_ERROR(buffer)
          throw BasicException(buffer);
       }
    } else {
       snprintf(buffer, 128, "unable to initialize mutex attributes, rc=%d", rc);
-      Logger::error(buffer);
+      LOG_ERROR(buffer)
       throw BasicException(buffer);
    }
 }
@@ -126,7 +126,7 @@ bool PthreadsMutex::lock() {
          
          std::string buffer = "unable to lock mutex, pthread_mutex_lock rc=";
          buffer += errorCode;
-         Logger::error(buffer);
+         LOG_ERROR(buffer)
       }
       
       return m_isLocked;

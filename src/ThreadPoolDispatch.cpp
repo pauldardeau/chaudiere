@@ -25,13 +25,13 @@ using namespace chaudiere;
 
 ThreadPoolDispatch::ThreadPoolDispatch() :
    m_isRunning(false) {
-   Logger::logInstanceCreate("ThreadPoolDispatch");
+   LOG_INSTANCE_CREATE("ThreadPoolDispatch")
 }
 
 //******************************************************************************
 
 ThreadPoolDispatch::~ThreadPoolDispatch() {
-   Logger::logInstanceDestroy("ThreadPoolDispatch");
+   LOG_INSTANCE_DESTROY("ThreadPoolDispatch")
 }
 
 //******************************************************************************
@@ -63,11 +63,11 @@ bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) {
       try {
          runnableRequest->run();
       } catch (const BasicException& be) {
-         Logger::error("exception running request: " + be.whatString());
+         LOG_ERROR("exception running request: " + be.whatString())
       } catch (const std::exception& e) {
-         Logger::error("exception running request: " + std::string(e.what()));
+         LOG_ERROR("exception running request: " + std::string(e.what()))
       } catch (...) {
-         Logger::error("unknown exception running request");
+         LOG_ERROR("unknown exception running request")
       }
       
       runnableRequest->notifyOnCompletion();

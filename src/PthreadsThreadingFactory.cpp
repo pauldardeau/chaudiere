@@ -15,13 +15,13 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsThreadingFactory::PthreadsThreadingFactory() {
-   Logger::logInstanceCreate("PthreadsThreadingFactory");
+   LOG_INSTANCE_CREATE("PthreadsThreadingFactory")
 }
 
 //******************************************************************************
 
 PthreadsThreadingFactory::~PthreadsThreadingFactory() {
-   Logger::logInstanceDestroy("PthreadsThreadingFactory");
+   LOG_INSTANCE_DESTROY("PthreadsThreadingFactory")
 }
 
 //******************************************************************************
@@ -53,8 +53,7 @@ ConditionVariable* PthreadsThreadingFactory::createConditionVariable(const std::
 
 ThreadPoolDispatcher* PthreadsThreadingFactory::createThreadPoolDispatcher(int numberThreads,
                                                                            const std::string& name) {
-   //printf("PthreadsThreadingFactory::createThreadPoolDispatcher creating ThreadPool\n");
    return new ThreadPool(this, numberThreads, name);
 }
 
-
+//******************************************************************************

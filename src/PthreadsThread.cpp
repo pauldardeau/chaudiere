@@ -18,6 +18,7 @@ PthreadsThread::PthreadsThread() :
    m_threadHandle(0),
    m_exitCode(1L),
    m_name("") {
+   LOG_INSTANCE_CREATE("PthreadsThread")
 }
 
 //******************************************************************************
@@ -27,6 +28,7 @@ PthreadsThread::PthreadsThread(const std::string& name) :
    m_threadHandle(0),
    m_exitCode(1L),
    m_name(name) {
+   LOG_INSTANCE_CREATE("PthreadsThread")
 }
 
 //******************************************************************************
@@ -36,6 +38,7 @@ PthreadsThread::PthreadsThread(Runnable* runnable) :
    m_threadHandle(0),
    m_exitCode(1L),
    m_name("") {
+   LOG_INSTANCE_CREATE("PthreadsThread")
 }
 
 //******************************************************************************
@@ -45,13 +48,13 @@ PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) :
    m_threadHandle(0),
    m_exitCode(1L),
    m_name(name) {
-   Logger::logInstanceCreate("PthreadsThread");
+   LOG_INSTANCE_CREATE("PthreadsThread")
 }
 
 //******************************************************************************
 
 PthreadsThread::~PthreadsThread() {
-   Logger::logInstanceDestroy("PthreadsThread");
+   LOG_INSTANCE_DESTROY("PthreadsThread")
 }
 
 //******************************************************************************
@@ -84,7 +87,7 @@ void* PthreadsThread::runThread(void* pArgs) {
       }
    } catch (...) {
       rc = 1L;
-      Logger::error("Thread::runThread exception caught running thread");
+      LOG_ERROR("Thread::runThread exception caught running thread")
    }
 
    pThread->setAlive(false);
@@ -139,3 +142,4 @@ const std::string& PthreadsThread::getName() const {
    return m_name;
 }
 
+//******************************************************************************

@@ -11,7 +11,7 @@ using namespace chaudiere;
 InvalidKeyException::InvalidKeyException(const std::string& key) :
    BasicException("Invalid Key: " +  key),
    m_key(key) {
-   Logger::logInstanceCreate("InvalidKeyException");
+   LOG_INSTANCE_CREATE("InvalidKeyException")
 }
 
 //******************************************************************************
@@ -19,13 +19,13 @@ InvalidKeyException::InvalidKeyException(const std::string& key) :
 InvalidKeyException::InvalidKeyException(const InvalidKeyException& copy) :
    BasicException(copy),
    m_key(copy.m_key) {
-   Logger::logInstanceCreate("InvalidKeyException");
+   LOG_INSTANCE_CREATE("InvalidKeyException")
 }
 
 //******************************************************************************
 
 InvalidKeyException::~InvalidKeyException() throw () {
-   Logger::logInstanceDestroy("InvalidKeyException");
+   LOG_INSTANCE_DESTROY("InvalidKeyException")
 }
 
 //******************************************************************************

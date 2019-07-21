@@ -24,13 +24,13 @@ ThreadPoolWorker::ThreadPoolWorker(ThreadingFactory* threadingFactory,
    m_poolQueue(queue),
    m_workerId(workerId),
    m_isRunning(false) {
-   Logger::logInstanceCreate("ThreadPoolWorker");
+   LOG_INSTANCE_CREATE("ThreadPoolWorker")
 }
 
 //******************************************************************************
 
 ThreadPoolWorker::~ThreadPoolWorker() {
-   Logger::logInstanceDestroy("ThreadPoolWorker");   
+   LOG_INSTANCE_DESTROY("ThreadPoolWorker")
 }
 
 //******************************************************************************
@@ -60,11 +60,11 @@ void ThreadPoolWorker::stop() {
 
 void ThreadPoolWorker::run() {
    while (m_isRunning) {
-      //if (Logger::isLogging(Debug)) {
-      //   char message[128];
-      //   ::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
-      //   Logger::debug(std::string(message));
-      //}
+      if (Logger::isLogging(LogLevel::Debug)) {
+         char message[128];
+         ::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
+         LOG_DEBUG(message)
+      }
 
       Runnable* runnable = m_poolQueue.takeRequest();
       if (runnable) {
@@ -81,22 +81,22 @@ void ThreadPoolWorker::run() {
             try {
                runnable->run();
             } catch (const BasicException& be) {
-               Logger::error("run method of runnable threw exception: " + be.whatString());
+               LOG_ERROR("run method of runnable threw exception: " + be.whatString())
             } catch (const std::exception& e) {
-               Logger::error("run method of runnable threw exception: " + std::string(e.what()));
+               LOG_ERROR("run method of runnable threw exception: " + std::string(e.what()))
             } catch (...) {
-               Logger::error("run method of runnable threw exception");
+               LOG_ERROR("run method of runnable threw exception")
             }
 
             runnable->notifyOnCompletion();
 
-            //if (Logger::isLogging(Debug)) {
-            //   char message[128];
-            //   ::snprintf(message, 128,
-            //                 "ending processing request on thread %d",
-            //                 m_workerId);
-            //   Logger::debug(std::string(message));
-            //}
+            if (Logger::isLogging(LogLevel::Debug)) {
+               char message[128];
+               ::snprintf(message, 128,
+                             "ending processing request on thread %d",
+                             m_workerId);
+               LOG_DEBUG(message)
+            }
          }
       }
 

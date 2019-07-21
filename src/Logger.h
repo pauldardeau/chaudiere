@@ -7,6 +7,38 @@
 #include <string>
 #include <memory>
 
+#if defined(LOGGING_ENABLED)
+#define LOG_INSTANCE_CREATE(class_name) \
+Logger::logInstanceCreate(class_name);
+#define LOG_INSTANCE_DESTROY(class_name) \
+Logger::logInstanceDestroy(class_name);
+#define LOG_CRITICAL(msg) \
+Logger::critical(msg);
+#define LOG_ERROR(msg) \
+Logger::error(msg);
+#define LOG_WARNING(msg) \
+Logger::warning(msg);
+#define LOG_INFO(msg) \
+Logger::info(msg);
+#define LOG_DEBUG(msg) \
+Logger::debug(msg);
+#define LOG_VERBOSE(msg) \
+Logger::verbose(msg);
+#define COUNT_OCCURRENCE(count_var, count_occurrence) \
+Logger::countOccurrence(count_var, count_occurrence);
+#else
+#define LOG_INSTANCE_CREATE(class_name)
+#define LOG_INSTANCE_DESTROY(class_name)
+#define LOG_CRITICAL(msg)
+#define LOG_ERROR(msg)
+#define LOG_WARNING(msg)
+#define LOG_INFO(msg)
+#define LOG_DEBUG(msg)
+#define LOG_VERBOSE(msg)
+#define COUNT_OCCURRENCE(count_var, count_occurrence)
+#endif
+
+
 namespace chaudiere
 {
 

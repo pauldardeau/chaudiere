@@ -31,13 +31,13 @@ EpollServer::EpollServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) :
    m_events(NULL),
 #endif
    m_epfd(-1) {
-   Logger::logInstanceCreate("EpollServer");
+   LOG_INSTANCE_CREATE("EpollServer")
 }
 
 //******************************************************************************
 
 EpollServer::~EpollServer() {
-   Logger::logInstanceDestroy("EpollServer");
+   LOG_INSTANCE_DESTROY("EpollServer")
 
 #ifdef EPOLL_SUPPORT
    if (NULL != m_events) {
@@ -70,7 +70,7 @@ bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
       m_epfd = ::epoll_create(maxConnections);
       
       if (m_epfd == -1) {
-         Logger::critical("epoll create failed");
+         LOG_CRITICAL("epoll create failed")
          return false;
       }
       
@@ -80,7 +80,7 @@ bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
       // add our listener socket (server socket) as one of the fd's that
       // we want watched
       if (!addFileDescriptorForRead(getListenerSocketFileDescriptor())) {
-         Logger::critical("unable to add listener socket for read");
+         LOG_CRITICAL("unable to add listener socket for read")
          return false;
       } else {
          return true;
@@ -125,7 +125,7 @@ bool EpollServer::addFileDescriptorForRead(int fileDescriptor) {
    ev.data.fd = fileDescriptor;
    
    if (::epoll_ctl(m_epfd, EPOLL_CTL_ADD, fileDescriptor, &ev) < 0) {
-      Logger::critical("epoll_ctl failed in add filter");
+      LOG_CRITICAL("epoll_ctl failed in add filter")
       if (errno == EBADF) {
          printf("epoll_ctl EBADF, fd=%d\n", fileDescriptor);
       } else if (errno == EEXIST) {
@@ -158,7 +158,7 @@ bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) {
    ::memset(&ev, 0, sizeof(struct epoll_event));
 
    if (::epoll_ctl(m_epfd, EPOLL_CTL_DEL, fileDescriptor, &ev) < 0) {
-      Logger::critical("epoll_ctl failed in delete filter");
+      LOG_CRITICAL("epoll_ctl failed in delete filter")
       if (errno == EBADF) {
          printf("removeFileDescriptorFromRead EBADF, fd=%d\n", fileDescriptor);
       } else if (errno == EEXIST) {

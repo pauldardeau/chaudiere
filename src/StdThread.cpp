@@ -37,7 +37,7 @@ void StdThread::runThread(StdThread* thread)
       }
    } catch (...) {
       //rc = 1L;
-      Logger::error("StdThread::runThread exception caught running thread");
+      LOG_ERROR("StdThread::runThread exception caught running thread")
    }
    
    thread->setAlive(false);
@@ -49,28 +49,31 @@ void StdThread::runThread(StdThread* thread)
 
 StdThread::StdThread() :
    StdThread(NULL, "") {
+   LOG_INSTANCE_CREATE("StdThread")
 }
 
 StdThread::StdThread(const std::string& name) :
    StdThread(NULL, name) {
+   LOG_INSTANCE_CREATE("StdThread")
 }
 
 //******************************************************************************
 
 StdThread::StdThread(Runnable* runnable) :
    StdThread(NULL, "") {
+   LOG_INSTANCE_CREATE("StdThread")
 }
 
 StdThread::StdThread(Runnable* runnable, const std::string& name) :
    Thread(&m_mutexAlive, runnable),
    m_name(name) {
-   Logger::logInstanceCreate("StdThread");
+   LOG_INSTANCE_CREATE("StdThread")
 }
 
 //******************************************************************************
 
 StdThread::~StdThread() {
-   Logger::logInstanceDestroy("StdThread");
+   LOG_INSTANCE_DESTROY("StdThread")
 }
 
 //******************************************************************************
@@ -113,3 +116,4 @@ const std::string& StdThread::getName() const {
    return m_name;
 }
 
+//******************************************************************************

@@ -23,7 +23,7 @@ using namespace chaudiere;
 
 IniReader::IniReader(const std::string& iniFile) :
    m_iniFile(iniFile) {
-   Logger::logInstanceCreate("IniReader");
+   LOG_INSTANCE_CREATE("IniReader")
    
    if (!readFile()) {
       throw BasicException("unable to read configuration file: " + iniFile);
@@ -33,7 +33,7 @@ IniReader::IniReader(const std::string& iniFile) :
 //******************************************************************************
 
 IniReader::~IniReader() {
-   Logger::logInstanceDestroy("IniReader");
+   LOG_INSTANCE_DESTROY("IniReader")
 }
 
 //******************************************************************************
@@ -105,17 +105,17 @@ bool IniReader::getSectionKeyValue(const std::string& section,
    KeyValuePairs map;
     
    if (!readSection(section, map)) {
-      Logger::warning("IniReader readSection returned false");
+      LOG_WARNING("IniReader readSection returned false")
       return false;
    }
     
    const std::string strippedKey = StrUtils::strip(key);
     
    if (!map.hasKey(strippedKey)) {
-      if (Logger::isLogging(Debug)) {
+      if (Logger::isLogging(LogLevel::Debug)) {
          char msg[128];
          ::snprintf(msg, 128, "map does not contain key '%s'", key.c_str());
-         Logger::debug(std::string(msg));
+         LOG_DEBUG(msg)
       }
       return false;
    }
@@ -155,7 +155,7 @@ bool IniReader::readFile() {
    ::fclose(f);
     
    if (numObjectsRead < 1) {
-      Logger::error("reading from ini file failed");
+      LOG_ERROR("reading from ini file failed")
       return false;
    }
    

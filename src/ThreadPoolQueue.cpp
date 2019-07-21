@@ -24,7 +24,7 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
    m_isInitialized(false),
    m_isRunning(false) {
 
-   Logger::logInstanceCreate("ThreadPoolQueue");
+   LOG_INSTANCE_CREATE("ThreadPoolQueue")
 
    try {
       /*
@@ -67,36 +67,36 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
          m_isInitialized = true;
          m_isRunning = true;
       } else {
-         Logger::error("unable to initialize ThreadPoolQueue");
+         LOG_ERROR("unable to initialize ThreadPoolQueue")
          if (NULL == m_mutex) {
-            Logger::error("unable to create mutex");
+            LOG_ERROR("unable to create mutex")
          }
          if (NULL == m_condQueueNotEmpty) {
-            Logger::error("unable to create queue not empty condition variable");
+            LOG_ERROR("unable to create queue not empty condition variable")
          }
          if (NULL == m_condQueueNotFull) {
-            Logger::error("unable to create queue not full condition variable");
+            LOG_ERROR("unable to create queue not full condition variable")
          }
          if (NULL == m_condQueueEmpty) {
-            Logger::error("unable to create queue empty condition variable");
+            LOG_ERROR("unable to create queue empty condition variable")
          }
          printf("error: unable to initialize thread pool queue, aborting\n");
          exit(1);
       }
       */
    } catch (const BasicException& be) {
-      Logger::error("exception setting up thread pool queue: " + be.whatString());
+      LOG_ERROR("exception setting up thread pool queue: " + be.whatString())
    } catch (const std::exception& e) {
-      Logger::error("exception setting up thread pool queue: " + std::string(e.what()));
+      LOG_ERROR("exception setting up thread pool queue: " + std::string(e.what()))
    } catch (...) {
-      Logger::error("unknown exception setting up thread pool queue");
+      LOG_ERROR("unknown exception setting up thread pool queue")
    }
 }
 
 //******************************************************************************
 
 ThreadPoolQueue::~ThreadPoolQueue() {
-   Logger::logInstanceDestroy("ThreadPoolQueue");
+   LOG_INSTANCE_DESTROY("ThreadPoolQueue")
    m_isRunning = false;
 
    /*
@@ -119,12 +119,12 @@ ThreadPoolQueue::~ThreadPoolQueue() {
 
 bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    if (!m_isInitialized) {
-      Logger::log(Warning, "ThreadPoolQueue::addRequest queue not initialized");
+      LOG_WARNING("ThreadPoolQueue::addRequest queue not initialized")
       return false;
    }
 
    if (!runnableRequest) {
-      Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting NULL request");
+      LOG_WARNING("ThreadPoolQueue::addRequest rejecting NULL request")
       return false;
    }
  
@@ -132,17 +132,17 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    pthread_mutex_lock(&m_queue_lock);
    
    if (!m_isRunning) {
-      Logger::log(Warning, "ThreadPoolQueue::addRequest rejecting request, queue is shutting down");
+      LOG_WARNING("ThreadPoolQueue::addRequest rejecting request, queue is shutting down")
       pthread_mutex_unlock(&m_queue_lock);
       return false;
    }
    
    //if (!m_mutex->haveValidMutex()) {
-   //   Logger::error("don't have valid mutex in addRequest");
+   //   LOG_ERROR("don't have valid mutex in addRequest")
    //   ::exit(1);
    //}
 
-   //Logger::log(Debug, "ThreadPoolQueue::addRequest accepting request");
+   LOG_DEBUG("ThreadPoolQueue::addRequest accepting request")
    
    const bool wasEmpty = m_queue.empty();
   
@@ -152,7 +152,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    // did we just transition from QUEUE_EMPTY to QUEUE_NOT_EMPTY?
    if (wasEmpty) {
       // signal QUEUE_NOT_EMPTY (wake up a worker thread)
-      //Logger::log(Debug, "signalling queue_not_empty");
+      LOG_DEBUG("signalling queue_not_empty")
       //m_condQueueNotEmpty->notifyAll();
       pthread_cond_broadcast(&m_cond_queue_not_empty);
    }
@@ -165,7 +165,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
 
 Runnable* ThreadPoolQueue::takeRequest() {
    if (!m_isInitialized) {
-      Logger::log(Warning, "ThreadPoolQueue::takeRequest queue not initialized");
+      LOG_WARNING("ThreadPoolQueue::takeRequest queue not initialized")
       return NULL;
    }
 
@@ -179,7 +179,7 @@ Runnable* ThreadPoolQueue::takeRequest() {
    }
    
    //if (!m_mutex->haveValidMutex()) {
-   //   Logger::error("don't have valid mutex in takeRequest");
+   //   LOG_ERROR("don't have valid mutex in takeRequest")
    //   exit(1);
    //}
    

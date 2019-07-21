@@ -57,14 +57,14 @@ ThreadPool::ThreadPool(ThreadingFactory* threadingFactory,
    m_workersCreated(0),
    m_isRunning(false),
    m_name(name) {
-   Logger::logInstanceCreate("ThreadPool");
+   LOG_INSTANCE_CREATE("ThreadPool")
    start();
 }
 
 //******************************************************************************
 
 ThreadPool::~ThreadPool() {
-   Logger::logInstanceDestroy("ThreadPool");
+   LOG_INSTANCE_DESTROY("ThreadPool")
 
    if (m_isRunning) {
       stop();

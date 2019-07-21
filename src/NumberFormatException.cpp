@@ -10,27 +10,27 @@ using namespace chaudiere;
 
 NumberFormatException::NumberFormatException() :
    BasicException("") {
-   Logger::logInstanceCreate("NumberFormatException");
+   LOG_INSTANCE_CREATE("NumberFormatException")
 }
 
 //******************************************************************************
 
 NumberFormatException::NumberFormatException(const std::string& s) :
    BasicException(s) {
-   Logger::logInstanceCreate("NumberFormatException");
+   LOG_INSTANCE_CREATE("NumberFormatException")
 }
 
 //******************************************************************************
 
 NumberFormatException::NumberFormatException(const NumberFormatException& copy) :
    BasicException(copy) {
-   Logger::logInstanceCreate("NumberFormatException");
+   LOG_INSTANCE_CREATE("NumberFormatException")
 }
 
 //******************************************************************************
 
 NumberFormatException::~NumberFormatException() throw () {
-   Logger::logInstanceDestroy("NumberFormatException");
+   LOG_INSTANCE_DESTROY("NumberFormatException")
 }
 
 //******************************************************************************

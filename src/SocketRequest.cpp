@@ -20,7 +20,7 @@ SocketRequest::SocketRequest(Socket* socket,
    m_handler(handler),
    m_containedSocket(-1),  // not used
    m_socketOwned(true) {
-   Logger::logInstanceCreate("SocketRequest");
+   LOG_INSTANCE_CREATE("SocketRequest")
 }
 
 //******************************************************************************
@@ -34,14 +34,14 @@ SocketRequest::SocketRequest(SocketCompletionObserver* completionObserver,
    m_handler(handler),
    m_containedSocket(completionObserver, socketFD),
    m_socketOwned(false) {
-   Logger::logInstanceCreate("SocketRequest");
+   LOG_INSTANCE_CREATE("SocketRequest")
    m_socket = &m_containedSocket;
 }
 
 //******************************************************************************
 
 SocketRequest::~SocketRequest() {
-   Logger::logInstanceDestroy("SocketRequest");
+   LOG_INSTANCE_DESTROY("SocketRequest")
    if (NULL != m_borrowedSocket) {
       delete m_borrowedSocket;
       m_borrowedSocket = NULL;
@@ -56,7 +56,7 @@ void SocketRequest::run() {
       char msg[128];
       ::snprintf(msg, 128, "request for socket fd=%d",
                m_socket->getFileDescriptor());
-      Logger::debug(std::string(msg));
+      LOG_DEBUG(msg)
    }
 
    if (m_handler) {
@@ -65,14 +65,14 @@ void SocketRequest::run() {
             dynamic_cast<SocketRequest*>(this);
          m_handler->serviceSocket(socketRequest);
       } catch (const BasicException& be) {
-         Logger::error("exception in serviceSocket on handler: " + be.whatString());
+         LOG_ERROR("exception in serviceSocket on handler: " + be.whatString())
       } catch (const std::exception& e) {
-         Logger::error("exception in serviceSocket on handler: " + std::string(e.what()));
+         LOG_ERROR("exception in serviceSocket on handler: " + std::string(e.what()))
       } catch (...) {
-         Logger::error("exception in serviceSocket on handler");
+         LOG_ERROR("exception in serviceSocket on handler")
       }
    } else {
-      Logger::error("no handler present in SocketRequest");
+      LOG_ERROR("no handler present in SocketRequest")
    }
 }
 

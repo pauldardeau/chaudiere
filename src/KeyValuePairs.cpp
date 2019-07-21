@@ -11,20 +11,20 @@ using namespace chaudiere;
 //******************************************************************************
 
 KeyValuePairs::KeyValuePairs() {
-   Logger::logInstanceCreate("KeyValuePairs");
+   LOG_INSTANCE_CREATE("KeyValuePairs")
 }
 
 //******************************************************************************
 
 KeyValuePairs::KeyValuePairs(const KeyValuePairs& copy) :
    m_keyValues(copy.m_keyValues) {
-   Logger::logInstanceCreate("KeyValuePairs");
+   LOG_INSTANCE_CREATE("KeyValuePairs")
 }
 
 //******************************************************************************
 
 KeyValuePairs::~KeyValuePairs() {
-   Logger::logInstanceDestroy("KeyValuePairs");
+   LOG_INSTANCE_DESTROY("KeyValuePairs")
 }
 
 //******************************************************************************

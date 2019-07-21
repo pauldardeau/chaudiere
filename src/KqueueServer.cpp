@@ -28,13 +28,13 @@ bool KqueueServer::isSupportedPlatform() {
 KqueueServer::KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) :
    KernelEventServer(fdMutex, hwmConnectionsMutex, "KqueueServer"),
    m_kqfd(-1) {
-   Logger::logInstanceCreate("KqueueServer");
+   LOG_INSTANCE_CREATE("KqueueServer")
 }
 
 //******************************************************************************
 
 KqueueServer::~KqueueServer() {
-   Logger::logInstanceDestroy("KqueueServer");
+   LOG_INSTANCE_DESTROY("KqueueServer")
 
    if (-1 != m_kqfd) {
       ::close(m_kqfd);
@@ -54,7 +54,7 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
       m_kqfd = ::kqueue();
       if (m_kqfd == -1) {
-         Logger::critical("kqueue create failed");
+         LOG_CRITICAL("kqueue create failed")
          return false;
       }
       
@@ -68,7 +68,7 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
              0, 0, NULL);
       
       if (::kevent(m_kqfd, &ev, 1, 0, 0, NULL) < 0) {
-         Logger::critical("kevent failed for adding read filter");
+         LOG_CRITICAL("kevent failed for adding read filter")
          return false;
       } else {
          return true;
@@ -89,7 +89,7 @@ int KqueueServer::getKernelEvents(int maxConnections) {
                &m_event, 1,
                (struct timespec*) 0);
    if (-1 == numberEventsReturned) {
-      Logger::critical("unable to retrieve events from kevent");
+      LOG_CRITICAL("unable to retrieve events from kevent")
       return -1;
    }
 
@@ -119,7 +119,7 @@ bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) {
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_ADD, 0, 0, NULL);
    
    if (::kevent(m_kqfd, &ev, 1, NULL, 0, NULL) < 0) {
-      Logger::critical("kevent failed adding read filter");
+      LOG_CRITICAL("kevent failed adding read filter")
    } else {
       return true;
    }
@@ -136,7 +136,7 @@ bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) {
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_DELETE, 0, 0, NULL);
    
    if (::kevent(m_kqfd, &ev, 1, NULL, 0, NULL) < 0) {
-      Logger::warning("kevent failed to delete read filter");
+      LOG_WARNING("kevent failed to delete read filter")
       return false;
    } else {
       return true;

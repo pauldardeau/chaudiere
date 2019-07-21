@@ -38,7 +38,7 @@ bool ServerSocket::setReuseAddr(int socketFD) {
 
 bool ServerSocket::listen(int socketFD, int backlog) {
    if (::listen(socketFD, backlog) != 0) {
-      Logger::error("unable to listen on server socket");
+      LOG_ERROR("unable to listen on server socket")
       return false;
    } else {
       return true;
@@ -60,7 +60,7 @@ bool ServerSocket::bind(int socketFD, int port) {
                          sizeof(serverAddr));
    
    if (rc < 0) {
-      Logger::error("unable to bind server socket to port");
+      LOG_ERROR("unable to bind server socket to port")
       std::string errMsg;
       
       switch(errno) {
@@ -110,7 +110,7 @@ bool ServerSocket::bind(int socketFD, int port) {
 ServerSocket::ServerSocket(int port) :
    m_serverSocket(-1),
    m_port(port) {
-   Logger::logInstanceCreate("ServerSocket");
+   LOG_INSTANCE_CREATE("ServerSocket")
 
    if (!create()) {
       throw BasicException("unable to create server socket");
@@ -125,7 +125,7 @@ ServerSocket::ServerSocket(int port) :
 //******************************************************************************
 
 ServerSocket::~ServerSocket() {
-   Logger::logInstanceDestroy("ServerSocket");
+   LOG_INSTANCE_DESTROY("ServerSocket")
    close();
 }
 

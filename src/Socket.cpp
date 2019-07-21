@@ -30,7 +30,7 @@ using namespace chaudiere;
 int Socket::createSocket() {
    const int socketFD = ::socket(AF_INET, SOCK_STREAM, 0);
    if (socketFD == -1) {
-      Logger::error("unable to create socket");
+      LOG_ERROR("unable to create socket")
    }
    
    return socketFD;
@@ -48,7 +48,7 @@ Socket::Socket(const std::string& address, int port) :
    m_includeMessageSize(false),
    m_borrowedDescriptor(false),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
-   Logger::logInstanceCreate("Socket");
+   LOG_INSTANCE_CREATE("Socket")
 
    if (!open()) {
       throw BasicException("Unable to open socket");
@@ -66,7 +66,7 @@ Socket::Socket(int socketFD) :
    m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
-   Logger::logInstanceCreate("Socket");
+   LOG_INSTANCE_CREATE("Socket")
 }
 
 //******************************************************************************
@@ -81,13 +81,13 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
    m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE) {
-   Logger::logInstanceCreate("Socket");
+   LOG_INSTANCE_CREATE("Socket")
 }
 
 //******************************************************************************
 
 Socket::~Socket() {
-   Logger::logInstanceDestroy("Socket");
+   LOG_INSTANCE_DESTROY("Socket")
 }
 
 //******************************************************************************
@@ -102,7 +102,7 @@ bool Socket::open() {
    m_socketFD = Socket::createSocket();
 
    if (m_socketFD < 0) {
-      Logger::error("unable to open socket connection");
+      LOG_ERROR("unable to open socket connection")
       return false;
    }
 
@@ -362,23 +362,21 @@ bool Socket::readLine(std::string& line) {
          m_lineInputBuffer.erase(0, posEOL + eolLength);
          
          if (Logger::isLogging(Debug)) {
-            Logger::debug("Socket::readLine, using buffer line: (next line)");
-            Logger::debug(line);
-            
-            Logger::debug("just called erase to remove current line from input buffer");
-            Logger::debug("*** remaining input buffer on next line");
+            LOG_DEBUG("Socket::readLine, using buffer line: (next line)")
+            LOG_DEBUG(line)
+            LOG_DEBUG("*** remaining input buffer on next line")
          }
          
          return true;
       } else {
-         Logger::debug("*** assigning full input buffer");
+         LOG_DEBUG("*** assigning full input buffer")
          
          // put our line input buffer contents into the current line
          line = m_lineInputBuffer;
          
          if (Logger::isLogging(Debug)) {
-            Logger::debug("Socket::readLine, using partial buffer: (next line)");
-            Logger::debug(line);
+            LOG_DEBUG("Socket::readLine, using partial buffer: (next line)")
+            LOG_DEBUG(line)
          }
             
          // empty our line input buffer
@@ -407,17 +405,17 @@ bool Socket::readLine(std::string& line) {
       if (Logger::isLogging(Debug)) {
          char msg[128];
          ::snprintf(msg, 128, "readline: bytes from recv = %zd", bytes);
-         Logger::debug(std::string(msg));
+         LOG_DEBUG(msg)
          buffer[bytes] = '\0';
-         Logger::debug("just read from socket recv (next line)");
-         Logger::debug(std::string(buffer));
+         LOG_DEBUG("just read from socket recv (next line)")
+         LOG_DEBUG(buffer)
       }
         
       if (bytes <= 0) {  // error or connection closed by peer?
          if (bytes == 0) {
             // our connection has been closed by the other process. nothing
             // more we can do!!!
-            Logger::debug("connection reset by peer");
+            LOG_DEBUG("connection reset by peer")
             close();
             return false;
          } else {
@@ -425,7 +423,7 @@ bool Socket::readLine(std::string& line) {
                // not really an error
                continue;
             } else {
-               Logger::warning("recv returned an error");
+               LOG_WARNING("recv returned an error")
             }
          }
          return false;
@@ -451,10 +449,10 @@ bool Socket::readLine(std::string& line) {
          m_lineInputBuffer = (pszEOL + eolLength);
          
          if (Logger::isLogging(Debug)) {
-            Logger::debug("Socket::readLine holding onto following text in line input buffer");
+            LOG_DEBUG("Socket::readLine holding onto following text in line input buffer")
             char msg[256];
             ::snprintf(msg, 256, "buffer: '%s'", m_lineInputBuffer.c_str());
-            Logger::debug(std::string(msg));
+            LOG_DEBUG(msg)
          }
             
          // terminate the string at the EOL
@@ -495,17 +493,17 @@ bool Socket::read(char* buffer, int bufsize) {
    }
     
    if (length <= 0) {
-      Logger::warning("Socket::read failed, length <= 0");
+      LOG_WARNING("Socket::read failed, length <= 0")
       return (bytesAlreadyRead > 0);
    }
     
    if (bufsize < length) {
-      Logger::warning("Socket::read failed, bufsize < length");
+      LOG_WARNING("Socket::read failed, bufsize < length")
       return (bytesAlreadyRead > 0);
    }
    
    if (!readMsg(length)) {
-      Logger::warning("Socket::read failed, readMsg returned false");
+      LOG_WARNING("Socket::read failed, readMsg returned false")
       return (bytesAlreadyRead > 0);
    }
     
@@ -518,7 +516,7 @@ bool Socket::read(char* buffer, int bufsize) {
 
 bool Socket::readMsg(int length) {
    if (!isOpen()) {
-      Logger::warning("unable to read message size, socket is closed");
+      LOG_WARNING("unable to read message size, socket is closed")
       return false;
    }
    
@@ -529,7 +527,7 @@ bool Socket::readMsg(int length) {
       m_lastReadSize = length;
       return true;
    } else {
-      Logger::error("readSocket failed");
+      LOG_ERROR("readSocket failed")
       return false;
    }
 }
@@ -547,17 +545,17 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
                      bytesToRead - total_bytes_rcvd,
                      0);
       
-      //if (Logger::isLogging(Logger::LogLevel::Debug)) {
-      //   char msg[128];
-      //   ::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
-      //   Logger::debug(std::string(msg));
-      //}
+      if (Logger::isLogging(LogLevel::Debug)) {
+         char msg[128];
+         ::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
+         LOG_DEBUG(msg)
+      }
         
       if (bytes <= 0) {  // error or connection closed by peer?
          if (bytes == 0) {
             // our connection has been closed by the other process. nothing
             // more we can do!!!
-            Logger::debug("connection reset by peer");
+            LOG_DEBUG("connection reset by peer")
             close();
             if (total_bytes_rcvd == 0) {
                return -1;
@@ -569,7 +567,7 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
                // not really an error
                continue;
             } else {
-               Logger::warning("recv returned an error");
+               LOG_WARNING("recv returned an error")
             }
          }
 
@@ -618,7 +616,7 @@ bool Socket::getPeerIPAddress(std::string& ipAddress) {
 
 bool Socket::write(const char* buffer, unsigned long bufsize) {
    if (!isOpen()) {
-      Logger::warning("unable to write message, socket is closed");
+      LOG_WARNING("unable to write message, socket is closed")
       return false;
    }
     
@@ -626,7 +624,7 @@ bool Socket::write(const char* buffer, unsigned long bufsize) {
    if (rc < 0) {
       char msg[128];
       ::snprintf(msg, 128, "socket send failed, rc = %zd", rc);
-      Logger::warning(std::string(msg));
+      LOG_WARNING(msg)
    }
      
    return (rc < 0 ? false : true);

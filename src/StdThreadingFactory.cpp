@@ -13,13 +13,13 @@ using namespace chaudiere;
 //******************************************************************************
 
 StdThreadingFactory::StdThreadingFactory() {
-   Logger::logInstanceCreate("StdThreadingFactory");
+   LOG_INSTANCE_CREATE("StdThreadingFactory")
 }
 
 //******************************************************************************
 
 StdThreadingFactory::~StdThreadingFactory() {
-   Logger::logInstanceDestroy("StdThreadingFactory");
+   LOG_INSTANCE_DESTROY("StdThreadingFactory")
 }
 
 //******************************************************************************

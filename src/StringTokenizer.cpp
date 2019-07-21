@@ -26,7 +26,7 @@ StringTokenizer::StringTokenizer(const std::string& withTokens) :
    m_numberTokens(0),
    m_indexToken(0) {
 
-   Logger::logInstanceCreate("StringTokenizer");
+   LOG_INSTANCE_CREATE("StringTokenizer")
    parse();
    m_isConstructing = false;
 }
@@ -45,7 +45,7 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
    m_numberTokens(0),
    m_indexToken(0) {
 
-   Logger::logInstanceCreate("StringTokenizer");
+   LOG_INSTANCE_CREATE("StringTokenizer")
    parse();
    m_isConstructing = false;
 }
@@ -53,7 +53,7 @@ StringTokenizer::StringTokenizer(const std::string& withTokens,
 //******************************************************************************
 
 StringTokenizer::~StringTokenizer() {
-   Logger::logInstanceDestroy("StringTokenizer");
+   LOG_INSTANCE_DESTROY("StringTokenizer")
 }
 
 //******************************************************************************

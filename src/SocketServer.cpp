@@ -139,7 +139,7 @@ SocketServer::SocketServer(const std::string& serverName,
    m_isFullyInitialized(false),
    m_threadPoolSize(CFG_DEFAULT_THREAD_POOL_SIZE),
    m_serverPort(CFG_DEFAULT_PORT_NUMBER) {
-   Logger::logInstanceCreate("SocketServer");
+   LOG_INSTANCE_CREATE("SocketServer")
    init(CFG_DEFAULT_PORT_NUMBER);
 }
 
@@ -234,18 +234,18 @@ bool SocketServer::init(int port)
    try {
       configDataSource.assign(getConfigDataSource());
    } catch (const BasicException& be) {
-      Logger::error("exception retrieving config data: " + be.whatString());
+      LOG_ERROR("exception retrieving config data: " + be.whatString())
       return false;
    } catch (const std::exception& e) {
-      Logger::error("exception retrieving config data: " + std::string(e.what()));
+      LOG_ERROR("exception retrieving config data: " + std::string(e.what()))
       return false;
    } catch (...) {
-      Logger::error("exception retrieving config data");
+      LOG_ERROR("exception retrieving config data")
       return false;
    }
    
    if (!configDataSource.haveObject()) {
-      Logger::error("unable to retrieve config data");
+      LOG_ERROR("unable to retrieve config data")
       return false;
    }
 
@@ -271,7 +271,7 @@ bool SocketServer::init(int port)
                if (isLoggingDebug) {
                   char msg[128];
                   ::snprintf(msg, 128, "port number=%d", port);
-                  Logger::debug(std::string(msg));
+                  LOG_DEBUG(msg)
                }
             }
          }
@@ -321,7 +321,7 @@ bool SocketServer::init(int port)
                kvpServerSettings.getValue(CFG_SERVER_LOG_LEVEL);
             if (!m_logLevel.empty()) {
                StrUtils::toLowerCase(m_logLevel);
-               Logger::info(std::string("log level: ") + m_logLevel);
+               LOG_INFO(std::string("log level: ") + m_logLevel)
                Logger* logger = Logger::getLogger();
                
                if (logger != NULL) {
@@ -338,7 +338,7 @@ bool SocketServer::init(int port)
                   } else if (m_logLevel == CFG_LOGGING_VERBOSE) {
                      logger->setLogLevel(Verbose);
                   } else {
-                     Logger::warning("unrecognized log level: '" + m_logLevel);
+                     LOG_WARNING("unrecognized log level: '" + m_logLevel)
                   }
                }
             }
@@ -387,28 +387,28 @@ bool SocketServer::init(int port)
                         kvpVars.addPair("$OS_VERSION", systemInfo.version());
                         kvpVars.addPair("$OS_MACHINE", systemInfo.machine());
                      } else {
-                        Logger::warning("unable to retrieve system information to populate server string");
+                        LOG_WARNING("unable to retrieve system information to populate server string")
                      }
                   }
                   
                   replaceVariables(kvpVars, m_serverString);
                }
                
-               Logger::info("setting server string: '" + m_serverString + "'");
+               LOG_INFO("setting server string: '" + m_serverString + "'")
             }
          }
       }
       
       m_startupTime = getLocalDateTime();
    } catch (const BasicException& be) {
-      Logger::critical("exception initializing server: " + be.whatString());
+      LOG_CRITICAL("exception initializing server: " + be.whatString())
       return false;
    } catch (const std::exception& e) {
-      Logger::critical("exception initializing server: " +
-                       std::string(e.what()));
+      LOG_CRITICAL("exception initializing server: " +
+                   std::string(e.what()))
       return false;
    } catch (...) {
-      Logger::critical("unknown exception initializing server");
+      LOG_CRITICAL("unknown exception initializing server")
       return false;
    }
 
@@ -417,7 +417,7 @@ bool SocketServer::init(int port)
          if (isLoggingDebug) {
             char msg[128];
             ::snprintf(msg, 128, "creating server socket on port=%d", port);
-            Logger::debug(std::string(msg));
+            LOG_DEBUG(msg)
          }
       
          if (m_serverSocket != NULL) {
@@ -429,7 +429,7 @@ bool SocketServer::init(int port)
          std::string exception = "unable to open server socket port '";
          exception += StrUtils::toString(port);
          exception += "'";
-         Logger::critical(exception);
+         LOG_CRITICAL(exception)
          return false;
       }
    }
@@ -502,7 +502,7 @@ bool SocketServer::init(int port)
 //******************************************************************************
 
 SocketServer::~SocketServer() {
-   Logger::logInstanceDestroy("SocketServer");
+   LOG_INSTANCE_DESTROY("SocketServer")
 
    if (m_serverSocket) {
       m_serverSocket->close();
@@ -592,7 +592,7 @@ void SocketServer::serviceSocket(SocketRequest* socketRequest) {
 
 int SocketServer::runSocketServer() {
    if (!m_serverSocket) {
-      Logger::critical("runSocketServer called with null serverSocket");
+      LOG_CRITICAL("runSocketServer called with null serverSocket")
       return 1;
    }
    
@@ -604,9 +604,9 @@ int SocketServer::runSocketServer() {
          continue;
       }
 
-      //if (Logger::isLogging(Debug)) {
-      //   Logger::debug("*****************************************");
-      //   Logger::debug("client connected");
+      //if (Logger::isLogging(LogLevel::Debug)) {
+      //   LOG_DEBUG("*****************************************")
+      //   LOG_DEBUG("client connected")
       //}
 
       try {
@@ -620,13 +620,13 @@ int SocketServer::runSocketServer() {
             handler->run();
          }
       } catch (const BasicException& be) {
-         Logger::error("SocketServer runServer exception caught: " +
-                       be.whatString());
+         LOG_ERROR("SocketServer runServer exception caught: " +
+                   be.whatString())
       } catch (const std::exception& e) {
-         Logger::error(std::string("SocketServer runServer exception caught: ") +
-                       std::string(e.what()));
+         LOG_ERROR(std::string("SocketServer runServer exception caught: ") +
+                   std::string(e.what()))
       } catch (...) {
-         Logger::error("SocketServer runServer unknown exception caught");
+         LOG_ERROR("SocketServer runServer unknown exception caught")
       }
       
       delete socket;
@@ -659,7 +659,7 @@ int SocketServer::runKernelEventServer() {
          m_kernelEventServer =
             new EpollServer(*mutexFD, *mutexHWMConnections);
       } else {
-         Logger::critical("no kernel event server available for platform");
+         LOG_CRITICAL("no kernel event server available for platform")
          rc = 1;
       }
       
@@ -673,17 +673,17 @@ int SocketServer::runKernelEventServer() {
                rc = 1;
             }
          } catch (const BasicException& be) {
-            Logger::critical("exception running kernel event server: " +
-                             be.whatString());
+            LOG_CRITICAL("exception running kernel event server: " +
+                         be.whatString())
          } catch (const std::exception& e) {
-            Logger::critical("exception running kernel event server: " +
-                             std::string(e.what()));
+            LOG_CRITICAL("exception running kernel event server: " +
+                         std::string(e.what()))
          } catch (...) {
-            Logger::critical("unidentified exception running kernel event server");
+            LOG_CRITICAL("unidentified exception running kernel event server")
          }
       }
    } else {
-      Logger::critical("no threading factory configured");
+      LOG_CRITICAL("no threading factory configured")
       rc = 1;
    }
    
@@ -694,7 +694,7 @@ int SocketServer::runKernelEventServer() {
 
 int SocketServer::run() {
    if (!m_isFullyInitialized) {
-      Logger::critical("server not initialized");
+      LOG_CRITICAL("server not initialized")
       return 1;
    } else {
       if (m_isUsingKernelEventServer) {
