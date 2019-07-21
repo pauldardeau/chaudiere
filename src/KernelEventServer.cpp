@@ -119,7 +119,7 @@ void KernelEventServer::run() {
    struct sockaddr_in clientaddr;
    socklen_t addrlen = sizeof(clientaddr);
    int newfd;
-   char msg[128];
+   //char msg[128];
    
    const std::string& handlerName = m_socketServiceHandler->getName();
    
