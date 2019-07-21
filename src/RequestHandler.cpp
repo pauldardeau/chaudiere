@@ -38,6 +38,10 @@ RequestHandler::~RequestHandler() {
 
    if (m_socket) {
       m_socket->close();
+      if (m_socketOwned) {
+         delete m_socket;
+         m_socket = NULL;
+      }
    }
 
    if ((NULL != m_socketRequest) && m_socketRequest->isAutoDelete()) {
