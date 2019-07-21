@@ -5,7 +5,7 @@
 #define CHAUDIERE_STDLOGGER_H
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include "Logger.h"
@@ -141,13 +141,13 @@ public:
     *
     * @param mapClassLifecycleStats
     */                           
-   void populateClassLifecycleStats(std::map<std::string, LifecycleStats>& mapClassLifecycleStats);
+   void populateClassLifecycleStats(std::unordered_map<std::string, LifecycleStats>& mapClassLifecycleStats);
    
    /**
     *
     * @param mapOccurrences
     */
-   void populateOccurrences(std::map<std::string, std::map<std::string, long long> >& mapOccurrences);
+   void populateOccurrences(std::unordered_map<std::string, std::unordered_map<std::string, long long> >& mapOccurrences);
    
    /**
     *
@@ -158,8 +158,8 @@ public:
 
 
 private:
-   std::map<std::string, LifecycleStats> m_mapClassLifecycleStats;
-   std::map<std::string, std::map<std::string, long long> > m_mapOccurrences;
+   std::unordered_map<std::string, LifecycleStats> m_mapClassLifecycleStats;
+   std::unordered_map<std::string, std::unordered_map<std::string, long long> > m_mapOccurrences;
    Mutex* m_lockLifecycleStats;
    Mutex* m_lockOccurrences;
    LogLevel m_logLevel;
