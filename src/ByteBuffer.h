@@ -67,7 +67,11 @@ public:
     * Destructor
     */
    ~ByteBuffer() {
-      clear();
+      if (m_buffer != NULL) {
+         ::free(m_buffer);
+         m_buffer = NULL;
+         m_bufferSize = 0;
+      }
    }
    
    /**
@@ -137,6 +141,14 @@ public:
     */
    size_t size() const {
       return m_bufferSize;
+   }
+
+   /**
+    * Determines whether the buffer is empty
+    * @return boolean indicating if buffer is empty
+    */
+   bool empty() const {
+      return m_bufferSize > 0;
    }
    
    /**
