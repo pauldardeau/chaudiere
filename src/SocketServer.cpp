@@ -417,11 +417,7 @@ bool SocketServer::init(int port)
             LOG_DEBUG(msg)
          }
       
-         if (m_serverSocket != nullptr) {
-            delete m_serverSocket;
-         }
-         
-         m_serverSocket = new ServerSocket(port);
+         m_serverSocket = std::unique_ptr<ServerSocket>(new ServerSocket(port));
       } catch (...) {
          std::string exception = "unable to open server socket port '";
          exception += StrUtils::toString(port);
@@ -437,24 +433,20 @@ bool SocketServer::init(int port)
       bool isUsingLibDispatch = false;
       
       if (m_threading == CFG_THREADING_PTHREADS) {
-         m_threadingFactory = new PthreadsThreadingFactory();
+         m_threadingFactory = std::unique_ptr<ThreadingFactory>(new PthreadsThreadingFactory());
       //} else if (m_threading == CFG_THREADING_CPP11) {
       //   m_threadingFactory = new StdThreadingFactory();
       //} else if (m_threading == CFG_THREADING_GCD_LIBDISPATCH) {
       //   isUsingLibDispatch = true;
       //   m_threadingFactory = new PthreadsThreadingFactory();
       } else {
-         m_threadingFactory = new PthreadsThreadingFactory();
+         m_threadingFactory = std::unique_ptr<ThreadingFactory>(new PthreadsThreadingFactory());
       }
       
-      ThreadingFactory::setThreadingFactory(m_threadingFactory);
+      ThreadingFactory::setThreadingFactory(m_threadingFactory.get());
       
-      if (m_threadPool) {
-         delete m_threadPool;
-      }
-      
-      m_threadPool =
-         m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize, "threadpool");
+      m_threadPool.reset(m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize,
+                                                                        "threadpool"));
       m_threadPool->start();
 
       concurrencyModel = "multithreaded - ";
@@ -503,20 +495,10 @@ SocketServer::~SocketServer() {
 
    if (m_serverSocket) {
       m_serverSocket->close();
-      delete m_serverSocket;
    }
    
-   if (m_kernelEventServer) {
-      delete m_kernelEventServer;
-   }
-
    if (m_threadPool) {
       m_threadPool->stop();
-      delete m_threadPool;
-   }
-   
-   if (m_threadingFactory) {
-      delete m_threadingFactory;
    }
 }
 
@@ -595,7 +577,7 @@ int SocketServer::runSocketServer() {
    
    while (!m_isDone) {
       
-      Socket* socket = m_serverSocket->accept();
+      std::unique_ptr<Socket> socket(m_serverSocket->accept());
 
       if (nullptr == socket) {
          continue;
@@ -607,7 +589,7 @@ int SocketServer::runSocketServer() {
       //}
 
       try {
-         RequestHandler* handler = handlerForSocket(socket);
+         RequestHandler* handler = handlerForSocket(socket.get());
          if (m_isThreaded && (nullptr != m_threadPool)) {
             handler->setThreadPooling(true);
 
@@ -625,8 +607,6 @@ int SocketServer::runSocketServer() {
       } catch (...) {
          LOG_ERROR("SocketServer runServer unknown exception caught")
       }
-      
-      delete socket;
    }
    
    return 0;
@@ -644,17 +624,12 @@ int SocketServer::runKernelEventServer() {
       Mutex* mutexHWMConnections =
          m_threadingFactory->createMutex("hwmConnectionsMutex");
       
-      if (m_kernelEventServer) {
-         delete m_kernelEventServer;
-         m_kernelEventServer = nullptr;
-      }
-      
       if (KqueueServer::isSupportedPlatform()) {
          m_kernelEventServer =
-            new KqueueServer(*mutexFD, *mutexHWMConnections);
+            std::unique_ptr<KernelEventServer>(new KqueueServer(*mutexFD, *mutexHWMConnections));
       } else if (EpollServer::isSupportedPlatform()) {
          m_kernelEventServer =
-            new EpollServer(*mutexFD, *mutexHWMConnections);
+            std::unique_ptr<KernelEventServer>(new EpollServer(*mutexFD, *mutexHWMConnections));
       } else {
          LOG_CRITICAL("no kernel event server available for platform")
          rc = 1;

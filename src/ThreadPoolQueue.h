@@ -4,8 +4,6 @@
 #ifndef CHAUDIERE_THREADPOOLQUEUE_H
 #define CHAUDIERE_THREADPOOLQUEUE_H
 
-#include <pthread.h>
-
 #include <deque>
 #include <memory>
 
@@ -80,15 +78,11 @@ private:
    ThreadingFactory* m_threadingFactory;
    std::deque<Runnable*> m_queue;
 
-   pthread_mutex_t m_queue_lock;
-   pthread_cond_t m_cond_queue_not_empty;
-   pthread_cond_t m_cond_queue_not_full;
-   pthread_cond_t m_cond_queue_empty;
+   std::unique_ptr<Mutex> m_mutex;
+   std::unique_ptr<ConditionVariable> m_condQueueNotEmpty;
+   std::unique_ptr<ConditionVariable> m_condQueueNotFull;
+   std::unique_ptr<ConditionVariable> m_condQueueEmpty;
 
-   //Mutex* m_mutex;
-   //ConditionVariable* m_condQueueNotEmpty;
-   //ConditionVariable* m_condQueueNotFull;
-   //ConditionVariable* m_condQueueEmpty;
    bool m_isInitialized;
    bool m_isRunning;
 

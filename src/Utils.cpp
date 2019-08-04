@@ -31,17 +31,17 @@ void Utils::WriteLine(const string& s) {
    printf("%s\n", s.c_str());
 }
 
-ByteBuffer* Utils::ReadFile(const std::string& filePath) {
-   ByteBuffer* buffer = nullptr;
+std::unique_ptr<ByteBuffer> Utils::ReadFile(const std::string& filePath) {
+   std::unique_ptr<ByteBuffer> buffer;
    FILE* f = fopen(filePath.c_str(), "rb");
    if (f != nullptr) {
       fseek(f, 0, SEEK_END);
       unsigned long fileBytes = ftell(f);
       fseek(f, 0, SEEK_SET);
-      buffer = new ByteBuffer(fileBytes);
+      buffer = std::unique_ptr<ByteBuffer>(new ByteBuffer(fileBytes));
       size_t bytesRead = fread(buffer->data(), fileBytes, 1, f);
       if (bytesRead < fileBytes) {
-         delete buffer;
+         buffer.reset();
          buffer = nullptr;
       }
       fclose(f);

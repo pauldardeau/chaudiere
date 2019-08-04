@@ -5,13 +5,13 @@
 
 using namespace chaudiere;
 
-Logger* Logger::loggerInstance = nullptr;
+std::unique_ptr<Logger> Logger::loggerInstance = std::unique_ptr<Logger>(nullptr);
 
 //******************************************************************************
 
 void Logger::shutdown() {
    if (nullptr != loggerInstance) {
-      delete loggerInstance;
+      loggerInstance.reset();
       loggerInstance = nullptr;
    }
 }
@@ -19,13 +19,21 @@ void Logger::shutdown() {
 //******************************************************************************
 
 void Logger::setLogger(Logger* logger) {
-   loggerInstance = logger;
+   if (loggerInstance != nullptr) {
+      loggerInstance.reset(logger);
+   } else {
+      loggerInstance = std::unique_ptr<Logger>(logger);
+   }
 }
 
 //******************************************************************************
 
 Logger* Logger::getLogger() {
-   return loggerInstance;
+   if (nullptr != loggerInstance) {
+      return loggerInstance.get();
+   } else {
+      return nullptr;
+   }
 }
 
 //******************************************************************************

@@ -220,7 +220,7 @@ public:
    
    
 private:
-   static Logger* loggerInstance;
+   static std::unique_ptr<Logger> loggerInstance;
    
 };
 

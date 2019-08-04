@@ -43,7 +43,6 @@ SocketRequest::SocketRequest(SocketCompletionObserver* completionObserver,
 SocketRequest::~SocketRequest() {
    LOG_INSTANCE_DESTROY("SocketRequest")
    if (nullptr != m_borrowedSocket) {
-      delete m_borrowedSocket;
       m_borrowedSocket = nullptr;
       m_socket = nullptr;
    }

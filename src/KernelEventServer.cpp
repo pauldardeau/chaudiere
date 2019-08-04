@@ -43,9 +43,6 @@ KernelEventServer::KernelEventServer(Mutex& fdMutex,
 //******************************************************************************
 
 KernelEventServer::~KernelEventServer() {
-   
-   delete m_socketServiceHandler;
-   
    if (-1 != m_listenerFD) {
       ::close(m_listenerFD);
    }
@@ -56,7 +53,8 @@ KernelEventServer::~KernelEventServer() {
 bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
                              int serverPort,
                              int maxConnections) {
-   m_socketServiceHandler = socketServiceHandler;
+   m_socketServiceHandler =
+      std::unique_ptr<SocketServiceHandler>(socketServiceHandler);
    m_serverPort = serverPort;
    m_maxConnections = maxConnections;
    

@@ -160,8 +160,8 @@ public:
 private:
    std::unordered_map<std::string, LifecycleStats> m_mapClassLifecycleStats;
    std::unordered_map<std::string, std::unordered_map<std::string, long long> > m_mapOccurrences;
-   Mutex* m_lockLifecycleStats;
-   Mutex* m_lockOccurrences;
+   std::unique_ptr<Mutex> m_lockLifecycleStats;
+   std::unique_ptr<Mutex> m_lockOccurrences;
    LogLevel m_logLevel;
    bool m_isLoggingInstanceLifecycles;
    

@@ -85,7 +85,7 @@ public:
    
 private:
    Socket* m_socket;
-   Socket* m_borrowedSocket;
+   std::unique_ptr<Socket> m_borrowedSocket;
    SocketServiceHandler* m_handler;
    Socket m_containedSocket;
    bool m_socketOwned;
