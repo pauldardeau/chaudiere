@@ -37,7 +37,7 @@ clean :
 	rm -f $(EXE_NAME)
 	
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl
+	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@
