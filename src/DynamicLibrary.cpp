@@ -13,14 +13,14 @@ using namespace chaudiere;
 //******************************************************************************
 
 DynamicLibrary::DynamicLibrary() :
-   m_hDll(NULL) {
+   m_hDll(nullptr) {
    LOG_INSTANCE_CREATE("DynamicLibrary")
 }
 
 //******************************************************************************
 
 DynamicLibrary::DynamicLibrary(const std::string& libraryName) :
-   m_hDll(NULL) {
+   m_hDll(nullptr) {
    LOG_INSTANCE_CREATE("DynamicLibrary")
 
    if (!open(libraryName)) {
@@ -48,7 +48,7 @@ bool DynamicLibrary::open(const std::string& libraryName) {
    
    m_hDll = ::dlopen(libraryName.c_str(), RTLD_NOW);
    
-   bool rc = (m_hDll != NULL);
+   bool rc = (m_hDll != nullptr);
    
    if (!rc) {
       LOG_ERROR(std::string("unable to load library '") +
@@ -61,13 +61,13 @@ bool DynamicLibrary::open(const std::string& libraryName) {
 //******************************************************************************
 
 void DynamicLibrary::close() {
-   if (m_hDll == NULL) {
+   if (m_hDll == nullptr) {
       return;
    }
 
    ::dlclose(m_hDll);
 
-   m_hDll = NULL;
+   m_hDll = nullptr;
 }
 
 //******************************************************************************

@@ -14,7 +14,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 RequestHandler::RequestHandler(SocketRequest* socketRequest) :
-   m_socket(NULL),
+   m_socket(nullptr),
    m_socketRequest(socketRequest),
    m_isThreadPooling(false),
    m_socketOwned(true) {
@@ -25,7 +25,7 @@ RequestHandler::RequestHandler(SocketRequest* socketRequest) :
 
 RequestHandler::RequestHandler(Socket* socket) :
    m_socket(socket),
-   m_socketRequest(NULL),
+   m_socketRequest(nullptr),
    m_isThreadPooling(false),
    m_socketOwned(true) {
    LOG_INSTANCE_CREATE("RequestHandler")
@@ -40,11 +40,11 @@ RequestHandler::~RequestHandler() {
       m_socket->close();
       if (m_socketOwned) {
          delete m_socket;
-         m_socket = NULL;
+         m_socket = nullptr;
       }
    }
 
-   if ((NULL != m_socketRequest) && m_socketRequest->isAutoDelete()) {
+   if ((nullptr != m_socketRequest) && m_socketRequest->isAutoDelete()) {
       delete m_socketRequest;
    }
 }
@@ -64,7 +64,7 @@ bool RequestHandler::isThreadPooling() const {
 //******************************************************************************
 
 Socket* RequestHandler::getSocket() {
-   Socket* socket = NULL;
+   Socket* socket = nullptr;
 
    if (m_socket) {
       socket = m_socket;
@@ -91,7 +91,7 @@ void RequestHandler::setSocketOwned(bool socketOwned) {
 
 void RequestHandler::notifyOnCompletion() {
    Runnable::notifyOnCompletion();
-   if (NULL != m_socketRequest) {
+   if (nullptr != m_socketRequest) {
       m_socketRequest->notifyOnCompletion();
    }
 }

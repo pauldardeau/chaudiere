@@ -52,12 +52,12 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
    struct timeval boottime;
    size_t len = sizeof(boottime);
    int mib[2] = { CTL_KERN, KERN_BOOTTIME };
-   if (::sysctl(mib, 2, &boottime, &len, NULL, 0) < 0) {
+   if (::sysctl(mib, 2, &boottime, &len, nullptr, 0) < 0) {
       return false;
    }
    
    time_t bsec = boottime.tv_sec;
-   time_t csec = ::time(NULL);
+   time_t csec = ::time(nullptr);
 
    uptimeSeconds = ::difftime(csec, bsec);
    
@@ -105,12 +105,12 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
    size_t length = 0;
    static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
    
-   // Call sysctl with a NULL buffer to get proper length
+   // Call sysctl with a nullptr buffer to get proper length
    rc = ::sysctl((int *)name,
                  (sizeof(name) / sizeof(*name)) - 1,
-                 NULL,
+                 nullptr,
                  &length,
-                 NULL,
+                 nullptr,
                  0);
    
    if (rc == 0) {
@@ -118,13 +118,13 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
       struct kinfo_proc* proc_list =
          (struct kinfo_proc*)::malloc(length);
        
-      if (proc_list != NULL) {
+      if (proc_list != nullptr) {
          // Get the actual process list
          rc = ::sysctl((int *)name,
                        (sizeof(name) / sizeof(*name)) - 1,
                        proc_list,
                        &length,
-                       NULL,
+                       nullptr,
                        0);
          if (rc == 0) {
             numberProcesses = length / sizeof(struct kinfo_proc);

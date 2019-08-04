@@ -1,8 +1,8 @@
 # Copyright Paul Dardeau, SwampBits LLC 2014
 # BSD License
 
-CC = c++
-CC_OPTS = -c -Wall -fPIC -O2 -pthread -I/usr/local/include
+CC = clang++
+CC_OPTS = -c -Wall -std=c++11 -fPIC -O2 -pthread -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 

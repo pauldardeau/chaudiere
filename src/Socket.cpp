@@ -39,7 +39,7 @@ int Socket::createSocket() {
 //******************************************************************************
 
 Socket::Socket(const std::string& address, int port) :
-   m_completionObserver(NULL),
+   m_completionObserver(nullptr),
    m_serverAddress(address),
    m_socketFD(-1),
    m_userIndex(-1),
@@ -58,7 +58,7 @@ Socket::Socket(const std::string& address, int port) :
 //******************************************************************************
 
 Socket::Socket(int socketFD) :
-   m_completionObserver(NULL),
+   m_completionObserver(nullptr),
    m_socketFD(socketFD),
    m_userIndex(-1),
    m_isConnected(true),
@@ -133,7 +133,7 @@ ssize_t Socket::send(const void* sendBuffer,
                      int flags) {
    if ((m_socketFD < 0) ||
        (! m_isConnected) ||
-       (NULL == sendBuffer)) {
+       (nullptr == sendBuffer)) {
       return -1;
    }
     
@@ -147,7 +147,7 @@ ssize_t Socket::receive(void* receiveBuffer,
                         int flags) {
    if ((m_socketFD < 0) ||
        (!m_isConnected) ||
-       (NULL == receiveBuffer)) {
+       (nullptr == receiveBuffer)) {
       return -1;
    }
     
@@ -393,9 +393,9 @@ bool Socket::readLine(std::string& line) {
    eolLength = 0;
     
    do {
-      posLF = NULL;
-      posCRLF = NULL;
-      pszEOL = NULL;
+      posLF = nullptr;
+      posCRLF = nullptr;
+      pszEOL = nullptr;
         
       bytes = ::recv(m_socketFD,
                      buffer,
@@ -444,7 +444,7 @@ bool Socket::readLine(std::string& line) {
          }
       }
         
-      if ((NULL != pszEOL) && (eolLength > 0)) {
+      if ((nullptr != pszEOL) && (eolLength > 0)) {
          // hold onto everything after the EOL in the line input buffer
          m_lineInputBuffer = (pszEOL + eolLength);
          
@@ -461,7 +461,7 @@ bool Socket::readLine(std::string& line) {
         
       line += buffer;
         
-   } while (NULL == pszEOL);
+   } while (nullptr == pszEOL);
    
    return true;
 }

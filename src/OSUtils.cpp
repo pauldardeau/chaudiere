@@ -66,7 +66,7 @@ std::string OSUtils::getCurrentDirectory() {
    // this call to getcwd will allocate memory buffer
    char* buffCurrentDir = ::getcwd(currentDir, sizeof(currentDir));
    
-   if (buffCurrentDir != NULL) {
+   if (buffCurrentDir != nullptr) {
       currentDirectory = buffCurrentDir;
    }
    
@@ -109,7 +109,7 @@ bool OSUtils::directoryExists(const std::string& directory) {
 
 bool OSUtils::pathExists(const std::string& filePath) {
    FILE* f = ::fopen(filePath.c_str(), "r");
-   if (f != NULL) {
+   if (f != nullptr) {
       fclose(f);
       return true;
    } else {
@@ -147,7 +147,7 @@ void OSUtils::programExit(int exitCode) {
 long OSUtils::getFileSize(const std::string& filePath) {
    long fileSize = -1L;
    FILE* f = fopen(filePath.c_str(), "r");
-   if (NULL != f) {
+   if (nullptr != f) {
       fseek(f, 0L, SEEK_END);
       fileSize = ftell(f);
       fclose(f);
@@ -229,8 +229,8 @@ std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPat
    std::vector<std::string> listFiles;
    struct dirent* entry;
    DIR* dir = ::opendir(dirPath.c_str());
-   if (dir != NULL) {
-      while ((entry = ::readdir(dir)) != NULL) {
+   if (dir != nullptr) {
+      while ((entry = ::readdir(dir)) != nullptr) {
          bool entryIsFile = false;
 #if defined(__sun)
          struct stat s;
@@ -281,7 +281,7 @@ unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
 
 bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32) {
    FILE* f = ::fopen(filePath.c_str(), "r");
-   if (f != NULL) {
+   if (f != nullptr) {
       unsigned char buf[8192];
       size_t bufLen;
       

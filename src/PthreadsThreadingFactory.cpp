@@ -33,7 +33,7 @@ Mutex* PthreadsThreadingFactory::createMutex(const std::string& name) {
 //******************************************************************************
 
 Thread* PthreadsThreadingFactory::createThread(const std::string& name) {
-   return createThread(NULL, name);
+   return createThread(nullptr, name);
 }
 
 //******************************************************************************
