@@ -18,8 +18,6 @@
 
 #ifdef __linux__
 #include <sys/sysinfo.h>
-#include <pwd.h>
-#include <grp.h>
 #elif defined(__APPLE__)
 #include <sys/sysctl.h>
 #elif defined(__sun__)
