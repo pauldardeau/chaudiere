@@ -392,8 +392,7 @@ bool OSUtils::getHWCpuCount(int& count)
 
    rc = true;
 
-#elif defined(__unix__)
-#ifdef __solaris__
+#elif defined(__solaris__)
    count = sysconf(_SC_NPROCESSORS_ONLN);
    rc = true;
 #elif defined(__linux__)
@@ -406,7 +405,6 @@ bool OSUtils::getHWCpuCount(int& count)
       count = cpuCount;
       rc = true;
    }
-#endif
 #endif
 
    return rc;
@@ -431,8 +429,7 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
       }
       ::RegCloseKey(keyCPU);
    }
-#elif defined(__unix__)
-#ifdef __solaris__
+#elif defined(__solaris__)
    processor_info_t pi;
    if (0 == processor_info(0, &pi)) {
       cpuType = pi.pi_processor_type;
@@ -484,7 +481,6 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
       }
    }
 #endif
-#endif
 
    return rc;
 }
@@ -496,14 +492,12 @@ bool OSUtils::getHardwareType(std::string& hardwareType)
    bool rc = false;
    hardwareType = "** unknown **";
 
-#ifdef __unix__
 #ifdef __solaris__
    char szPlatform[128];
    if (sysinfo(SI_PLATFORM, szPlatform, 127) > -1) {
       hardwareType = szPlatform;
       rc = true;
    }
-#endif
 #endif
 
    return rc;
@@ -577,8 +571,7 @@ int OSUtils::getHWCpuSpeedMHz()
 
       ::RegCloseKey(keyCPU);
    }
-#elif defined(__unix__)
-#ifdef __solaris__
+#elif defined(__solaris__)
    processor_info_t pi;
    if (0 == processor_info(0, &pi)) {
       cpuSpeedMHz = pi.pi_clock;
@@ -595,7 +588,6 @@ int OSUtils::getHWCpuSpeedMHz()
    if (0 == sysctlbyname("hw.cpufrequency", &cpuSpeed, &size, NULL, 0)) {
       cpuSpeedMHz = cpuSpeed / 1000000;
    }
-#endif
 #endif
 
    return cpuSpeedMHz;
@@ -738,14 +730,12 @@ bool OSUtils::getOSRevision(std::string& osRevision)
       rc = true;
       osRevision = osVersionInfo.szCSDVersion;
    }
-#elif defined(__unix__)
-#ifdef __solaris__
+#elif defined(__solaris__)
    struct utsname data;
    if (uname(&data) > -1) {
       osRevision = data.version;
       rc = true;
    }
-#endif
 #endif
 
    return rc;
@@ -757,7 +747,6 @@ int OSUtils::getFreeMemoryMB()
 {
    int freeMemoryMB = -1;
 
-#ifdef __unix__
 #ifdef __solaris__
    long freePages = sysconf(_SC_AVPHYS_PAGES);
    long pageSize = sysconf(_SC_PAGE_SIZE);
@@ -778,7 +767,6 @@ int OSUtils::getFreeMemoryMB()
          freeMemoryMB = ((freePages * pageSize) / ONE_MB);
       }
    }
-#endif
 #endif
 
    return freeMemoryMB;
