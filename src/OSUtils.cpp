@@ -24,6 +24,8 @@
 #include <sys/sysctl.h>
 #elif defined(__sun__)
 #include <sys/loadavg.h>
+#include <sys/processor.h>
+#include <sys/systeminfo.h>
 #endif
 
 #include "OSUtils.h"
@@ -406,7 +408,7 @@ bool OSUtils::getHWCpuCount(int& count)
 
    rc = true;
 
-#elif defined(__solaris__)
+#elif defined(__sun__)
    count = sysconf(_SC_NPROCESSORS_ONLN);
    rc = true;
 #elif defined(__linux__)
@@ -443,7 +445,7 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
       }
       ::RegCloseKey(keyCPU);
    }
-#elif defined(__solaris__)
+#elif defined(__sun__)
    processor_info_t pi;
    if (0 == processor_info(0, &pi)) {
       cpuType = pi.pi_processor_type;
@@ -477,7 +479,7 @@ bool OSUtils::getHardwareType(std::string& hardwareType)
    bool rc = false;
    hardwareType = "** unknown **";
 
-#ifdef __solaris__
+#ifdef __sun__
    char szPlatform[128];
    if (sysinfo(SI_PLATFORM, szPlatform, 127) > -1) {
       hardwareType = szPlatform;
@@ -501,7 +503,7 @@ int OSUtils::getHWPhysicalMemoryMB()
    ::GlobalMemoryStatus(&memStat);
    const SIZE_T dwTotalBytes = memStat.dwTotalPhys;
    physicalMemoryMB = dwTotalBytes / ONE_MB;
-#elif defined(__solaris__)
+#elif defined(__sun__)
    const long numPages = sysconf(_SC_PHYS_PAGES);
    const long pageSize = sysconf(_SC_PAGE_SIZE);
    const longlong_t mem = (longlong_t) ((longlong_t) numPages * (longlong_t) pageSize);
@@ -556,7 +558,7 @@ int OSUtils::getHWCpuSpeedMHz()
 
       ::RegCloseKey(keyCPU);
    }
-#elif defined(__solaris__)
+#elif defined(__sun__)
    processor_info_t pi;
    if (0 == processor_info(0, &pi)) {
       cpuSpeedMHz = pi.pi_clock;
@@ -715,7 +717,7 @@ bool OSUtils::getOSRevision(std::string& osRevision)
       rc = true;
       osRevision = osVersionInfo.szCSDVersion;
    }
-#elif defined(__solaris__)
+#elif defined(__sun__)
    struct utsname data;
    if (uname(&data) > -1) {
       osRevision = data.version;
@@ -732,7 +734,7 @@ int OSUtils::getFreeMemoryMB()
 {
    int freeMemoryMB = -1;
 
-#ifdef __solaris__
+#ifdef __sun__
    long freePages = sysconf(_SC_AVPHYS_PAGES);
    long pageSize = sysconf(_SC_PAGE_SIZE);
    longlong_t freeMem = (longlong_t) freePages * (longlong_t) pageSize;
