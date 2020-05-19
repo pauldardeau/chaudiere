@@ -11,12 +11,19 @@
 #include <dirent.h>
 #include <sys/utsname.h>
 
+#ifndef _WIN32
+#include <pwd.h>
+#include <grp.h>
+#endif
+
 #ifdef __linux__
 #include <sys/sysinfo.h>
 #include <pwd.h>
 #include <grp.h>
 #elif defined(__APPLE__)
 #include <sys/sysctl.h>
+#elif defined(__sun__)
+#include <sys/loadavg.h>
 #endif
 
 #include "OSUtils.h"
@@ -342,8 +349,13 @@ bool OSUtils::isUserInGroup(const std::string& groupName)
             return true;
          } else {
             // check secondary groups
+#if defined(__sun__)
+            const int nMaxGroups = NGROUPS_UMAX;
+            gid_t mygidset[NGROUPS_UMAX];
+#else
             const int nMaxGroups = NGROUPS_MAX;
             gid_t mygidset[NGROUPS_MAX];
+#endif
             const int nGroups = getgroups(nMaxGroups, mygidset);
 
             if (nGroups > -1) {
