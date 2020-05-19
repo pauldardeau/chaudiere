@@ -203,6 +203,8 @@ std::string OSUtils::sysPlatform() {
    name = "openbsd";
 #elif defined(_WIN32)
    name = "windows";
+#elif defined(__sun__)
+   name = "solaris";
 #else
    name = "unknown";
 #endif
