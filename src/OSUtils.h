@@ -147,7 +147,7 @@ namespace chaudiere
 
       static bool getHWCpuType(std::string& cpuType);
 
-      static void getHardwareType(std::string& hardwareType);
+      static bool getHardwareType(std::string& hardwareType);
 
       static int getHWPhysicalMemoryMB();
 
@@ -161,8 +161,8 @@ namespace chaudiere
       static double getFiveMinuteLoadAvg();
       static double getFifteenMinuteLoadAvg();
 
-      static void getOSName(std::string& osName);
-      static void getOSRelease(std::string& osName);
+      static bool getOSName(std::string& osName);
+      static bool getOSRelease(std::string& osName);
       static bool getOSRevision(std::string& osRevision);
 
       static int getFreeMemoryMB();

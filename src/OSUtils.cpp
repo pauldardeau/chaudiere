@@ -491,17 +491,22 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
 
 //******************************************************************************
 
-void OSUtils::getHardwareType(std::string& hardwareType)
+bool OSUtils::getHardwareType(std::string& hardwareType)
 {
+   bool rc = false;
    hardwareType = "** unknown **";
+
 #ifdef __unix__
 #ifdef __solaris__
    char szPlatform[128];
    if (sysinfo(SI_PLATFORM, szPlatform, 127) > -1) {
       hardwareType = szPlatform;
+      rc = true;
    }
 #endif
 #endif
+
+   return rc;
 }
 
 //******************************************************************************
@@ -517,8 +522,7 @@ int OSUtils::getHWPhysicalMemoryMB()
    ::GlobalMemoryStatus(&memStat);
    const SIZE_T dwTotalBytes = memStat.dwTotalPhys;
    physicalMemoryMB = dwTotalBytes / ONE_MB;
-#elif defined(__unix__)
-#ifdef __solaris__
+#elif defined(__solaris__)
    const long numPages = sysconf(_SC_PHYS_PAGES);
    const long pageSize = sysconf(_SC_PAGE_SIZE);
    const longlong_t mem = (longlong_t) ((longlong_t) numPages * (longlong_t) pageSize);
@@ -540,7 +544,6 @@ int OSUtils::getHWPhysicalMemoryMB()
    if (0 == sysctlbyname("vm.kmem_size_max", &physMemory, &size, NULL, 0)) {
       physicalMemoryMB = physMemory / ONE_MB;
    }
-#endif
 #endif
 
    return physicalMemoryMB;
@@ -689,26 +692,36 @@ double OSUtils::getFifteenMinuteLoadAvg()
 
 //******************************************************************************
 
-void OSUtils::getOSName(std::string& osName)
+bool OSUtils::getOSName(std::string& osName)
 {
+   bool rc = false;
+
 #ifdef __unix__
    struct utsname data;
    if (uname(&data) > -1) {
       osName = data.sysname;
+      rc = true;
    }
 #endif
+
+   return rc;
 }
 
 //******************************************************************************
 
-void OSUtils::getOSRelease(std::string& osRelease)
+bool OSUtils::getOSRelease(std::string& osRelease)
 {
+   bool rc = false;
+
 #ifdef __unix__
    struct utsname data;
    if (uname(&data) > -1) {
       osRelease = data.release;
+      rc = true;
    }
 #endif
+
+   return rc;
 }
 
 //******************************************************************************
@@ -802,3 +815,4 @@ bool OSUtils::getOSCurrentTimestamp(std::string& timestamp)
 
    return rc;
 }
+
