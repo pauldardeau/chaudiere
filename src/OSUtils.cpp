@@ -317,3 +317,479 @@ bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32) {
 
 //******************************************************************************
 
+bool OSUtils::isUserInGroup(const std::string& groupName)
+{
+#ifdef __unix__
+   const gid_t userPrimaryGroup = getgid();
+
+   if (userPrimaryGroup > 0) {
+      const group* pGroup = getgrnam(groupName.c_str());
+
+      if (pGroup != NULL) {
+         if (pGroup->gr_gid == userPrimaryGroup) {
+            // yes, user is in group (it's their primary group)
+            return true;
+         } else {
+            // check secondary groups
+            const int nMaxGroups = NGROUPS_MAX;
+            gid_t mygidset[NGROUPS_MAX];
+            const int nGroups = getgroups(nMaxGroups, mygidset);
+
+            if (nGroups > -1) {
+               for (int i = 0; i < nGroups; ++i) {
+                  if (mygidset[i] == pGroup->gr_gid) {
+                     // yes, user is in group (it's a secondary group)
+                     return true;
+                  }
+               }
+            }
+         }
+      } else {
+         // this group doesn't exist
+      }
+   }
+#endif
+   return false;
+}
+
+//******************************************************************************
+
+bool OSUtils::getHWCpuCount(int& count)
+{
+   bool rc = false;
+
+#ifdef WIN32
+   int cpuIndex = 0;
+   char szRegistryKey[256];
+   HKEY keyCPU;
+
+   for (;;) {
+      snprintf(szRegistryKey,
+               255,
+               "Hardware\\Description\\System\\CentralProcessor\\%d",
+               cpuIndex);
+
+      if (ERROR_SUCCESS != ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                                          szRegistryKey,
+                                          0,
+                                          KEY_READ,
+                                          &keyCPU)) {
+         count = cpuIndex;
+         break;
+      } else {
+         ++cpuIndex;
+      }
+   }
+
+   rc = true;
+
+#elif defined(__unix__)
+#ifdef __solaris__
+   count = sysconf(_SC_NPROCESSORS_ONLN);
+   rc = true;
+#elif defined(__linux__)
+   count = get_nprocs_conf();
+   rc = true;
+#elif defined(__osx__) || defined(__freebsd__)
+   int cpuCount = 0;
+   size_t size = sizeof(cpuCount);
+   if (0 == sysctlbyname("hw.ncpu", &cpuCount, &size, NULL, 0)) {
+      count = cpuCount;
+      rc = true;
+   }
+#endif
+#endif
+
+   return rc;
+}
+
+//******************************************************************************
+
+bool OSUtils::getHWCpuType(std::string& cpuType)
+{
+   bool rc = false;
+
+#ifdef WIN32
+   HKEY keyCPU;
+
+   if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                                       "Hardware\\Description\\System\\CentralProcessor\\0",
+                                       0,
+                                       KEY_READ,
+                                       &keyCPU)) {
+      if (readRegistryValue(keyCPU, "ProcessorNameString\0", cpuType)) {
+         rc = true;
+      }
+      ::RegCloseKey(keyCPU);
+   }
+#elif defined(__unix__)
+#ifdef __solaris__
+   processor_info_t pi;
+   if (0 == processor_info(0, &pi)) {
+      cpuType = pi.pi_processor_type;
+      rc = true;
+   }
+#elif defined(__freebsd__)
+   char szCpuType[128];
+   size_t size = 127;
+   if (0 == sysctlbyname("hw.model", &szCpuType, &size, NULL, 0)) {
+      cpuType = szCpuType;
+      rc = true;
+   }
+#elif defined(__osx__)
+   int cpuTypeCode = 0;
+   size_t size = sizeof(cpuTypeCode);
+   if (0 == sysctlbyname("hw.cputype", &cpuTypeCode, &size, NULL, 0)) {
+      int cpuSubType = 0;
+      if (0 == sysctlbyname("hw.cpusubtype", &cpuSubType, &size, NULL, 0)) {
+         if (cpuType == CPU_TYPE_POWERPC) {
+            cpuType = "PowerPC";
+            rc = true;
+            
+            if (cpuSubType == CPU_SUBTYPE_POWERPC_601) {
+               cpuType += " 601";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_602) {
+               cpuType += " 602";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_603) {
+               cpuType += " 603";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_603e) {
+               cpuType += " 603e";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_603ev) {
+               cpuType += " 603ev";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_604) {
+               cpuType += " 604";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_604e) {
+               cpuType += " 604e";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_620) {
+               cpuType += " 620";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_750) {
+               cpuType += " 750 (G3)";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_7400) {
+               cpuType += " 7400 (G4)";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_7450) {
+               cpuType += " 7450 (Newer G4)";
+            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_970) {
+               cpuType += " 970 (G5)";
+            } 
+         }
+      }
+   }
+#endif
+#endif
+
+   return rc;
+}
+
+//******************************************************************************
+
+void OSUtils::getHardwareType(std::string& hardwareType)
+{
+   hardwareType = "** unknown **";
+#ifdef __unix__
+#ifdef __solaris__
+   char szPlatform[128];
+   if (sysinfo(SI_PLATFORM, szPlatform, 127) > -1) {
+      hardwareType = szPlatform;
+   }
+#endif
+#endif
+}
+
+//******************************************************************************
+
+int OSUtils::getHWPhysicalMemoryMB()
+{
+   int physicalMemoryMB = 0;
+
+#ifdef WIN32
+   MEMORYSTATUS memStat;
+   memset(&memStat, 0, sizeof(MEMORYSTATUS));
+
+   ::GlobalMemoryStatus(&memStat);
+   const SIZE_T dwTotalBytes = memStat.dwTotalPhys;
+   physicalMemoryMB = dwTotalBytes / ONE_MB;
+#elif defined(__unix__)
+#ifdef __solaris__
+   const long numPages = sysconf(_SC_PHYS_PAGES);
+   const long pageSize = sysconf(_SC_PAGE_SIZE);
+   const longlong_t mem = (longlong_t) ((longlong_t) numPages * (longlong_t) pageSize);
+   physicalMemoryMB = mem / ONE_MB;
+#elif defined(__linux__)
+   const long int numPages = get_phys_pages();
+   const int pageSize = getpagesize();
+   uint64_t mem = (uint64_t) ((uint64_t) numPages * (uint64_t) pageSize);
+   physicalMemoryMB = mem / ONE_MB;
+#elif defined(__osx__)
+   uint64_t physMemory = 0;
+   size_t size = sizeof(physMemory);
+   if (0 == sysctlbyname("hw.memsize", &physMemory, &size, NULL, 0)) {
+      physicalMemoryMB = physMemory / ONE_MB;
+   }
+#elif defined(__freebsd__)
+   uint64_t physMemory = 0;
+   size_t size = sizeof(physMemory);
+   if (0 == sysctlbyname("vm.kmem_size_max", &physMemory, &size, NULL, 0)) {
+      physicalMemoryMB = physMemory / ONE_MB;
+   }
+#endif
+#endif
+
+   return physicalMemoryMB;
+}
+
+//******************************************************************************
+
+int OSUtils::getHWCpuSpeedMHz()
+{
+   int cpuSpeedMHz = 0;
+
+#ifdef WIN32
+   HKEY keyCPU;
+
+   if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                                       "Hardware\\Description\\System\\CentralProcessor\\0",
+                                       0,
+                                       KEY_READ,
+                                       &keyCPU)) {
+      DWORD dwCpuSpeed = 0;
+      DWORD dwSize = sizeof(DWORD);
+
+      if (ERROR_SUCCESS == ::RegQueryValueEx(keyCPU,
+                                             "~MHz\0",
+                                             NULL,
+                                             NULL,
+                                             (LPBYTE) &dwCpuSpeed,
+                                             &dwSize)) {
+         cpuSpeedMHz = dwCpuSpeed;
+      }
+
+      ::RegCloseKey(keyCPU);
+   }
+#elif defined(__unix__)
+#ifdef __solaris__
+   processor_info_t pi;
+   if (0 == processor_info(0, &pi)) {
+      cpuSpeedMHz = pi.pi_clock;
+   }
+#elif defined(__freebsd__)
+   int cpuSpeed = 0;
+   size_t size = sizeof(cpuSpeed);
+   if (0 == sysctlbyname("hw.clockrate", &cpuSpeed, &size, NULL, 0)) {
+      cpuSpeedMHz = cpuSpeed;
+   }
+#elif defined(__osx__)
+   uint64_t cpuSpeed = 0;
+   size_t size = sizeof(cpuSpeed);
+   if (0 == sysctlbyname("hw.cpufrequency", &cpuSpeed, &size, NULL, 0)) {
+      cpuSpeedMHz = cpuSpeed / 1000000;
+   }
+#endif
+#endif
+
+   return cpuSpeedMHz;
+}
+
+//******************************************************************************
+
+bool OSUtils::getOSHostName(std::string& hostName)
+{
+   bool rc = false;
+
+#ifdef WIN32
+   char computerName[255];
+   unsigned long nChars = 254;
+   if (::GetComputerName(computerName, &nChars)) {
+      hostName = computerName;
+      rc = true;
+   }
+#elif defined(__unix__)
+   struct utsname data;
+   if (uname(&data) > -1) {
+      hostName = data.nodename;
+      rc = true;
+   }
+#endif
+
+   return rc;
+}
+
+//******************************************************************************
+
+bool OSUtils::getOSUser(std::string& user)
+{
+   bool rc = false;
+
+#ifdef WIN32
+   unsigned long nUserChars = 254;
+   char userName[255];
+
+   if (::GetUserName(userName, &nUserChars)) {
+      user = userName;
+      rc = true;
+   }
+#elif defined(__unix__)
+   struct passwd* passwordData = getpwuid(getuid());
+   if ((passwordData != NULL) &&
+       (passwordData->pw_name != NULL)) {
+      user = passwordData->pw_name;
+      rc = true;
+   }
+#endif
+
+   return rc;
+}
+
+//******************************************************************************
+
+double OSUtils::getOneMinuteLoadAvg()
+{
+#ifdef __unix__
+   double load_avg[3];
+   if (getloadavg(load_avg, 3) > -1) {
+      return load_avg[0];
+   }
+#endif
+   return 0.0;
+}
+
+//******************************************************************************
+
+double OSUtils::getFiveMinuteLoadAvg()
+{
+#ifdef __unix__
+   double load_avg[3];
+   if (getloadavg(load_avg, 3) > -1) {
+      return load_avg[1];
+   }
+#endif
+   return 0.0;
+}
+
+//******************************************************************************
+
+double OSUtils::getFifteenMinuteLoadAvg()
+{
+#ifdef __unix__
+   double load_avg[3];
+   if (getloadavg(load_avg, 3) > -1) {
+      return load_avg[2];
+   }
+#endif
+   return 0.0;
+}
+
+//******************************************************************************
+
+void OSUtils::getOSName(std::string& osName)
+{
+#ifdef __unix__
+   struct utsname data;
+   if (uname(&data) > -1) {
+      osName = data.sysname;
+   }
+#endif
+}
+
+//******************************************************************************
+
+void OSUtils::getOSRelease(std::string& osRelease)
+{
+#ifdef __unix__
+   struct utsname data;
+   if (uname(&data) > -1) {
+      osRelease = data.release;
+   }
+#endif
+}
+
+//******************************************************************************
+
+bool OSUtils::getOSRevision(std::string& osRevision)
+{
+   bool rc = false;
+
+#ifdef WIN32
+   OSVERSIONINFO osVersionInfo;
+   osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+   if (::GetVersionEx(&osVersionInfo)) {
+      rc = true;
+      osRevision = osVersionInfo.szCSDVersion;
+   }
+#elif defined(__unix__)
+#ifdef __solaris__
+   struct utsname data;
+   if (uname(&data) > -1) {
+      osRevision = data.version;
+      rc = true;
+   }
+#endif
+#endif
+
+   return rc;
+}
+
+//******************************************************************************
+
+int OSUtils::getFreeMemoryMB()
+{
+   int freeMemoryMB = -1;
+
+#ifdef __unix__
+#ifdef __solaris__
+   long freePages = sysconf(_SC_AVPHYS_PAGES);
+   long pageSize = sysconf(_SC_PAGE_SIZE);
+   longlong_t freeMem = (longlong_t) freePages * (longlong_t) pageSize;
+   freeMemoryMB = freeMem / ONE_MB;
+#elif defined(__linux__)
+   uint64_t freePages = get_avphys_pages();
+   const int pageSize = getpagesize();
+   uint64_t mem = (uint64_t) ((uint64_t) freePages * (uint64_t) pageSize);
+   freeMemoryMB = mem / ONE_MB;
+#elif defined(__freebsd__)
+   uint64_t freePages = 0;
+   size_t size = sizeof(freePages);
+   if (0 == sysctlbyname("vm.stats.vm.v_free_count", &freePages, &size, NULL, 0)) {
+      int pageSize = 0;
+      size = sizeof(pageSize);
+      if (0 == sysctlbyname("hw.pagesize", &pageSize, &size, NULL, 0)) {
+         freeMemoryMB = ((freePages * pageSize) / ONE_MB);
+      }
+   }
+#endif
+#endif
+
+   return freeMemoryMB;
+}
+
+//******************************************************************************
+
+bool OSUtils::getOSCurrentTimestamp(std::string& timestamp)
+{
+   bool rc = false;
+
+   time_t current_time;
+   time(&current_time);
+
+   struct tm* pTM = localtime(&current_time);
+
+   if (pTM != NULL) {
+      char buffer[128];
+      buffer[0] = '\0';
+
+      snprintf(buffer,
+               127,
+               "%04d-%02d-%02d %02d:%02d:%02d",
+               pTM->tm_year + 1900, // year
+               pTM->tm_mon + 1,     //month
+               pTM->tm_mday,        // day of month
+               pTM->tm_hour,        // hour
+               pTM->tm_min,         // minutes
+               pTM->tm_sec);        // seconds
+
+      rc = true;
+      timestamp = buffer;
+   }
+
+   return rc;
+}

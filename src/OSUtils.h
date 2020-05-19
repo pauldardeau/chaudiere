@@ -141,6 +141,33 @@ namespace chaudiere
       static bool crc32ForFile(const std::string& filePath,
                                std::string& crc32);
 
+      static bool isUserInGroup(const std::string& groupName);
+
+      static bool getHWCpuCount(int& count);
+
+      static bool getHWCpuType(std::string& cpuType);
+
+      static void getHardwareType(std::string& hardwareType);
+
+      static int getHWPhysicalMemoryMB();
+
+      static int getHWCpuSpeedMHz();
+
+      static bool getOSHostName(std::string& hostName);
+
+      static bool getOSUser(std::string& user);
+
+      static double getOneMinuteLoadAvg();
+      static double getFiveMinuteLoadAvg();
+      static double getFifteenMinuteLoadAvg();
+
+      static void getOSName(std::string& osName);
+      static void getOSRelease(std::string& osName);
+      static bool getOSRevision(std::string& osRevision);
+
+      static int getFreeMemoryMB();
+
+      static bool getOSCurrentTimestamp(std::string& timestamp);
    };
 
 }
