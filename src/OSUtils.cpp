@@ -9,9 +9,18 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <sys/utsname.h>
+
+#ifdef __linux__
+#include <sys/sysinfo.h>
+#include <pwd.h>
+#include <grp.h>
+#endif
 
 #include "OSUtils.h"
 #include "StrUtils.h"
+
+static const long ONE_MB = 1024 * 1024;
 
 static const std::string SLASH = "/";
 
