@@ -15,6 +15,8 @@
 #include <sys/sysinfo.h>
 #include <pwd.h>
 #include <grp.h>
+#elif defined(__APPLE__)
+#include <sys/sysctl.h>
 #endif
 
 #include "OSUtils.h"
@@ -398,7 +400,7 @@ bool OSUtils::getHWCpuCount(int& count)
 #elif defined(__linux__)
    count = get_nprocs_conf();
    rc = true;
-#elif defined(__osx__) || defined(__freebsd__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
    int cpuCount = 0;
    size_t size = sizeof(cpuCount);
    if (0 == sysctlbyname("hw.ncpu", &cpuCount, &size, NULL, 0)) {
@@ -435,49 +437,20 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
       cpuType = pi.pi_processor_type;
       rc = true;
    }
-#elif defined(__freebsd__)
+#elif defined(__FreeBSD__)
    char szCpuType[128];
    size_t size = 127;
    if (0 == sysctlbyname("hw.model", &szCpuType, &size, NULL, 0)) {
       cpuType = szCpuType;
       rc = true;
    }
-#elif defined(__osx__)
+#elif defined(__APPLE__)
    int cpuTypeCode = 0;
    size_t size = sizeof(cpuTypeCode);
    if (0 == sysctlbyname("hw.cputype", &cpuTypeCode, &size, NULL, 0)) {
       int cpuSubType = 0;
       if (0 == sysctlbyname("hw.cpusubtype", &cpuSubType, &size, NULL, 0)) {
-         if (cpuType == CPU_TYPE_POWERPC) {
-            cpuType = "PowerPC";
-            rc = true;
-            
-            if (cpuSubType == CPU_SUBTYPE_POWERPC_601) {
-               cpuType += " 601";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_602) {
-               cpuType += " 602";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_603) {
-               cpuType += " 603";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_603e) {
-               cpuType += " 603e";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_603ev) {
-               cpuType += " 603ev";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_604) {
-               cpuType += " 604";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_604e) {
-               cpuType += " 604e";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_620) {
-               cpuType += " 620";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_750) {
-               cpuType += " 750 (G3)";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_7400) {
-               cpuType += " 7400 (G4)";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_7450) {
-               cpuType += " 7450 (Newer G4)";
-            } else if (cpuSubType == CPU_SUBTYPE_POWERPC_970) {
-               cpuType += " 970 (G5)";
-            } 
-         }
+         //TODO:
       }
    }
 #endif
@@ -526,13 +499,13 @@ int OSUtils::getHWPhysicalMemoryMB()
    const int pageSize = getpagesize();
    uint64_t mem = (uint64_t) ((uint64_t) numPages * (uint64_t) pageSize);
    physicalMemoryMB = mem / ONE_MB;
-#elif defined(__osx__)
+#elif defined(__APPLE__)
    uint64_t physMemory = 0;
    size_t size = sizeof(physMemory);
    if (0 == sysctlbyname("hw.memsize", &physMemory, &size, NULL, 0)) {
       physicalMemoryMB = physMemory / ONE_MB;
    }
-#elif defined(__freebsd__)
+#elif defined(__FreeBSD__)
    uint64_t physMemory = 0;
    size_t size = sizeof(physMemory);
    if (0 == sysctlbyname("vm.kmem_size_max", &physMemory, &size, NULL, 0)) {
@@ -576,13 +549,13 @@ int OSUtils::getHWCpuSpeedMHz()
    if (0 == processor_info(0, &pi)) {
       cpuSpeedMHz = pi.pi_clock;
    }
-#elif defined(__freebsd__)
+#elif defined(__FreeBSD__)
    int cpuSpeed = 0;
    size_t size = sizeof(cpuSpeed);
    if (0 == sysctlbyname("hw.clockrate", &cpuSpeed, &size, NULL, 0)) {
       cpuSpeedMHz = cpuSpeed;
    }
-#elif defined(__osx__)
+#elif defined(__APPLE__)
    uint64_t cpuSpeed = 0;
    size_t size = sizeof(cpuSpeed);
    if (0 == sysctlbyname("hw.cpufrequency", &cpuSpeed, &size, NULL, 0)) {
@@ -757,7 +730,7 @@ int OSUtils::getFreeMemoryMB()
    const int pageSize = getpagesize();
    uint64_t mem = (uint64_t) ((uint64_t) freePages * (uint64_t) pageSize);
    freeMemoryMB = mem / ONE_MB;
-#elif defined(__freebsd__)
+#elif defined(__FreeBSD__)
    uint64_t freePages = 0;
    size_t size = sizeof(freePages);
    if (0 == sysctlbyname("vm.stats.vm.v_free_count", &freePages, &size, NULL, 0)) {
