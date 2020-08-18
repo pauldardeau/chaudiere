@@ -36,12 +36,10 @@ class PthreadsThread : public Thread
       pthread_t getHandle();
       const std::string& getName() const;
 
+      PthreadsThread(const PthreadsThread&) = delete;
+      PthreadsThread& operator=(const PthreadsThread&) = delete;
 
    private:
-      // disallow copying
-      PthreadsThread(const PthreadsThread&);
-      PthreadsThread& operator=(const PthreadsThread&);
-
       static void* runThread(void* pArgs);
       PthreadsMutex         m_mutexAlive;
       PthreadsMutex         m_mutexExitCode;

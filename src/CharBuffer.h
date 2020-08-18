@@ -88,15 +88,13 @@ public:
    std::size_t size() const {
       return m_bufferSize;
    }
-   
+  
+   CharBuffer(const CharBuffer&) = delete;
+   CharBuffer& operator=(const CharBuffer&) = delete; 
 
 private:
    char* m_buffer;
    std::size_t m_bufferSize;
-
-   // disallow copies
-   CharBuffer(const CharBuffer& copy);
-   CharBuffer& operator=(const CharBuffer& copy);
 };
 
 }

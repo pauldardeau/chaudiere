@@ -74,9 +74,10 @@ class StringTokenizer
        */
       std::string extractNextToken();
 
+      StringTokenizer(const StringTokenizer&) = delete;
+      StringTokenizer& operator=(const StringTokenizer&) = delete;
    
    private:
-   
       const std::string& m_withTokens;
       const std::string m_delimiter;
       const char* m_posTokens;
@@ -87,11 +88,6 @@ class StringTokenizer
       std::vector<std::string> m_tokens;
       std::size_t m_numberTokens;
       std::size_t m_indexToken;
-      
-      //disallow copies
-      StringTokenizer(const StringTokenizer&);
-      StringTokenizer& operator=(const StringTokenizer&);
-
 };
 
 }

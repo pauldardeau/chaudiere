@@ -75,7 +75,9 @@ public:
     */
    virtual bool isInitialized() const;
    
-   
+   ThreadPoolQueue(const ThreadPoolQueue&) = delete;
+   ThreadPoolQueue& operator=(const ThreadPoolQueue&) = delete;
+
 private:
    ThreadingFactory* m_threadingFactory;
    std::deque<Runnable*> m_queue;
@@ -91,10 +93,6 @@ private:
    //ConditionVariable* m_condQueueEmpty;
    bool m_isInitialized;
    bool m_isRunning;
-
-   // disallow copies
-   ThreadPoolQueue(const ThreadPoolQueue&);
-   ThreadPoolQueue& operator=(const ThreadPoolQueue&);
 
 };
 

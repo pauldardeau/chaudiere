@@ -54,6 +54,8 @@ class ThreadPoolWorker : public Runnable
        */
       void run() override;
 
+      ThreadPoolWorker(const ThreadPoolWorker&) = delete;
+      ThreadPoolWorker& operator=(const ThreadPoolWorker&) = delete;
 
    private:
       ThreadingFactory* m_threadingFactory;
@@ -61,10 +63,6 @@ class ThreadPoolWorker : public Runnable
       ThreadPoolQueue& m_poolQueue;
       int m_workerId;
       bool m_isRunning;
-      
-      // disallow copies
-      ThreadPoolWorker(const ThreadPoolWorker&);
-      ThreadPoolWorker& operator=(const ThreadPoolWorker&);
 
 };
 

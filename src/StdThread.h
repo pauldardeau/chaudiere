@@ -71,12 +71,10 @@ public:
 
    const std::string& getName() const;
    
-   
-private:
-   // disallow copying
-   StdThread(const StdThread&);
-   StdThread& operator=(const StdThread&);
+   StdThread(const StdThread&) = delete;
+   StdThread& operator=(const StdThread&) = delete;
 
+private:
    std::thread m_thread;
    StdMutex m_mutexAlive;
    std::string m_name;

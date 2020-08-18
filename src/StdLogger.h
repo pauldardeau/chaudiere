@@ -157,6 +157,8 @@ public:
     */
    const std::string& logLevelPrefix(LogLevel level) const;
 
+   StdLogger(const StdLogger&) = delete;
+   StdLogger& operator=(const StdLogger&) = delete;
 
 private:
    std::unordered_map<std::string, LifecycleStats> m_mapClassLifecycleStats;
@@ -172,10 +174,6 @@ private:
    static const std::string prefixInfo;
    static const std::string prefixDebug;
    static const std::string prefixVerbose;
-   
-   // disallow copies
-   StdLogger(const StdLogger&);
-   StdLogger& operator=(const StdLogger&);
 
 };
 

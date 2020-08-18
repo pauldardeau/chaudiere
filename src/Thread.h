@@ -169,6 +169,8 @@ public:
     */
    const std::string& getWorkerId() const;
 
+   Thread(const Thread&) = delete;
+   Thread& operator=(const Thread&) = delete;
    
 private:
    Runnable* m_runnable;
@@ -177,11 +179,6 @@ private:
    Mutex* m_mutexAlive; // weak
    ThreadCompletionObserver* m_threadCompletionObserver;
    KeyValuePairs m_attributes;
-   
-   // disallow copying
-   Thread(const Thread&);
-   Thread& operator=(const Thread&);
-
 };
 
 }

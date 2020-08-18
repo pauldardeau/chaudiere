@@ -48,15 +48,11 @@ public:
     */
    virtual bool addRequest(Runnable* runnableRequest) override;
 
-
+   ThreadPoolDispatch(const ThreadPoolDispatch&) = delete;
+   ThreadPoolDispatch& operator=(const ThreadPoolDispatch&) = delete;
    
 private:
    bool m_isRunning;
-
-   // disallow copies
-   ThreadPoolDispatch(const ThreadPoolDispatch&);
-   ThreadPoolDispatch& operator=(const ThreadPoolDispatch&);
-   
 };
 
 }

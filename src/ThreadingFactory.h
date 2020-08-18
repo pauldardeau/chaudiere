@@ -82,12 +82,10 @@ public:
    virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
             const std::string& name) = 0;
    
+   ThreadingFactory(const ThreadingFactory&) = delete;
+   ThreadingFactory& operator=(const ThreadingFactory&) = delete;
 
 private:
-   // disallow copies
-   ThreadingFactory(const ThreadingFactory&);
-   ThreadingFactory& operator=(const ThreadingFactory&);
-
    static ThreadingFactory* threadingFactoryInstance;
 
 };

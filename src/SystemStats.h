@@ -50,11 +50,8 @@ public:
     */
    static bool getNumberProcesses(int& numberProcesses);
 
-
-private:   
-   // disallow copies
-   SystemStats(const SystemStats& copy);
-   SystemStats& operator=(const SystemStats& copy);
+   SystemStats(const SystemStats& copy) = delete;
+   SystemStats& operator=(const SystemStats& copy) = delete;
    
    
 };

@@ -50,12 +50,10 @@ public:
 
    const std::string& getName() const;
    
+   StdConditionVariable(const StdConditionVariable&) = delete;
+   StdConditionVariable& operator=(const StdConditionVariable&) = delete;
 
 private:
-   // disallow copies
-   StdConditionVariable(const StdConditionVariable&);
-   StdConditionVariable& operator=(const StdConditionVariable&);
-
    std::condition_variable m_cond;
    std::string m_name;
 };

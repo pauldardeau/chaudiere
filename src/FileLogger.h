@@ -39,6 +39,8 @@ public:
 
    const std::string& logLevelPrefix(LogLevel level) const;
 
+   FileLogger(const FileLogger&) = delete;
+   FileLogger& operator=(const FileLogger&) = delete;
 
 private:
    std::string m_filePath;
@@ -51,11 +53,6 @@ private:
    static const std::string prefixInfo;
    static const std::string prefixDebug;
    static const std::string prefixVerbose;
-   
-   // disallow copies
-   FileLogger(const FileLogger&);
-   FileLogger& operator=(const FileLogger&);
-
 };
 
 }

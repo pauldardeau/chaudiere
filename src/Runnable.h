@@ -98,16 +98,15 @@ public:
    virtual void setAutoDelete() {
       m_autoDelete = true;
    }
+
+   Runnable(const Runnable&) = delete;
+   Runnable& operator=(const Runnable&) = delete;
    
 private:
    RunCompletionObserver* m_completionObserver;
    std::string m_runByThreadWorkerId;
    int m_runByThreadId;
    bool m_autoDelete;
-
-   // disallow copies
-   Runnable(const Runnable&);
-   Runnable& operator=(const Runnable&);
 };
 
 }

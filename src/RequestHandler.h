@@ -19,10 +19,6 @@ namespace chaudiere
 class RequestHandler : public Runnable
 {
 private:
-   // disallow copies
-   RequestHandler(const RequestHandler&);
-   RequestHandler& operator=(const RequestHandler&);
-
    Socket* m_socket;
    SocketRequest* m_socketRequest;
    bool m_isThreadPooling;
@@ -30,6 +26,9 @@ private:
 
    
 public:
+   RequestHandler(const RequestHandler&) = delete;
+   RequestHandler& operator=(const RequestHandler&) = delete;
+
    /**
     * Constructs a RequestHandler using a SocketRequest for use by a KernelEventServer
     * @param socketRequest the SocketRequest for processing using KernelEventServer

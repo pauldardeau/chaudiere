@@ -67,10 +67,8 @@ public:
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
              const std::string& name) override;
    
-private:
-   // disallow copies
-   PthreadsThreadingFactory(const PthreadsThreadingFactory&);
-   PthreadsThreadingFactory& operator=(const PthreadsThreadingFactory&);
+   PthreadsThreadingFactory(const PthreadsThreadingFactory&) = delete;
+   PthreadsThreadingFactory& operator=(const PthreadsThreadingFactory&) = delete;
 
 };
 

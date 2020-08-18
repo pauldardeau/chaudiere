@@ -100,6 +100,8 @@ public:
   
    bool isRunning() const; 
   
+   ThreadPool(const ThreadPool&) = delete;
+   ThreadPool& operator=(const ThreadPool&) = delete;
  
 protected:
    /**
@@ -116,10 +118,6 @@ private:
    int m_workersCreated;
    bool m_isRunning;
    std::string m_name;
-   
-   // disallow copies
-   ThreadPool(const ThreadPool&);
-   ThreadPool& operator=(const ThreadPool&);
 };
 
 }
