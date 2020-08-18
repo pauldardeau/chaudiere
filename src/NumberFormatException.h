@@ -42,7 +42,7 @@ public:
     * Retrieves the class name (type) of the exception
     * @return exception class name
     */
-   virtual const char* getType() const {
+   virtual const char* getType() const override {
       return "NumberFormatException";
    }
    

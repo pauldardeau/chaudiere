@@ -55,56 +55,56 @@ public:
     */
    virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
-                     int maxConnections);
+                     int maxConnections) override;
    
    /**
     *
     * @param maxConnections
     * @return
     */
-   virtual int getKernelEvents(int maxConnections);
+   virtual int getKernelEvents(int maxConnections) override;
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual int fileDescriptorForEventIndex(int eventIndex);
+   virtual int fileDescriptorForEventIndex(int eventIndex) override;
    
    /**
     *
     * @param fileDescriptor
     * @return
     */
-   virtual bool addFileDescriptorForRead(int fileDescriptor);
+   virtual bool addFileDescriptorForRead(int fileDescriptor) override;
    
    /**
     *
     * @param fileDescriptor
     * @return
     */
-   virtual bool removeFileDescriptorFromRead(int fileDescriptor);
+   virtual bool removeFileDescriptorFromRead(int fileDescriptor) override;
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventDisconnect(int eventIndex);
+   virtual bool isEventDisconnect(int eventIndex) override;
    
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventReadClose(int eventIndex);
+   virtual bool isEventReadClose(int eventIndex) override;
 
    /**
     *
     * @param eventIndex
     * @return
     */
-   virtual bool isEventRead(int eventIndex);
+   virtual bool isEventRead(int eventIndex) override;
    
    
 private:

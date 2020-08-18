@@ -22,20 +22,20 @@ public:
    FileLogger(const std::string& filePath, LogLevel logLevel);
    virtual ~FileLogger();
    
-   virtual LogLevel getLogLevel() const;
-   virtual void setLogLevel(LogLevel logLevel);
+   virtual LogLevel getLogLevel() const override;
+   virtual void setLogLevel(LogLevel logLevel) override;
 
    virtual void logMessage(LogLevel logLevel,
-                           const std::string& logMessage);
-   virtual bool isLoggingLevel(LogLevel logLevel) const;
+                           const std::string& logMessage) override;
+   virtual bool isLoggingLevel(LogLevel logLevel) const override;
    
-   virtual bool isLoggingInstanceLifecycles() const;
-   virtual void setLogInstanceLifecycles(bool logInstanceLifecycles);
-   virtual void logInstanceCreate(const std::string& className);
-   virtual void logInstanceDestroy(const std::string& className);
+   virtual bool isLoggingInstanceLifecycles() const override;
+   virtual void setLogInstanceLifecycles(bool logInstanceLifecycles) override;
+   virtual void logInstanceCreate(const std::string& className) override;
+   virtual void logInstanceDestroy(const std::string& className) override;
    
    virtual void logOccurrence(const std::string& occurrenceType,
-                              const std::string& occurrenceName);
+                              const std::string& occurrenceName) override;
 
    const std::string& logLevelPrefix(LogLevel level) const;
 

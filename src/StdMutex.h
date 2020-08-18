@@ -39,25 +39,25 @@ public:
     *
     * @return
     */
-   virtual bool unlock();
+   virtual bool unlock() override;
    
    /**
     *
     * @return
     */
-   virtual bool lock();
+   virtual bool lock() override;
    
    /**
     *
     * @return
     */
-   virtual bool isLocked() const;
+   virtual bool isLocked() const override;
    
    /**
     *
     * @return
     */
-   virtual bool haveValidMutex() const;
+   virtual bool haveValidMutex() const override;
    
    /**
     *
@@ -72,7 +72,7 @@ public:
     *
     * @return
     */
-   const std::string& getName() const;
+   const std::string& getName() const override;
    
    
    

@@ -83,51 +83,52 @@ public:
     *
     * @return
     */
-   virtual LogLevel getLogLevel() const;
+   virtual LogLevel getLogLevel() const override;
    
    /**
     *
     * @param logLevel
     */
-   virtual void setLogLevel(LogLevel logLevel);
+   virtual void setLogLevel(LogLevel logLevel) override;
 
    /**
     *
     * @param logLevel
     * @param logMessage
     */
-   virtual void logMessage(LogLevel logLevel, const std::string& logMessage);
+   virtual void logMessage(LogLevel logLevel,
+                           const std::string& logMessage) override;
    
    /**
     *
     * @param logLevel
     * @return
     */
-   virtual bool isLoggingLevel(LogLevel logLevel) const;
+   virtual bool isLoggingLevel(LogLevel logLevel) const override;
    
    /**
     *
     * @return
     */
-   virtual bool isLoggingInstanceLifecycles() const;
+   virtual bool isLoggingInstanceLifecycles() const override;
    
    /**
     *
     * @param logInstanceLifecycles
     */
-   virtual void setLogInstanceLifecycles(bool logInstanceLifecycles);
+   virtual void setLogInstanceLifecycles(bool logInstanceLifecycles) override;
    
    /**
     *
     * @param className
     */
-   virtual void logInstanceCreate(const std::string& className);
+   virtual void logInstanceCreate(const std::string& className) override;
    
    /**
     *
     * @param className
     */
-   virtual void logInstanceDestroy(const std::string& className);
+   virtual void logInstanceDestroy(const std::string& className) override;
    
    /**
     *
@@ -135,7 +136,7 @@ public:
     * @param occurrenceName
     */
    virtual void logOccurrence(const std::string& occurrenceType,
-                              const std::string& occurrenceName);
+                              const std::string& occurrenceName) override;
 
    /**
     *

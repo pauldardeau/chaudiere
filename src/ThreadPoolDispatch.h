@@ -32,13 +32,13 @@ public:
     *
     * @return
     */
-   virtual bool start();
+   virtual bool start() override;
    
    /**
     *
     * @return
     */
-   virtual bool stop();
+   virtual bool stop() override;
    
    /**
     *
@@ -46,7 +46,7 @@ public:
     * @return
     * @see Runnable()
     */
-   virtual bool addRequest(Runnable* runnableRequest);
+   virtual bool addRequest(Runnable* runnableRequest) override;
 
 
    

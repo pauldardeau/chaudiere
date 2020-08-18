@@ -33,14 +33,14 @@ public:
    * @return pointer to the newly created Mutex
    * @see Mutex()
    */
-  virtual Mutex* createMutex(const std::string& name);
+  virtual Mutex* createMutex(const std::string& name) override;
   
   /**
    * Create a new PthreadsThread
    * @return pointer to newly created Thread
    * @see Thread()
    */
-  virtual Thread* createThread(const std::string& name);
+  virtual Thread* createThread(const std::string& name) override;
   
   /**
    * Creates a new PthreadsThread to run the specified Runnable
@@ -50,14 +50,14 @@ public:
    * @see Runnable()
    */
   virtual Thread* createThread(Runnable* runnable,
-                               const std::string& name);
+                               const std::string& name) override;
   
   /**
    * Create a new PthreadsConditionVariable
    * @return pointer to the newly created ConditionVariable
    * @see ConditionVariable()
    */
-  virtual ConditionVariable* createConditionVariable(const std::string& name);
+  virtual ConditionVariable* createConditionVariable(const std::string& name) override;
   
   /**
    * Creates a new Pthreads compatible ThreadPool
@@ -65,7 +65,7 @@ public:
    * @return pointer to newly created ThreadPoolDispatcher
    */
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
-             const std::string& name);
+             const std::string& name) override;
    
 private:
    // disallow copies

@@ -52,7 +52,7 @@ class ThreadPoolWorker : public Runnable
       /**
        *
        */
-      void run();
+      void run() override;
 
 
    private:

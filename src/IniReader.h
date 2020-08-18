@@ -42,7 +42,7 @@ public:
     * @return boolean indicating whether the specified section could be read
     */
    virtual bool readSection(const std::string& section,
-                            chaudiere::KeyValuePairs& mapSectionValues) const;
+                            chaudiere::KeyValuePairs& mapSectionValues) const override;
 
    /**
     * Retrieves the value associated with the specified key within the specified section
@@ -53,14 +53,14 @@ public:
     */
    virtual bool getSectionKeyValue(const std::string& section,
                                    const std::string& key,
-                                   std::string& value) const;
+                                   std::string& value) const override;
    
    /**
     * Determines whether the specified section name exists in the INI file
     * @param section the name of the section whose existence is being tested
     * @return boolean indicating whether the specified section exists
     */
-   virtual bool hasSection(const std::string& section) const;
+   virtual bool hasSection(const std::string& section) const override;
     
     
 protected:

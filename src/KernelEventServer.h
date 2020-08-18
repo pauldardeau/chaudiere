@@ -110,7 +110,7 @@ public:
     *
     * @param socket
     */
-   void notifySocketComplete(Socket* socket);
+   void notifySocketComplete(Socket* socket) override;
 
    
 protected:

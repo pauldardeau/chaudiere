@@ -36,17 +36,17 @@ public:
     * @return
     * @see Mutex()
     */
-   virtual bool wait(Mutex* mutex);
+   virtual bool wait(Mutex* mutex) override;
    
    /**
     *
     */
-   virtual void notifyOne();
+   virtual void notifyOne() override;
    
    /**
     *
     */
-   virtual void notifyAll();
+   virtual void notifyAll() override;
 
    virtual const std::string& getName() const;
 

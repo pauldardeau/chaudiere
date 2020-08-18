@@ -29,8 +29,8 @@ class PthreadsThread : public Thread
       explicit PthreadsThread(Runnable* runnable, const std::string& name);
       virtual ~PthreadsThread();
 
-      virtual bool start();
-      virtual void run();
+      virtual bool start() override;
+      virtual void run() override;
 
       unsigned long getExitCode() const;
       pthread_t getHandle();

@@ -41,7 +41,7 @@ public:
    /**
     * Services the socket using the specified handler
     */
-   void run();
+   void run() override;
    
    /**
     * Retrieves the file descriptor for the socket

@@ -42,25 +42,25 @@ public:
     *
     * @return
     */
-   virtual bool unlock();
+   virtual bool unlock() override;
    
    /**
     *
     * @return
     */
-   virtual bool lock();
+   virtual bool lock() override;
    
    /**
     *
     * @return
     */
-   virtual bool isLocked() const;
+   virtual bool isLocked() const override;
    
    /**
     *
     * @return
     */
-   virtual bool haveValidMutex() const;
+   virtual bool haveValidMutex() const override;
    
    /**
     * Retrieves the primitive data type for the underlying platform
@@ -75,7 +75,7 @@ public:
     * Retrieves the name of the mutex
     * @return name of the mutex
     */
-   const std::string& getName() const;
+   const std::string& getName() const override;
 
     
 private:
