@@ -21,7 +21,7 @@ const std::string StdLogger::prefixVerbose  = "Verbose:";
 StdLogger::StdLogger() :
    m_lockLifecycleStats(new PthreadsMutex("lockLifecycleStats")),
    m_lockOccurrences(new PthreadsMutex("lockOccurrences")),
-   m_logLevel(Debug),
+   m_logLevel(LogLevel::Debug),
    m_isLoggingInstanceLifecycles(false) {
 }
 
@@ -74,17 +74,17 @@ bool StdLogger::isLoggingLevel(LogLevel logLevel) const {
 
 const std::string& StdLogger::logLevelPrefix(LogLevel level) const {
    switch (level) {
-      case Critical:
+      case LogLevel::Critical:
          return prefixCritical;
-      case Error:
+      case LogLevel::Error:
          return prefixError;
-      case Warning:
+      case LogLevel::Warning:
          return prefixWarning;
-      case Info:
+      case LogLevel::Info:
          return prefixInfo;
-      case Verbose:
+      case LogLevel::Verbose:
          return prefixVerbose;
-      case Debug:
+      case LogLevel::Debug:
       default:
          return prefixDebug;
    }

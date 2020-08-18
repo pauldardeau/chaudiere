@@ -42,7 +42,7 @@ Logger::countOccurrence(count_var, count_occurrence);
 namespace chaudiere
 {
 
-enum LogLevel
+enum class LogLevel
 {
    Critical = 0,  // least verbose
    Error    = 1,

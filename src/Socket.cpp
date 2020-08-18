@@ -361,7 +361,7 @@ bool Socket::readLine(std::string& line) {
          // remove the current line from the line input buffer
          m_lineInputBuffer.erase(0, posEOL + eolLength);
          
-         if (Logger::isLogging(Debug)) {
+         if (Logger::isLogging(LogLevel::Debug)) {
             LOG_DEBUG("Socket::readLine, using buffer line: (next line)")
             LOG_DEBUG(line)
             LOG_DEBUG("*** remaining input buffer on next line")
@@ -374,7 +374,7 @@ bool Socket::readLine(std::string& line) {
          // put our line input buffer contents into the current line
          line = m_lineInputBuffer;
          
-         if (Logger::isLogging(Debug)) {
+         if (Logger::isLogging(LogLevel::Debug)) {
             LOG_DEBUG("Socket::readLine, using partial buffer: (next line)")
             LOG_DEBUG(line)
          }
@@ -402,7 +402,7 @@ bool Socket::readLine(std::string& line) {
                      bytesToRead,
                      0);
 
-      if (Logger::isLogging(Debug)) {
+      if (Logger::isLogging(LogLevel::Debug)) {
          char msg[128];
          ::snprintf(msg, 128, "readline: bytes from recv = %zd", bytes);
          LOG_DEBUG(msg)
@@ -448,7 +448,7 @@ bool Socket::readLine(std::string& line) {
          // hold onto everything after the EOL in the line input buffer
          m_lineInputBuffer = (pszEOL + eolLength);
          
-         if (Logger::isLogging(Debug)) {
+         if (Logger::isLogging(LogLevel::Debug)) {
             LOG_DEBUG("Socket::readLine holding onto following text in line input buffer")
             char msg[256];
             ::snprintf(msg, 256, "buffer: '%s'", m_lineInputBuffer.c_str());

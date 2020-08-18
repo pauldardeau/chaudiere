@@ -225,7 +225,7 @@ void SocketServer::replaceVariables(const KeyValuePairs& kvp,
 
 bool SocketServer::init(int port)
 {
-   const bool isLoggingDebug = Logger::isLogging(Debug);
+   const bool isLoggingDebug = Logger::isLogging(LogLevel::Debug);
    
    m_serverPort = port;
 	
@@ -326,17 +326,17 @@ bool SocketServer::init(int port)
                
                if (logger != nullptr) {
                   if (m_logLevel == CFG_LOGGING_CRITICAL) {
-                     logger->setLogLevel(Critical);
+                     logger->setLogLevel(LogLevel::Critical);
                   } else if (m_logLevel == CFG_LOGGING_ERROR) {
-                     logger->setLogLevel(Error);
+                     logger->setLogLevel(LogLevel::Error);
                   } else if (m_logLevel == CFG_LOGGING_WARNING) {
-                     logger->setLogLevel(Warning);
+                     logger->setLogLevel(LogLevel::Warning);
                   } else if (m_logLevel == CFG_LOGGING_INFO) {
-                     logger->setLogLevel(Info);
+                     logger->setLogLevel(LogLevel::Info);
                   } else if (m_logLevel == CFG_LOGGING_DEBUG) {
-                     logger->setLogLevel(Debug);
+                     logger->setLogLevel(LogLevel::Debug);
                   } else if (m_logLevel == CFG_LOGGING_VERBOSE) {
-                     logger->setLogLevel(Verbose);
+                     logger->setLogLevel(LogLevel::Verbose);
                   } else {
                      LOG_WARNING("unrecognized log level: '" + m_logLevel)
                   }

@@ -52,7 +52,7 @@ SocketRequest::~SocketRequest() {
 //******************************************************************************
 
 void SocketRequest::run() {
-   if (Logger::isLogging(Debug)) {
+   if (Logger::isLogging(LogLevel::Debug)) {
       char msg[128];
       ::snprintf(msg, 128, "request for socket fd=%d",
                m_socket->getFileDescriptor());

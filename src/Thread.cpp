@@ -45,7 +45,7 @@ Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
    m_isPoolWorker(false),
    m_mutexAlive(mutexAlive),
    m_threadCompletionObserver(nullptr) {
-   if (Logger::isLogging(Debug)) {
+   if (Logger::isLogging(LogLevel::Debug)) {
       //Logger::debug("new thread created");
    }
 }

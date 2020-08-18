@@ -39,37 +39,37 @@ void Logger::log(LogLevel logLevel, const std::string& logMessage) {
 //******************************************************************************
 
 void Logger::critical(const std::string& logMessage) {
-   log(Critical, logMessage);
+   log(LogLevel::Critical, logMessage);
 }
 
 //******************************************************************************
 
 void Logger::error(const std::string& logMessage) {
-   log(Error, logMessage);
+   log(LogLevel::Error, logMessage);
 }
 
 //******************************************************************************
 
 void Logger::warning(const std::string& logMessage) {
-   log(Warning, logMessage);
+   log(LogLevel::Warning, logMessage);
 }
 
 //******************************************************************************
 
 void Logger::info(const std::string& logMessage) {
-   log(Info, logMessage);
+   log(LogLevel::Info, logMessage);
 }
 
 //******************************************************************************
 
 void Logger::debug(const std::string& logMessage) {
-   log(Debug, logMessage);
+   log(LogLevel::Debug, logMessage);
 }
 
 //******************************************************************************
 
 void Logger::verbose(const std::string& logMessage) {
-   log(Verbose, logMessage);
+   log(LogLevel::Verbose, logMessage);
 }
 
 //******************************************************************************
