@@ -117,28 +117,19 @@ double StrUtils::parseDouble(const std::string& s) {
 //******************************************************************************
 
 std::string StrUtils::toString(int i) {
-   char buffer[40];
-   ::memset(buffer, 0, sizeof(buffer));
-   ::snprintf(buffer, sizeof(buffer), "%d", i);
-   return std::string(buffer);
+   return std::to_string(i);
 }
 
 //******************************************************************************
 
 std::string StrUtils::toString(long l) {
-   char buffer[40];
-   ::memset(buffer, 0, sizeof(buffer));
-   ::snprintf(buffer, sizeof(buffer), "%ld", l);
-   return std::string(buffer);
+   return std::to_string(l);
 }
 
 //******************************************************************************
 
 std::string StrUtils::toString(unsigned long l) {
-   char buffer[40];
-   ::memset(buffer, 0, sizeof(buffer));
-   ::snprintf(buffer, sizeof(buffer), "%lu", l);
-   return std::string(buffer);
+   return std::to_string(l);
 }
 
 //******************************************************************************
@@ -365,7 +356,9 @@ std::string& StrUtils::replaceAll(std::string& s,
 
 //******************************************************************************
 
-void StrUtils::padRight(std::string& s, char padChar, std::string::size_type paddedLength) {
+void StrUtils::padRight(std::string& s,
+                        char padChar,
+                        std::string::size_type paddedLength) {
    if (s.length() < paddedLength) {
       s += std::string(paddedLength - s.length(), padChar);
    }
@@ -373,7 +366,9 @@ void StrUtils::padRight(std::string& s, char padChar, std::string::size_type pad
 
 //******************************************************************************
 
-void StrUtils::padLeft(std::string& s, char padChar, std::string::size_type paddedLength) {
+void StrUtils::padLeft(std::string& s,
+                       char padChar,
+                       std::string::size_type paddedLength) {
    if (s.length() < paddedLength) {
       s.insert(0, std::string(paddedLength - s.length(), padChar));
    }

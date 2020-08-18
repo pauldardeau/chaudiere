@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <string>
 
 #include "ServiceInfo.h"
 
@@ -96,13 +97,7 @@ void ServiceInfo::setPort(unsigned short port) {
 std::string ServiceInfo::getUniqueIdentifier() const {
    std::string uniqueIdentifier = m_host;
    uniqueIdentifier += std::string("|");
-   
-   char portAsString[10];
-   memset(portAsString, 0, 10);
-   snprintf(portAsString, 10, "%d", m_port);
-   
-   uniqueIdentifier += std::string(portAsString);
-   
+   uniqueIdentifier += std::to_string(m_port);
    return uniqueIdentifier;
 }
 
