@@ -47,11 +47,9 @@ void KeyValuePairs::getKeys(std::vector<std::string>& keys) const {
    }
 
    keys.reserve(m_keyValues.size());
-   const unordered_map<string,string>::const_iterator itEnd = m_keyValues.end();
-   unordered_map<string,string>::const_iterator it = m_keyValues.begin();
    
-   for ( ; it != itEnd; it++) {
-      keys.push_back((*it).first);
+   for (auto& pair: m_keyValues) {
+      keys.push_back(pair.first);
    }
 }
 
