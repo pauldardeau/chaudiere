@@ -5,14 +5,14 @@
 
 using namespace chaudiere;
 
-Logger* Logger::loggerInstance = NULL;
+Logger* Logger::loggerInstance = nullptr;
 
 //******************************************************************************
 
 void Logger::shutdown() {
-   if (NULL != loggerInstance) {
+   if (nullptr != loggerInstance) {
       delete loggerInstance;
-      loggerInstance = NULL;
+      loggerInstance = nullptr;
    }
 }
 

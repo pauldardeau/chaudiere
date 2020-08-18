@@ -29,8 +29,8 @@ SocketRequest::SocketRequest(SocketCompletionObserver* completionObserver,
                              int socketFD,
                              SocketServiceHandler* handler) :
    Runnable(),
-   m_socket(NULL),
-   m_borrowedSocket(NULL),  // not used
+   m_socket(nullptr),
+   m_borrowedSocket(nullptr),  // not used
    m_handler(handler),
    m_containedSocket(completionObserver, socketFD),
    m_socketOwned(false) {
@@ -42,10 +42,10 @@ SocketRequest::SocketRequest(SocketCompletionObserver* completionObserver,
 
 SocketRequest::~SocketRequest() {
    LOG_INSTANCE_DESTROY("SocketRequest")
-   if (NULL != m_borrowedSocket) {
+   if (nullptr != m_borrowedSocket) {
       delete m_borrowedSocket;
-      m_borrowedSocket = NULL;
-      m_socket = NULL;
+      m_borrowedSocket = nullptr;
+      m_socket = nullptr;
    }
 }
 
@@ -91,7 +91,7 @@ Socket* SocketRequest::getSocket() {
 //******************************************************************************
 
 void SocketRequest::requestComplete() {
-   if (NULL != m_socket) {
+   if (nullptr != m_socket) {
       m_socket->requestComplete();
    }
 }

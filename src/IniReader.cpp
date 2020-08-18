@@ -136,7 +136,7 @@ bool IniReader::hasSection(const std::string& section) const {
 
 bool IniReader::readFile() {
    FILE* f = ::fopen(m_iniFile.c_str(), "rb");
-   if (f == NULL) {
+   if (f == nullptr) {
       return false;
    }
     

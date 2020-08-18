@@ -35,7 +35,7 @@ class DynamicLibrary
       /**
        * Retrieves a function pointer for the specified function name
        * @param functionName the name of the function in the dynamic library
-       * @return pointer to function (if present), or NULL if not
+       * @return pointer to function (if present), or nullptr if not
        */
       void* resolve(const std::string& functionName);
    

@@ -14,7 +14,7 @@ PthreadsConditionVariable::PthreadsConditionVariable() :
    m_initialized(false) {
    LOG_INSTANCE_CREATE("PthreadsConditionVariable")
 
-   if (0 != ::pthread_cond_init(&m_cond, NULL)) {
+   if (0 != ::pthread_cond_init(&m_cond, nullptr)) {
       LOG_ERROR("unable to create condition variable (pthreads)")
       throw BasicException("unable to create condition variable (pthreads)");
    } else {
@@ -29,7 +29,7 @@ PthreadsConditionVariable::PthreadsConditionVariable(const std::string& name) :
    m_name(name) {
    LOG_INSTANCE_CREATE("PthreadsConditionVariable")
 
-   if (0 != ::pthread_cond_init(&m_cond, NULL)) {
+   if (0 != ::pthread_cond_init(&m_cond, nullptr)) {
       LOG_ERROR("unable to create condition variable (pthreads)")
       throw BasicException("unable to create condition variable (pthreads)");
    } else {

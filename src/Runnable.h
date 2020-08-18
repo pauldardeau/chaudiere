@@ -25,7 +25,7 @@ public:
     * Default constructor
     */
    Runnable() :
-      m_completionObserver(NULL),
+      m_completionObserver(nullptr),
       m_runByThreadId(0),
       m_autoDelete(false) {
    }
@@ -86,7 +86,7 @@ public:
     * This should only be called AFTER the run method has completed
     */
    virtual void notifyOnCompletion() {
-      if (m_completionObserver != NULL) {
+      if (m_completionObserver != nullptr) {
          m_completionObserver->notifyRunComplete(this);
       }
    }
