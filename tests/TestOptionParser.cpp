@@ -3,6 +3,7 @@
 
 #include "OptionParser.h"
 #include "TestOptionParser.h"
+#include "Runnable.h"
 
 using namespace chaudiere;
 
@@ -135,27 +136,48 @@ void TestOptionParser::testGetOptionValue() {
    TEST_CASE("testGetOptionValue");
 
    int argc;
-   const char* argv1[] = {"myprog", NULL};
-   argc = sizeof(argv1) / sizeof(char*) - 1;
-   OptionParser op;
-   op.parseArgs(argc, argv1);
    std::string flag = "debug";
    std::string option = "logger";
    std::string optionValue = "MyLogger";
-   requireFalse(op.hasFlag(flag), "test non-added flag option");
-   requireFalse(op.acceptsFlag(flag), "test non-added option");
-   op.addFlagOption(flag);
-   require(op.acceptsFlag(flag), "test added flag option");
 
-   const char* argv2[] = {"debug", "", "", NULL};
-   argc = sizeof(argv2) / sizeof(char*) - 1;
-   op.parseArgs(argc, argv2);
-   require(op.hasFlag(flag), "test added flag option");
-   require(op.hasOption(option), "test added option");
-   requireStringEquals(optionValue, op.getOptionValue(option),
-                       "option value matches command line value");
+   {
+      const char* argv1[] = {"myprog", NULL};
+      argc = sizeof(argv1) / sizeof(char*) - 1;
+      OptionParser op;
+      op.parseArgs(argc, argv1);
+      requireFalse(op.hasFlag(flag), "test non-added flag option");
+      requireFalse(op.acceptsFlag(flag), "test non-added option");
+      op.addFlagOption(flag);
+      require(op.acceptsFlag(flag), "test added flag option");
+   }
+
+   {
+      const char* argv2[] = {"myprog", "debug", "logger", "MyLogger", NULL};
+      argc = sizeof(argv2) / sizeof(char*) - 1;
+      OptionParser op;
+      op.addFlagOption(flag);
+      op.addOption(option, std::string(""));
+      op.parseArgs(argc, argv2);
+      require(op.hasFlag(flag), "test added flag option");
+      require(op.hasOption(option), "test added option");
+      requireStringEquals(optionValue, op.getOptionValue(option),
+                          "option value matches command line value");
+   }
 
    //TODO: test non-existing option (InvalidKeyException)
+   {
+      class GetInvalidOption : public poivre::Runnable {
+         public:
+            void run() {
+               OptionParser op;
+	       op.getOptionValue("nonExistingKey");
+	    }
+      };
+      poivre::Runnable* runnable = new GetInvalidOption;
+      requireException("InvalidKeyException",
+		       runnable,
+		       std::string("test getOptionValue for invalid (non-existing) option"));
+   }
 }
 
 //******************************************************************************
@@ -163,13 +185,22 @@ void TestOptionParser::testGetOptionValue() {
 void TestOptionParser::testHasFlag() {
    TEST_CASE("testHasFlag");
 
-   OptionParser op;
-   requireFalse(op.hasFlag("foo"),
-                "test for non-existing option return false");
-   std::string option_name = "debugging";
-   op.addFlagOption(option_name);
-   require(op.hasFlag(option_name),
-           "test for existing option return true");
+   {
+      OptionParser op;
+      requireFalse(op.hasFlag("foo"),
+                   "test for non-existing option return false");
+   }
+
+   {
+      const char* argv[] = {"myprog", "debugging", NULL}; 
+      int argc = sizeof(argv) / sizeof(char*) - 1;
+      OptionParser op;
+      std::string option_name = "debugging";
+      op.addFlagOption(option_name);
+      op.parseArgs(argc, argv);
+      require(op.hasFlag(option_name),
+              "test for existing option return true");
+   }
 }
 
 //******************************************************************************
