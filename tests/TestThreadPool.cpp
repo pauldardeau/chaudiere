@@ -48,19 +48,15 @@ void TestThreadPool::testConstructor() {
    // number workers only
    {
       int numWorkers = 5;
-      printf("%d\n", numWorkers);
       ThreadPool tp(numWorkers);
 
       numWorkers = 0;
-      printf("%d\n", numWorkers);
       ThreadPool tpZero(numWorkers);
 
       numWorkers = -3;
-      printf("%d\n", numWorkers);
       ThreadPool tpNeg(numWorkers);
 
       numWorkers = 50;
-      printf("%d\n", numWorkers);
       ThreadPool tpLarge(numWorkers);
    }
 
@@ -69,19 +65,15 @@ void TestThreadPool::testConstructor() {
       const std::string name = "test_pool";
 
       int numWorkers = 5;
-      printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tp(numWorkers, name);
 
       numWorkers = 0;
-      printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpZero(numWorkers, name);
 
       numWorkers = -3;
-      printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpNeg(numWorkers, name);
 
       numWorkers = 50;
-      printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpLarge(numWorkers, name);
    }
 
@@ -90,19 +82,15 @@ void TestThreadPool::testConstructor() {
       ThreadingFactory* tf = new PthreadsThreadingFactory;
 
       int numWorkers = 5;
-      printf("TF %d\n", numWorkers);
       ThreadPool tp(tf, numWorkers);
 
       numWorkers = 0;
-      printf("TF %d\n", numWorkers);
       ThreadPool tpZero(tf, numWorkers);
 
       numWorkers = -3;
-      printf("TF %d\n", numWorkers);
       ThreadPool tpNeg(tf, numWorkers);
 
       numWorkers = 50;
-      printf("TF %d\n", numWorkers);
       ThreadPool tpLarge(tf, numWorkers);
 
       delete tf;
@@ -114,19 +102,15 @@ void TestThreadPool::testConstructor() {
       const std::string pool_name = "test_factory_pool";
 
       int numWorkers = 5;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tp(tf, numWorkers, pool_name);
 
       numWorkers = 0;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpZero(tf, numWorkers, pool_name);
 
       numWorkers = -3;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpNeg(tf, numWorkers, pool_name);
 
       numWorkers = 50;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpLarge(tf, numWorkers, pool_name);
 
       delete tf;
