@@ -98,10 +98,10 @@ void ThreadPoolWorker::run() {
                LOG_DEBUG(message)
             }
          }
-      }
 
-      if (runnable->isAutoDelete()) {
-         delete runnable;
+	 if (runnable->isAutoDelete()) {
+            delete runnable;
+         }
       }
    }
 }
