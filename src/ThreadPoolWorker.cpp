@@ -40,10 +40,7 @@ void ThreadPoolWorker::start() {
       m_workerThread = m_threadingFactory->createThread(this, "threadpoolworker");
       if (m_workerThread) {
          m_workerThread->setPoolWorkerStatus(true);
-         char workerIdAsString[20];
-         memset(workerIdAsString, 0, 20);
-         snprintf(workerIdAsString, 20, "%d", m_workerId);
-         m_workerThread->setWorkerId(workerIdAsString);
+         m_workerThread->setWorkerId(std::to_string(m_workerId));
          m_isRunning = true;
          m_workerThread->start();
       }
