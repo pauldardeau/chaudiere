@@ -12,7 +12,7 @@
 #include "TestServerSocket.h"
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
-//#include "TestStdMutex.h"
+#include "TestStdMutex.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
 #include "TestSystemInfo.h"
@@ -39,9 +39,9 @@ void run_tests() {
    run_test(new TestInvalidKeyException);
    run_test(new TestKeyValuePairs);
    run_test(new TestKqueueServer);
-   //run_test(new TestOptionParser);
+   run_test(new TestOptionParser);
    run_test(new TestPthreadsMutex);
-   //run_test(new TestStdMutex);
+   run_test(new TestStdMutex);
    run_test(new TestServerSocket);
    run_test(new TestSocket);
    run_test(new TestSocketRequest);
@@ -51,9 +51,9 @@ void run_tests() {
    run_test(new TestSystemStats);
    run_test(new TestThread);
    run_test(new TestThreadInfo);
-   run_test(new TestThreadPool);
-   run_test(new TestThreadPoolQueue);
-   run_test(new TestThreadPoolWorker);
+   //run_test(new TestThreadPool);
+   //run_test(new TestThreadPoolQueue);
+   //run_test(new TestThreadPoolWorker);
 }
 
 int main(int argc, char* argv[]) {
