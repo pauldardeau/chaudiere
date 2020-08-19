@@ -226,7 +226,7 @@ std::string OSUtils::osName() {
 
 void OSUtils::splitExt(const std::string& filePath,
                        std::vector<std::string>& pathParts) {
-   const std::string::size_type posLastDot = filePath.find_last_of(".");
+   auto posLastDot = filePath.find_last_of(".");
    if (posLastDot != std::string::npos) {
       pathParts.push_back(filePath.substr(0, posLastDot));  // root
       pathParts.push_back(filePath.substr(posLastDot, std::string::npos));  // ext

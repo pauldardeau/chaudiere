@@ -338,14 +338,14 @@ bool Socket::readLine(std::string& line) {
    // do we already have anything in our line input buffer?
    if (!m_lineInputBuffer.empty()) {
       // look for CRLF EOL
-      const std::string::size_type posCRLF = m_lineInputBuffer.find(CRLF);
+      auto posCRLF = m_lineInputBuffer.find(CRLF);
         
       // is there one?
       if (std::string::npos != posCRLF) {
          eolLength = 2;
          posEOL = posCRLF;
       } else {
-         const std::string::size_type posLF = m_lineInputBuffer.find(LF);
+         auto posLF = m_lineInputBuffer.find(LF);
             
          if (std::string::npos != posLF) {
             eolLength = 1;

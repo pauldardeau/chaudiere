@@ -47,8 +47,8 @@ bool IniReader::readSection(const std::string& section,
       return false;
    }
     
-   const std::string::size_type posEndSection = posSection + sectionId.length();
-   const std::string::size_type startNextSection =
+   auto posEndSection = posSection + sectionId.length();
+   auto startNextSection =
       m_fileContents.find(OPEN_BRACKET, posEndSection);
     
    std::string sectionContents;
@@ -73,12 +73,12 @@ bool IniReader::readSection(const std::string& section,
       
       std::string line = sectionContents.substr(index, posEol - index);
       if (!line.empty()) {
-         std::string::size_type posCR = line.find('\r');
+         auto posCR = line.find('\r');
          if (posCR != std::string::npos) {
             line = line.substr(0, posCR);
          }
             
-         const std::string::size_type posEqual = line.find('=');
+         auto posEqual = line.find('=');
             
          if ((posEqual != std::string::npos) && (posEqual < line.length())) {
             const std::string key = StrUtils::strip(line.substr(0, posEqual));

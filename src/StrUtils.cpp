@@ -275,7 +275,7 @@ std::string& StrUtils::stripLeading(std::string& s, char stripChar) {
 //******************************************************************************
 
 std::string& StrUtils::trimLeadingSpaces(std::string& s) {
-   const std::string::size_type posFirstNonSpace = s.find_first_not_of(SPACE);
+   auto posFirstNonSpace = s.find_first_not_of(SPACE);
     
    if ((std::string::npos != posFirstNonSpace) && (posFirstNonSpace > 0)) {
       s.erase(0, posFirstNonSpace);
@@ -337,7 +337,7 @@ std::string StrUtils::strip(const std::string& s, char strip) {
 std::string& StrUtils::replaceAll(std::string& s,
                                   const std::string& searchFor,
                                   const std::string& replaceWith) {
-   std::string::size_type posSearchFor = s.find(searchFor);
+   auto posSearchFor = s.find(searchFor);
     
    if (posSearchFor == std::string::npos) {
       return s;
