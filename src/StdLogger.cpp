@@ -107,8 +107,7 @@ void StdLogger::setLogInstanceLifecycles(bool logInstanceLifecycles) {
 void StdLogger::logInstanceCreate(const std::string& className) {
    if (m_lockLifecycleStats) {
       MutexLock lock(*m_lockLifecycleStats);
-      std::unordered_map<std::string, LifecycleStats>::iterator it =
-         m_mapClassLifecycleStats.find(className);
+      auto it = m_mapClassLifecycleStats.find(className);
       if (it != m_mapClassLifecycleStats.end()) {
          LifecycleStats& stats = it->second;
          ++stats.m_instancesCreated;
@@ -125,8 +124,7 @@ void StdLogger::logInstanceCreate(const std::string& className) {
 void StdLogger::logInstanceDestroy(const std::string& className) {
    if (m_lockLifecycleStats) {
       MutexLock lock(*m_lockLifecycleStats);
-      std::unordered_map<std::string, LifecycleStats>::iterator it =
-         m_mapClassLifecycleStats.find(className);
+      auto it = m_mapClassLifecycleStats.find(className);
       if (it != m_mapClassLifecycleStats.end()) {
          LifecycleStats& stats = it->second;
          ++stats.m_instancesDestroyed;
@@ -158,11 +156,10 @@ void StdLogger::populateOccurrences(std::unordered_map<std::string,
 void StdLogger::logOccurrence(const std::string& occurrenceType,
                               const std::string& occurrenceName) {
    MutexLock lock(*m_lockOccurrences);
-   std::unordered_map<std::string, std::unordered_map<std::string, long long> >::iterator it =
-      m_mapOccurrences.find(occurrenceType);
+   auto it = m_mapOccurrences.find(occurrenceType);
    if (it != m_mapOccurrences.end()) {
-      std::unordered_map<std::string, long long>& mapOccurrencesByType = it->second;
-      std::unordered_map<std::string, long long>::iterator itName =
+      auto& mapOccurrencesByType = it->second;
+      auto itName =
          mapOccurrencesByType.find(occurrenceName);
       if (itName != mapOccurrencesByType.end()) {
          ++(itName->second);

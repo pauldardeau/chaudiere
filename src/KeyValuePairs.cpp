@@ -62,7 +62,7 @@ bool KeyValuePairs::hasKey(const std::string& key) const {
 //******************************************************************************
 
 const std::string& KeyValuePairs::getValue(const std::string& key) const {
-   unordered_map<string,string>::const_iterator it = m_keyValues.find(key);
+   auto it = m_keyValues.find(key);
    if (it != m_keyValues.end()) {
       return (*it).second;
    } else {
@@ -81,7 +81,7 @@ void KeyValuePairs::addPair(const std::string& key,
 //******************************************************************************
 
 bool KeyValuePairs::removePair(const std::string& key) {
-   unordered_map<string,string>::iterator it = m_keyValues.find(key);
+   auto it = m_keyValues.find(key);
    if (it != m_keyValues.end()) {
       m_keyValues.erase(it);
       return true;

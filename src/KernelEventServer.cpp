@@ -248,7 +248,7 @@ int KernelEventServer::getListenerSocketFileDescriptor() const {
 
 bool KernelEventServer::isBusyFD(int fd) const {
    MutexLock locker(*m_busyFlagsMutex);
-   unordered_map<int,bool>::const_iterator it = m_busyFlags.find(fd);
+   auto it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
       return it->second;
    } else {
@@ -260,7 +260,7 @@ bool KernelEventServer::isBusyFD(int fd) const {
 
 void KernelEventServer::setBusyFD(int fd, bool busy) {
    MutexLock locker(*m_busyFlagsMutex);
-   unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
+   auto it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
       it->second = busy;
    } else {
@@ -272,7 +272,7 @@ void KernelEventServer::setBusyFD(int fd, bool busy) {
 
 bool KernelEventServer::removeBusyFD(int fd) {
    MutexLock locker(*m_busyFlagsMutex);
-   unordered_map<int,bool>::iterator it = m_busyFlags.find(fd);
+   auto it = m_busyFlags.find(fd);
    if (it != m_busyFlags.end()) {
       m_busyFlags.erase(it);
       return true;
