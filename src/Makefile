@@ -2,7 +2,7 @@
 # BSD License
 
 CC = c++
-CC_OPTS = -c -Wall -std=c++14 -fPIC -O2 -pthread -I/usr/local/include
+CC_OPTS = -c -Wall -std=c++14 -fPIC -g -pthread -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
@@ -30,7 +30,11 @@ ServiceInfo.o \
 Socket.o \
 SocketRequest.o \
 SocketServer.o \
+StdConditionVariable.o \
 StdLogger.o \
+StdMutex.o \
+StdThread.o \
+StdThreadingFactory.o \
 StrUtils.o \
 StringTokenizer.o \
 SystemInfo.o \
