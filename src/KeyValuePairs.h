@@ -28,6 +28,12 @@ class KeyValuePairs
        * @param copy the source of the object copy
        */
       KeyValuePairs(const KeyValuePairs& copy);
+
+      /**
+       * Move constructor
+       * @param other the source of the move
+       */
+      KeyValuePairs(KeyValuePairs&& other);
    
       /**
        * Destructor
@@ -40,6 +46,13 @@ class KeyValuePairs
        * @return updated object after the copy.
        */
       KeyValuePairs& operator=(const KeyValuePairs& copy);
+
+      /**
+       * Move operator
+       * @param other source of the move
+       * @return updated object after the move.
+       */
+      KeyValuePairs& operator=(KeyValuePairs&& other);
    
       /**
        * Retrieves the keys contained within the collection

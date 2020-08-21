@@ -69,7 +69,7 @@ namespace chaudiere
       DateTime(int dummy);
       
       /**
-       *
+       * Constructs a DateTime instance from date/time components
        * @param year
        * @param month
        * @param day
@@ -98,6 +98,12 @@ namespace chaudiere
        * @param copy the source of the copy
        */
       DateTime(const DateTime& copy);
+
+      /**
+       * Move constructor
+       * @param other the source of the move
+       */
+      DateTime(DateTime&& other);
       
       /**
        * Destructor
@@ -110,6 +116,13 @@ namespace chaudiere
        * @return reference to the destination of the copy
        */
       DateTime& operator=(const DateTime& copy);
+
+      /**
+       * Move operator
+       * @param other the source of the move
+       * @return reference to move target
+       */
+      DateTime& operator=(DateTime&& other);
       
       /**
        * Equality operator

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <memory>
 
 
 namespace chaudiere
@@ -64,6 +65,15 @@ public:
    }
 
    /**
+    * Move constructor
+    * @param other the source of the move
+    */
+   ByteBuffer(ByteBuffer&& other) :
+      m_buffer(std::move(other.m_buffer)),
+      m_bufferSize(std::exchange(other.m_bufferSize, 0)) {
+   }
+
+   /**
     * Destructor
     */
    ~ByteBuffer() {
@@ -93,7 +103,23 @@ public:
       
       return *this;
    }
-   
+
+   /**
+    * Move operator
+    * @param other the source of the move
+    * @return reference to the target of the move
+    */
+   ByteBuffer& operator=(ByteBuffer&& other) {
+      if (this == &other) {
+         return *this;
+      }
+
+      m_buffer = std::move(other.m_buffer);
+      m_bufferSize = std::exchange(other.m_bufferSize, 0);
+
+      return *this;
+   }
+
    /**
     * Take on ownership of an existing data buffer
     * @param sourceBuffer the new data buffer

@@ -36,7 +36,13 @@ public:
     * @param copy the source of the copy
     */
    ServiceInfo(const ServiceInfo& copy);
-   
+
+   /**
+    * Move constructor
+    * @param other the source of the move
+    */
+   ServiceInfo(ServiceInfo&& other);
+
    /**
     * Destructor
     */
@@ -48,7 +54,14 @@ public:
     * @return reference to the target of the copy
     */
    ServiceInfo& operator=(const ServiceInfo& copy);
-   
+
+   /**
+    * Move operator
+    * @param other the source of the move
+    * @return reference to target of the move
+    */
+   ServiceInfo& operator=(ServiceInfo&& other);
+
    /**
     * Retrieves the name of the service
     * @return the service name

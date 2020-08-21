@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <memory>
 
 
 namespace chaudiere
@@ -35,7 +36,16 @@ public:
          allocateBuffer(bufferSize);
       }
    }
-   
+
+   /**
+    * Move constructor
+    * @param other the source of the move
+    */
+   CharBuffer(CharBuffer&& other) :
+      m_buffer(std::move(other.m_buffer)),
+      m_bufferSize(std::exchange(other.m_bufferSize, 0)) {
+   }
+
    /**
     * Destructor
     */
@@ -88,7 +98,23 @@ public:
    std::size_t size() const {
       return m_bufferSize;
    }
-  
+
+   /**
+    * Move operator
+    * @param other the source of the move
+    * @return reference to the move target
+    */
+   CharBuffer& operator=(CharBuffer&& other) {
+      if (this == &other) {
+         return *this;
+      }
+
+      m_buffer = std::move(other.m_buffer);
+      m_bufferSize = std::exchange(other.m_bufferSize, 0);
+
+      return *this;
+   }
+
    CharBuffer(const CharBuffer&) = delete;
    CharBuffer& operator=(const CharBuffer&) = delete; 
 

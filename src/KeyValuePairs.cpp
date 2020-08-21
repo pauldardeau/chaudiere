@@ -23,6 +23,13 @@ KeyValuePairs::KeyValuePairs(const KeyValuePairs& copy) :
 
 //******************************************************************************
 
+KeyValuePairs::KeyValuePairs(KeyValuePairs&& other) :
+   m_keyValues(std::move(other.m_keyValues)) {
+   LOG_INSTANCE_CREATE("KeyValuePairs")
+}
+
+//******************************************************************************
+
 KeyValuePairs::~KeyValuePairs() {
    LOG_INSTANCE_DESTROY("KeyValuePairs")
 }
@@ -35,6 +42,18 @@ KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) {
    }
    
    m_keyValues = copy.m_keyValues;
+
+   return *this;
+}
+
+//******************************************************************************
+
+KeyValuePairs& KeyValuePairs::operator=(KeyValuePairs&& other) {
+   if (&other == this) {
+      return *this;
+   }
+
+   m_keyValues = std::move(other.m_keyValues);
 
    return *this;
 }

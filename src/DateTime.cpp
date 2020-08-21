@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <memory>
 
 #include "DateTime.h"
 #include "StrUtils.h"
@@ -259,11 +260,11 @@ DateTime::DateTime(const std::string& dateTime) :
 //******************************************************************************
 
 DateTime::DateTime(int year,
-           int month,
-           int day,
-           int hour,
-           int minute,
-           int second) :
+                   int month,
+                   int day,
+                   int hour,
+                   int minute,
+                   int second) :
    m_timeIntervalSince1970(0.0),
    m_year(year),
    m_month(month),
@@ -305,6 +306,20 @@ DateTime::DateTime(const DateTime& copy) :
 }
 
 //******************************************************************************
+
+DateTime::DateTime(DateTime&& other) :
+   m_timeIntervalSince1970(std::exchange(other.m_timeIntervalSince1970, 0)),
+   m_year(std::exchange(other.m_year, 0)),
+   m_month(std::exchange(other.m_month, 0)),
+   m_day(std::exchange(other.m_day, 0)),
+   m_hour(std::exchange(other.m_hour, 0)),
+   m_minute(std::exchange(other.m_minute, 0)),
+   m_second(std::exchange(other.m_second, 0)),
+   m_weekDay(std::exchange(other.m_weekDay, 0)),
+   m_haveUnixTimeValue(std::exchange(other.m_haveUnixTimeValue, false)) {
+}
+
+//******************************************************************************
       
 DateTime& DateTime::operator=(const DateTime& copy) {
    if (this == &copy) {
@@ -325,7 +340,27 @@ DateTime& DateTime::operator=(const DateTime& copy) {
 }
 
 //******************************************************************************
-      
+
+DateTime& DateTime::operator=(DateTime&& other) {
+   if (this == &other) {
+      return *this;
+   }
+
+   m_timeIntervalSince1970 = std::exchange(other.m_timeIntervalSince1970, 0);
+   m_year = std::exchange(other.m_year, 0);
+   m_month = std::exchange(other.m_month, 0);
+   m_day = std::exchange(other.m_day, 0);
+   m_hour = std::exchange(other.m_hour, 0);
+   m_minute = std::exchange(other.m_minute, 0);
+   m_second = std::exchange(other.m_second, 0);
+   m_weekDay = std::exchange(other.m_weekDay, 0);
+   m_haveUnixTimeValue = std::exchange(other.m_haveUnixTimeValue, 0);
+
+   return *this;
+}
+
+//******************************************************************************
+
 bool DateTime::operator==(const DateTime& compare) const {
    if (m_haveUnixTimeValue && compare.m_haveUnixTimeValue) {
       return (m_timeIntervalSince1970 == compare.m_timeIntervalSince1970);

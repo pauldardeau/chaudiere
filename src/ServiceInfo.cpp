@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <memory>
 
 #include "ServiceInfo.h"
 
@@ -38,6 +39,15 @@ ServiceInfo::ServiceInfo(const ServiceInfo& copy) :
 
 //******************************************************************************
 
+ServiceInfo::ServiceInfo(ServiceInfo&& other) :
+   m_serviceName(std::move(other.m_serviceName)),
+   m_host(std::move(other.m_host)),
+   m_port(std::exchange(other.m_port, 0)),
+   m_persistentConnection(std::exchange(other.m_persistentConnection, false)) {
+}
+
+//******************************************************************************
+
 ServiceInfo::~ServiceInfo() {
 }
 
@@ -53,6 +63,21 @@ ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy) {
    m_port = copy.m_port;
    m_persistentConnection = copy.m_persistentConnection;
    
+   return *this;
+}
+
+//******************************************************************************
+
+ServiceInfo& ServiceInfo::operator=(ServiceInfo&& other) {
+   if (this == &other) {
+      return *this;
+   }
+
+   m_serviceName = std::move(other.m_serviceName);
+   m_host = std::move(other.m_host);
+   m_port = std::exchange(other.m_port, 0);
+   m_persistentConnection = std::exchange(other.m_persistentConnection, false);
+
    return *this;
 }
 
