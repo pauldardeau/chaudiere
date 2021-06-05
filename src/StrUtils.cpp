@@ -143,6 +143,24 @@ std::string StrUtils::toString(unsigned long l) {
 
 //******************************************************************************
 
+std::string StrUtils::toString(float f) {
+   char buffer[40];
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%f", f);
+   return std::string(buffer);
+}
+
+//******************************************************************************
+
+std::string StrUtils::toString(double d) {
+   char buffer[40];
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%f", d);
+   return std::string(buffer);
+}
+
+//******************************************************************************
+
 std::string StrUtils::charToString(char c) {
    char buffer[2];
    buffer[0] = c;

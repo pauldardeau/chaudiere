@@ -66,6 +66,20 @@ public:
    static std::string toString(unsigned long l);
 
    /**
+    * Construct a string from a float
+    * @param f float value to convert to string
+    * @return string version of float value
+    */
+   static std::string toString(float f);
+
+   /**
+    * Construct a string from a double
+    * @param d double value to convert to string
+    * @return string version of double value
+    */
+   static std::string toString(double d);
+
+   /**
     * Construct a string from a single character
     * @param c the character to use as string
     * @return string verion of character value
