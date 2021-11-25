@@ -20,6 +20,8 @@
 #include <sys/sysinfo.h>
 #elif defined(__APPLE__)
 #include <sys/sysctl.h>
+#elif defined(__FreeBSD__)
+#include <sys/sysctl.h>
 #elif defined(__sun__)
 #include <sys/loadavg.h>
 #include <sys/processor.h>
