@@ -411,14 +411,32 @@ std::string StrUtils::makeStringOfChar(char ch, int length) {
 
 std::vector<std::string> StrUtils::split(const std::string& s,
                                          const std::string& delim) {
-   std::vector<std::string> components;
-   StringTokenizer st(s, delim);
+   bool parsing = true;
+   size_t pos_current = 0;
+   size_t pos_delimiter;
+   std::vector<std::string> tokens;
+   const size_t s_length = s.length();
+   const size_t delim_length = delim.length();
 
-   while (st.hasMoreTokens()) {
-      components.push_back(st.nextToken());
+   while (parsing) {
+      pos_delimiter = s.find(delim, pos_current);
+      if (pos_delimiter == std::string::npos) {
+         int num_chars = s_length - pos_current;
+	 if (num_chars > 0) {
+            tokens.push_back(s.substr(pos_current, num_chars));
+	 }
+         parsing = false;
+      } else {
+         int num_chars = pos_delimiter - pos_current;
+	 if (num_chars > 0) {
+            tokens.push_back(s.substr(pos_current, num_chars));
+	    pos_current += num_chars;
+	 }
+         pos_current += delim_length;
+      }
    }
 
-   return components;
+   return tokens;
 }
 
 //******************************************************************************
