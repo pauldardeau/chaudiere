@@ -356,7 +356,7 @@ std::string StrUtils::strip(const std::string& s, char strip) {
       }
    }
     
-   return s.substr(leadingChars, len - trailingChars);
+   return s.substr(leadingChars, len - trailingChars - leadingChars);
 }
 
 //******************************************************************************
