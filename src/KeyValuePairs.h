@@ -6,7 +6,8 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+//#include <unordered_map>
+#include <map>
 
 namespace chaudiere
 {
@@ -96,7 +97,7 @@ class KeyValuePairs
    
 
    private:
-      std::unordered_map<std::string, std::string> m_keyValues;
+      std::map<std::string, std::string> m_keyValues;
 };
 
 }
