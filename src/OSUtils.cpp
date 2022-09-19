@@ -283,6 +283,50 @@ std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPat
 
 //******************************************************************************
 
+std::vector<std::string> OSUtils::listDirsInDirectory(const std::string& dirPath) {
+   std::vector<std::string> listSubdirs;
+   struct dirent* entry;
+   DIR* dir = ::opendir(dirPath.c_str());
+   if (dir != NULL) {
+      while ((entry = ::readdir(dir)) != NULL) {
+         bool entryIsDir = false;
+#if defined(__sun)
+         struct stat s;
+         stat(entry->d_name, &s);
+         if (s.st_mode & S_IFDIR) {
+            entryIsDir = true;
+         } else {
+         }
+#else
+         if (entry->d_type == DT_DIR) {
+            entryIsDir = true;
+         }
+	 /*
+	 else if (entry->d_type == DT_UNKNOWN) {
+            struct stat stbuf;
+            memset(&stbuf, 0, sizeof(struct stat));
+            int rc = ::stat(entry->d_name, &stbuf);
+            if (rc == 0) {
+               entryIsFile = S_ISREG(stbuf.st_mode);
+            }
+         }
+	 */
+#endif
+         if (entryIsDir) {
+            std::string dir_name = entry->d_name;
+	    if (dir_name != "." && dir_name != "..") {
+               listSubdirs.push_back(std::string(entry->d_name));
+	    }
+         }
+      }
+      ::closedir(dir);
+   }
+
+   return listSubdirs;
+}
+
+//******************************************************************************
+
 unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
                                       const void *buf,
                                       size_t bufLen) {
