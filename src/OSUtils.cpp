@@ -508,7 +508,7 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
    if (0 == sysctlbyname("hw.cputype", &cpuTypeCode, &size, NULL, 0)) {
       int cpuSubType = 0;
       if (0 == sysctlbyname("hw.cpusubtype", &cpuSubType, &size, NULL, 0)) {
-         //TODO:
+         //TODO: handle hw.cpusubtype for Apple
       }
    }
 #endif
