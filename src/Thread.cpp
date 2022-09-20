@@ -19,11 +19,11 @@ using namespace chaudiere;
 
 //******************************************************************************
 
-Thread::Thread(Mutex* mutexAlive) :
+Thread::Thread() :
    m_runnable(NULL),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(mutexAlive),
+   m_mutexAlive(NULL),
    m_threadCompletionObserver(NULL) {
 }
 
@@ -38,7 +38,7 @@ Thread::Thread(Runnable* runnable) :
 }
 
 //******************************************************************************
-
+/*
 Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
    m_runnable(runnable),
    m_isAlive(false),
@@ -49,10 +49,16 @@ Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
       //Logger::debug("new thread created");
    }
 }
-
+*/
 //******************************************************************************
 
 Thread::~Thread() {
+}
+
+//******************************************************************************
+
+void Thread::setAliveMutex(Mutex* mutexAlive) {
+   m_mutexAlive = mutexAlive;
 }
 
 //******************************************************************************
@@ -119,6 +125,9 @@ void Thread::clearThreadCompletionObserver() {
 //******************************************************************************
 
 void Thread::notifyOnCompletion() {
+   if (m_runnable != NULL) {
+      m_runnable->notifyOnCompletion();
+   }
    if (m_threadCompletionObserver != NULL) {
       m_threadCompletionObserver->notifyThreadComplete(this);
    }

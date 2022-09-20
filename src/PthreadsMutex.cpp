@@ -89,7 +89,7 @@ bool PthreadsMutex::unlock() {
       if (0 == rc) {
          m_isLocked = false;
       } else {
-         printf("error: mutex unlock failed, name='%s'\n", m_mutexName.c_str());
+         printf("error: mutex unlock failed, name='%s', rc=%d\n", m_mutexName.c_str(), rc);
       }
       return !m_isLocked;
    } else {
@@ -109,7 +109,7 @@ bool PthreadsMutex::lock() {
       if (0 == rc) {
          m_isLocked = true;
       } else {
-         printf("mutex lock failed, name='%s'\n", m_mutexName.c_str());
+         printf("mutex lock failed, name='%s', rc=%d\n", m_mutexName.c_str(), rc);
          std::string errorCode;
          
          switch(rc) {
