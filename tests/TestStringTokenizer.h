@@ -19,6 +19,7 @@ protected:
    void testHasMoreTokens();
    void testNextToken();
    void testCountTokens();
+   void testRepeatingCharDelimiter();
    
 public:
    TestStringTokenizer();

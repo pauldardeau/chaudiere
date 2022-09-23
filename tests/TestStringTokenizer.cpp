@@ -20,6 +20,7 @@ void TestStringTokenizer::runTests() {
    testHasMoreTokens();
    testNextToken();
    testCountTokens();
+   testRepeatingCharDelimiter();
 }
 
 //******************************************************************************
@@ -90,3 +91,11 @@ void TestStringTokenizer::testCountTokens() {
 
 //******************************************************************************
 
+void TestStringTokenizer::testRepeatingCharDelimiter() {
+   TEST_CASE("testRepeatingCharDelimiter");
+
+   StringTokenizer st("The-Who--Whos-Next--My-Wife", "--");
+   require(3 == st.countTokens(), "3 tokens");
+}
+
+//******************************************************************************

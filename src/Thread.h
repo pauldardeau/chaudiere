@@ -24,7 +24,7 @@ public:
     *
     * @param mutexAlive
     */
-   explicit Thread(Mutex* mutexAlive);
+   Thread();
 
    /**
     *
@@ -37,12 +37,14 @@ public:
     * @param mutexAlive
     * @param runnable
     */
-   Thread(Mutex* mutexAlive, Runnable* runnable);
+   //Thread(Mutex* mutexAlive, Runnable* runnable);
    
    /**
     * Destructor
     */
    virtual ~Thread();
+
+   void setAliveMutex(Mutex* mutexAlive);
    
    
    /**

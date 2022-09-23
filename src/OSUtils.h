@@ -121,6 +121,13 @@ namespace chaudiere
       */
      static std::vector<std::string> listFilesInDirectory(const std::string& dirPath);
 
+     /**
+      *
+      * @param dirPath
+      * @return
+      */
+     static std::vector<std::string> listDirsInDirectory(const std::string& dirPath);
+
       /**
        *
        * @param inCrc32
