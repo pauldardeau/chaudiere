@@ -23,6 +23,7 @@ namespace chaudiere
       int m_hour;
       int m_minute;
       int m_second;
+      int m_microseconds;
       int m_weekDay;
       mutable bool m_haveUnixTimeValue;
       
@@ -82,7 +83,8 @@ namespace chaudiere
                int day,
                int hour,
                int minute,
-               int second);
+               int second,
+	       int microsecond);
    
       DateTime(double timeIntervalSince1970);
       
@@ -221,6 +223,18 @@ namespace chaudiere
       * @return second value
       */
       int getSecond() const;
+
+     /**
+      * Sets the microsecond value
+      * @param microsecond the new microsecond value
+      */
+      void setMicrosecond(int microsecond);
+
+     /**
+      * Retrieves the microsecond value
+      * @return microsecond value
+      */
+      int getMicrosecond() const;
 
      /**
       * Sets the weekday value
