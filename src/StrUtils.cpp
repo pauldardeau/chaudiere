@@ -422,16 +422,16 @@ std::vector<std::string> StrUtils::split(const std::string& s,
       pos_delimiter = s.find(delim, pos_current);
       if (pos_delimiter == std::string::npos) {
          int num_chars = s_length - pos_current;
-	 if (num_chars > 0) {
+         if (num_chars > 0) {
             tokens.push_back(s.substr(pos_current, num_chars));
-	 }
+         }
          parsing = false;
       } else {
          int num_chars = pos_delimiter - pos_current;
-	 if (num_chars > 0) {
+         if (num_chars > 0) {
             tokens.push_back(s.substr(pos_current, num_chars));
-	    pos_current += num_chars;
-	 }
+            pos_current += num_chars;
+         }
          pos_current += delim_length;
       }
    }

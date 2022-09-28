@@ -301,8 +301,8 @@ std::vector<std::string> OSUtils::listDirsInDirectory(const std::string& dirPath
          if (entry->d_type == DT_DIR) {
             entryIsDir = true;
          }
-	 /*
-	 else if (entry->d_type == DT_UNKNOWN) {
+         /*
+         else if (entry->d_type == DT_UNKNOWN) {
             struct stat stbuf;
             memset(&stbuf, 0, sizeof(struct stat));
             int rc = ::stat(entry->d_name, &stbuf);
@@ -310,13 +310,13 @@ std::vector<std::string> OSUtils::listDirsInDirectory(const std::string& dirPath
                entryIsFile = S_ISREG(stbuf.st_mode);
             }
          }
-	 */
+         */
 #endif
          if (entryIsDir) {
             std::string dir_name = entry->d_name;
-	    if (dir_name != "." && dir_name != "..") {
+            if (dir_name != "." && dir_name != "..") {
                listSubdirs.push_back(std::string(entry->d_name));
-	    }
+            }
          }
       }
       ::closedir(dir);
