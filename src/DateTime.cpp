@@ -11,7 +11,7 @@
 
 using namespace chaudiere;
 
-#define NSEC_PER_SEC 1000000.0
+#define NSEC_PER_SEC 1000000000.0
 
 //******************************************************************************
 
@@ -212,7 +212,8 @@ DateTime::DateTime() :
    int rc = clock_gettime(CLOCK_REALTIME, &ts);
    if (rc == 0) {
       double unixTime = ts.tv_sec;
-      unixTime += (ts.tv_nsec / NSEC_PER_SEC);
+      double fractionalSeconds = (ts.tv_nsec / NSEC_PER_SEC);
+      unixTime += fractionalSeconds;
       m_timeIntervalSince1970 = unixTime;
       m_haveUnixTimeValue = true;
    } else {
