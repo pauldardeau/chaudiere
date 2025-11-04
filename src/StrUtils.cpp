@@ -24,11 +24,11 @@ bool OnlyIntegerDigits(const std::string& s, bool allow_decimal=false) {
    // '-' is allowed as first character only
    // if allow_decimal is true, '.' may only have single occurrence
    int decimals_found = 0;
-   const int s_length = s.length();
-   for (int i = 0; i < s_length; ++i) {
-      const char c = s[i];
+   bool is_first = true;
+
+   for (char c : s) {
       if (c == '-') {
-         if (i > 0) {
+         if (!is_first) {
             return false;
          }
       } else if (allow_decimal && (c == '.')) {
@@ -42,6 +42,7 @@ bool OnlyIntegerDigits(const std::string& s, bool allow_decimal=false) {
             return false;
          }
       }
+      is_first = false;
    }
    return true;
 }
@@ -334,8 +335,8 @@ std::string StrUtils::strip(const std::string& s, char strip) {
     
    std::string::size_type leadingChars = 0;
     
-   for (std::string::size_type i = 0; i < len; ++i) {
-      if (s[i] == strip) {
+   for (char c : s) {
+      if (c == strip) {
          ++leadingChars;
       } else {
          break;
@@ -348,8 +349,8 @@ std::string StrUtils::strip(const std::string& s, char strip) {
     
    int trailingChars = 0;
     
-   for (int i = (int) len - 1; i >= 0; --i) {
-      if (s[i] == strip) {
+   for (char c : std::string(s.rbegin(), s.rend())) {
+      if (c == strip) {
          ++trailingChars;
       } else {
          break;

@@ -70,9 +70,8 @@ ThreadPool::~ThreadPool() {
       stop();
    }
    
-   std::list<ThreadPoolWorker*>::iterator it;
-   for (it = m_listWorkers.begin(); it != m_listWorkers.end(); ++it) {
-       delete *it;
+   for (auto& worker : m_listWorkers) {
+       delete worker;
    }
    
    m_listWorkers.clear();
@@ -112,12 +111,8 @@ bool ThreadPool::stop() {
    if (m_isRunning) {
       m_queue.shutDown();
   
-      std::list<ThreadPoolWorker*>::iterator it = m_listWorkers.begin();
-      const std::list<ThreadPoolWorker*>::const_iterator itEnd =
-         m_listWorkers.end();
- 
-      for (; it != itEnd; it++) {
-         (*it)->stop();
+      for (auto& worker : m_listWorkers) {
+         worker->stop();
       }
    
       m_isRunning = false;

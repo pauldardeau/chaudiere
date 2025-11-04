@@ -47,11 +47,9 @@ void KeyValuePairs::getKeys(std::vector<std::string>& keys) const {
    }
 
    keys.reserve(m_keyValues.size());
-   const auto itEnd = m_keyValues.end();
-   auto it = m_keyValues.begin();
    
-   for ( ; it != itEnd; it++) {
-      keys.push_back((*it).first);
+   for (const auto& pair : m_keyValues) {
+      keys.push_back(pair.first);
    }
 }
 
