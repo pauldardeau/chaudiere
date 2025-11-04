@@ -66,10 +66,10 @@ void TestThreadPoolQueue::testTakeRequest() {
    Runnable* r = new DoNothingRunnable;
    ThreadPoolQueue tpq(&tf);
    Runnable* taken = tpq.takeRequest();
-   require(taken == NULL, "takeRequest should return NULL with nothing added");
+   require(taken == nullptr, "takeRequest should return nullptr with nothing added");
    tpq.addRequest(r);
    taken = tpq.takeRequest();
-   require(taken != NULL, "takeRequest should return non-NULL after adding");
+   require(taken != nullptr, "takeRequest should return non-nullptr after adding");
    require(taken == r, "takeRequest should return what was added");
    delete r;
 }

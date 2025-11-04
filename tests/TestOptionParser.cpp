@@ -135,7 +135,7 @@ void TestOptionParser::testGetOptionValue() {
    TEST_CASE("testGetOptionValue");
 
    int argc;
-   const char* argv1[] = {"myprog", NULL};
+   const char* argv1[] = {"myprog", nullptr};
    argc = sizeof(argv1) / sizeof(char*) - 1;
    OptionParser op;
    op.parseArgs(argc, argv1);
@@ -147,7 +147,7 @@ void TestOptionParser::testGetOptionValue() {
    op.addFlagOption(flag);
    require(op.acceptsFlag(flag), "test added flag option");
 
-   const char* argv2[] = {"debug", "", "", NULL};
+   const char* argv2[] = {"debug", "", "", nullptr};
    argc = sizeof(argv2) / sizeof(char*) - 1;
    op.parseArgs(argc, argv2);
    require(op.hasFlag(flag), "test added flag option");
@@ -178,7 +178,7 @@ void TestOptionParser::testParseArgs() {
    TEST_CASE("testParseArgs");
 
    int argc;
-   const char* argv_no_opts[] = {"", NULL};
+   const char* argv_no_opts[] = {"", nullptr};
    argc = sizeof(argv_no_opts) / sizeof(char*) - 1;
    //TODO: implement testParseArgs 
 }

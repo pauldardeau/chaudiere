@@ -14,7 +14,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsThread::PthreadsThread() :
-   Thread(NULL),
+   Thread(nullptr),
    m_mutexAlive("mutexAlive"),
    m_mutexExitCode("mutexExitCode"),
    m_threadHandle(0),
@@ -29,7 +29,7 @@ PthreadsThread::PthreadsThread() :
 //******************************************************************************
 
 PthreadsThread::PthreadsThread(const std::string& name) :
-   Thread(NULL),
+   Thread(nullptr),
    m_mutexAlive("mutexAlive"),
    m_mutexExitCode("mutexExitCode"),
    m_threadHandle(0),

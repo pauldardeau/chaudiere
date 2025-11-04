@@ -22,7 +22,7 @@ public:
     * Constructs a new ByteBuffer
     */
    ByteBuffer() :
-      m_buffer(NULL),
+      m_buffer(nullptr),
       m_bufferSize(0) {
    }
    
@@ -35,7 +35,7 @@ public:
       if (m_bufferSize > 0) {
          m_buffer = (char*) ::calloc(1, m_bufferSize);
       } else {
-         m_buffer = NULL;
+         m_buffer = nullptr;
       }
    }
 
@@ -45,7 +45,7 @@ public:
          m_buffer = (char*) ::calloc(1, m_bufferSize);
          ::memcpy(m_buffer, s.data(), m_bufferSize);
       } else {
-         m_buffer = NULL;
+         m_buffer = nullptr;
       }
    }
    
@@ -59,7 +59,7 @@ public:
          m_buffer = (char*) ::calloc(1, m_bufferSize);
          ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);   
       } else {
-         m_buffer = NULL;
+         m_buffer = nullptr;
       }
    }
 
@@ -67,9 +67,9 @@ public:
     * Destructor
     */
    ~ByteBuffer() {
-      if (m_buffer != NULL) {
+      if (m_buffer != nullptr) {
          ::free(m_buffer);
-         m_buffer = NULL;
+         m_buffer = nullptr;
          m_bufferSize = 0;
       }
    }
@@ -99,7 +99,7 @@ public:
     * @param sourceBuffer the new data buffer
     */
    void take(char* sourceBuffer, size_t bufferSize) {
-      if (m_buffer != NULL) {
+      if (m_buffer != nullptr) {
          ::free(m_buffer);
          m_bufferSize = 0;
       }
@@ -114,7 +114,7 @@ public:
     */
    char* release() {
       char* releasedBuffer = m_buffer;
-      m_buffer = NULL;
+      m_buffer = nullptr;
       m_bufferSize = 0;
       return releasedBuffer;
    }
@@ -155,9 +155,9 @@ public:
     * Frees existing buffer
     */
    void clear() {
-      if (m_buffer != NULL) {
+      if (m_buffer != nullptr) {
          ::free(m_buffer);
-         m_buffer = NULL;
+         m_buffer = nullptr;
          m_bufferSize = 0;
       }
    }

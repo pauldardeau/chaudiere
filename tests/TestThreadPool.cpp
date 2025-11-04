@@ -165,7 +165,7 @@ void TestThreadPool::testAddRequest() {
    TEST_CASE("testAddRequest");
 
    ThreadPool tp(1);
-   require(!tp.addRequest(NULL), "add NULL runnable should fail");
+   require(!tp.addRequest(nullptr), "add nullptr runnable should fail");
    require(tp.addRequest(new DoNothingRunnable), "add runnable should succeed");
    sleep(1);
    tp.stop();

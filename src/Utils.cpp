@@ -10,7 +10,7 @@ bool Utils::WriteFile(const string& filePath, const ByteBuffer& buffer) {
    bool success = false;
 
    FILE* f = fopen(filePath.c_str(), "wb");
-   if (f != NULL) {
+   if (f != nullptr) {
       size_t bytesWritten = 0;
       if (buffer.size() > 0) {
          bytesWritten = fwrite(buffer.const_data(), 1, buffer.size(), f);
@@ -32,9 +32,9 @@ void Utils::WriteLine(const string& s) {
 }
 
 ByteBuffer* Utils::ReadFile(const std::string& filePath) {
-   ByteBuffer* buffer = NULL;
+   ByteBuffer* buffer = nullptr;
    FILE* f = fopen(filePath.c_str(), "rb");
-   if (f != NULL) {
+   if (f != nullptr) {
       fseek(f, 0, SEEK_END);
       unsigned long fileBytes = ftell(f);
       fseek(f, 0, SEEK_SET);
@@ -42,7 +42,7 @@ ByteBuffer* Utils::ReadFile(const std::string& filePath) {
       size_t bytesRead = fread(buffer->data(), fileBytes, 1, f);
       if (bytesRead < fileBytes) {
          delete buffer;
-         buffer = NULL;
+         buffer = nullptr;
       }
       fclose(f);
    }

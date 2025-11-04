@@ -28,7 +28,7 @@ void TestByteBuffer::testSizeConstructor() {
    std::size_t buffSize = 256;
    ByteBuffer b(buffSize);
    require(buffSize == b.size(), "matching size");
-   require(NULL != b.data(), "non-null buffer pointer");
+   require(nullptr != b.data(), "non-null buffer pointer");
 }
 
 //******************************************************************************
@@ -125,7 +125,7 @@ void TestByteBuffer::testClear() {
    b.take(raw, buffSize);
    b.clear();
    require(0 == b.size(), "zero size after clear");
-   require(NULL == b.data(), "null pointer after clear");
+   require(nullptr == b.data(), "null pointer after clear");
 }
 
 //******************************************************************************

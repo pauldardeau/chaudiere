@@ -20,11 +20,11 @@ using namespace chaudiere;
 //******************************************************************************
 
 Thread::Thread() :
-   m_runnable(NULL),
+   m_runnable(nullptr),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(NULL),
-   m_threadCompletionObserver(NULL) {
+   m_mutexAlive(nullptr),
+   m_threadCompletionObserver(nullptr) {
 }
 
 //******************************************************************************
@@ -33,8 +33,8 @@ Thread::Thread(Runnable* runnable) :
    m_runnable(runnable),
    m_isAlive(false),
    m_isPoolWorker(false),
-   m_mutexAlive(NULL),
-   m_threadCompletionObserver(NULL) {
+   m_mutexAlive(nullptr),
+   m_threadCompletionObserver(nullptr) {
 }
 
 //******************************************************************************
@@ -44,7 +44,7 @@ Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
    m_isAlive(false),
    m_isPoolWorker(false),
    m_mutexAlive(mutexAlive),
-   m_threadCompletionObserver(NULL) {
+   m_threadCompletionObserver(nullptr) {
    if (Logger::isLogging(Debug)) {
       //Logger::debug("new thread created");
    }
@@ -88,7 +88,7 @@ bool Thread::isAlive() const {
    
    {
       Thread* pThis = const_cast<Thread*>(this);
-      if (NULL != pThis->m_mutexAlive) {
+      if (nullptr != pThis->m_mutexAlive) {
          MutexLock lockMutexAlive(*pThis->m_mutexAlive);
          rc = m_isAlive;
       } else {
@@ -102,7 +102,7 @@ bool Thread::isAlive() const {
 //******************************************************************************
 
 void Thread::setAlive(bool isAlive) {
-   if (NULL != m_mutexAlive) {
+   if (nullptr != m_mutexAlive) {
       MutexLock lockMutexAlive(*m_mutexAlive);
       m_isAlive = isAlive;
    } else {
@@ -119,16 +119,16 @@ void Thread::registerThreadCompletionObserver(ThreadCompletionObserver* observer
 //******************************************************************************
 
 void Thread::clearThreadCompletionObserver() {
-   m_threadCompletionObserver = NULL;
+   m_threadCompletionObserver = nullptr;
 }
 
 //******************************************************************************
 
 void Thread::notifyOnCompletion() {
-   if (m_runnable != NULL) {
+   if (m_runnable != nullptr) {
       m_runnable->notifyOnCompletion();
    }
-   if (m_threadCompletionObserver != NULL) {
+   if (m_threadCompletionObserver != nullptr) {
       m_threadCompletionObserver->notifyThreadComplete(this);
    }
 }

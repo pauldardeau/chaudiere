@@ -31,13 +31,13 @@ Mutex* StdThreadingFactory::createMutex(const std::string& name) {
 //******************************************************************************
 
 Thread* StdThreadingFactory::createThread(const std::string& name) {
-   return createThread(NULL, name);
+   return createThread(nullptr, name);
 }
 
 //******************************************************************************
 
 Thread* StdThreadingFactory::createThread(Runnable* runnable, const std::string& name) {
-   if (runnable != NULL) {
+   if (runnable != nullptr) {
       return new StdThread(runnable, name);
    } else {
       return new StdThread(name);

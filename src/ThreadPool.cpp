@@ -132,7 +132,7 @@ bool ThreadPool::stop() {
 bool ThreadPool::addRequest(Runnable* runnableRequest) {
    bool requestAdded = false;
 
-   if (m_isRunning && (NULL != runnableRequest)) {
+   if (m_isRunning && (nullptr != runnableRequest)) {
       m_queue.addRequest(runnableRequest);
       requestAdded = true;
    }

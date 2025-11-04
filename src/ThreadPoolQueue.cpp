@@ -17,10 +17,10 @@ using namespace chaudiere;
 
 ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
    m_threadingFactory(threadingFactory),
-   //m_mutex(NULL),
-   //m_condQueueNotEmpty(NULL),
-   //m_condQueueNotFull(NULL),
-   //m_condQueueEmpty(NULL),
+   //m_mutex(nullptr),
+   //m_condQueueNotEmpty(nullptr),
+   //m_condQueueNotFull(nullptr),
+   //m_condQueueEmpty(nullptr),
    m_isInitialized(false),
    m_isRunning(false) {
 
@@ -35,22 +35,22 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
       */
 
       int rc;
-      rc = pthread_mutex_init(&m_queue_lock, NULL);
+      rc = pthread_mutex_init(&m_queue_lock, nullptr);
       if (rc != 0) {
          printf("error: pthread_mutex_init failed\n");
          exit(1);
       }
-      rc = pthread_cond_init(&m_cond_queue_not_empty, NULL);
+      rc = pthread_cond_init(&m_cond_queue_not_empty, nullptr);
       if (rc != 0) {
          printf("error: pthread_cond_init failed\n");
          exit(1);
       }
-      rc = pthread_cond_init(&m_cond_queue_not_full, NULL);
+      rc = pthread_cond_init(&m_cond_queue_not_full, nullptr);
       if (rc != 0) {
          printf("error: pthread_cond_init failed\n");
          exit(1);
       }
-      rc = pthread_cond_init(&m_cond_queue_empty, NULL);
+      rc = pthread_cond_init(&m_cond_queue_empty, nullptr);
       if (rc != 0) {
          printf("error: pthread_cond_init failed\n");
          exit(1);
@@ -60,24 +60,24 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
       m_isRunning = true;
         
       /* 
-      if ((m_mutex != NULL) &&
-          (m_condQueueNotEmpty != NULL) &&
-          (m_condQueueNotFull != NULL) &&
-          (m_condQueueEmpty != NULL)) {
+      if ((m_mutex != nullptr) &&
+          (m_condQueueNotEmpty != nullptr) &&
+          (m_condQueueNotFull != nullptr) &&
+          (m_condQueueEmpty != nullptr)) {
          m_isInitialized = true;
          m_isRunning = true;
       } else {
          LOG_ERROR("unable to initialize ThreadPoolQueue")
-         if (NULL == m_mutex) {
+         if (nullptr == m_mutex) {
             LOG_ERROR("unable to create mutex")
          }
-         if (NULL == m_condQueueNotEmpty) {
+         if (nullptr == m_condQueueNotEmpty) {
             LOG_ERROR("unable to create queue not empty condition variable")
          }
-         if (NULL == m_condQueueNotFull) {
+         if (nullptr == m_condQueueNotFull) {
             LOG_ERROR("unable to create queue not full condition variable")
          }
-         if (NULL == m_condQueueEmpty) {
+         if (nullptr == m_condQueueEmpty) {
             LOG_ERROR("unable to create queue empty condition variable")
          }
          printf("error: unable to initialize thread pool queue, aborting\n");
@@ -100,16 +100,16 @@ ThreadPoolQueue::~ThreadPoolQueue() {
    m_isRunning = false;
 
    /*
-   if (NULL != m_mutex) {
+   if (nullptr != m_mutex) {
       delete m_mutex;
    }
-   if (NULL != m_condQueueNotEmpty) {
+   if (nullptr != m_condQueueNotEmpty) {
       delete m_condQueueNotEmpty;
    }
-   if (NULL != m_condQueueNotFull) {
+   if (nullptr != m_condQueueNotFull) {
       delete m_condQueueNotFull;
    }
-   if (NULL != m_condQueueEmpty) {
+   if (nullptr != m_condQueueEmpty) {
       delete m_condQueueEmpty;
    }
    */
@@ -124,7 +124,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    }
 
    if (!runnableRequest) {
-      LOG_WARNING("ThreadPoolQueue::addRequest rejecting NULL request")
+      LOG_WARNING("ThreadPoolQueue::addRequest rejecting nullptr request")
       return false;
    }
  
@@ -166,7 +166,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
 Runnable* ThreadPoolQueue::takeRequest() {
    if (!m_isInitialized) {
       LOG_WARNING("ThreadPoolQueue::takeRequest queue not initialized")
-      return NULL;
+      return nullptr;
    }
 
    //MutexLock lock(*m_mutex, "ThreadPoolQueue::takeRequest");
@@ -175,7 +175,7 @@ Runnable* ThreadPoolQueue::takeRequest() {
    // is the queue shut down?
    if (!m_isRunning) {
       pthread_mutex_unlock(&m_queue_lock);
-      return NULL;
+      return nullptr;
    }
    
    //if (!m_mutex->haveValidMutex()) {
@@ -183,7 +183,7 @@ Runnable* ThreadPoolQueue::takeRequest() {
    //   exit(1);
    //}
    
-   Runnable* request = NULL;
+   Runnable* request = nullptr;
   
    // is the queue empty?
    while (m_queue.empty()) { // && m_isRunning) {

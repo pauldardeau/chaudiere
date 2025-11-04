@@ -126,10 +126,10 @@ using namespace chaudiere;
 SocketServer::SocketServer(const std::string& serverName,
                            const std::string& serverVersion,
                            const std::string& configFilePath) :
-   m_kernelEventServer(NULL),
-   m_serverSocket(NULL),
-   m_threadPool(NULL),
-   m_threadingFactory(NULL),
+   m_kernelEventServer(nullptr),
+   m_serverSocket(nullptr),
+   m_threadPool(nullptr),
+   m_threadingFactory(nullptr),
    m_configFilePath(configFilePath),
    m_serverName(serverName),
    m_serverVersion(serverVersion),
@@ -229,7 +229,7 @@ bool SocketServer::init(int port)
    
    m_serverPort = port;
 
-   AutoPointer<SectionedConfigDataSource*> configDataSource(NULL);
+   AutoPointer<SectionedConfigDataSource*> configDataSource(nullptr);
    
    try {
       configDataSource.assign(getConfigDataSource());
@@ -324,7 +324,7 @@ bool SocketServer::init(int port)
                LOG_INFO(std::string("log level: ") + m_logLevel)
                Logger* logger = Logger::getLogger();
                
-               if (logger != NULL) {
+               if (logger != nullptr) {
                   if (m_logLevel == CFG_LOGGING_CRITICAL) {
                      logger->setLogLevel(Critical);
                   } else if (m_logLevel == CFG_LOGGING_ERROR) {
@@ -420,7 +420,7 @@ bool SocketServer::init(int port)
             LOG_DEBUG(msg)
          }
       
-         if (m_serverSocket != NULL) {
+         if (m_serverSocket != nullptr) {
             delete m_serverSocket;
          }
          
@@ -575,7 +575,7 @@ int SocketServer::platformPointerSizeBits() const {
 //******************************************************************************
 
 void SocketServer::serviceSocket(SocketRequest* socketRequest) {
-   if (NULL != m_threadPool) {
+   if (nullptr != m_threadPool) {
       // Hand off the request to the thread pool for asynchronous processing
       RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->setThreadPooling(true);
@@ -600,7 +600,7 @@ int SocketServer::runSocketServer() {
       
       Socket* socket = m_serverSocket->accept();
 
-      if (NULL == socket) {
+      if (nullptr == socket) {
          continue;
       }
 
@@ -611,7 +611,7 @@ int SocketServer::runSocketServer() {
 
       try {
          RequestHandler* handler = handlerForSocket(socket);
-         if (m_isThreaded && (NULL != m_threadPool)) {
+         if (m_isThreaded && (nullptr != m_threadPool)) {
             handler->setThreadPooling(true);
 
             // give it to the thread pool
@@ -642,14 +642,14 @@ int SocketServer::runKernelEventServer() {
    
    int rc = 0;
    
-   if (m_threadingFactory != NULL) {
+   if (m_threadingFactory != nullptr) {
       Mutex* mutexFD = m_threadingFactory->createMutex("fdMutex");
       Mutex* mutexHWMConnections =
          m_threadingFactory->createMutex("hwmConnectionsMutex");
       
       if (m_kernelEventServer) {
          delete m_kernelEventServer;
-         m_kernelEventServer = NULL;
+         m_kernelEventServer = nullptr;
       }
       
       if (KqueueServer::isSupportedPlatform()) {
@@ -663,7 +663,7 @@ int SocketServer::runKernelEventServer() {
          rc = 1;
       }
       
-      if (m_kernelEventServer != NULL) {
+      if (m_kernelEventServer != nullptr) {
          try {
             SocketServiceHandler* serviceHandler = createSocketServiceHandler();
 
