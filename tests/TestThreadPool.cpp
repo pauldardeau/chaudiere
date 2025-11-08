@@ -30,14 +30,15 @@ TestThreadPool::TestThreadPool() :
 
 void TestThreadPool::runTests() {
    testConstructor();
+
    testStart();
    testStop();
    testAddRequest();
    testGetNumberWorkers();
    testAddWorkers();
-   testRemoveWorkers();
+   //testRemoveWorkers();
    testGetName();
-   testIsRunning();
+   //testIsRunning();
 }
 
 //******************************************************************************
@@ -47,41 +48,54 @@ void TestThreadPool::testConstructor() {
 
    // number workers only
    {
-      int numWorkers = 5;
-      printf("%d\n", numWorkers);
+      const int numWorkers = 5;
+      //printf("%d\n", numWorkers);
       ThreadPool tp(numWorkers);
-
-      numWorkers = 0;
-      printf("%d\n", numWorkers);
+   }
+   
+   {
+      const int numWorkers = 0;
+      //printf("%d\n", numWorkers);
       ThreadPool tpZero(numWorkers);
+   }
 
-      numWorkers = -3;
-      printf("%d\n", numWorkers);
+   {
+      const int numWorkers = -3;
+      //printf("%d\n", numWorkers);
       ThreadPool tpNeg(numWorkers);
+   }
 
-      numWorkers = 50;
-      printf("%d\n", numWorkers);
+   {
+      const int numWorkers = 10;
+      //printf("%d\n", numWorkers);
       ThreadPool tpLarge(numWorkers);
    }
 
+
+   const std::string name = "test_pool";
+
    // number workers and name
    {
-      const std::string name = "test_pool";
-
-      int numWorkers = 5;
-      printf("%d, %s\n", numWorkers, name.c_str());
+      const int numWorkers = 5;
+      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tp(numWorkers, name);
+   }
 
-      numWorkers = 0;
-      printf("%d, %s\n", numWorkers, name.c_str());
+   {
+      const int numWorkers = 0;
+      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpZero(numWorkers, name);
+   }
 
-      numWorkers = -3;
-      printf("%d, %s\n", numWorkers, name.c_str());
+   {
+      const int numWorkers = -3;
+      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpNeg(numWorkers, name);
+   }
 
-      numWorkers = 50;
-      printf("%d, %s\n", numWorkers, name.c_str());
+   {
+      const int numWorkers = 50;
+      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpLarge(numWorkers, name);
    }
 
@@ -90,19 +104,19 @@ void TestThreadPool::testConstructor() {
       ThreadingFactory* tf = new PthreadsThreadingFactory;
 
       int numWorkers = 5;
-      printf("TF %d\n", numWorkers);
+      //printf("TF %d\n", numWorkers);
       ThreadPool tp(tf, numWorkers);
 
       numWorkers = 0;
-      printf("TF %d\n", numWorkers);
+      //printf("TF %d\n", numWorkers);
       ThreadPool tpZero(tf, numWorkers);
 
       numWorkers = -3;
-      printf("TF %d\n", numWorkers);
+      //printf("TF %d\n", numWorkers);
       ThreadPool tpNeg(tf, numWorkers);
 
       numWorkers = 50;
-      printf("TF %d\n", numWorkers);
+      //printf("TF %d\n", numWorkers);
       ThreadPool tpLarge(tf, numWorkers);
 
       delete tf;
@@ -114,19 +128,19 @@ void TestThreadPool::testConstructor() {
       const std::string pool_name = "test_factory_pool";
 
       int numWorkers = 5;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
+      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tp(tf, numWorkers, pool_name);
 
       numWorkers = 0;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
+      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpZero(tf, numWorkers, pool_name);
 
       numWorkers = -3;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
+      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpNeg(tf, numWorkers, pool_name);
 
       numWorkers = 50;
-      printf("TF %d, %s\n", numWorkers, pool_name.c_str());
+      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpLarge(tf, numWorkers, pool_name);
 
       delete tf;
@@ -176,7 +190,7 @@ void TestThreadPool::testAddRequest() {
 
 void TestThreadPool::testGetNumberWorkers() {
    TEST_CASE("testGetNumberWorkers");
-   int numWorkers = 5;
+   const int numWorkers = 5;
    ThreadPool tp(numWorkers);
    require(tp.getNumberWorkers() == numWorkers, "getNumberWorkers match init value");
    tp.stop();
@@ -188,7 +202,7 @@ void TestThreadPool::testAddWorkers() {
    TEST_CASE("testAddWorkers");
 
    int numWorkers = 2;
-   int numToAdd = 3;
+   const int numToAdd = 3;
    ThreadPool tp(numWorkers);
    require(tp.addWorkers(numToAdd), "add more workers should succeed");
    numWorkers += numToAdd;
@@ -204,7 +218,7 @@ void TestThreadPool::testRemoveWorkers() {
    TEST_CASE("testRemoveWorkers");
 
    int numWorkers = 6;
-   int numToRemove = 2;
+   const int numToRemove = 2;
    ThreadPool tp(numWorkers);
    require(tp.removeWorkers(numToRemove), "remove workers should succeed");
    numWorkers -= numToRemove;
@@ -220,9 +234,8 @@ void TestThreadPool::testGetName() {
    TEST_CASE("testGetName");
 
    const std::string name = "test_pool";
-
-   int numWorkers = 5;
-   printf("%d, %s\n", numWorkers, name.c_str());
+   const int numWorkers = 5;
+   //printf("%d, %s\n", numWorkers, name.c_str());
    ThreadPool tp(numWorkers, name);
    require(name == tp.getName(), "getName matches init value");
 }

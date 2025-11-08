@@ -11,7 +11,7 @@
 
 using namespace chaudiere;
 
-#define NSEC_PER_SEC 1000000000.0
+constexpr double NSEC_PER_SEC = 1000000000.0;
 
 //******************************************************************************
 

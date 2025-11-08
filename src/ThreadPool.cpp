@@ -71,7 +71,7 @@ ThreadPool::~ThreadPool() {
    }
    
    for (auto& worker : m_listWorkers) {
-       delete worker;
+      delete worker;
    }
    
    m_listWorkers.clear();
@@ -84,19 +84,21 @@ bool ThreadPool::start() {
    int oldCreatedCount = m_workersCreated;
 
    if (!m_isRunning) {
-      for (int i = 0; i < m_workerCount; ++i) {
-         ++m_workersCreated;
-         ThreadPoolWorker* worker =
-            new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
-         worker->start();
-         m_listWorkers.push_back(worker);
-      }
+      if (m_workerCount > 0) {
+         for (int i = 0; i < m_workerCount; ++i) {
+            ++m_workersCreated;
+            ThreadPoolWorker* worker =
+               new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
+            worker->start();
+            m_listWorkers.push_back(worker);
+         }
 
-      int newCreatedCount = m_workersCreated - oldCreatedCount;
+         const int newCreatedCount = m_workersCreated - oldCreatedCount;
 
-      if (newCreatedCount > 0) {
-         m_isRunning = true;
-         didStart = true;
+         if (newCreatedCount > 0) {
+            m_isRunning = true;
+            didStart = true;
+         }
       }
    }
 

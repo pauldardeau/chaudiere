@@ -9,6 +9,7 @@
 
 static const std::string emptyString = "";
 
+using namespace std;
 using namespace chaudiere;
 using namespace poivre;
 
@@ -144,18 +145,18 @@ public:
 void TestStrUtils::testParseInt() {
    TEST_CASE("parseInt");
 
-   require(3 == StrUtils::parseInt("3"), "1 digit positive integer");
-   require(-5 == StrUtils::parseInt("-5"), "1 digit negative integer");
-   require(0 == StrUtils::parseInt("0"), "zero");
-   require(35 == StrUtils::parseInt("35"), "2 digit positive integer");
-   require(121 == StrUtils::parseInt("121"), "3 digit positive integer");
-   require(4096 == StrUtils::parseInt("4096"), "4 digit positive integer");
-   require(65535 == StrUtils::parseInt("65535"), "5 digit positive integer");
+   require(3 == StrUtils::parseInt(string("3")), "1 digit positive integer");
+   require(-5 == StrUtils::parseInt(string("-5")), "1 digit negative integer");
+   require(0 == StrUtils::parseInt(string("0")), "zero");
+   require(35 == StrUtils::parseInt(string("35")), "2 digit positive integer");
+   require(121 == StrUtils::parseInt(string("121")), "3 digit positive integer");
+   require(4096 == StrUtils::parseInt(string("4096")), "4 digit positive integer");
+   require(65535 == StrUtils::parseInt(string("65535")), "5 digit positive integer");
 
    // try largest (absolute value) signed value for 32 bits
-   require(2147483647 == StrUtils::parseInt("2147483647"),
+   require(2147483647 == StrUtils::parseInt(string("2147483647")),
            "large positive int");
-   require(-2147483648UL == StrUtils::parseInt("-2147483648"),
+   require(-2147483648UL == StrUtils::parseInt(string("-2147483648")),
            "negative int with large absolute value");
 
    requireException("NumberFormatException", new ParseIntRunner(""),
@@ -172,18 +173,18 @@ void TestStrUtils::testParseInt() {
 void TestStrUtils::testParseLong() {
    TEST_CASE("parseLong");
 
-   require(3L == StrUtils::parseLong("3"), "1 digit positive long");
-   require(-5L == StrUtils::parseLong("-5"), "1 digit negative long");
-   require(0L == StrUtils::parseLong("0"), "zero");
-   require(35L == StrUtils::parseLong("35"), "2 digit positive long");
-   require(121L == StrUtils::parseLong("121"), "3 digit positive long");
-   require(4096L == StrUtils::parseLong("4096"), "4 digit positive long");
-   require(65535L == StrUtils::parseLong("65535"), "5 digit positive long");
+   require(3L == StrUtils::parseLong(string("3")), "1 digit positive long");
+   require(-5L == StrUtils::parseLong(string("-5")), "1 digit negative long");
+   require(0L == StrUtils::parseLong(string("0")), "zero");
+   require(35L == StrUtils::parseLong(string("35")), "2 digit positive long");
+   require(121L == StrUtils::parseLong(string("121")), "3 digit positive long");
+   require(4096L == StrUtils::parseLong(string("4096")), "4 digit positive long");
+   require(65535L == StrUtils::parseLong(string("65535")), "5 digit positive long");
 
    // try largest (absolute value) signed value for 32 bits
-   require(2147483647L == StrUtils::parseLong("2147483647"),
+   require(2147483647L == StrUtils::parseLong(string("2147483647")),
            "large positive long");
-   require(-2147483648UL == StrUtils::parseLong("-2147483648"),
+   require(-2147483648UL == StrUtils::parseLong(string("-2147483648")),
            "negative long with large absolute value");
 
    requireException("NumberFormatException", new ParseLongRunner(""),
@@ -200,16 +201,16 @@ void TestStrUtils::testParseLong() {
 void TestStrUtils::testParseFloat() {
    TEST_CASE("parseFloat");
 
-   require(3.0f == StrUtils::parseFloat("3"), "1 digit positive integral");
-   require(-5.0f == StrUtils::parseFloat("-5"), "1 digit negative integral");
-   require(0.0f == StrUtils::parseFloat("0"), "zero");
-   require(35.0f == StrUtils::parseFloat("35"), "2 digit positive integral");
-   require(121.0f == StrUtils::parseFloat("121"), "3 digit positive integral");
-   require(4096.0f == StrUtils::parseFloat("4096"), "4 digit positive integral");
-   require(65535.0f == StrUtils::parseFloat("65535"),
+   require(3.0f == StrUtils::parseFloat(string("3")), "1 digit positive integral");
+   require(-5.0f == StrUtils::parseFloat(string("-5")), "1 digit negative integral");
+   require(0.0f == StrUtils::parseFloat(string("0")), "zero");
+   require(35.0f == StrUtils::parseFloat(string("35")), "2 digit positive integral");
+   require(121.0f == StrUtils::parseFloat(string("121")), "3 digit positive integral");
+   require(4096.0f == StrUtils::parseFloat(string("4096")), "4 digit positive integral");
+   require(65535.0f == StrUtils::parseFloat(string("65535")),
            "5 digit positive integral");
-   require(3.1415f == StrUtils::parseFloat("3.1415"), "positive float value");
-   require(-1492.524f == StrUtils::parseFloat("-1492.524"),
+   require(3.1415f == StrUtils::parseFloat(string("3.1415")), "positive float value");
+   require(-1492.524f == StrUtils::parseFloat(string("-1492.524")),
            "negative float value");
 
    requireException("NumberFormatException", new ParseFloatRunner(""),
@@ -227,16 +228,16 @@ void TestStrUtils::testParseFloat() {
 void TestStrUtils::testParseDouble() {
    TEST_CASE("parseDouble");
 
-   require(3.0 == StrUtils::parseDouble("3"), "1 digit positive integral");
-   require(-5.0 == StrUtils::parseDouble("-5"), "1 digit negative integral");
-   require(0.0 == StrUtils::parseDouble("0"), "zero");
-   require(35.0 == StrUtils::parseDouble("35"), "2 digit positive integral");
-   require(121.0 == StrUtils::parseDouble("121"), "3 digit positive integral");
-   require(4096.0 == StrUtils::parseDouble("4096"), "4 digit positive integral");
-   require(65535.0 == StrUtils::parseDouble("65535"),
+   require(3.0 == StrUtils::parseDouble(string("3")), "1 digit positive integral");
+   require(-5.0 == StrUtils::parseDouble(string("-5")), "1 digit negative integral");
+   require(0.0 == StrUtils::parseDouble(string("0")), "zero");
+   require(35.0 == StrUtils::parseDouble(string("35")), "2 digit positive integral");
+   require(121.0 == StrUtils::parseDouble(string("121")), "3 digit positive integral");
+   require(4096.0 == StrUtils::parseDouble(string("4096")), "4 digit positive integral");
+   require(65535.0 == StrUtils::parseDouble(string("65535")),
            "5 digit positive integral");
-   require(3.1415 == StrUtils::parseDouble("3.1415"), "positive double value");
-   require(-1492.524 == StrUtils::parseDouble("-1492.524"),
+   require(3.1415 == StrUtils::parseDouble(string("3.1415")), "positive double value");
+   require(-1492.524 == StrUtils::parseDouble(string("-1492.524")),
            "negative double value");
 
    requireException("NumberFormatException", new ParseDoubleRunner(""),
@@ -395,6 +396,10 @@ void TestStrUtils::testContainsString() {
    require(StrUtils::containsString(haystack, he), "haystack contains needle");
    requireFalse(StrUtils::containsString(haystack, notThere),
                 "haystack does not contain needle");
+   requireFalse(StrUtils::containsString(haystack, emptyString),
+                "haystack doesn't contain empty string'");
+   requireFalse(StrUtils::containsString(emptyString, haystack),
+                "empty doesn't contain haystack'");
 }
 
 //******************************************************************************
@@ -688,17 +693,20 @@ void TestStrUtils::testSplit() {
 
    std::vector<std::string> r;
 
-   r = StrUtils::split("comma,separated,values", ",");
+   r = StrUtils::split(string("comma,separated,values"), ",");
    require(r.size() == 3, "comma separated values");
 
-   r = StrUtils::split("/usr/local/bin", "/");
+   r = StrUtils::split(string("/usr/local/bin"), "/");
    require(r.size() == 3, "leading delimiter");
 
-   r = StrUtils::split("/usr/local/bin", ":");
+   r = StrUtils::split(string("/usr/local/bin"), ":");
    require(r.size() == 1, "missing delimiter");
 
-   r = StrUtils::split("abc:def:ghi:", ":");
+   r = StrUtils::split(string("abc:def:ghi:"), ":");
    require(r.size() == 3, "trailing delimiter");
+
+   r = StrUtils::split(string("The-Who--Whos-Next--My-Wife"), "--");
+   require(r.size() == 3, "repeating char delimiter");
 }
 
 //******************************************************************************

@@ -66,24 +66,9 @@ class StringTokenizer
    
 
    
-   protected:
-      /**
-       * Extracts the next available token as part of the construction (tokenizing)
-       * @throw std::out_of_range
-       * @return the next available token
-       */
-      std::string extractNextToken();
-
-   
    private:
-   
       const std::string& m_withTokens;
       const std::string m_delimiter;
-      const char* m_posTokens;
-      const char* m_posDelimiter;
-      std::string::size_type m_posCurrent;
-      std::string::size_type m_stringLength;
-      bool m_isConstructing;
       std::vector<std::string> m_tokens;
       std::size_t m_numberTokens;
       std::size_t m_indexToken;

@@ -70,6 +70,8 @@ public:
    std::thread::id getStdThreadId() const;
 
    const std::string& getName() const;
+
+   virtual void join();
    
    
 private:

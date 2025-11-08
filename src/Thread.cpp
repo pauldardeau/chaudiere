@@ -78,6 +78,7 @@ bool Thread::isPoolWorker() const {
 void Thread::run() {
    // This method should never be called.  If you've subclassed Thread, then
    // you need to implement "void run()" in your derived class.
+   printf("Thread::run - this method should never be called\n");
    throw BasicException("this method should not be called");
 }
 
@@ -207,6 +208,24 @@ const std::string& Thread::getWorkerId() const {
    } else {
       return EMPTY;
    }
+}
+
+//******************************************************************************
+
+void Thread::sleep(long msec) {
+   struct timespec ts;
+   int res;
+
+   if (msec < 0) {
+      return;
+   }
+
+   ts.tv_sec = msec / 1000;
+   ts.tv_nsec = (msec % 1000) * 1000000;
+
+   do {
+      res = nanosleep(&ts, &ts);
+   } while (res && errno == EINTR);
 }
 
 //******************************************************************************

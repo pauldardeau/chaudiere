@@ -36,6 +36,8 @@ class PthreadsThread : public Thread
       pthread_t getHandle();
       const std::string& getName() const;
 
+      virtual void join();
+
 
    private:
       // disallow copying
