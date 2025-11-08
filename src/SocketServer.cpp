@@ -228,7 +228,7 @@ bool SocketServer::init(int port)
    const bool isLoggingDebug = Logger::isLogging(Debug);
    
    m_serverPort = port;
-	
+
    AutoPointer<SectionedConfigDataSource*> configDataSource(NULL);
    
    try {

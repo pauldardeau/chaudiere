@@ -153,7 +153,7 @@ void KernelEventServer::run() {
 
             if (!isValidDescriptor(client_fd)) {
                removeBusyFD(client_fd);
-	       removeFileDescriptorFromRead(client_fd);
+               removeFileDescriptorFromRead(client_fd);
                continue;
             }
 
@@ -162,15 +162,15 @@ void KernelEventServer::run() {
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
-	       ::close(client_fd);
+               ::close(client_fd);
             } else if (isEventDisconnect(index)) {
                removeBusyFD(client_fd);
                if (!removeFileDescriptorFromRead(client_fd)) {
                   Logger::warning("kernel event server failed to delete read filter");
                }
-	       ::close(client_fd);
+               ::close(client_fd);
             } else if (isEventRead(index)) {
-	       if (removeFileDescriptorFromRead(client_fd)) {
+               if (removeFileDescriptorFromRead(client_fd)) {
                   // are we already busy with this socket?
                   const bool isAlreadyBusy = isBusyFD(client_fd);
                
@@ -183,7 +183,7 @@ void KernelEventServer::run() {
                   
                      SocketRequest* socketRequest =
                         new SocketRequest(this, client_fd, NULL);
-		     socketRequest->setSocketOwned(false);
+                     socketRequest->setSocketOwned(false);
                      socketRequest->setUserIndex(index);
                      socketRequest->setAutoDelete();
 
@@ -200,9 +200,9 @@ void KernelEventServer::run() {
                      //::snprintf(msg, 128, "already busy with socket %d", client_fd);
                      //Logger::warning(msg);
                   }
-	       } else {
-		  removeBusyFD(client_fd);
-	       }
+               } else {
+                  removeBusyFD(client_fd);
+               }
 
             }
          }
@@ -233,7 +233,7 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
             Logger::critical("kernel event add read filter failed");
          }
       } else {
-	 removeBusyFD(socketFD);
+         removeBusyFD(socketFD);
       }
    }
 }

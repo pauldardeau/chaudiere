@@ -11,6 +11,8 @@
 
 using namespace chaudiere;
 
+#define NSEC_PER_SEC 1000000000.0
+
 //******************************************************************************
 
 static int numberLeadingZeros(const char* value, int length) {
@@ -29,6 +31,7 @@ static int numberLeadingZeros(const char* value, int length) {
 //******************************************************************************
 
 void DateTime::dateFromString(DateTime* date, const char* dateValue) {
+   //TODO: add microseconds
    const size_t valueLength = ::strlen(dateValue);
    if ((valueLength > 18) && (date != NULL)) {
       const char* firstDash = ::strchr(dateValue, '-');
@@ -131,6 +134,7 @@ double DateTime::unixTimeValue(const DateTime& date) {
          time.tm_hour = date.m_hour;
          time.tm_min = date.m_minute;
          time.tm_sec = date.m_second;
+	 //TODO: add microseconds
          time.tm_isdst = -1;
          return ::mktime(&time);
       } else {
@@ -154,6 +158,7 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
       date.m_hour = timeComponents.tm_hour;
       date.m_minute = timeComponents.tm_min;
       date.m_second = timeComponents.tm_sec;
+      //TODO: add microseconds
       date.m_timeIntervalSince1970 = unixTime;
       date.m_haveUnixTimeValue = true;
          
@@ -168,7 +173,8 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
 DateTime* DateTime::gmtDateTime() {
    time_t currentGMT;
    ::time(&currentGMT);
-   
+
+   //TODO: add microseconds
    struct tm* timeptr = ::gmtime(&currentGMT);
    if (timeptr != NULL) {
       // caller responsible for deleting
@@ -198,18 +204,30 @@ DateTime::DateTime() :
    m_hour(0),
    m_minute(0),
    m_second(0),
+   m_microseconds(0),
    m_weekDay(-1),
    m_haveUnixTimeValue(false) {
-   time_t t = ::time(NULL);
-   struct tm* now = ::localtime(&t);
-   if (now != NULL) {
-      m_year = now->tm_year + 1900;
-      m_month = now->tm_mon + 1;
-      m_day = now->tm_mday;
-      m_hour = now->tm_hour;
-      m_minute = now->tm_min;
-      m_second = now->tm_sec;
-      m_weekDay = now->tm_wday;
+
+   struct timespec ts;
+   int rc = clock_gettime(CLOCK_REALTIME, &ts);
+   if (rc == 0) {
+      double unixTime = ts.tv_sec;
+      double fractionalSeconds = (ts.tv_nsec / NSEC_PER_SEC);
+      unixTime += fractionalSeconds;
+      m_timeIntervalSince1970 = unixTime;
+      m_haveUnixTimeValue = true;
+   } else {
+      time_t t = ::time(NULL);
+      struct tm* now = ::localtime(&t);
+      if (now != NULL) {
+         m_year = now->tm_year + 1900;
+         m_month = now->tm_mon + 1;
+         m_day = now->tm_mday;
+         m_hour = now->tm_hour;
+         m_minute = now->tm_min;
+         m_second = now->tm_sec;
+         m_weekDay = now->tm_wday;
+      }
    }
 }
 
@@ -223,6 +241,7 @@ DateTime::DateTime(int dummy) :
    m_hour(0),
    m_minute(0),
    m_second(0),
+   m_microseconds(0),
    m_weekDay(-1),
    m_haveUnixTimeValue(false) {
 }
@@ -237,6 +256,7 @@ DateTime::DateTime(const std::string& dateTime) :
    m_hour(0),
    m_minute(0),
    m_second(0),
+   m_microseconds(0),
    m_weekDay(-1),
    m_haveUnixTimeValue(false) {
    if (dateTime.length() == 14) {
@@ -254,16 +274,19 @@ DateTime::DateTime(const std::string& dateTime) :
       m_minute = StrUtils::parseInt(minute);
       m_second = StrUtils::parseInt(second);
    }
+
+   //TODO: pick up fractional seconds if present
 }
 
 //******************************************************************************
 
 DateTime::DateTime(int year,
-           int month,
-           int day,
-           int hour,
-           int minute,
-           int second) :
+                   int month,
+                   int day,
+                   int hour,
+                   int minute,
+                   int second,
+                   int microsecond) :
    m_timeIntervalSince1970(0.0),
    m_year(year),
    m_month(month),
@@ -271,6 +294,7 @@ DateTime::DateTime(int year,
    m_hour(hour),
    m_minute(minute),
    m_second(second),
+   m_microseconds(microsecond),
    m_weekDay(-1),
    m_haveUnixTimeValue(false) {
 }
@@ -285,6 +309,7 @@ DateTime::DateTime(double timeIntervalSince1970) :
    m_hour(0),
    m_minute(0),
    m_second(0),
+   m_microseconds(0),
    m_weekDay(-1),
    m_haveUnixTimeValue(true) {
    populateFromUnixTime(*this, timeIntervalSince1970);
@@ -300,6 +325,7 @@ DateTime::DateTime(const DateTime& copy) :
    m_hour(copy.m_hour),
    m_minute(copy.m_minute),
    m_second(copy.m_second),
+   m_microseconds(copy.m_microseconds),
    m_weekDay(copy.m_weekDay),
    m_haveUnixTimeValue(copy.m_haveUnixTimeValue) {
 }
@@ -318,6 +344,7 @@ DateTime& DateTime::operator=(const DateTime& copy) {
    m_hour = copy.m_hour;
    m_minute = copy.m_minute;
    m_second = copy.m_second;
+   m_microseconds = copy.m_microseconds;
    m_weekDay = copy.m_weekDay;
    m_haveUnixTimeValue = copy.m_haveUnixTimeValue;
    
@@ -331,7 +358,8 @@ bool DateTime::operator==(const DateTime& compare) const {
       return (m_timeIntervalSince1970 == compare.m_timeIntervalSince1970);
    }
 
-   return m_second == compare.m_second &&
+   return m_microseconds == compare.m_microseconds &&
+          m_second == compare.m_second &&
           m_minute == compare.m_minute &&
           m_hour == compare.m_hour &&
           m_day == compare.m_day &&
@@ -382,7 +410,11 @@ bool DateTime::operator<(const DateTime& compare) const {
                      return false;
                   } else {
                      // matching second value
-                     return false;
+                     if (m_microseconds < compare.m_microseconds) {
+                        return true;
+                     } else {
+                        return false;
+                     } 
                   }
                }
             }
@@ -395,9 +427,15 @@ bool DateTime::operator<(const DateTime& compare) const {
       
 std::string DateTime::formattedString() const {
    //TODO: what if we only have unix time populated?
-   char stringBuffer[20];
-   snprintf(stringBuffer, 20, "%04d-%02d-%02d %02d:%02d:%02d",
-            m_year, m_month, m_day, m_hour, m_minute, m_second);
+   char stringBuffer[30];
+   //2022-09-28 02:14:31.123456789
+   if (m_haveUnixTimeValue) {
+      memset(stringBuffer, 0, sizeof(stringBuffer));
+   } else {
+      snprintf(stringBuffer, 30, "%04d-%02d-%02d %02d:%02d:%02d.%06d",
+               m_year, m_month, m_day, m_hour, m_minute, m_second,
+               m_microseconds);
+   }
    return std::string(stringBuffer);
 }
 
@@ -405,9 +443,9 @@ std::string DateTime::formattedString() const {
 
 std::string DateTime::unformattedString() const {
    //TODO: what if we only have unix time populated?
-   char stringBuffer[20];
-   snprintf(stringBuffer, 20, "%04d%02d%02d%02d%02d%02d",
-            m_year, m_month, m_day, m_hour, m_minute, m_second);
+   char stringBuffer[30];
+   snprintf(stringBuffer, 30, "%04d%02d%02d%02d%02d%02d%06d",
+            m_year, m_month, m_day, m_hour, m_minute, m_second, m_microseconds);
    return std::string(stringBuffer);
 }
 
@@ -518,6 +556,18 @@ void DateTime::setSecond(int second) {
 
 int DateTime::getSecond() const {
    return m_second;
+}
+
+//******************************************************************************
+
+void DateTime::setMicrosecond(int microsecond) {
+   m_microseconds = microsecond;
+}
+
+//******************************************************************************
+
+int DateTime::getMicrosecond() const {
+   return m_microseconds;
 }
 
 //******************************************************************************

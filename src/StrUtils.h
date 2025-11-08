@@ -87,140 +87,141 @@ public:
    static std::string charToString(char c);
    
    /**
-    *
-    * @param s
-    * @return
+    * Strip leading and trailing spaces from string
+    * @param s the string to strip
+    * @return stripped string
     */
    static std::string strip(const std::string& s);
    
   /**
-   *
-   * @param s
-   * @param strip
-   * @return
+   * Strip leading and trailing character 'strip' from string 's'
+   * @param s the string to strip
+   * @param strip the character to strip
+   * @return stripped string
    */
    static std::string strip(const std::string& s, char strip);
     
    /**
-    *
-    * @param haystack
-    * @param needle
-    * @return
+    * Determines whether 'haystack' starts with 'needle'
+    * @param haystack the string to search
+    * @param needle the substring to search for
+    * @return boolean indicating whether test is true
     */
    static bool startsWith(const std::string& haystack,
                           const std::string& needle);
                           
    /**
-    *
-    * @param haystack
-    * @param needle
-    * @return
+    * Determines whether 'haystack' ends with 'needle'
+    * @param haystack the string to search
+    * @param needle the substring to search for
+    * @return boolean indicating whether test is true
     */
    static bool endsWith(const std::string& haystack,
                         const std::string& needle);
 
    /**
-    *
-    * @param haystack
-    * @param needle
-    * @return
+    * Determines whether 'haystack' contains substring 'needle'
+    * @param haystack the string to search
+    * @param needle the substring to search for
+    * @return boolean indicating whether test is true
     */
    static bool containsString(const std::string& haystack,
                               const std::string& needle);
 
    /**
-    *
-    * @param s
+    * Converts string 's' to upper case in place
+    * @param s the string to convert
     */
    static void toUpperCase(std::string& s);
    
    /**
-    *
-    * @param s
+    * Converts string 's' to lower case in place
+    * @param s the string to convert
     */
    static void toLowerCase(std::string& s);
 
    /**
-    *
-    * @param s
-    * @param searchFor
-    * @param replaceWith
-    * @return
+    * Replace all occurrences of 'searchFor' with 'replaceWith' within 's'
+    * @param s the string whose occurrences will be replaced
+    * @param searchFor the substring to look for
+    * @param replaceWith the substring to replace with
+    * @return reference to updated string
     */
    static std::string& replaceAll(std::string& s,
                                   const std::string& searchFor,
                                   const std::string& replaceWith);
 
    /**
-    *
-    * @param s
-    * @param strip
-    * @return
+    * Strips leading and trailing characters 'strip' from string 's' (in place) if present
+    * @param s the string to strip
+    * @param strip the character to strip
+    * @return reference to stripped string
     */
    static std::string& strip(std::string& s, char strip=' ');
    
    /**
-    *
-    * @param s
-    * @param strip
+    * Strips trailing characters 'strip' from string 's' (in place) if present
+    * @param s the string to strip
+    * @param strip the trailing characters to remove (if present)
+    * @return reference to stripped string
     */
    static std::string& stripTrailing(std::string& s, char strip);
    
    /**
-    *
-    * @param s
-    * @param strip
-    * @return
+    * Strips leading characters 'strip' from string 's' (in place) if present
+    * @param s the string to strip
+    * @param strip the leading characters to remove (if present)
+    * @return reference to stripped string
     */
    static std::string& stripLeading(std::string& s, char strip);
    
    /**
-    *
-    * @param s
-    * @return
+    * Trims leading spaces of string 's' (in place)
+    * @param s the string to be trimmed
+    * @return reference to trimmed string
     */
    static std::string& trimLeadingSpaces(std::string& s);
    
    /**
-    *
-    * @param s
-    * @return
+    * Trims leading and trailing spaces of string 's' (in place)
+    * @param s the string to be trimmed
+    * @return reference to trimmed string
     */
    static std::string trim(const std::string& s);
    
    /**
-    *
-    * @param s
-    * @param padChar
-    * @param paddedLength
+    * Pads string 's' (in place) to right with character 'padChar' to a length of 'paddedLength'
+    * @param s the string to pad (if necessary)
+    * @param padChar the character to use for padding
+    * @param paddedLength the length of the padded string
     */
    static void padRight(std::string& s,
                         char padChar,
                         std::string::size_type paddedLength);
 
    /**
-    *
-    * @param s
-    * @param padChar
-    * @param paddedLength
+    * Pads string 's' (in place) to left with character 'padChar' to a length of 'paddedLength'
+    * @param s the string to pad (if necessary)
+    * @param padChar the character to use for padding
+    * @param paddedLength the length of the padded string
     */
    static void padLeft(std::string& s,
                        char padChar,
                        std::string::size_type paddedLength);
 
    /**
-    *
-    * @param
-    * @param
-    * @return
+    * Construct a string of 'length' copies of the character 'ch'
+    * @param ch the character to use in constructing string
+    * @param length number of characters to repeat in string
+    * @return constructed string
     */
    static std::string makeStringOfChar(char ch, int length);
 
    /**
-    *
-    * @param s
-    * @param delim
-    * @return
+    * Split 's' into substrings based on delimiter 'delim'
+    * @param s the string to split
+    * @param delim the delimiter for splitting
+    * @return vector of substrings
     */
    static std::vector<std::string> split(const std::string& s,
                                          const std::string& delim);
