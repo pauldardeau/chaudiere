@@ -32,7 +32,7 @@ using namespace chaudiere;
 KernelEventServer::KernelEventServer(Mutex& fdMutex,
                                      Mutex& hwmConnectionsMutex,
                                      const std::string& serverName) :
-   m_socketServiceHandler(NULL),
+   m_socketServiceHandler(nullptr),
    m_serverPort(0),
    m_maxConnections(0),
    m_listenBacklog(10),
@@ -60,7 +60,7 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
    m_serverPort = serverPort;
    m_maxConnections = maxConnections;
    
-   if (NULL == m_socketServiceHandler) {
+   if (nullptr == m_socketServiceHandler) {
       Logger::critical("no socket service handler set");
       return false;
    }
@@ -182,7 +182,7 @@ void KernelEventServer::run() {
                      setBusyFD(client_fd, true);
                   
                      SocketRequest* socketRequest =
-                        new SocketRequest(this, client_fd, NULL);
+                        new SocketRequest(this, client_fd, nullptr);
                      socketRequest->setSocketOwned(false);
                      socketRequest->setUserIndex(index);
                      socketRequest->setAutoDelete();

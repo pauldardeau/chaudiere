@@ -70,9 +70,8 @@ ThreadPool::~ThreadPool() {
       stop();
    }
    
-   std::list<ThreadPoolWorker*>::iterator it;
-   for (it = m_listWorkers.begin(); it != m_listWorkers.end(); ++it) {
-       delete *it;
+   for (auto& worker : m_listWorkers) {
+      delete worker;
    }
    
    m_listWorkers.clear();
@@ -85,19 +84,21 @@ bool ThreadPool::start() {
    int oldCreatedCount = m_workersCreated;
 
    if (!m_isRunning) {
-      for (int i = 0; i < m_workerCount; ++i) {
-         ++m_workersCreated;
-         ThreadPoolWorker* worker =
-            new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
-         worker->start();
-         m_listWorkers.push_back(worker);
-      }
+      if (m_workerCount > 0) {
+         for (int i = 0; i < m_workerCount; ++i) {
+            ++m_workersCreated;
+            ThreadPoolWorker* worker =
+               new ThreadPoolWorker(m_threadingFactory, m_queue, m_workersCreated);
+            worker->start();
+            m_listWorkers.push_back(worker);
+         }
 
-      int newCreatedCount = m_workersCreated - oldCreatedCount;
+         const int newCreatedCount = m_workersCreated - oldCreatedCount;
 
-      if (newCreatedCount > 0) {
-         m_isRunning = true;
-         didStart = true;
+         if (newCreatedCount > 0) {
+            m_isRunning = true;
+            didStart = true;
+         }
       }
    }
 
@@ -112,12 +113,8 @@ bool ThreadPool::stop() {
    if (m_isRunning) {
       m_queue.shutDown();
   
-      std::list<ThreadPoolWorker*>::iterator it = m_listWorkers.begin();
-      const std::list<ThreadPoolWorker*>::const_iterator itEnd =
-         m_listWorkers.end();
- 
-      for (; it != itEnd; it++) {
-         (*it)->stop();
+      for (auto& worker : m_listWorkers) {
+         worker->stop();
       }
    
       m_isRunning = false;
@@ -132,7 +129,7 @@ bool ThreadPool::stop() {
 bool ThreadPool::addRequest(Runnable* runnableRequest) {
    bool requestAdded = false;
 
-   if (m_isRunning && (NULL != runnableRequest)) {
+   if (m_isRunning && (nullptr != runnableRequest)) {
       m_queue.addRequest(runnableRequest);
       requestAdded = true;
    }

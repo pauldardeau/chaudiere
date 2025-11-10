@@ -18,7 +18,7 @@ const std::string FileLogger::prefixVerbose  = "Verbose:";
 
 FileLogger::FileLogger(const std::string& filePath) :
    m_filePath(filePath),
-   f(NULL),
+   f(nullptr),
    m_logLevel(Debug) {
 }
 
@@ -26,14 +26,14 @@ FileLogger::FileLogger(const std::string& filePath) :
 
 FileLogger::FileLogger(const std::string& filePath, LogLevel logLevel) :
    m_filePath(filePath),
-   f(NULL),
+   f(nullptr),
    m_logLevel(logLevel) {
 }
 
 //******************************************************************************
 
 FileLogger::~FileLogger() {
-   if (f != NULL) {
+   if (f != nullptr) {
       ::fclose(f);
    }
 }
@@ -55,11 +55,11 @@ void FileLogger::setLogLevel(LogLevel logLevel) {
 void FileLogger::logMessage(LogLevel logLevel,
                             const std::string& logMessage) {
    if (isLogging(logLevel)) {
-      if (f == NULL) {
+      if (f == nullptr) {
          f = ::fopen(m_filePath.c_str(), "a+");
       }
       
-      if (f != NULL) {
+      if (f != nullptr) {
          ::fprintf(f, "%s %s\n",
                       logLevelPrefix(logLevel).c_str(),
                       logMessage.c_str());

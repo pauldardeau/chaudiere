@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <filesystem>
+#include <ctime>
+#include <cstdint>
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -33,7 +36,6 @@
 
 static const long ONE_MB = 1024 * 1024;
 
-static const std::string SLASH = "/";
 
 static const unsigned long CRC_TABLE[256] = {
 0x00000000,0x77073096,0xEE0E612C,0x990951BA,0x076DC419,0x706AF48F,0xE963A535,
@@ -74,19 +76,24 @@ static const unsigned long CRC_TABLE[256] = {
 0xCDD70693,0x54DE5729,0x23D967BF,0xB3667A2E,0xC4614AB8,0x5D681B02,0x2A6F2B94,
 0xB40BBE37,0xC30C8EA1,0x5A05DF1B,0x2D02EF8D };
 
+using namespace std;
+using namespace std::filesystem;
 using namespace chaudiere;
+
+static const std::string DIR_PATH_SEPARATOR = std::string("") + std::filesystem::path::preferred_separator;
+
 
 //******************************************************************************
 
-std::string OSUtils::getCurrentDirectory() {
-   std::string currentDirectory;
+string OSUtils::getCurrentDirectory() {
+   string currentDirectory;
    char currentDir[2048];
    memset(currentDir, 0, sizeof(currentDir));
    
    // this call to getcwd will allocate memory buffer
    char* buffCurrentDir = ::getcwd(currentDir, sizeof(currentDir));
    
-   if (buffCurrentDir != NULL) {
+   if (buffCurrentDir != nullptr) {
       currentDirectory = buffCurrentDir;
    }
    
@@ -95,12 +102,12 @@ std::string OSUtils::getCurrentDirectory() {
 
 //******************************************************************************
 
-std::string OSUtils::pathJoin(const std::string& directory,
-                              const std::string& fileName) {
-   std::string joinedPath(directory);
-   
-   if (!StrUtils::endsWith(directory, SLASH)) {
-      joinedPath += SLASH;
+string OSUtils::pathJoin(const string& directory,
+                         const string& fileName) {
+   string joinedPath(directory);
+
+   if (!StrUtils::endsWith(directory, DIR_PATH_SEPARATOR)) {
+      joinedPath += DIR_PATH_SEPARATOR;
    }
    
    joinedPath += fileName;
@@ -110,36 +117,19 @@ std::string OSUtils::pathJoin(const std::string& directory,
 
 //******************************************************************************
 
-bool OSUtils::directoryExists(const std::string& directory) {
-   struct stat s;
-   int err = stat(directory.c_str(), &s);
-   if (-1 == err) {
-      return false;
-   } else {
-      if (S_ISDIR(s.st_mode)) {
-         return true;
-      } else {
-         // exists, but it's not a directory
-         return false;
-      }
-   }
+bool OSUtils::directoryExists(const string& directory) {
+   return is_directory(path{directory});
 }
 
 //******************************************************************************
 
-bool OSUtils::pathExists(const std::string& filePath) {
-   FILE* f = ::fopen(filePath.c_str(), "r");
-   if (f != NULL) {
-      fclose(f);
-      return true;
-   } else {
-      return false;
-   }
+bool OSUtils::pathExists(const string& filePath) {
+   return exists(path{filePath});
 }
 
 //******************************************************************************
 
-bool OSUtils::createDirectory(const std::string& directory) {
+bool OSUtils::createDirectory(const string& directory) {
    const mode_t mode = S_IRWXU |  // user read/write/execute
                        S_IRGRP |  // group read
                        S_IXGRP |  // group execute
@@ -151,7 +141,7 @@ bool OSUtils::createDirectory(const std::string& directory) {
 
 //******************************************************************************
 
-bool OSUtils::createPrivateDirectory(const std::string& directory) {
+bool OSUtils::createPrivateDirectory(const string& directory) {
    const int rc = ::mkdir(directory.c_str(), S_IRWXU);
    return (0 == rc);
 }
@@ -164,34 +154,34 @@ void OSUtils::programExit(int exitCode) {
 
 //******************************************************************************
 
-long OSUtils::getFileSize(const std::string& filePath) {
+long OSUtils::getFileSize(const string& filePath) {
    long fileSize = -1L;
-   FILE* f = fopen(filePath.c_str(), "r");
-   if (NULL != f) {
-      fseek(f, 0L, SEEK_END);
-      fileSize = ftell(f);
-      fclose(f);
+
+   path aFilePath{filePath};
+   if (exists(aFilePath)) {
+      fileSize = file_size(aFilePath);
    }
+   
    return fileSize;
 }
 
 //******************************************************************************
 
-bool OSUtils::deleteFile(const std::string& filePath) {
+bool OSUtils::deleteFile(const string& filePath) {
    return (0 == unlink(filePath.c_str()));
 }
 
 //******************************************************************************
 
-bool OSUtils::renameFile(const std::string& oldFilePath,
-                         const std::string& newFilePath) {
+bool OSUtils::renameFile(const string& oldFilePath,
+                         const string& newFilePath) {
    return (0 == rename(oldFilePath.c_str(), newFilePath.c_str()));
 }
 
 //******************************************************************************
 
-std::string OSUtils::sysPlatform() {
-   std::string name;
+string OSUtils::sysPlatform() {
+   string name;
 
 #ifdef __linux__
    name = "linux";
@@ -203,7 +193,7 @@ std::string OSUtils::sysPlatform() {
    name = "netbsd";
 #elif defined(__OpenBSD__)
    name = "openbsd";
-#elif defined(_WIN32)
+#elif defined(_WIN32) || defined(WIN32)
    name = "windows";
 #elif defined(__sun__)
    name = "solaris";
@@ -216,25 +206,25 @@ std::string OSUtils::sysPlatform() {
 
 //******************************************************************************
 
-std::string OSUtils::osName() {
+string OSUtils::osName() {
 #if defined(_POSIX_VERSION)
-   return std::string("posix");
+   return string("posix");
 #else
-   return std::string("unknown");
+   return string("unknown");
 #endif
 }
 
 //******************************************************************************
 
-void OSUtils::splitExt(const std::string& filePath,
-                       std::vector<std::string>& pathParts) {
-   const std::string::size_type posLastDot = filePath.find_last_of(".");
-   if (posLastDot != std::string::npos) {
+void OSUtils::splitExt(const string& filePath,
+                       vector<string>& pathParts) {
+   const string::size_type posLastDot = filePath.find_last_of(".");
+   if (posLastDot != string::npos) {
       pathParts.push_back(filePath.substr(0, posLastDot));  // root
-      pathParts.push_back(filePath.substr(posLastDot, std::string::npos));  // ext
+      pathParts.push_back(filePath.substr(posLastDot, string::npos));  // ext
    } else {
       pathParts.push_back(filePath);
-      pathParts.push_back(std::string(""));
+      pathParts.push_back(string(""));
    }
 }
 
@@ -247,37 +237,15 @@ long OSUtils::currentTimeMillis() {
 
 //******************************************************************************
 
-std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPath) {
-   std::vector<std::string> listFiles;
-   struct dirent* entry;
-   DIR* dir = ::opendir(dirPath.c_str());
-   if (dir != NULL) {
-      while ((entry = ::readdir(dir)) != NULL) {
-         bool entryIsFile = false;
-#if defined(__sun)
-         struct stat s;
-         stat(entry->d_name, &s);
-         if (s.st_mode & S_IFDIR) {
-         } else {
-            entryIsFile = true;
-         }
-#else
-         if (entry->d_type == DT_REG) {
-            entryIsFile = true;
-         } else if (entry->d_type == DT_UNKNOWN) {
-            struct stat stbuf;
-            memset(&stbuf, 0, sizeof(struct stat));
-            int rc = ::stat(entry->d_name, &stbuf);
-            if (rc == 0) {
-               entryIsFile = S_ISREG(stbuf.st_mode);
-            }
-         }
-#endif
-         if (entryIsFile) {
-            listFiles.push_back(std::string(entry->d_name));
-         }
+vector<string> OSUtils::listFilesInDirectory(const string& dirPath) {
+   vector<string> listFiles;
+
+   const path aDirPath{dirPath};
+
+   for (const auto& entry : directory_iterator{aDirPath}) {
+      if (!entry.is_directory()) {
+         listFiles.push_back(entry.path().filename().string());
       }
-      ::closedir(dir);
    }
 
    return listFiles;
@@ -285,43 +253,15 @@ std::vector<std::string> OSUtils::listFilesInDirectory(const std::string& dirPat
 
 //******************************************************************************
 
-std::vector<std::string> OSUtils::listDirsInDirectory(const std::string& dirPath) {
-   std::vector<std::string> listSubdirs;
-   struct dirent* entry;
-   DIR* dir = ::opendir(dirPath.c_str());
-   if (dir != NULL) {
-      while ((entry = ::readdir(dir)) != NULL) {
-         bool entryIsDir = false;
-#if defined(__sun)
-         struct stat s;
-         stat(entry->d_name, &s);
-         if (s.st_mode & S_IFDIR) {
-            entryIsDir = true;
-         } else {
-         }
-#else
-         if (entry->d_type == DT_DIR) {
-            entryIsDir = true;
-         }
-         /*
-         else if (entry->d_type == DT_UNKNOWN) {
-            struct stat stbuf;
-            memset(&stbuf, 0, sizeof(struct stat));
-            int rc = ::stat(entry->d_name, &stbuf);
-            if (rc == 0) {
-               entryIsFile = S_ISREG(stbuf.st_mode);
-            }
-         }
-         */
-#endif
-         if (entryIsDir) {
-            std::string dir_name = entry->d_name;
-            if (dir_name != "." && dir_name != "..") {
-               listSubdirs.push_back(std::string(entry->d_name));
-            }
-         }
+vector<string> OSUtils::listDirsInDirectory(const string& dirPath) {
+   vector<string> listSubdirs;
+
+   const path aDirPath{dirPath};
+
+   for (const auto& entry : directory_iterator{aDirPath}) {
+      if (entry.is_directory()) {
+         listSubdirs.push_back(entry.path().filename().string());
       }
-      ::closedir(dir);
    }
 
    return listSubdirs;
@@ -345,9 +285,9 @@ unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
 
 //******************************************************************************
 
-bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32) {
+bool OSUtils::crc32ForFile(const string& filePath, string& crc32) {
    FILE* f = ::fopen(filePath.c_str(), "r");
-   if (f != NULL) {
+   if (f != nullptr) {
       unsigned char buf[8192];
       size_t bufLen;
       
@@ -383,7 +323,7 @@ bool OSUtils::crc32ForFile(const std::string& filePath, std::string& crc32) {
 
 //******************************************************************************
 
-bool OSUtils::isUserInGroup(const std::string& groupName)
+bool OSUtils::isUserInGroup(const string& groupName)
 {
 #ifdef __unix__
    const gid_t userPrimaryGroup = getgid();
@@ -391,7 +331,7 @@ bool OSUtils::isUserInGroup(const std::string& groupName)
    if (userPrimaryGroup > 0) {
       const group* pGroup = getgrnam(groupName.c_str());
 
-      if (pGroup != NULL) {
+      if (pGroup != nullptr) {
          if (pGroup->gr_gid == userPrimaryGroup) {
             // yes, user is in group (it's their primary group)
             return true;
@@ -429,12 +369,11 @@ bool OSUtils::getHWCpuCount(int& count)
 {
    bool rc = false;
 
-#ifdef WIN32
-   int cpuIndex = 0;
+#if defined(_WIN32) || defined(WIN32)
    char szRegistryKey[256];
    HKEY keyCPU;
 
-   for (;;) {
+   for (int cpuIndex = 0; ; cpuIndex++) {
       snprintf(szRegistryKey,
                255,
                "Hardware\\Description\\System\\CentralProcessor\\%d",
@@ -447,8 +386,6 @@ bool OSUtils::getHWCpuCount(int& count)
                                           &keyCPU)) {
          count = cpuIndex;
          break;
-      } else {
-         ++cpuIndex;
       }
    }
 
@@ -463,7 +400,7 @@ bool OSUtils::getHWCpuCount(int& count)
 #elif defined(__APPLE__) || defined(__FreeBSD__)
    int cpuCount = 0;
    size_t size = sizeof(cpuCount);
-   if (0 == sysctlbyname("hw.ncpu", &cpuCount, &size, NULL, 0)) {
+   if (0 == sysctlbyname("hw.ncpu", &cpuCount, &size, nullptr, 0)) {
       count = cpuCount;
       rc = true;
    }
@@ -474,11 +411,11 @@ bool OSUtils::getHWCpuCount(int& count)
 
 //******************************************************************************
 
-bool OSUtils::getHWCpuType(std::string& cpuType)
+bool OSUtils::getHWCpuType(string& cpuType)
 {
    bool rc = false;
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
    HKEY keyCPU;
 
    if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
@@ -500,16 +437,16 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
 #elif defined(__FreeBSD__)
    char szCpuType[128];
    size_t size = 127;
-   if (0 == sysctlbyname("hw.model", &szCpuType, &size, NULL, 0)) {
+   if (0 == sysctlbyname("hw.model", &szCpuType, &size, nullptr, 0)) {
       cpuType = szCpuType;
       rc = true;
    }
 #elif defined(__APPLE__)
    int cpuTypeCode = 0;
    size_t size = sizeof(cpuTypeCode);
-   if (0 == sysctlbyname("hw.cputype", &cpuTypeCode, &size, NULL, 0)) {
+   if (0 == sysctlbyname("hw.cputype", &cpuTypeCode, &size, nullptr, 0)) {
       int cpuSubType = 0;
-      if (0 == sysctlbyname("hw.cpusubtype", &cpuSubType, &size, NULL, 0)) {
+      if (0 == sysctlbyname("hw.cpusubtype", &cpuSubType, &size, nullptr, 0)) {
          //TODO: handle hw.cpusubtype for Apple
       }
    }
@@ -520,7 +457,7 @@ bool OSUtils::getHWCpuType(std::string& cpuType)
 
 //******************************************************************************
 
-bool OSUtils::getHardwareType(std::string& hardwareType)
+bool OSUtils::getHardwareType(string& hardwareType)
 {
    bool rc = false;
    hardwareType = "** unknown **";
@@ -542,7 +479,7 @@ int OSUtils::getHWPhysicalMemoryMB()
 {
    int physicalMemoryMB = 0;
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
    MEMORYSTATUS memStat;
    memset(&memStat, 0, sizeof(MEMORYSTATUS));
 
@@ -562,13 +499,13 @@ int OSUtils::getHWPhysicalMemoryMB()
 #elif defined(__APPLE__)
    uint64_t physMemory = 0;
    size_t size = sizeof(physMemory);
-   if (0 == sysctlbyname("hw.memsize", &physMemory, &size, NULL, 0)) {
+   if (0 == sysctlbyname("hw.memsize", &physMemory, &size, nullptr, 0)) {
       physicalMemoryMB = physMemory / ONE_MB;
    }
 #elif defined(__FreeBSD__)
    uint64_t physMemory = 0;
    size_t size = sizeof(physMemory);
-   if (0 == sysctlbyname("vm.kmem_size_max", &physMemory, &size, NULL, 0)) {
+   if (0 == sysctlbyname("vm.kmem_size_max", &physMemory, &size, nullptr, 0)) {
       physicalMemoryMB = physMemory / ONE_MB;
    }
 #endif
@@ -582,21 +519,22 @@ int OSUtils::getHWCpuSpeedMHz()
 {
    int cpuSpeedMHz = 0;
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
    HKEY keyCPU;
 
-   if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                                       "Hardware\\Description\\System\\CentralProcessor\\0",
-                                       0,
-                                       KEY_READ,
-                                       &keyCPU)) {
+   const auto rc = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                                  "Hardware\\Description\\System\\CentralProcessor\\0",
+                                  0,
+                                  KEY_READ,
+                                  &keyCPU);
+   if (ERROR_SUCCESS == rc) {
       DWORD dwCpuSpeed = 0;
       DWORD dwSize = sizeof(DWORD);
 
       if (ERROR_SUCCESS == ::RegQueryValueEx(keyCPU,
                                              "~MHz\0",
-                                             NULL,
-                                             NULL,
+                                             nullptr,
+                                             nullptr,
                                              (LPBYTE) &dwCpuSpeed,
                                              &dwSize)) {
          cpuSpeedMHz = dwCpuSpeed;
@@ -612,15 +550,17 @@ int OSUtils::getHWCpuSpeedMHz()
 #elif defined(__FreeBSD__)
    int cpuSpeed = 0;
    size_t size = sizeof(cpuSpeed);
-   if (0 == sysctlbyname("hw.clockrate", &cpuSpeed, &size, NULL, 0)) {
+   if (0 == sysctlbyname("hw.clockrate", &cpuSpeed, &size, nullptr, 0)) {
       cpuSpeedMHz = cpuSpeed;
    }
 #elif defined(__APPLE__)
    uint64_t cpuSpeed = 0;
    size_t size = sizeof(cpuSpeed);
-   if (0 == sysctlbyname("hw.cpufrequency", &cpuSpeed, &size, NULL, 0)) {
+   if (0 == sysctlbyname("hw.cpufrequency", &cpuSpeed, &size, nullptr, 0)) {
       cpuSpeedMHz = cpuSpeed / 1000000;
    }
+#elif defined(__linux__)
+   //TODO: is there a reliable way to get cpu clock speed on linux?
 #endif
 
    return cpuSpeedMHz;
@@ -628,13 +568,15 @@ int OSUtils::getHWCpuSpeedMHz()
 
 //******************************************************************************
 
-bool OSUtils::getOSHostName(std::string& hostName)
+bool OSUtils::getOSHostName(string& hostName)
 {
    bool rc = false;
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
    char computerName[255];
    unsigned long nChars = 254;
+   memset(computerName, 0, sizeof(computerName));
+
    if (::GetComputerName(computerName, &nChars)) {
       hostName = computerName;
       rc = true;
@@ -652,13 +594,14 @@ bool OSUtils::getOSHostName(std::string& hostName)
 
 //******************************************************************************
 
-bool OSUtils::getOSUser(std::string& user)
+bool OSUtils::getOSUser(string& user)
 {
    bool rc = false;
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
    unsigned long nUserChars = 254;
    char userName[255];
+   memset(userName, 0, sizeof(userName));
 
    if (::GetUserName(userName, &nUserChars)) {
       user = userName;
@@ -666,8 +609,8 @@ bool OSUtils::getOSUser(std::string& user)
    }
 #elif defined(__unix__)
    struct passwd* passwordData = getpwuid(getuid());
-   if ((passwordData != NULL) &&
-       (passwordData->pw_name != NULL)) {
+   if ((passwordData != nullptr) &&
+       (passwordData->pw_name != nullptr)) {
       user = passwordData->pw_name;
       rc = true;
    }
@@ -717,7 +660,7 @@ double OSUtils::getFifteenMinuteLoadAvg()
 
 //******************************************************************************
 
-bool OSUtils::getOSName(std::string& osName)
+bool OSUtils::getOSName(string& osName)
 {
    bool rc = false;
 
@@ -734,7 +677,7 @@ bool OSUtils::getOSName(std::string& osName)
 
 //******************************************************************************
 
-bool OSUtils::getOSRelease(std::string& osRelease)
+bool OSUtils::getOSRelease(string& osRelease)
 {
    bool rc = false;
 
@@ -751,11 +694,11 @@ bool OSUtils::getOSRelease(std::string& osRelease)
 
 //******************************************************************************
 
-bool OSUtils::getOSRevision(std::string& osRevision)
+bool OSUtils::getOSRevision(string& osRevision)
 {
    bool rc = false;
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
    OSVERSIONINFO osVersionInfo;
    osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
@@ -793,10 +736,10 @@ int OSUtils::getFreeMemoryMB()
 #elif defined(__FreeBSD__)
    uint64_t freePages = 0;
    size_t size = sizeof(freePages);
-   if (0 == sysctlbyname("vm.stats.vm.v_free_count", &freePages, &size, NULL, 0)) {
+   if (0 == sysctlbyname("vm.stats.vm.v_free_count", &freePages, &size, nullptr, 0)) {
       int pageSize = 0;
       size = sizeof(pageSize);
-      if (0 == sysctlbyname("hw.pagesize", &pageSize, &size, NULL, 0)) {
+      if (0 == sysctlbyname("hw.pagesize", &pageSize, &size, nullptr, 0)) {
          freeMemoryMB = ((freePages * pageSize) / ONE_MB);
       }
    }
@@ -807,7 +750,7 @@ int OSUtils::getFreeMemoryMB()
 
 //******************************************************************************
 
-bool OSUtils::getOSCurrentTimestamp(std::string& timestamp)
+bool OSUtils::getOSCurrentTimestamp(string& timestamp)
 {
    bool rc = false;
 
@@ -816,7 +759,7 @@ bool OSUtils::getOSCurrentTimestamp(std::string& timestamp)
 
    struct tm* pTM = localtime(&current_time);
 
-   if (pTM != NULL) {
+   if (pTM != nullptr) {
       char buffer[128];
       buffer[0] = '\0';
 
@@ -836,4 +779,6 @@ bool OSUtils::getOSCurrentTimestamp(std::string& timestamp)
 
    return rc;
 }
+
+//******************************************************************************
 

@@ -12,19 +12,19 @@ BSD
 
 Platforms/Compilers
 -------------------
-This project is implemented with C++ (pre c++11). It is tested with
-g++ compiler on Linux (primarily Ubuntu 14.04 server), FreeBSD, and
+This project is implemented with C++ (c++20). It is tested on
+Linux (Ubuntu, Debian, Mint), FreeBSD, and
 OpenBSD.
 
 Threading Options
 -----------------
 This project was initially coded to use Posix threads (pthreads).
-Apple's libdispatch is available on Mac OSX and FreeBSD.
+Apple's libdispatch is available on macOS and FreeBSD.
 
 Socket Options
 --------------
 Chaudière supports kernel event mechanisms such as epoll (linux) and
-kqueue (freebsd, osx), as well as a built-in socket server.
+kqueue (freebsd, macos), as well as a built-in socket server.
 
 Status/Maturity
 ---------------
@@ -34,8 +34,7 @@ slowly get there.
 
 C++ Standards
 -------------
-The code is pre-C++11. This is intentional to provide maximum
-portability.
+The code is targeted for C++20.
 
 Coding Style
 ------------

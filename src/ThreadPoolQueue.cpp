@@ -10,80 +10,43 @@
 #include "MutexLock.h"
 #include "Logger.h"
 #include "BasicException.h"
+#include "Thread.h"
 
 using namespace chaudiere;
+
 
 //******************************************************************************
 
 ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
    m_threadingFactory(threadingFactory),
-   //m_mutex(NULL),
-   //m_condQueueNotEmpty(NULL),
-   //m_condQueueNotFull(NULL),
-   //m_condQueueEmpty(NULL),
+   m_mutex(m_threadingFactory->createMutex("ThreadPoolQueue")),
+   m_condQueueNotEmpty(m_threadingFactory->createConditionVariable("queue-not-empty")),
+   m_condQueueEmpty(m_threadingFactory->createConditionVariable("queue-empty")),
    m_isInitialized(false),
-   m_isRunning(false) {
+   m_isRunning(false),
+   m_activeTakeRequests(0),
+   m_activeAddRequests(0) {
 
    LOG_INSTANCE_CREATE("ThreadPoolQueue")
 
    try {
-      /*
-      m_mutex = m_threadingFactory->createMutex("ThreadPoolQueue");
-      m_condQueueNotEmpty = m_threadingFactory->createConditionVariable("queue-not-empty");
-      m_condQueueNotFull = m_threadingFactory->createConditionVariable("queue-not-full");
-      m_condQueueEmpty = m_threadingFactory->createConditionVariable("queue-empty");
-      */
-
-      int rc;
-      rc = pthread_mutex_init(&m_queue_lock, NULL);
-      if (rc != 0) {
-         printf("error: pthread_mutex_init failed\n");
-         exit(1);
-      }
-      rc = pthread_cond_init(&m_cond_queue_not_empty, NULL);
-      if (rc != 0) {
-         printf("error: pthread_cond_init failed\n");
-         exit(1);
-      }
-      rc = pthread_cond_init(&m_cond_queue_not_full, NULL);
-      if (rc != 0) {
-         printf("error: pthread_cond_init failed\n");
-         exit(1);
-      }
-      rc = pthread_cond_init(&m_cond_queue_empty, NULL);
-      if (rc != 0) {
-         printf("error: pthread_cond_init failed\n");
-         exit(1);
-      }
-
-      m_isInitialized = true;
-      m_isRunning = true;
-        
-      /* 
-      if ((m_mutex != NULL) &&
-          (m_condQueueNotEmpty != NULL) &&
-          (m_condQueueNotFull != NULL) &&
-          (m_condQueueEmpty != NULL)) {
+      if (m_mutex && m_condQueueNotEmpty && m_condQueueEmpty) {
          m_isInitialized = true;
          m_isRunning = true;
       } else {
          LOG_ERROR("unable to initialize ThreadPoolQueue")
-         if (NULL == m_mutex) {
+         if (!m_mutex) {
             LOG_ERROR("unable to create mutex")
          }
-         if (NULL == m_condQueueNotEmpty) {
+         if (!m_condQueueNotEmpty) {
             LOG_ERROR("unable to create queue not empty condition variable")
          }
-         if (NULL == m_condQueueNotFull) {
-            LOG_ERROR("unable to create queue not full condition variable")
-         }
-         if (NULL == m_condQueueEmpty) {
+         if (!m_condQueueEmpty) {
             LOG_ERROR("unable to create queue empty condition variable")
          }
          printf("error: unable to initialize thread pool queue, aborting\n");
          exit(1);
       }
-      */
    } catch (const BasicException& be) {
       LOG_ERROR("exception setting up thread pool queue: " + be.whatString())
    } catch (const std::exception& e) {
@@ -97,22 +60,21 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
 
 ThreadPoolQueue::~ThreadPoolQueue() {
    LOG_INSTANCE_DESTROY("ThreadPoolQueue")
-   m_isRunning = false;
 
-   /*
-   if (NULL != m_mutex) {
-      delete m_mutex;
+   shutDown();
+
+   while (m_activeAddRequests > 0 || m_activeTakeRequests > 0) {
+#if defined(DEBUG)
+      printf("ThreadPoolQueue::~ThreadPoolQueue  active adds=%d, active takes=%d\n",
+             m_activeAddRequests, m_activeTakeRequests);
+#endif
+      Thread::sleep(3);
    }
-   if (NULL != m_condQueueNotEmpty) {
-      delete m_condQueueNotEmpty;
-   }
-   if (NULL != m_condQueueNotFull) {
-      delete m_condQueueNotFull;
-   }
-   if (NULL != m_condQueueEmpty) {
-      delete m_condQueueEmpty;
-   }
-   */
+
+#if defined(DEBUG)
+   printf("ThreadPoolQueue::~ThreadPoolQueue  active adds=%d, active takes=%d\n",
+          m_activeAddRequests, m_activeTakeRequests);
+#endif
 }
 
 //******************************************************************************
@@ -123,24 +85,25 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
       return false;
    }
 
-   if (!runnableRequest) {
-      LOG_WARNING("ThreadPoolQueue::addRequest rejecting NULL request")
+   if (nullptr == runnableRequest) {
+      LOG_WARNING("ThreadPoolQueue::addRequest rejecting nullptr request")
       return false;
    }
  
-   //MutexLock lock(*m_mutex, "ThreadPoolQueue::addRequest");
-   pthread_mutex_lock(&m_queue_lock);
+   MutexLock lock(*m_mutex, "ThreadPoolQueue::addRequest");
+
+   ++m_activeAddRequests;
    
    if (!m_isRunning) {
       LOG_WARNING("ThreadPoolQueue::addRequest rejecting request, queue is shutting down")
-      pthread_mutex_unlock(&m_queue_lock);
+      --m_activeAddRequests;
       return false;
    }
    
-   //if (!m_mutex->haveValidMutex()) {
-   //   LOG_ERROR("don't have valid mutex in addRequest")
-   //   ::exit(1);
-   //}
+   if (!m_mutex->haveValidMutex()) {
+      LOG_ERROR("don't have valid mutex in addRequest")
+      ::exit(1);
+   }
 
    LOG_DEBUG("ThreadPoolQueue::addRequest accepting request")
    
@@ -153,72 +116,113 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    if (wasEmpty) {
       // signal QUEUE_NOT_EMPTY (wake up a worker thread)
       LOG_DEBUG("signalling queue_not_empty")
-      //m_condQueueNotEmpty->notifyAll();
-      pthread_cond_broadcast(&m_cond_queue_not_empty);
+      m_condQueueNotEmpty->notifyAll();
    }
+
+   --m_activeAddRequests;
  
-   pthread_mutex_unlock(&m_queue_lock); 
    return true;
 }
 
 //******************************************************************************
 
-Runnable* ThreadPoolQueue::takeRequest() {
+void ThreadPoolQueue::takeRequest(TakeRequestContext& ctx) {
    if (!m_isInitialized) {
       LOG_WARNING("ThreadPoolQueue::takeRequest queue not initialized")
-      return NULL;
+      ctx.runnable = nullptr;
+      ctx.isQueueRunning = false;
+      return;
    }
 
-   //MutexLock lock(*m_mutex, "ThreadPoolQueue::takeRequest");
-   pthread_mutex_lock(&m_queue_lock);
+   MutexLock lock(*m_mutex, "ThreadPoolQueue::takeRequest");
 
    // is the queue shut down?
    if (!m_isRunning) {
-      pthread_mutex_unlock(&m_queue_lock);
-      return NULL;
+      ctx.runnable = nullptr;
+      ctx.isQueueRunning = false;
+      return;
    }
    
-   //if (!m_mutex->haveValidMutex()) {
-   //   LOG_ERROR("don't have valid mutex in takeRequest")
-   //   exit(1);
-   //}
-   
-   Runnable* request = NULL;
-  
-   // is the queue empty?
-   while (m_queue.empty()) { // && m_isRunning) {
-      // empty queue -- wait for QUEUE_NOT_EMPTY event
-      //m_condQueueNotEmpty->wait(m_mutex);
-      pthread_cond_wait(&m_cond_queue_not_empty,
-                        &m_queue_lock);
+   if (!m_mutex->haveValidMutex()) {
+      LOG_ERROR("don't have valid mutex in takeRequest")
+      exit(1);
    }
 
-   if (!m_queue.empty()) {
-      // take a request from the queue
-      request = m_queue.front();
-      m_queue.pop_front();
+   ++m_activeTakeRequests;
 
-      // did we just empty the queue?
-      if (m_queue.empty()) {
-         //m_condQueueEmpty->notifyOne();
-         pthread_cond_signal(&m_cond_queue_empty);
+   if (ctx.waitIfNone) {
+      // is the queue empty?
+      while (m_queue.empty() && m_isRunning) {
+         // empty queue -- wait for QUEUE_NOT_EMPTY event
+#if defined(DEBUG)
+         printf("ThreadPoolQueue::takeRequest - waiting on queue-not-empty\n");
+#endif
+         m_condQueueNotEmpty->wait(m_mutex.get());
+      }
+   } else {
+#if defined(DEBUG)
+      printf("ThreadPoolQueue::takeRequest - not waiting\n");
+#endif
+   }
+
+   if (!m_isRunning) {
+#if defined(DEBUG)
+      printf("ThreadPoolQueue::takeRequest - queue not running\n");
+#endif
+      ctx.runnable = nullptr;
+      ctx.isQueueRunning = false;
+   } else {
+      ctx.isQueueRunning = true;
+
+      if (!m_queue.empty()) {
+         // take a request from the queue
+#if defined(DEBUG)
+         printf("ThreadPoolQueue::takeRequest - have request from queue\n");
+#endif
+         ctx.runnable = m_queue.front();
+         m_queue.pop_front();
+
+         // did we just empty the queue?
+         if (m_queue.empty()) {
+#if defined(DEBUG)
+            printf("ThreadPoolQueue::takeRequest - emptied queue - notifying queue-empty\n");
+#endif
+            m_condQueueEmpty->notifyOne();
+         }
+      } else {
+#if defined(DEBUG)
+         printf("ThreadPoolQueue::takeRequest - no runnable found in queue - returning nullptr\n");
+#endif
+         ctx.runnable = nullptr;
       }
    }
 
-   pthread_mutex_unlock(&m_queue_lock);
-
-   return request;
+   --m_activeTakeRequests;
 }
 
 //******************************************************************************
 
 bool ThreadPoolQueue::shutDown() {
    bool wasShutDown = false;
+
+#if defined(DEBUG)
+   printf("ThreadPoolQueue::shutdown called\n");
+#endif
+
    if (m_isInitialized && m_isRunning) {
-      //MutexLock lock(*m_mutex, "ThreadPoolQueue::shutDown");
+      MutexLock lock(*m_mutex, "ThreadPoolQueue::shutDown");
+
       m_isRunning = false;
       wasShutDown = true;
+
+#if defined(DEBUG)
+      printf("ThreadPoolQueue::shutdown - m_isRunning now false\n");
+#endif
+
+      // wake up workers so that they can exit
+      m_condQueueNotEmpty->notifyAll();
    }
+
    return wasShutDown;
 }
 

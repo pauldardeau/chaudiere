@@ -20,7 +20,7 @@ public:
    /**
     */
    CharBuffer() :
-      m_buffer(NULL),
+      m_buffer(nullptr),
       m_bufferSize(0) {
    }
 
@@ -29,7 +29,7 @@ public:
     * @param bufferSize the size needed for the buffer
     */
    explicit CharBuffer(const std::size_t bufferSize) :
-      m_buffer(NULL),
+      m_buffer(nullptr),
       m_bufferSize(bufferSize) {
       if (m_bufferSize > 0) {
          allocateBuffer(bufferSize);
@@ -40,7 +40,7 @@ public:
     * Destructor
     */
    ~CharBuffer() {
-      if (m_buffer != NULL) {
+      if (m_buffer != nullptr) {
          delete [] m_buffer;
       }
    }
@@ -60,7 +60,7 @@ public:
    }
 
    void ensureCapacity(const std::size_t bufferSize) {
-      if (NULL == m_buffer) {
+      if (nullptr == m_buffer) {
          allocateBuffer(bufferSize);
       } else {
          if (bufferSize > m_bufferSize) {

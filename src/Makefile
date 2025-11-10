@@ -2,7 +2,8 @@
 # BSD License
 
 CC = c++
-CC_OPTS = -c -Wall -fPIC -O2 -pthread -I/usr/local/include
+CC_OPTS = -c -Wall -std=c++20 -fPIC -g -pthread -I/usr/local/include
+#CC_OPTS = -c -Wall -std=c++20 -fPIC -O2 -pthread -I/usr/local/include
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 

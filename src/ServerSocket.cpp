@@ -160,7 +160,7 @@ Socket* ServerSocket::accept() {
                                          &namelen);
 
    if (connectionSocket < 0) {
-      return NULL;
+      return nullptr;
    } else {
       return new Socket(connectionSocket);
    }

@@ -14,7 +14,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 PthreadsThread::PthreadsThread() :
-   Thread(NULL),
+   Thread(nullptr),
    m_mutexAlive("mutexAlive"),
    m_mutexExitCode("mutexExitCode"),
    m_threadHandle(0),
@@ -29,7 +29,7 @@ PthreadsThread::PthreadsThread() :
 //******************************************************************************
 
 PthreadsThread::PthreadsThread(const std::string& name) :
-   Thread(NULL),
+   Thread(nullptr),
    m_mutexAlive("mutexAlive"),
    m_mutexExitCode("mutexExitCode"),
    m_threadHandle(0),
@@ -82,7 +82,7 @@ PthreadsThread::~PthreadsThread() {
 void* PthreadsThread::runThread(void* pArgs) {
    PthreadsThread* pThread = (PthreadsThread*) pArgs;
 
-   if (!pThread) {
+   if (nullptr == pThread) {
       return (void*) 1L;
    }
 
@@ -100,7 +100,7 @@ void* PthreadsThread::runThread(void* pArgs) {
       
       Runnable* runnable = pThread->getRunnable();
 
-      if (runnable) {
+      if (nullptr != runnable) {
          runnable->run();
       } else {
          pThread->run();
@@ -133,6 +133,7 @@ bool PthreadsThread::start() {
 void PthreadsThread::run() {
    // This method should never be called.  If you've subclassed Thread, then
    // you need to implement "void run()" in your derived class.
+   printf("PthreadsThread::run - this method should never be called\n");
    throw BasicException("this method should not be called");
 }
 
@@ -163,3 +164,10 @@ const std::string& PthreadsThread::getName() const {
 }
 
 //******************************************************************************
+
+void PthreadsThread::join() {
+   pthread_join(m_threadHandle, nullptr);
+}
+
+//******************************************************************************
+

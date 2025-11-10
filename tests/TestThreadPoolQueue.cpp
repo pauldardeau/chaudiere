@@ -1,6 +1,8 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <stdio.h>
+
 #include "TestThreadPoolQueue.h"
 #include "ThreadPoolQueue.h"
 #include "PthreadsThreadingFactory.h"
@@ -14,6 +16,11 @@ class DoNothingRunnable : public chaudiere::Runnable
 {
    public:
       virtual void run() {
+      }
+
+      virtual void notifyOnCompletion() {
+         printf("DoNothingRunnable::notifyOnCompletion\n");
+         chaudiere::Runnable::notifyOnCompletion();
       }
 };
 
@@ -65,11 +72,15 @@ void TestThreadPoolQueue::testTakeRequest() {
 
    Runnable* r = new DoNothingRunnable;
    ThreadPoolQueue tpq(&tf);
-   Runnable* taken = tpq.takeRequest();
-   require(taken == NULL, "takeRequest should return NULL with nothing added");
+   TakeRequestContext ctx;
+   ctx.waitIfNone = false;
+   tpq.takeRequest(ctx);
+   Runnable* taken = ctx.runnable;
+   require(taken == nullptr, "takeRequest should return nullptr with nothing added");
    tpq.addRequest(r);
-   taken = tpq.takeRequest();
-   require(taken != NULL, "takeRequest should return non-NULL after adding");
+   tpq.takeRequest(ctx);
+   taken = ctx.runnable;
+   require(taken != nullptr, "takeRequest should return non-nullptr after adding");
    require(taken == r, "takeRequest should return what was added");
    delete r;
 }
@@ -108,7 +119,8 @@ void TestThreadPoolQueue::testIsEmpty() {
    require(tpq.isEmpty(), "initial state should be empty");
    tpq.addRequest(new DoNothingRunnable);
    require(!tpq.isEmpty(), "should not be empty after adding a request");
-   Runnable* r = tpq.takeRequest();
+   TakeRequestContext ctx;
+   tpq.takeRequest(ctx);
    require(tpq.isEmpty(), "should be empty after taking last request");
 }
 

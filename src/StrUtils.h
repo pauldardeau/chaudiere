@@ -5,6 +5,10 @@
 #define CHAUDIERE_STRUTILS_H
 
 #include <string>
+#if __cplusplus >= 202002L
+   // C++20 or later
+   #include <string_view>
+#endif
 #include <vector>
 
 namespace chaudiere
@@ -225,6 +229,22 @@ public:
     */
    static std::vector<std::string> split(const std::string& s,
                                          const std::string& delim);
+
+#if __cplusplus >= 202002L
+   static int parseInt(std::string_view s);
+   static long parseLong(std::string_view s);
+   static float parseFloat(std::string_view s);
+   static double parseDouble(std::string_view s);
+   static bool startsWith(std::string_view haystack,
+                          std::string_view needle);
+   static bool endsWith(std::string_view haystack,
+                        std::string_view needle);
+   static bool containsString(std::string_view haystack,
+                              std::string_view needle);
+   static std::vector<std::string_view> split(std::string_view s,
+                                              std::string_view delim);
+
+#endif
 
 };
 

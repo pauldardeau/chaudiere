@@ -171,6 +171,10 @@ public:
     */
    const std::string& getWorkerId() const;
 
+   virtual void join() = 0;
+
+   static void sleep(long msec);
+
    
 private:
    Runnable* m_runnable;

@@ -48,19 +48,19 @@ void StdThread::runThread(StdThread* thread)
 //******************************************************************************
 
 StdThread::StdThread() :
-   StdThread(NULL, "") {
+   StdThread(nullptr, "") {
    LOG_INSTANCE_CREATE("StdThread")
 }
 
 StdThread::StdThread(const std::string& name) :
-   StdThread(NULL, name) {
+   StdThread(nullptr, name) {
    LOG_INSTANCE_CREATE("StdThread")
 }
 
 //******************************************************************************
 
 StdThread::StdThread(Runnable* runnable) :
-   StdThread(NULL, "") {
+   StdThread(nullptr, "") {
    LOG_INSTANCE_CREATE("StdThread")
 }
 
@@ -117,3 +117,12 @@ const std::string& StdThread::getName() const {
 }
 
 //******************************************************************************
+
+void StdThread::join() {
+   if (joinable()) {
+      join();
+   }
+}
+
+//******************************************************************************
+

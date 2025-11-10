@@ -37,7 +37,7 @@ void TestIniReader::setupSuite() {
    
    if (!m_filePath.empty()) {
       FILE *f = ::fopen(m_filePath.c_str(), "wt");
-      if (f != NULL) {
+      if (f != nullptr) {
          ::fprintf(f, "# this is a comment line\n");
          ::fprintf(f, "[stooges]\n");
          ::fprintf(f, "stooge1 = Moe\n");

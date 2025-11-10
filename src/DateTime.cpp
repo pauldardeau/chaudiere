@@ -11,7 +11,7 @@
 
 using namespace chaudiere;
 
-#define NSEC_PER_SEC 1000000000.0
+constexpr double NSEC_PER_SEC = 1000000000.0;
 
 //******************************************************************************
 
@@ -33,7 +33,7 @@ static int numberLeadingZeros(const char* value, int length) {
 void DateTime::dateFromString(DateTime* date, const char* dateValue) {
    //TODO: add microseconds
    const size_t valueLength = ::strlen(dateValue);
-   if ((valueLength > 18) && (date != NULL)) {
+   if ((valueLength > 18) && (date != nullptr)) {
       const char* firstDash = ::strchr(dateValue, '-');
       if (firstDash > dateValue) {
          const char* secondDash = ::strchr(firstDash+1, '-');
@@ -176,7 +176,7 @@ DateTime* DateTime::gmtDateTime() {
 
    //TODO: add microseconds
    struct tm* timeptr = ::gmtime(&currentGMT);
-   if (timeptr != NULL) {
+   if (timeptr != nullptr) {
       // caller responsible for deleting
       DateTime* dt = new DateTime(0);
       dt->m_year = timeptr->tm_year + 1900;
@@ -191,7 +191,7 @@ DateTime* DateTime::gmtDateTime() {
       return dt;
    }
    
-   return NULL;
+   return nullptr;
 }
 
 //******************************************************************************
@@ -217,9 +217,9 @@ DateTime::DateTime() :
       m_timeIntervalSince1970 = unixTime;
       m_haveUnixTimeValue = true;
    } else {
-      time_t t = ::time(NULL);
+      time_t t = ::time(nullptr);
       struct tm* now = ::localtime(&t);
-      if (now != NULL) {
+      if (now != nullptr) {
          m_year = now->tm_year + 1900;
          m_month = now->tm_mon + 1;
          m_day = now->tm_mday;

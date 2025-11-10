@@ -20,7 +20,7 @@ ThreadPoolWorker::ThreadPoolWorker(ThreadingFactory* threadingFactory,
                                    ThreadPoolQueue& queue,
                                    int workerId) :
    m_threadingFactory(threadingFactory),
-   m_workerThread(NULL),
+   m_workerThread(nullptr),
    m_poolQueue(queue),
    m_workerId(workerId),
    m_isRunning(false) {
@@ -53,21 +53,43 @@ void ThreadPoolWorker::start() {
 //******************************************************************************
 
 void ThreadPoolWorker::stop() {
-   m_isRunning = false;
+   while (m_isRunning) {
+      Thread::sleep(1);
+   }
 }
 
 //******************************************************************************
 
 void ThreadPoolWorker::run() {
-   while (m_isRunning) {
+   TakeRequestContext ctx;
+
+#if defined(DEBUG)
+   printf("ThreadPoolWorker::run starting\n");
+#endif
+
+   while (true) {
+
+#if defined(DEBUG)
       if (Logger::isLogging(LogLevel::Debug)) {
          char message[128];
          ::snprintf(message, 128, "poolQueue taking request on thread %d", m_workerId);
          LOG_DEBUG(message)
       }
+#endif
 
-      Runnable* runnable = m_poolQueue.takeRequest();
-      if (runnable) {
+      m_poolQueue.takeRequest(ctx);
+      if (!ctx.isQueueRunning) {
+#if defined(DEBUG)
+         printf("ThreadPoolWorker::run - detected queue no longer running\n");
+#endif
+         m_workerThread->join();
+         m_isRunning = false;
+         break;
+      }
+
+      Runnable* runnable = ctx.runnable;
+
+      if (runnable != nullptr) {
          // has our thread been notified to shut down?
          if (!m_workerThread->isAlive()) {
             // put the request back on the front of the queue
@@ -97,13 +119,17 @@ void ThreadPoolWorker::run() {
                              m_workerId);
                LOG_DEBUG(message)
             }
+
+            if (runnable->isAutoDelete()) {
+               delete runnable;
+            }
          }
       }
-
-      if (runnable->isAutoDelete()) {
-         delete runnable;
-      }
    }
+
+#if defined(DEBUG)
+   printf("ThreadPoolWorker::run ending\n");
+#endif
 }
 
 //******************************************************************************
