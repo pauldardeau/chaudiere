@@ -24,12 +24,12 @@ public:
    PthreadsConditionVariable();
 
    PthreadsConditionVariable(const std::string& name);
-   
+
    /**
     * Destructor
     */
    ~PthreadsConditionVariable();
-   
+
    /**
     *
     * @param mutex
@@ -37,12 +37,12 @@ public:
     * @see Mutex()
     */
    virtual bool wait(Mutex* mutex);
-   
+
    /**
     *
     */
    virtual void notifyOne();
-   
+
    /**
     *
     */
@@ -50,7 +50,7 @@ public:
 
    virtual const std::string& getName() const;
 
-   
+
 private:
    // disallow copies
    PthreadsConditionVariable(const PthreadsConditionVariable&);

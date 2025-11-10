@@ -32,30 +32,30 @@ public:
    SocketRequest(SocketCompletionObserver* completionObserver,
                  int socketFD,
                  SocketServiceHandler* handler);
-   
+
    /**
     * Destructor
     */
    ~SocketRequest();
-   
+
    /**
     * Services the socket using the specified handler
     */
    void run();
-   
+
    /**
     * Retrieves the file descriptor for the socket
     * @return socket file descriptor
     */
    int getSocketFD() const;
-   
+
    /**
     * Retrieves the Socket associated with the request
     * @see Socket()
     * @return the Socket associated with the request
     */
    Socket* getSocket();
-   
+
    /**
     * Notifies the Socket that the request processing is complete
     */
@@ -82,7 +82,7 @@ public:
     *
     */
    virtual void notifyOnCompletion();
-   
+
 private:
    Socket* m_socket;
    Socket* m_borrowedSocket;

@@ -45,7 +45,7 @@ EpollServer::~EpollServer() {
       m_events = nullptr;
    }
 #endif
-   
+
    if (-1 != m_epfd) {
       ::close(m_epfd);
    }
@@ -65,18 +65,18 @@ bool EpollServer::init(SocketServiceHandler* socketServiceHandler,
       ::free(m_events);
       m_events = nullptr;
    }
-   
+
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
       m_epfd = ::epoll_create(maxConnections);
-      
+
       if (m_epfd == -1) {
          LOG_CRITICAL("epoll create failed")
          return false;
       }
-      
+
       m_events = (struct epoll_event*) ::calloc(maxConnections,
                                                 sizeof(struct epoll_event));
-      
+
       // add our listener socket (server socket) as one of the fd's that
       // we want watched
       if (!addFileDescriptorForRead(getListenerSocketFileDescriptor())) {
@@ -105,13 +105,13 @@ int EpollServer::getKernelEvents(int maxConnections) {
 
 int EpollServer::fileDescriptorForEventIndex(int eventIndex) {
    int client_fd = -1;
-   
+
 #ifdef EPOLL_SUPPORT
    struct epoll_event current_event;
    current_event = m_events[eventIndex];
    client_fd = (int) current_event.data.fd;
 #endif
-   
+
    return client_fd;
 }
 
@@ -123,7 +123,7 @@ bool EpollServer::addFileDescriptorForRead(int fileDescriptor) {
    ::memset(&ev, 0, sizeof(struct epoll_event));
    ev.events = EPOLLIN | EPOLLRDHUP;
    ev.data.fd = fileDescriptor;
-   
+
    if (::epoll_ctl(m_epfd, EPOLL_CTL_ADD, fileDescriptor, &ev) < 0) {
       LOG_CRITICAL("epoll_ctl failed in add filter")
       if (errno == EBADF) {
@@ -146,7 +146,7 @@ bool EpollServer::addFileDescriptorForRead(int fileDescriptor) {
       return true;
    }
 #endif
-   
+
    return false;
 }
 
@@ -181,7 +181,7 @@ bool EpollServer::removeFileDescriptorFromRead(int fileDescriptor) {
       return true;
    }
 #endif
-   
+
    return false;
 }
 
@@ -193,7 +193,7 @@ bool EpollServer::isEventDisconnect(int eventIndex) {
    current_event = m_events[eventIndex];
    return current_event.events & EPOLLHUP;
 #endif
-   
+
    return false;
 }
 
@@ -205,7 +205,7 @@ bool EpollServer::isEventReadClose(int eventIndex) {
    current_event = m_events[eventIndex];
    return current_event.events & EPOLLRDHUP;
 #endif
-   
+
    return false;
 }
 
@@ -217,7 +217,7 @@ bool EpollServer::isEventRead(int eventIndex) {
    current_event = m_events[eventIndex];
    return current_event.events & EPOLLIN;
 #endif
-   
+
    return false;
 }
 

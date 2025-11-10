@@ -78,7 +78,7 @@ bool Logger::isLogging(LogLevel logLevel) {
    if (loggerInstance) {
       return loggerInstance->isLoggingLevel(logLevel);
    }
-   
+
    return false;
 }
 

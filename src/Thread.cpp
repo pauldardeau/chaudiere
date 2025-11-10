@@ -86,7 +86,7 @@ void Thread::run() {
 
 bool Thread::isAlive() const {
    bool rc;
-   
+
    {
       Thread* pThis = const_cast<Thread*>(this);
       if (nullptr != pThis->m_mutexAlive) {
@@ -96,7 +96,7 @@ bool Thread::isAlive() const {
          rc = m_isAlive;
       }
    }
-   
+
    return rc;
 }
 

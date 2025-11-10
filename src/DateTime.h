@@ -26,7 +26,7 @@ namespace chaudiere
       int m_microseconds;
       int m_weekDay;
       mutable bool m_haveUnixTimeValue;
-      
+
    public:
       /**
        *
@@ -34,14 +34,14 @@ namespace chaudiere
        * @param dateValue
        */
       static void dateFromString(DateTime* date, const char* dateValue);
-      
+
       /**
        *
        * @param date
        * @return
        */
       static double unixTimeValue(const DateTime& date);
-      
+
       /**
        *
        * @param date
@@ -55,12 +55,12 @@ namespace chaudiere
        * @return DateTime instance with GMT date time (caller must delete)
        */
       static DateTime* gmtDateTime();
-      
+
       /**
        * Default constructor. Retrieves local (system) date and time.
        */
       DateTime();
-      
+
       /**
        * Constructs a DateTime instance without retrieving date/time
        * from system. This is useful when the date/time values are
@@ -68,7 +68,7 @@ namespace chaudiere
        * @param dummy ignored
        */
       DateTime(int dummy);
-      
+
       /**
        *
        * @param year
@@ -84,56 +84,56 @@ namespace chaudiere
                int hour,
                int minute,
                int second,
-	       int microsecond);
-   
+               int microsecond);
+
       DateTime(double timeIntervalSince1970);
-      
+
       /**
        * Constructs a DateTime instance by parsing a string that
        * has the unformatted date/time (yyyymmddhhmmss).
        * @param dateTime the unformatted date/time as a string
        */
       DateTime(const std::string& dateTime);
-      
+
       /**
        * Copy constructor
        * @param copy the source of the copy
        */
       DateTime(const DateTime& copy);
-      
+
       /**
        * Destructor
        */
       ~DateTime() {}
-      
+
       /**
        * Copy operator
        * @param copy the source of the copy
        * @return reference to the destination of the copy
        */
       DateTime& operator=(const DateTime& copy);
-      
+
       /**
        * Equality operator
        * @param compare the DateTime instance to test for equality
        * @return boolean indicating whether the 2 objects are equal
        */
       bool operator==(const DateTime& compare) const;
-      
+
       /**
        * Less-than operator
        * @param compare the DateTime instance to determine if current object is smaller than
        * @return boolean indicating if current object is smaller than argument object
        */
       bool operator<(const DateTime& compare) const;
-      
+
       /**
        *
        * @param compare
        * @return
        */
       double timeIntervalSinceDate(const DateTime& compare) const;
-      
+
       /**
        *
        * @return
@@ -145,19 +145,19 @@ namespace chaudiere
        * @return the date/time as a formatted string
        */
       std::string formattedString() const;
-      
+
       /**
        * Retrieves the date/time as an unformatted string (yyyymmddhhmmss)
        * @return the date/time as an unformatted string
        */
       std::string unformattedString() const;
-      
+
       /**
        * Sets the year value
        * @param year the new year value
        */
       void setYear(int year);
-      
+
       /**
        * Retrieves the year value
        * @return year value
@@ -169,7 +169,7 @@ namespace chaudiere
       * @param month the new month value
       */
       void setMonth(int month);
-      
+
      /**
       * Retrieves the month value
       * @return month value
@@ -181,7 +181,7 @@ namespace chaudiere
       * @param day the new day value
       */
       void setDay(int day);
-      
+
      /**
       * Retrieves the day value
       * @return day value
@@ -193,7 +193,7 @@ namespace chaudiere
       * @param hour the new hour value
       */
       void setHour(int hour);
-      
+
      /**
       * Retrieves the hour value
       * @return hour value
@@ -205,7 +205,7 @@ namespace chaudiere
       * @param minute the new minute value
       */
       void setMinute(int minute);
-      
+
      /**
       * Retrieves the minute value
       * @return minute value
@@ -217,7 +217,7 @@ namespace chaudiere
       * @param second the new second value
       */
       void setSecond(int second);
-      
+
      /**
       * Retrieves the second value
       * @return second value
@@ -241,7 +241,7 @@ namespace chaudiere
       * @param weekDay the new weekday value
       */
       void setWeekDay(int weekDay);
-      
+
      /**
       * Retrieves the weekday value
       * @return weekday value

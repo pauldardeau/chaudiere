@@ -37,13 +37,12 @@ public:
     * @param hwmConnectionsMutex
     */
    EpollServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex);
-   
+
    /**
     * Destructor
     */
    ~EpollServer();
-   
-   // KernelEventServer
+
    /**
     *
     * @param socketServiceHandler
@@ -54,42 +53,42 @@ public:
    virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
                      int maxConnections);
-   
+
    /**
     *
     * @param maxConnections
     * @return
     */
    virtual int getKernelEvents(int maxConnections);
-   
+
    /**
     *
     * @param eventIndex
     * @return
     */
    virtual int fileDescriptorForEventIndex(int eventIndex);
-   
+
    /**
     *
     * @param fileDescriptor
     * @return
     */
    virtual bool addFileDescriptorForRead(int fileDescriptor);
-   
+
    /**
     *
     * @param fileDescriptor
     * @return
     */
    virtual bool removeFileDescriptorFromRead(int fileDescriptor);
-   
+
    /**
     *
     * @param eventIndex
     * @return
     */
    virtual bool isEventDisconnect(int eventIndex);
-   
+
    /**
     *
     * @param eventIndex
@@ -104,13 +103,13 @@ public:
     */
    virtual bool isEventRead(int eventIndex);
 
-   
+
 private:
 #ifdef EPOLL_SUPPORT
    struct epoll_event* m_events;
 #endif
    int m_epfd;
-   
+
    // copying not allowed
    EpollServer(const EpollServer&);
    EpollServer& operator=(const EpollServer&);

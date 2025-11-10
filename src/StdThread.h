@@ -25,7 +25,7 @@ public:
    StdThread();
 
    explicit StdThread(const std::string& name);
-   
+
    /**
     * Constructs a c++11 thread using the specified Runnable
     * @param runnable the executable object that the thread will run
@@ -34,35 +34,35 @@ public:
    explicit StdThread(Runnable* runnable);
 
    explicit StdThread(Runnable* runnable, const std::string& name);
-   
+
    /**
     * Destructor
     */
    virtual ~StdThread();
-   
+
    /**
     *
     * @return
     */
    virtual bool start();
-   
+
    /**
     *
     */
    virtual void run();
-   
+
    /**
     *
     * @param thread
     */
    void runThread(StdThread* thread);
-   
+
    /**
     *
     * @return
     */
    std::thread::native_handle_type getHandle();
-   
+
    /**
     *
     * @return
@@ -72,8 +72,8 @@ public:
    const std::string& getName() const;
 
    virtual void join();
-   
-   
+
+
 private:
    // disallow copying
    StdThread(const StdThread&);
@@ -82,7 +82,7 @@ private:
    std::thread m_thread;
    StdMutex m_mutexAlive;
    std::string m_name;
-   
+
 };
 
 }

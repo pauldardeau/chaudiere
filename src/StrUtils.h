@@ -47,7 +47,7 @@ public:
     * @return double value
     */
    static double parseDouble(const std::string& s);
-   
+
    /**
     * Construct a string from an integer
     * @param i integer value to convert to string
@@ -89,14 +89,14 @@ public:
     * @return string verion of character value
     */
    static std::string charToString(char c);
-   
+
    /**
     * Strip leading and trailing spaces from string
     * @param s the string to strip
     * @return stripped string
     */
    static std::string strip(const std::string& s);
-   
+
   /**
    * Strip leading and trailing character 'strip' from string 's'
    * @param s the string to strip
@@ -104,7 +104,7 @@ public:
    * @return stripped string
    */
    static std::string strip(const std::string& s, char strip);
-    
+
    /**
     * Determines whether 'haystack' starts with 'needle'
     * @param haystack the string to search
@@ -113,7 +113,7 @@ public:
     */
    static bool startsWith(const std::string& haystack,
                           const std::string& needle);
-                          
+
    /**
     * Determines whether 'haystack' ends with 'needle'
     * @param haystack the string to search
@@ -137,7 +137,7 @@ public:
     * @param s the string to convert
     */
    static void toUpperCase(std::string& s);
-   
+
    /**
     * Converts string 's' to lower case in place
     * @param s the string to convert
@@ -162,7 +162,7 @@ public:
     * @return reference to stripped string
     */
    static std::string& strip(std::string& s, char strip=' ');
-   
+
    /**
     * Strips trailing characters 'strip' from string 's' (in place) if present
     * @param s the string to strip
@@ -170,7 +170,7 @@ public:
     * @return reference to stripped string
     */
    static std::string& stripTrailing(std::string& s, char strip);
-   
+
    /**
     * Strips leading characters 'strip' from string 's' (in place) if present
     * @param s the string to strip
@@ -178,21 +178,21 @@ public:
     * @return reference to stripped string
     */
    static std::string& stripLeading(std::string& s, char strip);
-   
+
    /**
     * Trims leading spaces of string 's' (in place)
     * @param s the string to be trimmed
     * @return reference to trimmed string
     */
    static std::string& trimLeadingSpaces(std::string& s);
-   
+
    /**
     * Trims leading and trailing spaces of string 's' (in place)
     * @param s the string to be trimmed
     * @return reference to trimmed string
     */
    static std::string trim(const std::string& s);
-   
+
    /**
     * Pads string 's' (in place) to right with character 'padChar' to a length of 'paddedLength'
     * @param s the string to pad (if necessary)

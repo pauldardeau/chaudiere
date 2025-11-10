@@ -24,7 +24,7 @@ static int numberLeadingZeros(const char* value, int length) {
          ++leadingZeros;
       }
    }
-   
+
    return leadingZeros;
 }
 
@@ -50,42 +50,42 @@ void DateTime::dateFromString(DateTime* date, const char* dateValue) {
                      const long hourLen = firstColon - space - 1;
                      const long minuteLen = secondColon - firstColon - 1;
                      const size_t secondLen = ::strlen(secondColon+1);
-                     
+
                      if ((yearLen == 4L) &&
                          (monthLen == 2L) &&
                          (dayLen == 2L) &&
                          (hourLen == 2L) &&
                          (minuteLen == 2L) &&
                          (secondLen == 2)) {
-                           
+
                         char yearAsString[5];
                         char monthAsString[3];
                         char dayAsString[3];
                         char hourAsString[3];
                         char minuteAsString[3];
                         char secondAsString[3];
-                        
+
                         ::memset(yearAsString, 0, 5);
                         ::memset(monthAsString, 0, 3);
                         ::memset(dayAsString, 0, 3);
                         ::memset(hourAsString, 0, 3);
                         ::memset(minuteAsString, 0, 3);
                         ::memset(secondAsString, 0, 3);
-                        
+
                         ::strncpy(yearAsString, dateValue, 4);
                         ::strncpy(monthAsString, firstDash+1, 2);
                         ::strncpy(dayAsString, secondDash+1, 2);
                         ::strncpy(hourAsString, space+1, 2);
                         ::strncpy(minuteAsString, firstColon+1, 2);
                         ::strncpy(secondAsString, secondColon+1, 2);
-                        
+
                         const int leadingZeros1 = numberLeadingZeros(yearAsString, 4);
                         const int leadingZeros2 = numberLeadingZeros(monthAsString, 2);
                         const int leadingZeros3 = numberLeadingZeros(dayAsString, 2);
                         const int leadingZeros4 = numberLeadingZeros(hourAsString, 2);
                         const int leadingZeros5 = numberLeadingZeros(minuteAsString, 2);
                         const int leadingZeros6 = numberLeadingZeros(secondAsString, 2);
-                        
+
                         if ((leadingZeros1 < 4) &&
                            (leadingZeros2 < 2) &&
                            (leadingZeros3 < 2)) {
@@ -150,7 +150,7 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
    const time_t epochTime = unixTime;
    struct tm timeComponents;
    ::memset(&timeComponents, 0, sizeof(timeComponents));
-      
+
    if (::localtime_r(&epochTime, &timeComponents)) {
       date.m_year = timeComponents.tm_year + 1900;
       date.m_month = timeComponents.tm_mon + 1;
@@ -161,7 +161,7 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
       //TODO: add microseconds
       date.m_timeIntervalSince1970 = unixTime;
       date.m_haveUnixTimeValue = true;
-         
+
       return true;
    } else {
       return false;
@@ -190,7 +190,7 @@ DateTime* DateTime::gmtDateTime() {
       dt->m_haveUnixTimeValue = false;
       return dt;
    }
-   
+
    return nullptr;
 }
 
@@ -266,7 +266,7 @@ DateTime::DateTime(const std::string& dateTime) :
       const std::string hour = dateTime.substr(8, 2);
       const std::string minute = dateTime.substr(10, 2);
       const std::string second = dateTime.substr(12, 2);
-      
+
       m_year = StrUtils::parseInt(year);
       m_month = StrUtils::parseInt(month);
       m_day = StrUtils::parseInt(day);
@@ -331,12 +331,12 @@ DateTime::DateTime(const DateTime& copy) :
 }
 
 //******************************************************************************
-      
+
 DateTime& DateTime::operator=(const DateTime& copy) {
    if (this == &copy) {
       return *this;
    }
-   
+
    m_timeIntervalSince1970 = copy.m_timeIntervalSince1970;
    m_year = copy.m_year;
    m_month = copy.m_month;
@@ -347,12 +347,12 @@ DateTime& DateTime::operator=(const DateTime& copy) {
    m_microseconds = copy.m_microseconds;
    m_weekDay = copy.m_weekDay;
    m_haveUnixTimeValue = copy.m_haveUnixTimeValue;
-   
+
    return *this;
 }
 
 //******************************************************************************
-      
+
 bool DateTime::operator==(const DateTime& compare) const {
    if (m_haveUnixTimeValue && compare.m_haveUnixTimeValue) {
       return (m_timeIntervalSince1970 == compare.m_timeIntervalSince1970);
@@ -414,7 +414,7 @@ bool DateTime::operator<(const DateTime& compare) const {
                         return true;
                      } else {
                         return false;
-                     } 
+                     }
                   }
                }
             }
@@ -424,7 +424,7 @@ bool DateTime::operator<(const DateTime& compare) const {
 }
 
 //******************************************************************************
-      
+
 std::string DateTime::formattedString() const {
    //TODO: what if we only have unix time populated?
    char stringBuffer[30];
@@ -455,23 +455,23 @@ double DateTime::timeIntervalSinceDate(const DateTime& compare) const {
    if (m_haveUnixTimeValue && compare.m_haveUnixTimeValue) {
       return (m_timeIntervalSince1970 - compare.m_timeIntervalSince1970);
    }
-   
+
    double thisUnixTime;
    double compareUnixTime;
-   
+
    if (!m_haveUnixTimeValue ) {
       thisUnixTime = unixTimeValue(*this);
    } else {
       thisUnixTime = m_timeIntervalSince1970;
    }
-   
+
    if (!compare.m_haveUnixTimeValue ) {
       compareUnixTime = unixTimeValue(compare);
    }
    else {
       compareUnixTime = compare.m_timeIntervalSince1970;
    }
-   
+
    return (thisUnixTime - compareUnixTime);
 }
 
@@ -482,7 +482,7 @@ double DateTime::timeIntervalSince1970() const {
       m_timeIntervalSince1970 = unixTimeValue(*this);
       m_haveUnixTimeValue = true;
    }
-   
+
    return m_timeIntervalSince1970;
 }
 
@@ -499,7 +499,7 @@ int DateTime::getYear() const {
 }
 
 //******************************************************************************
-      
+
 void DateTime::setMonth(int month) {
    m_month = month;
 }

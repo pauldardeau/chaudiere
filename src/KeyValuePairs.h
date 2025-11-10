@@ -23,13 +23,13 @@ class KeyValuePairs
        * Default constructor
        */
       KeyValuePairs();
-   
+
       /**
        * Copy constructor
        * @param copy the source of the object copy
        */
       KeyValuePairs(const KeyValuePairs& copy);
-   
+
       /**
        * Destructor
        */
@@ -41,7 +41,7 @@ class KeyValuePairs
        * @return updated object after the copy.
        */
       KeyValuePairs& operator=(const KeyValuePairs& copy);
-   
+
       /**
        * Retrieves the keys contained within the collection
        * @param keys the vector to be populated with collection keys
@@ -82,19 +82,19 @@ class KeyValuePairs
        * Removes all key/value pairs within the collection
        */
       void clear();
-   
+
       /**
        * Retrieves the number of pairs contained within the collection
        * @return the number of key/value pairs contained
        */
       std::size_t size() const;
-   
+
       /**
        * Determines if the collection is empty
        * @return boolean indicating whether the collection is empty
        */
       bool empty() const;
-   
+
 
    private:
       std::map<std::string, std::string> m_keyValues;

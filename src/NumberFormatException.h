@@ -26,13 +26,13 @@ public:
     * @param s the detail message
     */
    explicit NumberFormatException(const std::string& s);
-   
+
    /**
     * Copy constructor
     * @param copy the source of the copy
     */
    NumberFormatException(const NumberFormatException& copy);
-   
+
    /**
     * Destructor
     */
@@ -45,14 +45,14 @@ public:
    virtual const char* getType() const {
       return "NumberFormatException";
    }
-   
+
    /**
     * Copy operator
     * @param copy the source of the copy
     * @return reference to the updated reference
     */
    NumberFormatException& operator=(const NumberFormatException& copy);
-   
+
 };
 
 }

@@ -42,12 +42,12 @@ public:
     * @see ThreadingFactory()
     */
    explicit ThreadPoolQueue(ThreadingFactory* threadingFactory);
-   
+
    /**
     * Destructor
     */
    virtual ~ThreadPoolQueue();
-   
+
    /**
     *
     * @param runnableRequest
@@ -55,7 +55,7 @@ public:
     * @see Runnable()
     */
    virtual bool addRequest(Runnable* runnableRequest);
-   
+
    /**
     *
     * @return
@@ -68,26 +68,26 @@ public:
     * @return
     */
    virtual bool shutDown();
-   
+
    /**
     *
     * @return
     */
    virtual bool isRunning() const;
-   
+
    /**
     *
     * @return
     */
    virtual bool isEmpty() const;
-   
+
    /**
     *
     * @return
     */
    virtual bool isInitialized() const;
-   
-   
+
+
 private:
    ThreadingFactory* m_threadingFactory;
    std::deque<Runnable*> m_queue;

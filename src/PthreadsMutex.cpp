@@ -111,7 +111,7 @@ bool PthreadsMutex::lock() {
       } else {
          printf("mutex lock failed, name='%s', rc=%d\n", m_mutexName.c_str(), rc);
          std::string errorCode;
-         
+
          switch(rc) {
             case EINVAL:
                errorCode = "EINVAL";
@@ -123,12 +123,12 @@ bool PthreadsMutex::lock() {
                errorCode = "EDEADLK";
                break;
          }
-         
+
          std::string buffer = "unable to lock mutex, pthread_mutex_lock rc=";
          buffer += errorCode;
          LOG_ERROR(buffer)
       }
-      
+
       return m_isLocked;
    } else {
       printf("locking not attempted, no valid mutex, name='%s'\n", m_mutexName.c_str());

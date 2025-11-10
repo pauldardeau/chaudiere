@@ -22,7 +22,7 @@ class LifecycleStats
 public:
    long long m_instancesCreated;
    long long m_instancesDestroyed;
-   
+
    /**
     *
     */
@@ -30,7 +30,7 @@ public:
       m_instancesCreated(0L),
       m_instancesDestroyed(0L) {
    }
-   
+
    /**
     *
     * @param copy
@@ -39,7 +39,7 @@ public:
       m_instancesCreated(copy.m_instancesCreated),
       m_instancesDestroyed(copy.m_instancesDestroyed) {
    }
-   
+
    /**
     *
     * @param copy
@@ -49,10 +49,10 @@ public:
       if (this == &copy) {
          return *this;
       }
-      
+
       m_instancesCreated = copy.m_instancesCreated;
       m_instancesDestroyed = copy.m_instancesDestroyed;
-      
+
       return *this;
    }
 };
@@ -67,24 +67,24 @@ public:
     *
     */
    StdLogger();
-   
+
    /**
     *
     * @param logLevel
     */
    StdLogger(LogLevel logLevel);
-   
+
    /**
     *
     */
    virtual ~StdLogger();
-   
+
    /**
     *
     * @return
     */
    virtual LogLevel getLogLevel() const;
-   
+
    /**
     *
     * @param logLevel
@@ -97,38 +97,38 @@ public:
     * @param logMessage
     */
    virtual void logMessage(LogLevel logLevel, const std::string& logMessage);
-   
+
    /**
     *
     * @param logLevel
     * @return
     */
    virtual bool isLoggingLevel(LogLevel logLevel) const;
-   
+
    /**
     *
     * @return
     */
    virtual bool isLoggingInstanceLifecycles() const;
-   
+
    /**
     *
     * @param logInstanceLifecycles
     */
    virtual void setLogInstanceLifecycles(bool logInstanceLifecycles);
-   
+
    /**
     *
     * @param className
     */
    virtual void logInstanceCreate(const std::string& className);
-   
+
    /**
     *
     * @param className
     */
    virtual void logInstanceDestroy(const std::string& className);
-   
+
    /**
     *
     * @param occurrenceType
@@ -140,15 +140,15 @@ public:
    /**
     *
     * @param mapClassLifecycleStats
-    */                           
+    */
    void populateClassLifecycleStats(std::unordered_map<std::string, LifecycleStats>& mapClassLifecycleStats);
-   
+
    /**
     *
     * @param mapOccurrences
     */
    void populateOccurrences(std::unordered_map<std::string, std::unordered_map<std::string, long long> >& mapOccurrences);
-   
+
    /**
     *
     * @param level
@@ -164,14 +164,14 @@ private:
    std::unique_ptr<Mutex> m_lockOccurrences;
    LogLevel m_logLevel;
    bool m_isLoggingInstanceLifecycles;
-   
+
    static const std::string prefixCritical;
    static const std::string prefixError;
    static const std::string prefixWarning;
    static const std::string prefixInfo;
    static const std::string prefixDebug;
    static const std::string prefixVerbose;
-   
+
    // disallow copies
    StdLogger(const StdLogger&);
    StdLogger& operator=(const StdLogger&);

@@ -33,7 +33,7 @@ bool StdConditionVariable::wait(Mutex* mutex) {
    if (mutex) {
       StdMutex* stdMutex =
          dynamic_cast<StdMutex*>(mutex);
-      
+
       if (stdMutex) {
          std::unique_lock<std::mutex> lock(stdMutex->getPlatformPrimitive());
          m_cond.wait(lock);
@@ -44,7 +44,7 @@ bool StdConditionVariable::wait(Mutex* mutex) {
    } else {
       LOG_ERROR("no mutex given to wait on")
    }
-   
+
    return false;
 }
 

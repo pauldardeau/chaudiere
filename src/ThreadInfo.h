@@ -17,7 +17,7 @@ class ThreadInfo
 public:
    std::string threadId;
    bool isBusy;
-   
+
    /**
     * Constructs a new ThreadInfo with the specified thread id
     * @param theThreadId the id for the thread
@@ -26,7 +26,7 @@ public:
       threadId(theThreadId),
       isBusy(false) {
    }
-   
+
    /**
     * Copy constructor
     * @param copy the source of the copy
@@ -35,13 +35,13 @@ public:
       threadId(copy.threadId),
       isBusy(copy.isBusy) {
    }
-   
+
    /**
     * Destructor
     */
    ~ThreadInfo() {
    }
-   
+
    /**
     * Copy operator
     * @param copy the source of the copy
@@ -51,13 +51,13 @@ public:
       if (this == &copy) {
          return *this;
       }
-      
+
       threadId = copy.threadId;
       isBusy = copy.isBusy;
-      
+
       return *this;
    }
-   
+
 };
 
 }

@@ -29,25 +29,25 @@ namespace chaudiere
        * Default constructor
        */
       OptionParser();
-      
+
       /**
        * Copy constructor
        * @param copy the source of the copy
        */
       OptionParser(const OptionParser& copy);
-      
+
       /**
        * Destructor
        */
       ~OptionParser() {}
-   
+
       /**
        * Copy operator
        * @param copy the source of the copy
        * @return reference to the target of the copy
        */
       OptionParser& operator=(const OptionParser& copy);
-      
+
       /**
        * Adds an option that simply flags a feature/capability as
        * present/enabled or not
@@ -62,7 +62,7 @@ namespace chaudiere
        * @return boolean indicating whether flag is defined
        */
       bool acceptsFlag(const std::string& flag) const;
-      
+
       /**
        * Adds a string option that may be present on the command line
        * @param option the name of the option as specified on the command line
@@ -71,14 +71,14 @@ namespace chaudiere
        */
       bool addOption(const std::string& option,
                      const std::string& defaultValue);
-   
+
       /**
        * Determines if the specified string option is present
        * @param option the name of the option (as specified on the command line)
        * @return boolean indicating whether the option is present
        */
       bool hasOption(const std::string& option) const;
-      
+
       /**
        * Retrieves the value associated with the specified string option
        * @param option the name of the option whose value is desired
@@ -87,7 +87,7 @@ namespace chaudiere
        * @see hasOption
        */
       const std::string& getOptionValue(const std::string& option) const;
-   
+
       /**
        * Determines if the specified boolean option is present
        * @param option the name of the option (as specified on the command line)

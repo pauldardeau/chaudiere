@@ -22,13 +22,13 @@ public:
     * Default constructor
     */
    PthreadsMutex();
-   
+
    /**
     * Constructs mutex with a name
     * @param mutexName the name of the mutex
     */
    explicit PthreadsMutex(const std::string& mutexName);
-   
+
    /**
     * Destructor
     */
@@ -43,25 +43,25 @@ public:
     * @return
     */
    virtual bool unlock();
-   
+
    /**
     *
     * @return
     */
    virtual bool lock();
-   
+
    /**
     *
     * @return
     */
    virtual bool isLocked() const;
-   
+
    /**
     *
     * @return
     */
    virtual bool haveValidMutex() const;
-   
+
    /**
     * Retrieves the primitive data type for the underlying platform
     * @return the platform's primitive data type for the mutex
@@ -70,14 +70,14 @@ public:
    {
       return m_mutex;
    }
-   
+
    /**
     * Retrieves the name of the mutex
     * @return name of the mutex
     */
    const std::string& getName() const;
 
-    
+
 private:
    // copying not allowed
    PthreadsMutex(const PthreadsMutex&);
@@ -87,7 +87,7 @@ private:
    std::string m_mutexName;
    bool m_haveValidMutex;
    bool m_isLocked;
-    
+
 };
 
 }

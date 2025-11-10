@@ -71,7 +71,7 @@ Socket* RequestHandler::getSocket() {
    } else if (m_socketRequest) {
       socket = m_socketRequest->getSocket();
    }
-   
+
    return socket;
 }
 

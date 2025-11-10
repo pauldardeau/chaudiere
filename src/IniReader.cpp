@@ -24,7 +24,7 @@ using namespace chaudiere;
 IniReader::IniReader(const std::string& iniFile) :
    m_iniFile(iniFile) {
    LOG_INSTANCE_CREATE("IniReader")
-   
+
    if (!readFile()) {
       throw BasicException("unable to read configuration file: " + iniFile);
    }
@@ -42,17 +42,17 @@ bool IniReader::readSection(const std::string& section,
                             KeyValuePairs& mapSectionValues) const {
    const std::string sectionId = bracketedSection(section);
    std::size_t posSection = m_fileContents.find(sectionId);
-    
+
    if (posSection == std::string::npos) {
       return false;
    }
-    
+
    const std::string::size_type posEndSection = posSection + sectionId.length();
    const std::string::size_type startNextSection =
       m_fileContents.find(OPEN_BRACKET, posEndSection);
-    
+
    std::string sectionContents;
-    
+
    // do we have another section?
    if (startNextSection != std::string::npos) {
       // yes, we have another section in the file -- read everything
@@ -64,25 +64,25 @@ bool IniReader::readSection(const std::string& section,
       // the file
       sectionContents = m_fileContents.substr(posEndSection);
    }
-    
+
    std::string::size_type posEol;
    std::string::size_type index = 0;
-    
+
    // process each line of the section
    while ((posEol = sectionContents.find(EOL_LF, index)) != std::string::npos) {
-      
+
       std::string line = sectionContents.substr(index, posEol - index);
       if (!line.empty()) {
          std::string::size_type posCR = line.find('\r');
          if (posCR != std::string::npos) {
             line = line.substr(0, posCR);
          }
-            
+
          const std::string::size_type posEqual = line.find('=');
-            
+
          if ((posEqual != std::string::npos) && (posEqual < line.length())) {
             const std::string key = StrUtils::strip(line.substr(0, posEqual));
-                
+
             // if the line is not a comment
             if (!StrUtils::startsWith(key, COMMENT_IDENTIFIER)) {
                mapSectionValues.addPair(key,
@@ -90,10 +90,10 @@ bool IniReader::readSection(const std::string& section,
             }
          }
       }
-        
+
       index = posEol + 1;
    }
-    
+
    return true;
 }
 
@@ -103,14 +103,14 @@ bool IniReader::getSectionKeyValue(const std::string& section,
                                    const std::string& key,
                                    std::string& value) const {
    KeyValuePairs map;
-    
+
    if (!readSection(section, map)) {
       LOG_WARNING("IniReader readSection returned false")
       return false;
    }
-    
+
    const std::string strippedKey = StrUtils::strip(key);
-    
+
    if (!map.hasKey(strippedKey)) {
       if (Logger::isLogging(LogLevel::Debug)) {
          char msg[128];
@@ -119,9 +119,9 @@ bool IniReader::getSectionKeyValue(const std::string& section,
       }
       return false;
    }
-    
+
    value = map.getValue(key);
-    
+
    return true;
 }
 
@@ -139,11 +139,11 @@ bool IniReader::readFile() {
    if (f == nullptr) {
       return false;
    }
-    
+
    ::fseek(f, 0, SEEK_END);
    const long fileBytes = ::ftell(f);
    ::fseek(f, 0, SEEK_SET);
-   
+
    CharBuffer fileContents;
    size_t numObjectsRead = 0;
 
@@ -151,17 +151,17 @@ bool IniReader::readFile() {
       fileContents.ensureCapacity(fileBytes + 1);
       numObjectsRead = ::fread(fileContents.data(), fileBytes, 1, f);
    }
-   
+
    ::fclose(f);
-    
+
    if (numObjectsRead < 1) {
       LOG_ERROR("reading from ini file failed")
       return false;
    }
-   
-   fileContents.nullAt(fileBytes); 
+
+   fileContents.nullAt(fileBytes);
    m_fileContents = fileContents.data();
-   
+
    // strip out any comments
    bool strippingComments = true;
    size_t posCommentStart;
@@ -169,7 +169,7 @@ bool IniReader::readFile() {
    size_t posLF;
    size_t posEOL;
    size_t posCurrent = 0;
-   
+
    while (strippingComments) {
       posCommentStart = m_fileContents.find(COMMENT_IDENTIFIER, posCurrent);
       if (std::string::npos == posCommentStart) {
@@ -180,7 +180,7 @@ bool IniReader::readFile() {
          posLF = m_fileContents.find(EOL_LF, posCommentStart + 1);
          const bool haveCR = (std::string::npos != posCR);
          const bool haveLF = (std::string::npos != posLF);
-         
+
          if (!haveCR && !haveLF) {
             // no end-of-line marker remaining
             // erase from start of comment to end of file
@@ -188,11 +188,11 @@ bool IniReader::readFile() {
             strippingComments = false;
          } else {
             // at least one end-of-line marker was found
-            
+
             // were both types found
             if (haveCR && haveLF) {
                posEOL = posCR;
-               
+
                if (posLF < posEOL) {
                   posEOL = posLF;
                }
@@ -205,7 +205,7 @@ bool IniReader::readFile() {
                   posEOL = posLF;
                }
             }
-            
+
             const std::string beforeComment = m_fileContents.substr(0, posCommentStart);
             const std::string afterComment = m_fileContents.substr(posEOL, std::string::npos);
             m_fileContents = beforeComment + afterComment;
@@ -213,7 +213,7 @@ bool IniReader::readFile() {
          }
       }
    }
-   
+
    return true;
 }
 

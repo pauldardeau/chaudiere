@@ -45,16 +45,16 @@ void* DynamicLibrary::resolve(const std::string& functionName) {
 
 bool DynamicLibrary::open(const std::string& libraryName) {
    close();
-   
+
    m_hDll = ::dlopen(libraryName.c_str(), RTLD_NOW);
-   
+
    bool rc = (m_hDll != nullptr);
-   
+
    if (!rc) {
       LOG_ERROR(std::string("unable to load library '") +
                 libraryName + std::string("'"))
    }
-   
+
    return rc;
 }
 

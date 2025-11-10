@@ -21,13 +21,13 @@ public:
     * @param key the name of the invalid key
     */
    explicit InvalidKeyException(const std::string& key);
-   
+
    /**
     * Copy constructor
     * @param copy the source of the copy
     */
    InvalidKeyException(const InvalidKeyException& copy);
-   
+
    /**
     * Destructor
     */
@@ -40,20 +40,20 @@ public:
    virtual const char* getType() const {
       return "InvalidKeyException";
    }
-   
+
    /**
     * Copy operator
     * @param copy the source of the copy
     * @return reference to the updated reference
     */
    InvalidKeyException& operator=(const InvalidKeyException& copy);
-   
+
    /**
     * Retrieves the name of the invalid key
     * @return name of the invalid key
     */
    const std::string& getKey() const;
-   
+
 private:
    std::string m_key;
 };

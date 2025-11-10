@@ -34,13 +34,13 @@ public:
     * Destructor
     */
    virtual ~Runnable() {}
-    
+
 
    /**
     *
     */
    virtual void run() = 0;
-   
+
    /**
     *
     * @param runByThreadId
@@ -48,7 +48,7 @@ public:
    virtual void setRunByThreadId(int runByThreadId) {
       m_runByThreadId = runByThreadId;
    }
-   
+
    /**
     *
     * @return
@@ -56,7 +56,7 @@ public:
    virtual int getRunByThreadId() const {
       return m_runByThreadId;
    }
-   
+
    /**
     *
     * @param runByThreadWorkerId
@@ -64,7 +64,7 @@ public:
    virtual void setRunByThreadWorkerId(const std::string& runByThreadWorkerId) {
       m_runByThreadWorkerId = runByThreadWorkerId;
    }
-   
+
    /**
     *
     * @return
@@ -72,7 +72,7 @@ public:
    virtual const std::string& getRunByThreadWorkerId() const {
       return m_runByThreadWorkerId;
    }
-   
+
    /**
     *
     * @param completionObserver
@@ -81,7 +81,7 @@ public:
    virtual void setCompletionObserver(RunCompletionObserver* completionObserver) {
        m_completionObserver = completionObserver;
    }
-   
+
    /**
     * This should only be called AFTER the run method has completed
     */
@@ -98,7 +98,7 @@ public:
    virtual void setAutoDelete() {
       m_autoDelete = true;
    }
-   
+
 private:
    RunCompletionObserver* m_completionObserver;
    std::string m_runByThreadWorkerId;

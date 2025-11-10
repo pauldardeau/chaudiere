@@ -89,7 +89,7 @@ void* PthreadsThread::runThread(void* pArgs) {
    char threadId[128];
    ::snprintf(threadId, 128, "%lx", (long unsigned int) pThread);
    pThread->setThreadId(threadId);
-   
+
    unsigned long rc = 0L;
 
    try {
@@ -97,7 +97,7 @@ void* PthreadsThread::runThread(void* pArgs) {
 
       // if we had a runnable passed in on the constructor, use it.  otherwise,
       // call "run" on the thread object itself.
-      
+
       Runnable* runnable = pThread->getRunnable();
 
       if (nullptr != runnable) {
@@ -112,7 +112,7 @@ void* PthreadsThread::runThread(void* pArgs) {
 
    pThread->setAlive(false);
    pThread->notifyOnCompletion();
-   
+
    return (void*) rc;
 }
 

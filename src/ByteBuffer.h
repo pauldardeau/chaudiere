@@ -25,7 +25,7 @@ public:
       m_buffer(nullptr),
       m_bufferSize(0) {
    }
-   
+
    /**
     * Constructs a new ByteBuffer of the specified size
     * @param bufferSize the size needed for the buffer
@@ -48,7 +48,7 @@ public:
          m_buffer = nullptr;
       }
    }
-   
+
    /**
     * Copy constructor
     * @param copy the source of the copy
@@ -57,7 +57,7 @@ public:
       m_bufferSize(copy.m_bufferSize) {
       if (m_bufferSize > 0) {
          m_buffer = (char*) ::calloc(1, m_bufferSize);
-         ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);   
+         ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);
       } else {
          m_buffer = nullptr;
       }
@@ -73,7 +73,7 @@ public:
          m_bufferSize = 0;
       }
    }
-   
+
    /**
     * Copy operator
     * @param copy the source of the copy
@@ -83,17 +83,17 @@ public:
       if (this == &copy) {
          return *this;
       }
-      
+
       clear();
       m_bufferSize = copy.m_bufferSize;
       if (m_bufferSize > 0) {
          m_buffer = (char*) ::calloc(1, m_bufferSize);
-         ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);   
+         ::memcpy(m_buffer, copy.m_buffer, m_bufferSize);
       }
-      
+
       return *this;
    }
-   
+
    /**
     * Take on ownership of an existing data buffer
     * @param sourceBuffer the new data buffer
@@ -103,11 +103,11 @@ public:
          ::free(m_buffer);
          m_bufferSize = 0;
       }
-      
+
       m_buffer = sourceBuffer;
       m_bufferSize = bufferSize;
    }
-   
+
    /**
     * Releases ownership of existing buffer
     * @return pointer to released data buffer
@@ -118,7 +118,7 @@ public:
       m_bufferSize = 0;
       return releasedBuffer;
    }
-   
+
    /**
     * Retrieve pointer to raw data buffer
     * @return pointer to raw data buffer
@@ -134,7 +134,7 @@ public:
    const char* const_data() const {
       return m_buffer;
    }
-   
+
    /**
     * Retrieve size of data buffer
     * @return size of data buffer in bytes
@@ -150,7 +150,7 @@ public:
    bool empty() const {
       return m_bufferSize > 0;
    }
-   
+
    /**
     * Frees existing buffer
     */

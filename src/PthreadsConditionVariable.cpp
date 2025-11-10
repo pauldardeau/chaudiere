@@ -53,7 +53,7 @@ bool PthreadsConditionVariable::wait(Mutex* mutex) {
       if (mutex) {
          PthreadsMutex* pthreadsMutex =
             dynamic_cast<PthreadsMutex*>(mutex);
-         
+
          if (pthreadsMutex) {
             if (0 != ::pthread_cond_wait(&m_cond,
                                          &pthreadsMutex->getPlatformPrimitive())) {
@@ -70,7 +70,7 @@ bool PthreadsConditionVariable::wait(Mutex* mutex) {
    } else {
       LOG_ERROR("unable to wait on condition variable that hasn't been initialized")
    }
-   
+
    return false;
 }
 

@@ -23,42 +23,42 @@ public:
     * Default constructor
     */
    StdMutex();
-   
+
    /**
     *
     * @param mutexName
     */
    explicit StdMutex(const std::string& mutexName);
-   
+
    /**
     * Destructor
     */
    ~StdMutex();
-   
+
    /**
     *
     * @return
     */
    virtual bool unlock();
-   
+
    /**
     *
     * @return
     */
    virtual bool lock();
-   
+
    /**
     *
     * @return
     */
    virtual bool isLocked() const;
-   
+
    /**
     *
     * @return
     */
    virtual bool haveValidMutex() const;
-   
+
    /**
     *
     * @return
@@ -67,15 +67,15 @@ public:
    {
       return m_mutex;
    }
-   
+
    /**
     *
     * @return
     */
    const std::string& getName() const;
-   
-   
-   
+
+
+
 private:
    // copying not allowed
    StdMutex(const StdMutex&);
@@ -84,7 +84,7 @@ private:
    std::mutex  m_mutex;
    std::string m_mutexName;
    bool m_isLocked;
-   
+
 };
 
 }

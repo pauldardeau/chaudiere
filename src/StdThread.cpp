@@ -17,19 +17,19 @@ void StdThread::runThread(StdThread* thread)
    std::stringstream ss;
    ss << std::this_thread::get_id();
    const std::string threadIdString = ss.str();
-   
+
    thread->setThreadId(threadIdString);
-   
+
    //unsigned long rc = 0L;
-   
+
    try {
       thread->setAlive(true);
-      
+
       // if we had a runnable passed in on the constructor, use it.  otherwise,
       // call "run" on the thread object itself.
-      
+
       Runnable* runnable = thread->getRunnable();
-      
+
       if (runnable) {
          runnable->run();
       } else {
@@ -39,7 +39,7 @@ void StdThread::runThread(StdThread* thread)
       //rc = 1L;
       LOG_ERROR("StdThread::runThread exception caught running thread")
    }
-   
+
    thread->setAlive(false);
    thread->notifyOnCompletion();
 }
@@ -80,13 +80,13 @@ StdThread::~StdThread() {
 
 bool StdThread::start() {
    bool isSuccess = false;
-   
+
    //TODO: research and fix!
    // when the following line is uncommented, the following compiler error
    // is produced:
    // "Attempt to use a deleted function".
    //m_thread = std::thread(&StdThread::runThread, this);
-   
+
    return isSuccess;
 }
 

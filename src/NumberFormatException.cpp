@@ -39,9 +39,9 @@ NumberFormatException& NumberFormatException::operator=(const NumberFormatExcept
    if (this == &copy) {
       return *this;
    }
-   
+
    BasicException::operator=(copy);
-   
+
    return *this;
 }
 

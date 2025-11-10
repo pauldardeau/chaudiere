@@ -36,13 +36,13 @@ using namespace chaudiere;
 
 bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
    bool success = false;
-   
+
 #ifdef __linux__
    struct sysinfo si;
    ::memset(&si, 0, sizeof(si));
-   
+
    const int rc = ::sysinfo(&si);
-   
+
    if (rc == 0) {
       uptimeSeconds = si.uptime;  // seconds since boot
       success = true;
@@ -55,16 +55,16 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
    if (::sysctl(mib, 2, &boottime, &len, nullptr, 0) < 0) {
       return false;
    }
-   
+
    time_t bsec = boottime.tv_sec;
    time_t csec = ::time(nullptr);
 
    uptimeSeconds = ::difftime(csec, bsec);
-   
+
    success = true;
 #endif
 #endif
-          
+
    return success;
 }
 
@@ -77,7 +77,7 @@ bool SystemStats::getLoadAverages(double& oneMinute,
 #ifndef __sun
    double load[3];
    const int numSamples = ::getloadavg(load, 3);
-   
+
    if (numSamples == 3) {
       oneMinute = load[0];
       fiveMinute = load[1];
@@ -97,14 +97,14 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
    //TODO: port for NetBSD
    return false;
 #endif
-   
+
 #ifndef __linux__
 #ifndef __NetBSD__
 #ifndef __sun
    int rc;
    size_t length = 0;
    static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
-   
+
    // Call sysctl with a nullptr buffer to get proper length
    rc = ::sysctl((int *)name,
                  (sizeof(name) / sizeof(*name)) - 1,
@@ -112,12 +112,12 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
                  &length,
                  nullptr,
                  0);
-   
+
    if (rc == 0) {
       // Allocate buffer
       struct kinfo_proc* proc_list =
          (struct kinfo_proc*)::malloc(length);
-       
+
       if (proc_list != nullptr) {
          // Get the actual process list
          rc = ::sysctl((int *)name,
@@ -130,14 +130,14 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
             numberProcesses = length / sizeof(struct kinfo_proc);
             success = true;
          }
-         
+
          ::free(proc_list);
       }
    }
 #endif
 #endif
 #endif
-      
+
    return success;
 }
 

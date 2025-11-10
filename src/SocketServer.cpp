@@ -171,15 +171,15 @@ const std::string& SocketServer::getServerId() const {
 bool SocketServer::hasTrueValue(const KeyValuePairs& kvp,
                                 const std::string& setting) const {
    bool hasTrueValue = false;
-   
+
    if (kvp.hasKey(setting)) {
       const std::string& settingValue = kvp.getValue(setting);
-      
+
       if (StrUtils::containsString(CFG_TRUE_SETTING_VALUES, settingValue)) {
          hasTrueValue = true;
       }
    }
-   
+
    return hasTrueValue;
 }
 
@@ -188,16 +188,16 @@ bool SocketServer::hasTrueValue(const KeyValuePairs& kvp,
 int SocketServer::getIntValue(const KeyValuePairs& kvp,
                               const std::string& setting) const {
    int value = -1;
-   
+
    if (kvp.hasKey(setting)) {
       const std::string& valueAsString = kvp.getValue(setting);
       const int intValue = StrUtils::parseInt(valueAsString);
-      
+
       if (intValue > 0) {
          value = intValue;
       }
    }
-   
+
    return value;
 }
 
@@ -208,7 +208,7 @@ void SocketServer::replaceVariables(const KeyValuePairs& kvp,
    if (!s.empty()) {
       std::vector<std::string> keys;
       kvp.getKeys(keys);
-      
+
       for (const auto& key : keys) {
          if (StrUtils::containsString(s, key)) {
             StrUtils::replaceAll(s, key, kvp.getValue(key));
@@ -222,11 +222,11 @@ void SocketServer::replaceVariables(const KeyValuePairs& kvp,
 bool SocketServer::init(int port)
 {
    const bool isLoggingDebug = Logger::isLogging(Debug);
-   
+
    m_serverPort = port;
 
    AutoPointer<SectionedConfigDataSource*> configDataSource(nullptr);
-   
+
    try {
       configDataSource.assign(getConfigDataSource());
    } catch (const BasicException& be) {
@@ -239,7 +239,7 @@ bool SocketServer::init(int port)
       LOG_ERROR("exception retrieving config data")
       return false;
    }
-   
+
    if (!configDataSource.haveObject()) {
       LOG_ERROR("unable to retrieve config data")
       return false;
@@ -255,7 +255,7 @@ bool SocketServer::init(int port)
       // read and process "server" section
       if (configDataSource->hasSection(CFG_SECTION_SERVER) &&
           configDataSource->readSection(CFG_SECTION_SERVER, kvpServerSettings)) {
-         
+
          if (kvpServerSettings.hasKey(CFG_SERVER_PORT)) {
             const int portNumber =
                getIntValue(kvpServerSettings, CFG_SERVER_PORT);
@@ -263,7 +263,7 @@ bool SocketServer::init(int port)
             if (portNumber > 0) {
                port = portNumber;
                m_serverPort = portNumber;
-               
+
                if (isLoggingDebug) {
                   char msg[128];
                   ::snprintf(msg, 128, "port number=%d", port);
@@ -276,7 +276,7 @@ bool SocketServer::init(int port)
          m_isThreaded = true;
          m_threading = CFG_THREADING_PTHREADS;
          m_threadPoolSize = 4;
-         
+
          if (kvpServerSettings.hasKey(CFG_SERVER_THREADING)) {
             const std::string& threading =
                kvpServerSettings.getValue(CFG_SERVER_THREADING);
@@ -291,7 +291,7 @@ bool SocketServer::init(int port)
                }
             }
          }
-         
+
          if (kvpServerSettings.hasKey(CFG_SERVER_THREAD_POOL_SIZE)) {
             const int poolSize =
                getIntValue(kvpServerSettings, CFG_SERVER_THREAD_POOL_SIZE);
@@ -300,10 +300,10 @@ bool SocketServer::init(int port)
                m_threadPoolSize = poolSize;
             }
          }
-         
+
          // defaults
          m_sockets = CFG_SOCKETS_SOCKET_SERVER;
-         
+
          if (kvpServerSettings.hasKey(CFG_SERVER_SOCKETS)) {
             const std::string& sockets = kvpServerSettings.getValue(CFG_SERVER_SOCKETS);
             if (sockets == CFG_SOCKETS_KERNEL_EVENTS) {
@@ -319,7 +319,7 @@ bool SocketServer::init(int port)
                StrUtils::toLowerCase(m_logLevel);
                LOG_INFO(std::string("log level: ") + m_logLevel)
                Logger* logger = Logger::getLogger();
-               
+
                if (logger != nullptr) {
                   if (m_logLevel == CFG_LOGGING_CRITICAL) {
                      logger->setLogLevel(Critical);
@@ -357,7 +357,7 @@ bool SocketServer::init(int port)
                m_socketReceiveBufferSize = buffSize;
             }
          }
-         
+
          if (kvpServerSettings.hasKey(CFG_SERVER_STRING)) {
             const std::string& serverString =
                kvpServerSettings.getValue(CFG_SERVER_STRING);
@@ -371,9 +371,9 @@ bool SocketServer::init(int port)
                   kvpVars.addPair("$PRODUCT_VERSION", m_serverVersion);
                   kvpVars.addPair("$CFG_SOCKETS", m_sockets);
                   kvpVars.addPair("$CFG_THREADING", m_threading);
-                  
+
                   const std::size_t posDollarOS = serverString.find("$OS_");
-                  
+
                   if (posDollarOS != std::string::npos) {
                      SystemInfo systemInfo;
                      if (systemInfo.retrievedSystemInfo()) {
@@ -386,15 +386,15 @@ bool SocketServer::init(int port)
                         LOG_WARNING("unable to retrieve system information to populate server string")
                      }
                   }
-                  
+
                   replaceVariables(kvpVars, m_serverString);
                }
-               
+
                LOG_INFO("setting server string: '" + m_serverString + "'")
             }
          }
       }
-      
+
       m_startupTime = getLocalDateTime();
    } catch (const BasicException& be) {
       LOG_CRITICAL("exception initializing server: " + be.whatString())
@@ -415,7 +415,7 @@ bool SocketServer::init(int port)
             ::snprintf(msg, 128, "creating server socket on port=%d", port);
             LOG_DEBUG(msg)
          }
-      
+
          m_serverSocket.reset(new ServerSocket(port));
       } catch (...) {
          std::string exception = "unable to open server socket port '";
@@ -430,7 +430,7 @@ bool SocketServer::init(int port)
 
    if (m_isThreaded) {
       bool isUsingLibDispatch = false;
-      
+
       if (m_threading == CFG_THREADING_PTHREADS) {
          m_threadingFactory = new PthreadsThreadingFactory();
       //} else if (m_threading == CFG_THREADING_CPP11) {
@@ -441,16 +441,16 @@ bool SocketServer::init(int port)
       } else {
          m_threadingFactory = new PthreadsThreadingFactory();
       }
-      
+
       ThreadingFactory::setThreadingFactory(m_threadingFactory);
-      
+
       m_threadPool.reset(
          m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize, "threadpool"));
       m_threadPool->start();
 
       concurrencyModel = "multithreaded - ";
       concurrencyModel += m_threading;
-     
+
       if (isUsingLibDispatch) {
          concurrencyModel += " [libdispatch]";
       } else {
@@ -483,7 +483,7 @@ bool SocketServer::init(int port)
    ::printf("%s\n", startupMsg.c_str());
 
    m_isFullyInitialized = true;
-   
+
    return true;
 }
 
@@ -499,7 +499,7 @@ SocketServer::~SocketServer() {
    if (m_threadPool) {
       m_threadPool->stop();
    }
-   
+
    if (m_threadingFactory) {
       delete m_threadingFactory;
    }
@@ -510,10 +510,10 @@ SocketServer::~SocketServer() {
 std::string SocketServer::getSystemDateGMT() const {
    time_t currentGMT;
    ::time(&currentGMT);
-   
+
    struct tm* timeptr = ::gmtime(&currentGMT);
    char dateBuffer[128];
-   
+
    ::snprintf(dateBuffer, 128,
                  "%.3s, %02d %.3s %d %.2d:%.2d:%.2d GMT",
                  LOG_WEEKDAY_NAME[timeptr->tm_wday],
@@ -523,7 +523,7 @@ std::string SocketServer::getSystemDateGMT() const {
                  timeptr->tm_hour,
                  timeptr->tm_min,
                  timeptr->tm_sec);
-   
+
    return std::string(dateBuffer);
 }
 
@@ -532,10 +532,10 @@ std::string SocketServer::getSystemDateGMT() const {
 std::string SocketServer::getLocalDateTime() const {
    time_t currentTime;
    ::time(&currentTime);
-   
+
    struct tm* timeptr = ::localtime(&currentTime);
    char dateBuffer[128];
-   
+
    ::snprintf(dateBuffer, 128,
                  "%d-%02d-%02d %.2d:%.2d:%.2d",
                  1900 + timeptr->tm_year,
@@ -544,7 +544,7 @@ std::string SocketServer::getLocalDateTime() const {
                  timeptr->tm_hour,
                  timeptr->tm_min,
                  timeptr->tm_sec);
-   
+
    return std::string(dateBuffer);
 }
 
@@ -577,9 +577,9 @@ int SocketServer::runSocketServer() {
       LOG_CRITICAL("runSocketServer called with null serverSocket")
       return 1;
    }
-   
+
    while (!m_isDone) {
-      
+
       Socket* socket = m_serverSocket->accept();
 
       if (nullptr == socket) {
@@ -610,10 +610,10 @@ int SocketServer::runSocketServer() {
       } catch (...) {
          LOG_ERROR("SocketServer runServer unknown exception caught")
       }
-      
+
       delete socket;
    }
-   
+
    return 0;
 }
 
@@ -621,16 +621,16 @@ int SocketServer::runSocketServer() {
 
 int SocketServer::runKernelEventServer() {
    const int MAX_CON = 1200;
-   
+
    int rc = 0;
-   
+
    if (m_threadingFactory != nullptr) {
       Mutex* mutexFD = m_threadingFactory->createMutex("fdMutex");
       Mutex* mutexHWMConnections =
          m_threadingFactory->createMutex("hwmConnectionsMutex");
-      
+
       m_kernelEventServer.reset();
-      
+
       if (KqueueServer::isSupportedPlatform()) {
          m_kernelEventServer.reset(
             new KqueueServer(*mutexFD, *mutexHWMConnections));
@@ -641,7 +641,7 @@ int SocketServer::runKernelEventServer() {
          LOG_CRITICAL("no kernel event server available for platform")
          rc = 1;
       }
-      
+
       if (m_kernelEventServer != nullptr) {
          try {
             SocketServiceHandler* serviceHandler = createSocketServiceHandler();
@@ -665,7 +665,7 @@ int SocketServer::runKernelEventServer() {
       LOG_CRITICAL("no threading factory configured")
       rc = 1;
    }
-   
+
    return rc;
 }
 

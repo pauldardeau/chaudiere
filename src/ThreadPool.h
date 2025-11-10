@@ -32,7 +32,7 @@ public:
    explicit ThreadPool(int numberWorkers);
 
    explicit ThreadPool(int numberWorkers, const std::string& name);
-   
+
    /**
     *
     * @param threadingFactory
@@ -47,20 +47,20 @@ public:
     * Destructor
     */
    ~ThreadPool();
-   
+
    // ThreadPoolDispatcher
    /**
     *
     * @return
     */
    virtual bool start();
-   
+
    /**
     *
     * @return
     */
    virtual bool stop();
-   
+
    /**
     *
     * @param runnableRequest
@@ -68,7 +68,7 @@ public:
     * @see Runnable()
     */
    virtual bool addRequest(Runnable* runnableRequest);
-   
+
    /**
     *
     * @param runnable
@@ -77,19 +77,19 @@ public:
     * @see Thread()
     */
    virtual Thread* createThreadWithRunnable(Runnable* runnable);
-   
+
    /**
     *
     * @return
     */
    int getNumberWorkers() const;
-   
+
    /**
     *
     * @param numberNewWorkers
     */
    bool addWorkers(int numberNewWorkers);
-   
+
    /**
     *
     * @param numberWorkersToRemove
@@ -97,17 +97,17 @@ public:
    bool removeWorkers(int numberWorkersToRemove);
 
    const std::string& getName() const;
-  
-   bool isRunning() const; 
-  
- 
+
+   bool isRunning() const;
+
+
 protected:
    /**
     *
     * @param numberToAddOrDelete
     */
    bool adjustNumberWorkers(int numberToAddOrDelete);
-   
+
 private:
    ThreadingFactory* m_threadingFactory;
    std::list<ThreadPoolWorker*> m_listWorkers;
@@ -116,7 +116,7 @@ private:
    int m_workersCreated;
    bool m_isRunning;
    std::string m_name;
-   
+
    // disallow copies
    ThreadPool(const ThreadPool&);
    ThreadPool& operator=(const ThreadPool&);

@@ -41,17 +41,17 @@ ServiceInfo::~ServiceInfo() {
 }
 
 //******************************************************************************
-   
+
 ServiceInfo& ServiceInfo::operator=(const ServiceInfo& copy) {
    if (this == &copy) {
       return *this;
    }
-   
+
    m_serviceName = copy.m_serviceName;
    m_host = copy.m_host;
    m_port = copy.m_port;
    m_persistentConnection = copy.m_persistentConnection;
-   
+
    return *this;
 }
 
@@ -72,7 +72,7 @@ const std::string& ServiceInfo::host() const {
 unsigned short ServiceInfo::port() const {
    return m_port;
 }
-   
+
 //******************************************************************************
 
 void ServiceInfo::setServiceName(const std::string& serviceName) {
@@ -96,13 +96,13 @@ void ServiceInfo::setPort(unsigned short port) {
 std::string ServiceInfo::getUniqueIdentifier() const {
    std::string uniqueIdentifier = m_host;
    uniqueIdentifier += std::string("|");
-   
+
    char portAsString[10];
    memset(portAsString, 0, 10);
    snprintf(portAsString, 10, "%d", m_port);
-   
+
    uniqueIdentifier += std::string(portAsString);
-   
+
    return uniqueIdentifier;
 }
 

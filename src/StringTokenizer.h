@@ -21,7 +21,7 @@ class StringTokenizer
        * @param s the string to tokenize
        */
       explicit StringTokenizer(const std::string& s);
-   
+
       /**
        * Constructs a StringTokenizer with the string to tokenize and the delimiter
        * @param s the string to tokenize
@@ -29,7 +29,7 @@ class StringTokenizer
        */
       StringTokenizer(const std::string& s,
                       const std::string& delimiter);
-   
+
       /**
        * Destructor
        */
@@ -44,14 +44,14 @@ class StringTokenizer
        * @return boolean indicating if there are more tokens available
        */
       bool hasMoreTokens() const;
-   
+
       /**
        * Retrieves the next available token
        * @throw std::out_of_range
        * @return the next token
        */
       const std::string& nextToken();
-   
+
       /**
        * Retrieves the number of tokens found
        * @return the number of tokens
@@ -63,16 +63,16 @@ class StringTokenizer
        * @return the list of parsed tokens
        */
       const std::vector<std::string>& getTokens() const;
-   
 
-   
+
+
    private:
       const std::string& m_withTokens;
       const std::string m_delimiter;
       std::vector<std::string> m_tokens;
       std::size_t m_numberTokens;
       std::size_t m_indexToken;
-      
+
       //disallow copies
       StringTokenizer(const StringTokenizer&);
       StringTokenizer& operator=(const StringTokenizer&);

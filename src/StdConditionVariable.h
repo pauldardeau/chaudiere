@@ -24,12 +24,12 @@ public:
    StdConditionVariable();
 
    StdConditionVariable(const std::string& name);
-   
+
    /**
     * Destructor
     */
    ~StdConditionVariable();
-   
+
    /**
     *
     * @param mutex
@@ -37,19 +37,19 @@ public:
     * @see Mutex()
     */
    virtual bool wait(Mutex* mutex);
-   
+
    /**
     *
     */
    virtual void notifyOne();
-   
+
    /**
     *
     */
    virtual void notifyAll();
 
    const std::string& getName() const;
-   
+
 
 private:
    // disallow copies

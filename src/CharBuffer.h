@@ -35,7 +35,7 @@ public:
          allocateBuffer(bufferSize);
       }
    }
-   
+
    /**
     * Destructor
     */
@@ -72,7 +72,7 @@ public:
          }
       }
    }
-   
+
    /**
     * Retrieve pointer to raw data buffer
     * @return pointer to raw data buffer
@@ -80,7 +80,7 @@ public:
    char* data() {
       return m_buffer;
    }
-   
+
    /**
     * Retrieve size of data buffer
     * @return size of data buffer in bytes
@@ -88,7 +88,7 @@ public:
    std::size_t size() const {
       return m_bufferSize;
    }
-   
+
 
 private:
    char* m_buffer;

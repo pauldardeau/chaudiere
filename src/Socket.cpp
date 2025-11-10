@@ -32,7 +32,7 @@ int Socket::createSocket() {
    if (socketFD == -1) {
       LOG_ERROR("unable to create socket")
    }
-   
+
    return socketFD;
 }
 
@@ -136,7 +136,7 @@ ssize_t Socket::send(const void* sendBuffer,
        (nullptr == sendBuffer)) {
       return -1;
    }
-    
+
    return ::send(m_socketFD, sendBuffer, bufferLength, flags);
 }
 
@@ -150,14 +150,14 @@ ssize_t Socket::receive(void* receiveBuffer,
        (nullptr == receiveBuffer)) {
       return -1;
    }
-    
+
    const ssize_t bytesReceived =
       ::recv(m_socketFD, receiveBuffer, bufferLength, flags);
-    
+
    if (0 == bytesReceived) {
       close();
    }
-    
+
    return bytesReceived;
 }
 
@@ -227,7 +227,7 @@ bool Socket::setTcpNoDelay(bool on) {
 bool Socket::getTcpNoDelay() const {
    int result = 0;
    socklen_t len = sizeof(int);
-    
+
    if (0 == ::getsockopt(m_socketFD,
                          IPPROTO_TCP,
                          TCP_NODELAY,
@@ -256,7 +256,7 @@ bool Socket::setSendBufferSize(int size) {
 int Socket::getSendBufferSize() const {
    int result = 0;
    socklen_t len = sizeof(int);
-    
+
    if (0 == ::getsockopt(m_socketFD,
                          SOL_SOCKET,
                          SO_SNDBUF,
@@ -285,7 +285,7 @@ bool Socket::setReceiveBufferSize(int size) {
 int Socket::getReceiveBufferSize() const {
    int result = 0;
    socklen_t len = sizeof(int);
-    
+
    if (0 == ::getsockopt(m_socketFD,
                          SOL_SOCKET,
                          SO_RCVBUF,
@@ -314,7 +314,7 @@ bool Socket::setKeepAlive(bool on) {
 bool Socket::getKeepAlive() const {
    int result = 0;
    socklen_t len = sizeof(int);
-    
+
    if (0 == ::getsockopt(m_socketFD,
                          SOL_SOCKET,
                          SO_KEEPALIVE,
@@ -331,59 +331,59 @@ bool Socket::getKeepAlive() const {
 
 bool Socket::readLine(std::string& line) {
    line.erase();
-    
+
    int eolLength = 0;
    std::string::size_type posEOL = std::string::npos;
-    
+
    // do we already have anything in our line input buffer?
    if (!m_lineInputBuffer.empty()) {
       // look for CRLF EOL
       const std::string::size_type posCRLF = m_lineInputBuffer.find(CRLF);
-        
+
       // is there one?
       if (std::string::npos != posCRLF) {
          eolLength = 2;
          posEOL = posCRLF;
       } else {
          const std::string::size_type posLF = m_lineInputBuffer.find(LF);
-            
+
          if (std::string::npos != posLF) {
             eolLength = 1;
             posEOL = posLF;
          }
       }
-        
+
       // did we find the EOL?
       if ((eolLength > 0) && (std::string::npos != posEOL)) {
          // extract everything prior to EOL
          line = m_lineInputBuffer.substr(0, posEOL);
-            
+
          // remove the current line from the line input buffer
          m_lineInputBuffer.erase(0, posEOL + eolLength);
-         
+
          if (Logger::isLogging(Debug)) {
             LOG_DEBUG("Socket::readLine, using buffer line: (next line)")
             LOG_DEBUG(line)
             LOG_DEBUG("*** remaining input buffer on next line")
          }
-         
+
          return true;
       } else {
          LOG_DEBUG("*** assigning full input buffer")
-         
+
          // put our line input buffer contents into the current line
          line = m_lineInputBuffer;
-         
+
          if (Logger::isLogging(Debug)) {
             LOG_DEBUG("Socket::readLine, using partial buffer: (next line)")
             LOG_DEBUG(line)
          }
-            
+
          // empty our line input buffer
          m_lineInputBuffer.erase();
       }
    }
-    
+
    ssize_t bytes = 0;
    int bytesToRead = 1023;
    char buffer[1024];
@@ -391,12 +391,12 @@ bool Socket::readLine(std::string& line) {
    char* posCRLF;
    char* pszEOL;
    eolLength = 0;
-    
+
    do {
       posLF = nullptr;
       posCRLF = nullptr;
       pszEOL = nullptr;
-        
+
       bytes = ::recv(m_socketFD,
                      buffer,
                      bytesToRead,
@@ -410,7 +410,7 @@ bool Socket::readLine(std::string& line) {
          LOG_DEBUG("just read from socket recv (next line)")
          LOG_DEBUG(buffer)
       }
-        
+
       if (bytes <= 0) {  // error or connection closed by peer?
          if (bytes == 0) {
             // our connection has been closed by the other process. nothing
@@ -428,41 +428,41 @@ bool Socket::readLine(std::string& line) {
          }
          return false;
       }
-        
+
       buffer[bytes] = '\0';
       posCRLF = ::strstr(buffer, "\r\n");
-        
+
       if (posCRLF) {
          pszEOL = posCRLF;
          eolLength = 2;
       } else {
          posLF = ::strstr(buffer, "\n");
-            
+
          if (posLF) {
             pszEOL = posLF;
             eolLength = 1;
          }
       }
-        
+
       if ((nullptr != pszEOL) && (eolLength > 0)) {
          // hold onto everything after the EOL in the line input buffer
          m_lineInputBuffer = (pszEOL + eolLength);
-         
+
          if (Logger::isLogging(Debug)) {
             LOG_DEBUG("Socket::readLine holding onto following text in line input buffer")
             char msg[256];
             ::snprintf(msg, 256, "buffer: '%s'", m_lineInputBuffer.c_str());
             LOG_DEBUG(msg)
          }
-            
+
          // terminate the string at the EOL
          *pszEOL = '\0';
       }
-        
+
       line += buffer;
-        
+
    } while (nullptr == pszEOL);
-   
+
    return true;
 }
 
@@ -471,10 +471,10 @@ bool Socket::readLine(std::string& line) {
 bool Socket::read(char* buffer, int bufsize) {
    int length;
    int bytesAlreadyRead = 0;
-    
+
    if (!m_lineInputBuffer.empty()) {
       const int nInputBufferLen = (int) m_lineInputBuffer.length();
-        
+
       if (nInputBufferLen >= bufsize) {
          // we don't have to read from the socket, we've got the full amount
          // in our line input buffer
@@ -491,24 +491,24 @@ bool Socket::read(char* buffer, int bufsize) {
    } else {
       length = bufsize;
    }
-    
+
    if (length <= 0) {
       LOG_WARNING("Socket::read failed, length <= 0")
       return (bytesAlreadyRead > 0);
    }
-    
+
    if (bufsize < length) {
       LOG_WARNING("Socket::read failed, bufsize < length")
       return (bytesAlreadyRead > 0);
    }
-   
+
    if (!readMsg(length)) {
       LOG_WARNING("Socket::read failed, readMsg returned false")
       return (bytesAlreadyRead > 0);
    }
-    
+
    ::memcpy(buffer + bytesAlreadyRead, m_inputBuffer.data(), length);
-    
+
    return true;
 }
 
@@ -519,8 +519,8 @@ bool Socket::readMsg(int length) {
       LOG_WARNING("unable to read message size, socket is closed")
       return false;
    }
-   
-   m_inputBuffer.ensureCapacity(m_inBufferSize); 
+
+   m_inputBuffer.ensureCapacity(m_inBufferSize);
    int bytes_read = readSocket(m_inputBuffer.data(), length);
    if (bytes_read == length) {
       m_inputBuffer.data()[length] = '\0';
@@ -538,19 +538,19 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
    int total_bytes_rcvd = 0;
    ssize_t bytes = 0;
    char* currentBufferDest = buffer;
-    
+
    do {
       bytes = ::recv(m_socketFD,
                      currentBufferDest,
                      bytesToRead - total_bytes_rcvd,
                      0);
-      
+
       if (Logger::isLogging(LogLevel::Debug)) {
          char msg[128];
          ::snprintf(msg, 128, "recv, bytes from recv = %ld", bytes);
          LOG_DEBUG(msg)
       }
-        
+
       if (bytes <= 0) {  // error or connection closed by peer?
          if (bytes == 0) {
             // our connection has been closed by the other process. nothing
@@ -577,12 +577,12 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
             return total_bytes_rcvd;
          }
       }
-        
+
       total_bytes_rcvd += bytes;
       currentBufferDest += bytes;
-        
+
    } while (total_bytes_rcvd < bytesToRead);
-    
+
    return total_bytes_rcvd;
 }
 
@@ -597,7 +597,7 @@ bool Socket::isOpen() const {
 bool Socket::getPeerIPAddress(std::string& ipAddress) {
    struct sockaddr_in addr;
    socklen_t x = sizeof(addr);
-    
+
    if (!::getpeername(m_socketFD, (struct sockaddr*) &addr, &x)) {
       char ipAddressBuffer[64];
       memset(ipAddressBuffer, 0, sizeof(ipAddressBuffer));
@@ -619,14 +619,14 @@ bool Socket::write(const char* buffer, unsigned long bufsize) {
       LOG_WARNING("unable to write message, socket is closed")
       return false;
    }
-    
+
    const ssize_t rc = ::send(m_socketFD, buffer, bufsize, 0);
    if (rc < 0) {
       char msg[128];
       ::snprintf(msg, 128, "socket send failed, rc = %zd", rc);
       LOG_WARNING(msg)
    }
-     
+
    return (rc < 0 ? false : true);
 }
 

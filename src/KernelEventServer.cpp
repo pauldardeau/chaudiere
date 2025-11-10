@@ -55,17 +55,17 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
    m_socketServiceHandler.reset(socketServiceHandler);
    m_serverPort = serverPort;
    m_maxConnections = maxConnections;
-   
+
    if (!m_socketServiceHandler) {
       Logger::critical("no socket service handler set");
       return false;
    }
-   
+
    if (m_serverPort <= 0) {
       Logger::critical("serverPort must be positive, non-zero value");
       return false;
    }
-   
+
    if (m_maxConnections <= 0) {
       Logger::critical("maxConnections must be positive, non-zero value");
       return false;
@@ -73,28 +73,28 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
 
    ThreadingFactory* tf = ThreadingFactory::getThreadingFactory();
    m_busyFlagsMutex = tf->createMutex("busyFlags");
-   
+
    m_listenerFD = Socket::createSocket();
    if (m_listenerFD == -1) {
       Logger::critical("error: unable to create server listening socket");
       return false;
    }
-   
+
    if (!ServerSocket::setReuseAddr(m_listenerFD)) {
       Logger::critical("unable to set REUSEADDR for socket");
       return false;
    }
-   
+
    if (!ServerSocket::bind(m_listenerFD, m_serverPort)) {
       Logger::critical("bind failed");
       return false;
    }
-   
+
    if (!ServerSocket::listen(m_listenerFD, m_listenBacklog)) {
       Logger::critical("listen failed");
       return false;
    }
-   
+
    return true;
 }
 
@@ -116,21 +116,21 @@ void KernelEventServer::run() {
    socklen_t addrlen = sizeof(clientaddr);
    int newfd;
    //char msg[128];
-   
+
    const std::string& handlerName = m_socketServiceHandler->getName();
-   
+
    Logger::info(std::string("using handler: ") + handlerName);
-   
+
    for (;;) {
-      
+
       m_numberEventsReturned = getKernelEvents(m_maxConnections);
-      
+
       if (m_numberEventsReturned < 1) {
          continue;
       }
-      
+
       for (int index = 0; index < m_numberEventsReturned; ++index) {
-         
+
          const int client_fd = fileDescriptorForEventIndex(index);
 
          if (client_fd == m_listenerFD) {
@@ -169,14 +169,14 @@ void KernelEventServer::run() {
                if (removeFileDescriptorFromRead(client_fd)) {
                   // are we already busy with this socket?
                   const bool isAlreadyBusy = isBusyFD(client_fd);
-               
+
                   if (!isAlreadyBusy) {
                      //if (!removeFileDescriptorFromRead(client_fd)) {
                      //   Logger::error("unable to remove file descriptor from read");
                      //}
-                 
+
                      setBusyFD(client_fd, true);
-                  
+
                      SocketRequest* socketRequest =
                         new SocketRequest(this, client_fd, nullptr);
                      socketRequest->setSocketOwned(false);
@@ -213,10 +213,10 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
    if (socketFD == -1) {
       return;
    }
-  
+
    // mark the fd as not being busy anymore
    setBusyFD(socketFD, false);
-   
+
    if (!isValidDescriptor(socketFD)) {
       //if (!removeFileDescriptorFromRead(socketFD)) {
       //   Logger::error("unable to remove file descriptor from read");

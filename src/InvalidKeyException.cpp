@@ -34,10 +34,10 @@ InvalidKeyException& InvalidKeyException::operator=(const InvalidKeyException& c
    if (this == &copy) {
       return *this;
    }
-   
+
    BasicException::operator=(copy);
    m_key = copy.m_key;
-   
+
    return *this;
 }
 

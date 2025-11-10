@@ -19,7 +19,7 @@ public:
     * Destructor
     */
    virtual ~ThreadCompletionObserver() {}
-   
+
    /**
     *
     * @param thread

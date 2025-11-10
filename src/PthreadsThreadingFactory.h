@@ -21,12 +21,12 @@ public:
     * Constructs a PthreadsThreadingFactory instance
     */
    PthreadsThreadingFactory();
-   
+
    /**
     * Destructor
     */
    ~PthreadsThreadingFactory();
-   
+
   /**
    * Create a new named PthreadsMutex
    * @param name the name for the new Mutex
@@ -34,14 +34,14 @@ public:
    * @see Mutex()
    */
   virtual Mutex* createMutex(const std::string& name);
-  
+
   /**
    * Create a new PthreadsThread
    * @return pointer to newly created Thread
    * @see Thread()
    */
   virtual Thread* createThread(const std::string& name);
-  
+
   /**
    * Creates a new PthreadsThread to run the specified Runnable
    * @param runnable the Runnable object for the thread to run
@@ -51,14 +51,14 @@ public:
    */
   virtual Thread* createThread(Runnable* runnable,
                                const std::string& name);
-  
+
   /**
    * Create a new PthreadsConditionVariable
    * @return pointer to the newly created ConditionVariable
    * @see ConditionVariable()
    */
   virtual ConditionVariable* createConditionVariable(const std::string& name);
-  
+
   /**
    * Creates a new Pthreads compatible ThreadPool
    * @param numberThreads the number of threads to initialize in the pool dispatcher
@@ -66,7 +66,7 @@ public:
    */
   virtual ThreadPoolDispatcher* createThreadPoolDispatcher(int numberThreads,
              const std::string& name);
-   
+
 private:
    // disallow copies
    PthreadsThreadingFactory(const PthreadsThreadingFactory&);

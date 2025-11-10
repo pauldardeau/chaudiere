@@ -28,7 +28,7 @@ public:
     * @return
     */
    static int createSocket();
-   
+
    /**
     *
     * @param address
@@ -36,25 +36,25 @@ public:
     * @throws BasicException
     */
    Socket(const std::string& address, int port);
-   
+
    /**
     *
     * @param socketFD
     */
    explicit Socket(int socketFD);
-   
+
    /**
     *
     * @param completionObserver
     * @param socketFD
     */
    Socket(SocketCompletionObserver* completionObserver, int socketFD);
-   
+
    /**
     *
     */
    ~Socket();
-    
+
    /**
     *
     * @param sendBuffer
@@ -63,7 +63,7 @@ public:
     * @return
     */
    ssize_t send(const void* sendBuffer, size_t bufferLength, int flags);
-   
+
    /**
     *
     * @param buffer
@@ -71,7 +71,7 @@ public:
     * @return
     */
    bool write(const char* buffer, unsigned long bufsize);
-   
+
    /**
     *
     * @param payload
@@ -79,7 +79,7 @@ public:
     */
    bool write(const std::string& payload);
 
-    
+
    /**
     *
     * @param receiveBuffer
@@ -88,7 +88,7 @@ public:
     * @return
     */
    ssize_t receive(void* receiveBuffer, size_t bufferLength, int flags);
-   
+
    /**
     *
     * @param buffer
@@ -96,7 +96,7 @@ public:
     * @return
     */
    bool read(char* buffer, int bufferLen);
-   
+
    /**
     *
     * @param buffer
@@ -104,124 +104,124 @@ public:
     * @return
     */
    int readSocket(char* buffer, int bytesToRead);
-   
+
    /**
     *
     */
    void close();
-   
+
    /**
     *
     * @return
     */
    bool isOpen() const;
-   
+
    /**
     *
     * @return
     */
    bool isConnected() const;
-   
+
    /**
     *
     */
    void closeConnection();
-   
+
    /**
     *
     * @return
     */
    int getFileDescriptor() const;
-   
+
    /**
     *
     */
    void requestComplete();
-    
+
    /**
     *
     * @param userIndex
     */
    void setUserIndex(int userIndex);
-   
+
    /**
     *
     * @return
     */
    int getUserIndex() const;
-   
+
    /**
     *
     * @param on
     * @return
     */
    bool setTcpNoDelay(bool on);
-   
+
    /**
     *
     * @return
     */
    bool getTcpNoDelay() const;
-    
+
    /**
     *
     * @param size
     * @return
     */
    bool setSendBufferSize(int size);
-   
+
    /**
     *
     * @return
     */
    int getSendBufferSize() const;
-    
+
    /**
     *
     * @param size
     * @return
     */
    bool setReceiveBufferSize(int size);
-   
+
    /**
     *
     * @return
     */
    int getReceiveBufferSize() const;
-    
+
    /**
     *
     * @param on
     * @return
     */
    bool setKeepAlive(bool on);
-   
+
    /**
     *
     * @return
     */
    bool getKeepAlive() const;
-    
+
    /**
     *
     * @param line
     * @return
     */
    bool readLine(std::string& line);
-    
+
    /**
     *
     * @param ipAddress
     * @return
     */
    bool getPeerIPAddress(std::string& ipAddress);
-    
+
    /**
     *
     * @return
     */
    int getPort() const;
-    
+
    /**
     *
     * @param isSizeIncluded
@@ -239,11 +239,11 @@ protected:
    //bool readSocket(char* buffer, int bytesToRead);
    bool open();
    void init();
-   
+
    void setLineInputBuffer(const std::string& s);
    void appendLineInputBuffer(const std::string& s);
 
-    
+
 private:
    // copying not allowed
    Socket(const Socket&);

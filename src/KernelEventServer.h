@@ -33,12 +33,12 @@ public:
    KernelEventServer(Mutex& fdMutex,
                      Mutex& hwmConnectionsMutex,
                      const std::string& serverName);
-                     
+
    /**
     * Destructor
     */
    virtual ~KernelEventServer();
-   
+
    /**
     *
     * @param socketServiceHandler
@@ -50,7 +50,7 @@ public:
    virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
                      int maxConnections);
-                     
+
    /**
     *
     */
@@ -69,14 +69,14 @@ public:
     * @return
     */
    virtual int fileDescriptorForEventIndex(int eventIndex) = 0;
-   
+
    /**
     *
     * @param fileDescriptor
     * @return
     */
    virtual bool addFileDescriptorForRead(int fileDescriptor) = 0;
-   
+
    /**
     *
     * @param fileDescriptor
@@ -90,29 +90,28 @@ public:
     * @return
     */
    virtual bool isEventReadClose(int eventIndex) = 0;
-   
+
    /**
     *
     * @param eventIndex
     * @return
     */
    virtual bool isEventDisconnect(int eventIndex) = 0;
-   
+
    /**
     *
     * @param eventIndex
     * @return
     */
    virtual bool isEventRead(int eventIndex) = 0;
-   
-   // SocketCompletionObserver
+
    /**
     *
     * @param socket
     */
    void notifySocketComplete(Socket* socket);
 
-   
+
 protected:
    /**
     *

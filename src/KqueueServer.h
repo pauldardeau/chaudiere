@@ -31,20 +31,19 @@ public:
     * @return boolean indicating if kqueue mechanism is supported
     */
    static bool isSupportedPlatform();
-   
+
    /**
     *
     * @param fdMutex
     * @param hwmConnectionsMutex
     */
    KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex);
-   
+
    /**
     * Destructor
     */
    ~KqueueServer();
-   
-   // KernelEventServer
+
    /**
     *
     * @param socketServiceHandler
@@ -56,42 +55,42 @@ public:
    virtual bool init(SocketServiceHandler* socketServiceHandler,
                      int serverPort,
                      int maxConnections);
-   
+
    /**
     *
     * @param maxConnections
     * @return
     */
    virtual int getKernelEvents(int maxConnections);
-   
+
    /**
     *
     * @param eventIndex
     * @return
     */
    virtual int fileDescriptorForEventIndex(int eventIndex);
-   
+
    /**
     *
     * @param fileDescriptor
     * @return
     */
    virtual bool addFileDescriptorForRead(int fileDescriptor);
-   
+
    /**
     *
     * @param fileDescriptor
     * @return
     */
    virtual bool removeFileDescriptorFromRead(int fileDescriptor);
-   
+
    /**
     *
     * @param eventIndex
     * @return
     */
    virtual bool isEventDisconnect(int eventIndex);
-   
+
    /**
     *
     * @param eventIndex
@@ -105,14 +104,14 @@ public:
     * @return
     */
    virtual bool isEventRead(int eventIndex);
-   
-   
+
+
 private:
 #ifdef KQUEUE_SUPPORT
    struct kevent m_event;
 #endif
    int m_kqfd;
-   
+
    // copying not allowed
    KqueueServer(const KqueueServer&);
    KqueueServer& operator=(const KqueueServer&);

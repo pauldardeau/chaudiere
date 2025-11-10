@@ -89,15 +89,15 @@ string OSUtils::getCurrentDirectory() {
    string currentDirectory;
    char currentDir[2048];
    memset(currentDir, 0, sizeof(currentDir));
-   
+
    // this call to getcwd will allocate memory buffer
    char* buffCurrentDir = ::getcwd(currentDir, sizeof(currentDir));
-   
+
    if (buffCurrentDir != nullptr) {
       currentDirectory = buffCurrentDir;
    }
-   
-   return currentDirectory; 
+
+   return currentDirectory;
 }
 
 //******************************************************************************
@@ -109,7 +109,7 @@ string OSUtils::pathJoin(const string& directory,
    if (!StrUtils::endsWith(directory, DIR_PATH_SEPARATOR)) {
       joinedPath += DIR_PATH_SEPARATOR;
    }
-   
+
    joinedPath += fileName;
 
    return joinedPath;
@@ -161,7 +161,7 @@ long OSUtils::getFileSize(const string& filePath) {
    if (exists(aFilePath)) {
       fileSize = file_size(aFilePath);
    }
-   
+
    return fileSize;
 }
 
@@ -275,11 +275,11 @@ unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
    /** accumulate crc32 for buffer **/
    unsigned long crc32 = inCrc32 ^ 0xFFFFFFFF;
    unsigned char* byteBuf = (unsigned char*) buf;
-   
+
    for (size_t i = 0; i < bufLen; ++i) {
       crc32 = (crc32 >> 8) ^ CRC_TABLE[(crc32 ^ byteBuf[i]) & 0xFF];
    }
-   
+
    return (crc32 ^ 0xFFFFFFFF);
 }
 
@@ -290,7 +290,7 @@ bool OSUtils::crc32ForFile(const string& filePath, string& crc32) {
    if (f != nullptr) {
       unsigned char buf[8192];
       size_t bufLen;
-      
+
       unsigned long crc32Value = 0L;
 
       while (1) {
@@ -306,14 +306,14 @@ bool OSUtils::crc32ForFile(const string& filePath, string& crc32) {
             crc32Value = crc32ForBuffer(crc32Value, buf, bufLen);
          }
       }
-      
+
       fclose(f);
-      
+
       // convert crc32 numeric value to string
       char crcValueAsString[20];
       snprintf(crcValueAsString, 20, "%lx", crc32Value);
       crc32 = crcValueAsString;
-      
+
       return true;
    } else {
       // unable to open file

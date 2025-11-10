@@ -57,7 +57,7 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
          LOG_CRITICAL("kqueue create failed")
          return false;
       }
-      
+
       // add our listener socket (server socket) as one of the fd's that
       // we want watched
       struct kevent ev;
@@ -66,7 +66,7 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
              EVFILT_READ,
              EV_ADD,
              0, 0, nullptr);
-      
+
       if (::kevent(m_kqfd, &ev, 1, 0, 0, nullptr) < 0) {
          LOG_CRITICAL("kevent failed for adding read filter")
          return false;
@@ -75,7 +75,7 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
       }
    }
 #endif
-   
+
    return false;
 }
 
@@ -103,11 +103,11 @@ int KqueueServer::getKernelEvents(int maxConnections) {
 
 int KqueueServer::fileDescriptorForEventIndex(int eventIndex) {
    int client_fd = -1;
-   
+
 #ifdef KQUEUE_SUPPORT
    client_fd = (int) m_event.ident;
 #endif
-   
+
    return client_fd;
 }
 
@@ -117,14 +117,14 @@ bool KqueueServer::addFileDescriptorForRead(int fileDescriptor) {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_ADD, 0, 0, nullptr);
-   
+
    if (::kevent(m_kqfd, &ev, 1, nullptr, 0, nullptr) < 0) {
       LOG_CRITICAL("kevent failed adding read filter")
    } else {
       return true;
    }
 #endif
-   
+
    return false;
 }
 
@@ -134,7 +134,7 @@ bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) {
 #ifdef KQUEUE_SUPPORT
    struct kevent ev;
    EV_SET(&ev, fileDescriptor, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
-   
+
    if (::kevent(m_kqfd, &ev, 1, nullptr, 0, nullptr) < 0) {
       LOG_WARNING("kevent failed to delete read filter")
       return false;

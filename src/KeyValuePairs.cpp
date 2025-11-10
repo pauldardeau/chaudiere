@@ -33,7 +33,7 @@ KeyValuePairs& KeyValuePairs::operator=(const KeyValuePairs& copy) {
    if (&copy == this) {
       return *this;
    }
-   
+
    m_keyValues = copy.m_keyValues;
 
    return *this;
@@ -47,7 +47,7 @@ void KeyValuePairs::getKeys(std::vector<std::string>& keys) const {
    }
 
    keys.reserve(m_keyValues.size());
-   
+
    for (const auto& pair : m_keyValues) {
       keys.push_back(pair.first);
    }
@@ -86,7 +86,7 @@ bool KeyValuePairs::removePair(const std::string& key) {
       m_keyValues.erase(it);
       return true;
    }
-   
+
    return false;
 }
 

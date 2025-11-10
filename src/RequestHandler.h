@@ -28,7 +28,7 @@ private:
    bool m_isThreadPooling;
    bool m_socketOwned;
 
-   
+
 public:
    /**
     * Constructs a RequestHandler using a SocketRequest for use by a KernelEventServer
@@ -36,40 +36,40 @@ public:
     * @see SocketRequest()
     */
    RequestHandler(SocketRequest* socketRequest);
-   
+
    /**
     * Constructs a RequestHandler using a Socket
     * @param socket the Socket for handling the request
     * @see Socket()
     */
    RequestHandler(Socket* socket);
-   
+
    /**
     * Destructor
     */
    virtual ~RequestHandler();
-   
+
    /**
     * Sets boolean indicating whether request is being run on thread pool
     * @param isThreadPooling boolean indicating if request is being run on thread pool
     */
    void setThreadPooling(bool isThreadPooling);
-   
+
    /**
     *
     * @return
     */
    bool isThreadPooling() const;
-   
+
    /**
     *
     * @return
     * @see Socket()
     */
    Socket* getSocket();
-  
+
    bool isSocketOwned() const;
-   void setSocketOwned(bool socketOwned); 
+   void setSocketOwned(bool socketOwned);
 
    virtual void notifyOnCompletion();
 };

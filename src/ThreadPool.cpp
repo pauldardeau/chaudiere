@@ -69,11 +69,11 @@ ThreadPool::~ThreadPool() {
    if (m_isRunning) {
       stop();
    }
-   
+
    for (auto& worker : m_listWorkers) {
       delete worker;
    }
-   
+
    m_listWorkers.clear();
 }
 
@@ -112,11 +112,11 @@ bool ThreadPool::stop() {
 
    if (m_isRunning) {
       m_queue.shutDown();
-  
+
       for (auto& worker : m_listWorkers) {
          worker->stop();
       }
-   
+
       m_isRunning = false;
       didStop = true;
    }
@@ -133,7 +133,7 @@ bool ThreadPool::addRequest(Runnable* runnableRequest) {
       m_queue.addRequest(runnableRequest);
       requestAdded = true;
    }
-   
+
    return requestAdded;
 }
 
@@ -204,11 +204,11 @@ bool ThreadPool::adjustNumberWorkers(int numberToAddOrDelete) {
                delete lastWorker;
             }
             requestSatisfied = true;
-         } 
+         }
       }
    } else {
       // caller asked for no adjustment and we satisfied request
-      requestSatisfied = true; 
+      requestSatisfied = true;
    }
 
    return requestSatisfied;

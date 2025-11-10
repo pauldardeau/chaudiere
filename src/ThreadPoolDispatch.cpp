@@ -54,11 +54,11 @@ bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) {
    if (!m_isRunning || !runnableRequest) {
       return false;
    }
-   
+
 #ifdef HAVE_GCD
    dispatch_queue_t queue =
       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-   
+
    dispatch_async(queue, ^{
       try {
          runnableRequest->run();
@@ -69,10 +69,10 @@ bool ThreadPoolDispatch::addRequest(Runnable* runnableRequest) {
       } catch (...) {
          LOG_ERROR("unknown exception running request")
       }
-      
+
       runnableRequest->notifyOnCompletion();
    });
-   
+
    return true;
 #else
    return false;

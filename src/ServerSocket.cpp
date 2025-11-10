@@ -22,7 +22,7 @@ using namespace chaudiere;
 
 bool ServerSocket::setReuseAddr(int socketFD) {
    int val_to_set = 1;
-   
+
    if (0 == ::setsockopt(socketFD,
                          SOL_SOCKET,
                          SO_REUSEADDR,
@@ -50,19 +50,19 @@ bool ServerSocket::listen(int socketFD, int backlog) {
 bool ServerSocket::bind(int socketFD, int port) {
    struct sockaddr_in serverAddr;
    ::memset((void *) &serverAddr, 0, sizeof(serverAddr));
-   
+
    serverAddr.sin_family = AF_INET;
    serverAddr.sin_port = htons(port);
    serverAddr.sin_addr.s_addr = INADDR_ANY;
-   
+
    const int rc = ::bind(socketFD,
                          (struct sockaddr*) &serverAddr,
                          sizeof(serverAddr));
-   
+
    if (rc < 0) {
       LOG_ERROR("unable to bind server socket to port")
       std::string errMsg;
-      
+
       switch(errno) {
          case EACCES:
             errMsg = "EACCES";

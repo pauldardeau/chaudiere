@@ -19,7 +19,7 @@ public:
     * Default constructor
     */
    SystemStats();
-   
+
    /**
     * Destructor
     */
@@ -31,7 +31,7 @@ public:
     * @return boolean indicating whether the uptime could be retrieved
     */
    static bool uptimeSeconds(long long& uptimeSeconds);
-   
+
    /**
     * Retrieves the system load averages for the past 1, 5, and 15 minute intervals
     * @param oneMinute the variable to populate with 1 minute load average
@@ -42,7 +42,7 @@ public:
    static bool getLoadAverages(double& oneMinute,
                                double& fiveMinute,
                                double& fifteenMinute);
-                               
+
    /**
     * Retrieves the number of processes running on the system
     * @param numberProcesses the variable to populate
@@ -51,12 +51,12 @@ public:
    static bool getNumberProcesses(int& numberProcesses);
 
 
-private:   
+private:
    // disallow copies
    SystemStats(const SystemStats& copy);
    SystemStats& operator=(const SystemStats& copy);
-   
-   
+
+
 };
 
 }

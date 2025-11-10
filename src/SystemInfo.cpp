@@ -49,14 +49,14 @@ SystemInfo& SystemInfo::operator=(const SystemInfo& copy) {
    if (this ==&copy) {
       return *this;
    }
-   
+
    m_sysName = copy.m_sysName;
    m_nodeName = copy.m_nodeName;
    m_release = copy.m_release;
    m_version = copy.m_version;
    m_machine = copy.m_machine;
    m_retrievedSystemInfo = copy.m_retrievedSystemInfo;
-   
+
    return *this;
 }
 

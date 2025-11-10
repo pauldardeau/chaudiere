@@ -22,14 +22,14 @@ public:
     * Destructor
     */
    virtual ~SectionedConfigDataSource() {}
-   
+
    /**
     * Determines whether the specified section name exists in the configuration
     * @param sectionName the name of the section whose existence is being tested
     * @return boolean indicating whether the specified section exists
     */
    virtual bool hasSection(const std::string& sectionName) const = 0;
-   
+
    /**
     * Reads the key/value pairs of the specified section
     * @param sectionName the name of the section to read
@@ -39,7 +39,7 @@ public:
     */
    virtual bool readSection(const std::string& sectionName,
                             KeyValuePairs& settings) const = 0;
-   
+
    /**
     * Retrieves the value associated with the specified key within the specified section
     * @param section the name of the section containing the key/value pair

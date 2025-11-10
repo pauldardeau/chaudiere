@@ -28,7 +28,7 @@ class ServerSocket
        * @return boolean indicating whether the update succeeded
        */
       static bool setReuseAddr(int socketFD);
-   
+
       /**
        * Starts the listening on the specified socket
        * @param socketFD the socket file descriptor to listen
@@ -36,7 +36,7 @@ class ServerSocket
        * @return boolean indicating whether the listen succeeded
        */
       static bool listen(int socketFD, int backlog);
-   
+
       /**
        * Binds the socket to the specified port
        * @param socketFD the socket file descriptor to bind
@@ -44,14 +44,14 @@ class ServerSocket
        * @return boolean indicating whether the bind succeeded
        */
       static bool bind(int socketFD, int port);
-   
+
       /**
        * Creates a new server socket and starts listening on the specified port
        * @param port the port number to listen on
        * @throw BasicException
        */
       explicit ServerSocket(int port);
-   
+
       /**
        * Destructor
        */
@@ -70,7 +70,7 @@ class ServerSocket
       void close();
 
 
-   
+
    private:
       // copying not allowed
       ServerSocket(const ServerSocket&);
@@ -81,7 +81,7 @@ class ServerSocket
        * @return boolean indicating whether the creation succeeded
        */
       bool create();
-   
+
       /**
        * Starts listening on the server socket
        * @return boolean indicating whether the listen succeeded

@@ -43,14 +43,14 @@ public:
    void unlock() {
       m_mutex.unlock();
    }
-    
+
 private:
    Mutex& m_mutex;
    std::string m_name;
-   
+
    MutexLock();
    MutexLock(const Mutex&);
-   Mutex& operator=(const Mutex&);   
+   Mutex& operator=(const Mutex&);
 
 };
 

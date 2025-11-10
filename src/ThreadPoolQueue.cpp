@@ -89,29 +89,29 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
       LOG_WARNING("ThreadPoolQueue::addRequest rejecting nullptr request")
       return false;
    }
- 
+
    MutexLock lock(*m_mutex, "ThreadPoolQueue::addRequest");
 
    ++m_activeAddRequests;
-   
+
    if (!m_isRunning) {
       LOG_WARNING("ThreadPoolQueue::addRequest rejecting request, queue is shutting down")
       --m_activeAddRequests;
       return false;
    }
-   
+
    if (!m_mutex->haveValidMutex()) {
       LOG_ERROR("don't have valid mutex in addRequest")
       ::exit(1);
    }
 
    LOG_DEBUG("ThreadPoolQueue::addRequest accepting request")
-   
+
    const bool wasEmpty = m_queue.empty();
-  
+
    // add new request to the queue
    m_queue.push_back(runnableRequest);
-   
+
    // did we just transition from QUEUE_EMPTY to QUEUE_NOT_EMPTY?
    if (wasEmpty) {
       // signal QUEUE_NOT_EMPTY (wake up a worker thread)
@@ -120,7 +120,7 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    }
 
    --m_activeAddRequests;
- 
+
    return true;
 }
 
@@ -142,7 +142,7 @@ void ThreadPoolQueue::takeRequest(TakeRequestContext& ctx) {
       ctx.isQueueRunning = false;
       return;
    }
-   
+
    if (!m_mutex->haveValidMutex()) {
       LOG_ERROR("don't have valid mutex in takeRequest")
       exit(1);

@@ -19,14 +19,14 @@ class DynamicLibrary
        * Default constructor
        */
       DynamicLibrary();
-   
+
       /**
        * Opens the specified dynamic library
        * @param libraryName the name of the dynamic library file to open
        * @throw BasicException
        */
       explicit DynamicLibrary(const std::string& libraryName);
-   
+
       /**
        * Destructor (closes the library if open)
        */
@@ -38,24 +38,24 @@ class DynamicLibrary
        * @return pointer to function (if present), or nullptr if not
        */
       void* resolve(const std::string& functionName);
-   
+
       /**
        * Opens the specified dynamic library file
        * @param libraryName the name of the dynamic library file to open
        * @return boolean indicating whether the dynamic library was opened
        */
       bool open(const std::string& libraryName);
-   
+
       /**
        * Closes the dynamic library (if open)
        */
       void close();
-   
+
 
    private:
       typedef void* HDLL;
       HDLL m_hDll;
-      
+
       // copies not allowed
       DynamicLibrary(const DynamicLibrary&);
       DynamicLibrary& operator=(const DynamicLibrary&);

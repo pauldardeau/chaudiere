@@ -58,7 +58,7 @@ void FileLogger::logMessage(LogLevel logLevel,
       if (f == nullptr) {
          f = ::fopen(m_filePath.c_str(), "a+");
       }
-      
+
       if (f != nullptr) {
          ::fprintf(f, "%s %s\n",
                       logLevelPrefix(logLevel).c_str(),

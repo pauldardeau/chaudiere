@@ -21,14 +21,14 @@ public:
     * Destructor
     */
    virtual ~SocketServiceHandler() {}
-   
+
    /**
     * Process a SocketRequest
     * @param socketRequest the SocketRequest to process
     * @see SocketRequest()
     */
    virtual void serviceSocket(SocketRequest* socketRequest) = 0;
-   
+
    /**
     * Retrieves the name of the handler. This is primarily an aid for debugging.
     * @return the name of the handler

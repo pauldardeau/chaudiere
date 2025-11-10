@@ -21,25 +21,25 @@ public:
     * Default constructor
     */
    ThreadPoolDispatch();
-   
+
    /**
     * Destructor
     */
    ~ThreadPoolDispatch();
-   
+
    // ThreadPoolDispatcher
    /**
     *
     * @return
     */
    virtual bool start();
-   
+
    /**
     *
     * @return
     */
    virtual bool stop();
-   
+
    /**
     *
     * @param runnableRequest
@@ -49,14 +49,14 @@ public:
    virtual bool addRequest(Runnable* runnableRequest);
 
 
-   
+
 private:
    bool m_isRunning;
 
    // disallow copies
    ThreadPoolDispatch(const ThreadPoolDispatch&);
    ThreadPoolDispatch& operator=(const ThreadPoolDispatch&);
-   
+
 };
 
 }

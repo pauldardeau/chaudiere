@@ -31,81 +31,81 @@ public:
     * @param runnable
     */
    Thread(Runnable* runnable);
-   
+
    /**
     *
     * @param mutexAlive
     * @param runnable
     */
    //Thread(Mutex* mutexAlive, Runnable* runnable);
-   
+
    /**
     * Destructor
     */
    virtual ~Thread();
 
    void setAliveMutex(Mutex* mutexAlive);
-   
-   
+
+
    /**
     *
     * @param isPoolWorker
     */
    void setPoolWorkerStatus(bool isPoolWorker);
-   
+
    /**
     *
     * @return
     */
    bool isPoolWorker() const;
-   
+
    /**
     *
     * @return
     */
    virtual bool start() = 0;
-   
+
    /**
     *
     */
    virtual void run();
-   
+
    /**
     *
     * @return
     */
    bool isAlive() const;
-   
+
    /**
     *
     * @param isAlive
     */
    void setAlive(bool isAlive);
-   
+
    /**
     *
     * @param observer
     */
    void registerThreadCompletionObserver(ThreadCompletionObserver* observer);
-   
+
    /**
     *
     */
    void clearThreadCompletionObserver();
-   
+
    /**
     *
     */
    void notifyOnCompletion();
-   
-   
+
+
    /**
     *
     * @return
     */
    Runnable* getRunnable();
-   
-   
+
+
    /**
     *
     * @param key
@@ -113,14 +113,14 @@ public:
     */
    void setAttribute(const std::string& key,
                      const std::string& value);
-   
+
    /**
     *
     * @param key
     * @return
     */
    bool hasAttribute(const std::string& key) const;
-   
+
    /**
     *
     * @param key
@@ -128,43 +128,43 @@ public:
     * @throws InvalidKeyException
     */
    const std::string& getAttribute(const std::string& key) const;
-   
+
    /**
     *
     * @param key
     */
    void clearAttribute(const std::string& key);
-   
+
    /**
     *
     * @param threadId
     */
    void setThreadId(const std::string& threadId);
-   
+
    /**
     *
     * @return
     */
    bool hasThreadId() const;
-   
+
    /**
     *
     * @return
     */
    const std::string& getThreadId() const;
-   
+
    /**
     *
     * @param workerId
     */
    void setWorkerId(const std::string& workerId);
-   
+
    /**
     *
     * @return
     */
    bool hasWorkerId() const;
-   
+
    /**
     *
     * @return
@@ -175,7 +175,7 @@ public:
 
    static void sleep(long msec);
 
-   
+
 private:
    Runnable* m_runnable;
    bool m_isAlive;
@@ -183,7 +183,7 @@ private:
    Mutex* m_mutexAlive; // weak
    ThreadCompletionObserver* m_threadCompletionObserver;
    KeyValuePairs m_attributes;
-   
+
    // disallow copying
    Thread(const Thread&);
    Thread& operator=(const Thread&);

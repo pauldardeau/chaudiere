@@ -34,7 +34,7 @@ class SocketServer
       SocketServer(const std::string& serverName,
                    const std::string& serverVersion,
                    const std::string& configFilePath);
-   
+
       /**
        * Destructor
        */
@@ -46,14 +46,14 @@ class SocketServer
        * @return
        */
       virtual RequestHandler* handlerForSocket(Socket* socket) = 0;
-      
+
       /**
        *
        * @param socketRequest
        * @return
        */
       virtual RequestHandler* handlerForSocketRequest(SocketRequest* socketRequest) = 0;
-      
+
       /**
        *
        * @return
@@ -65,7 +65,7 @@ class SocketServer
        * @return current time in GMT
        */
       std::string getSystemDateGMT() const;
-   
+
       /**
        * Retrieves the current time for server in local time
        * @return current time as local server time
@@ -77,13 +77,13 @@ class SocketServer
        * @return exit code for the server process
        */
       int runSocketServer();
-   
+
       /**
        * Runs a kernel event server (e.g., kqueue or epoll)
        * @return exit code for the server process
        */
       int runKernelEventServer();
-   
+
       /**
        * Runs the server using either the built-in socket server or a kernel event server
        * @return exit code for the server process
@@ -96,25 +96,25 @@ class SocketServer
        * @return the configuration data source
        */
       SectionedConfigDataSource* getConfigDataSource();
-   
+
       /**
        * Retrieves the size of the socket send buffer
        * @return size of the socket send buffers
        */
       int getSocketSendBufferSize() const;
-   
+
       /**
        * Retrieves the size of the socket receive buffer
        * @return size of the socket receive buffers
        */
       int getSocketReceiveBufferSize() const;
-   
+
       /**
        * Retrieves the identifier for the server
        * @return server identifier
        */
       const std::string& getServerId() const;
-   
+
       /**
        * Retrieves the size in bytes of a generic (void*) pointer
        * @return platform pointer size
@@ -137,7 +137,7 @@ class SocketServer
        */
       bool hasTrueValue(const KeyValuePairs& kvp,
                         const std::string& setting) const;
-   
+
       /**
        * Convenience method to retrieve a setting and convert it to an integer
        * @param kvp the collection of key/value pair settings
@@ -147,7 +147,7 @@ class SocketServer
        */
       int getIntValue(const KeyValuePairs& kvp,
                       const std::string& setting) const;
-   
+
       /**
        * Convenience method to replace all occurrences of keys in collection with their values
        * @param kvp the collection of key/value pairs for replacement
@@ -155,9 +155,9 @@ class SocketServer
        */
       void replaceVariables(const KeyValuePairs& kvp,
                             std::string& s) const;
-   
 
-   
+
+
    protected:
       /**
        * Initializes the socket server on the specified port by default by reading and
@@ -166,7 +166,7 @@ class SocketServer
        * @return boolean indicating whether initialiation was successful
        */
       virtual bool init(int port);
-   
+
 
 
    private:

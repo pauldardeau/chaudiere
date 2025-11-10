@@ -23,24 +23,24 @@ public:
     * Default constructor
     */
    ThreadPoolDispatcher() {}
-   
+
    /**
     * Destructor
     */
    virtual ~ThreadPoolDispatcher() {}
-   
+
    /**
     *
     * @return
     */
    virtual bool start() = 0;
-   
+
    /**
     *
     * @return
     */
    virtual bool stop() = 0;
-   
+
    /**
     *
     * @param runnableRequest
@@ -48,7 +48,7 @@ public:
     * @see Runnable()
     */
    virtual bool addRequest(Runnable* runnableRequest) = 0;
-   
+
 
 private:
    // disallow copies

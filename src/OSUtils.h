@@ -10,7 +10,7 @@
 
 namespace chaudiere
 {
-   
+
    /**
     * OSUtils is a collection of OS related utilities that are frequently used
     */
@@ -22,14 +22,14 @@ namespace chaudiere
        * @return the current directory
        */
       static std::string getCurrentDirectory();
-      
+
       /**
        * Determines if the specified directory exists
        * @param directory the directory whose existence is to be tested
        * @return boolean indicating if the directory exists
        */
       static bool directoryExists(const std::string& directory);
-      
+
       /**
        * Joins (concatenates) a directory path and file name and will include the path delimiter if necessary
        * @param directory the path for the directory
@@ -38,14 +38,14 @@ namespace chaudiere
        */
       static std::string pathJoin(const std::string& directory,
                                   const std::string& fileName);
-      
+
       /**
        * Determines if the specified file path exists
        * @param filePath the file path whose existence is to be tested
        * @return boolean indicating if the file path exists
        */
       static bool pathExists(const std::string& filePath);
-      
+
       /**
        * Creates a new directory of the specified name
        * @param directory name of new directory to create
@@ -79,14 +79,14 @@ namespace chaudiere
       * @return
       */
      static bool deleteFile(const std::string& filePath);
-     
+
      /**
       *
       * @param
       * @param
       * @return
       */
-     static bool renameFile(const std::string& oldFilePath, const std::string& newFilePath); 
+     static bool renameFile(const std::string& oldFilePath, const std::string& newFilePath);
 
      /**
       *
