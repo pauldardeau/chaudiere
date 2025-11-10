@@ -149,7 +149,7 @@ protected:
 
 
 private:
-   SocketServiceHandler* m_socketServiceHandler;
+   std::unique_ptr<SocketServiceHandler> m_socketServiceHandler;
    std::unordered_map<int,bool> m_busyFlags;
    Mutex* m_busyFlagsMutex;
    int m_serverPort;

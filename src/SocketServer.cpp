@@ -127,7 +127,6 @@ SocketServer::SocketServer(const std::string& serverName,
                            const std::string& serverVersion,
                            const std::string& configFilePath) :
    m_kernelEventServer(nullptr),
-   m_serverSocket(nullptr),
    m_threadPool(nullptr),
    m_threadingFactory(nullptr),
    m_configFilePath(configFilePath),
@@ -417,11 +416,7 @@ bool SocketServer::init(int port)
             LOG_DEBUG(msg)
          }
       
-         if (m_serverSocket != nullptr) {
-            delete m_serverSocket;
-         }
-         
-         m_serverSocket = new ServerSocket(port);
+         m_serverSocket.reset(new ServerSocket(port));
       } catch (...) {
          std::string exception = "unable to open server socket port '";
          exception += StrUtils::toString(port);
@@ -449,12 +444,8 @@ bool SocketServer::init(int port)
       
       ThreadingFactory::setThreadingFactory(m_threadingFactory);
       
-      if (m_threadPool) {
-         delete m_threadPool;
-      }
-      
-      m_threadPool =
-         m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize, "threadpool");
+      m_threadPool.reset(
+         m_threadingFactory->createThreadPoolDispatcher(m_threadPoolSize, "threadpool"));
       m_threadPool->start();
 
       concurrencyModel = "multithreaded - ";
@@ -503,16 +494,10 @@ SocketServer::~SocketServer() {
 
    if (m_serverSocket) {
       m_serverSocket->close();
-      delete m_serverSocket;
-   }
-   
-   if (m_kernelEventServer) {
-      delete m_kernelEventServer;
    }
 
    if (m_threadPool) {
       m_threadPool->stop();
-      delete m_threadPool;
    }
    
    if (m_threadingFactory) {
@@ -644,17 +629,14 @@ int SocketServer::runKernelEventServer() {
       Mutex* mutexHWMConnections =
          m_threadingFactory->createMutex("hwmConnectionsMutex");
       
-      if (m_kernelEventServer) {
-         delete m_kernelEventServer;
-         m_kernelEventServer = nullptr;
-      }
+      m_kernelEventServer.reset();
       
       if (KqueueServer::isSupportedPlatform()) {
-         m_kernelEventServer =
-            new KqueueServer(*mutexFD, *mutexHWMConnections);
+         m_kernelEventServer.reset(
+            new KqueueServer(*mutexFD, *mutexHWMConnections));
       } else if (EpollServer::isSupportedPlatform()) {
-         m_kernelEventServer =
-            new EpollServer(*mutexFD, *mutexHWMConnections);
+         m_kernelEventServer.reset(
+            new EpollServer(*mutexFD, *mutexHWMConnections));
       } else {
          LOG_CRITICAL("no kernel event server available for platform")
          rc = 1;
