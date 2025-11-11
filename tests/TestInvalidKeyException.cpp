@@ -25,7 +25,7 @@ void TestInvalidKeyException::runTests() {
 
 void TestInvalidKeyException::testConstructor() {
    TEST_CASE("testConstructor");
-   
+
    InvalidKeyException ike("TestKey");
    requireStringEquals("TestKey", ike.getKey(), "key should match ctor arg");
    requireNonEmptyString(ike.whatString(), "whatString should not be empty");
@@ -58,7 +58,7 @@ void TestInvalidKeyException::testAssignmentCopy() {
 
 void TestInvalidKeyException::testGetKey() {
    TEST_CASE("testGetKey");
-   
+
    InvalidKeyException ike("TestKey");
    requireStringEquals("TestKey", ike.getKey(), "key should match ctor arg");
 }

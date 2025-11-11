@@ -180,7 +180,7 @@ void TestOptionParser::testParseArgs() {
    int argc;
    const char* argv_no_opts[] = {"", nullptr};
    argc = sizeof(argv_no_opts) / sizeof(char*) - 1;
-   //TODO: implement testParseArgs 
+   //TODO: implement testParseArgs
 }
 
 //******************************************************************************

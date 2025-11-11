@@ -20,12 +20,12 @@ TestIniReader::TestIniReader() :
 
 void TestIniReader::runTests() {
    setupSuite();
-   
+
    testConstructor();
    testReadSection();
    testGetSectionKeyValue();
    testHasSection();
-   
+
    tearDownSuite();
 }
 
@@ -34,7 +34,7 @@ void TestIniReader::runTests() {
 void TestIniReader::setupSuite() {
    m_filePath = getTempFile();
    printf("TestIniReader::setupSuite, temp file ='%s'\n", m_filePath.c_str());
-   
+
    if (!m_filePath.empty()) {
       FILE *f = ::fopen(m_filePath.c_str(), "wt");
       if (f != nullptr) {
@@ -118,13 +118,13 @@ void TestIniReader::testReadSection() {
 
    //bool readSection(const std::string& section, KeyValuePairs& mapSectionValues) const;
    IniReader reader(m_filePath);
-   
+
    std::string section = "stooges";
    require(reader.hasSection(section), "existing section should be known");
    KeyValuePairs kvpStooges;
    require(reader.readSection(section, kvpStooges), "read existing section");
    require(3 == kvpStooges.size(), "should return 3 pairs");
-   
+
    KeyValuePairs kvpBirds;
    section = "birds";
    requireFalse(reader.hasSection(section), "non-existing section should return false");
@@ -135,12 +135,12 @@ void TestIniReader::testReadSection() {
 
 void TestIniReader::testGetSectionKeyValue() {
    TEST_CASE("testGetSectionKeyValue");
-   
+
    //bool getSectionKeyValue(const std::string& section,
    //                         const std::string& key,
    //                         std::string& value) const;
    IniReader reader(m_filePath);
-   
+
    std::string section = "stooges";
    std::string value;
    require(reader.hasSection(section), "existing section should be known");
@@ -154,7 +154,7 @@ void TestIniReader::testGetSectionKeyValue() {
 
 void TestIniReader::testHasSection() {
    TEST_CASE("testHasSection");
-   
+
    //bool hasSection(const std::string& section) const;
    IniReader reader(m_filePath);
    require(reader.hasSection("stooges"), "existing section should be known");

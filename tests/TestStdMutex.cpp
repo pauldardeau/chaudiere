@@ -29,7 +29,7 @@ void TestStdMutex::runTests() {
 
 void TestStdMutex::testConstructor() {
    TEST_CASE("testConstructor");
-   
+
    StdMutex mutex;
    require(mutex.haveValidMutex(), "constructor should result in valid mutex");
 }
@@ -38,7 +38,7 @@ void TestStdMutex::testConstructor() {
 
 void TestStdMutex::testConstructorWithName() {
    TEST_CASE("testConstructorWithName");
-   
+
    StdMutex mutex("testMutex");
    require(mutex.haveValidMutex(), "constructor with name should result in valid mutex");
 }
@@ -47,7 +47,7 @@ void TestStdMutex::testConstructorWithName() {
 
 void TestStdMutex::testLock() {
    TEST_CASE("testLock");
-   
+
    StdMutex mutex;
    require(mutex.lock(), "should be able to lock");
    require(mutex.isLocked(), "isLocked should return true");
@@ -57,7 +57,7 @@ void TestStdMutex::testLock() {
 
 void TestStdMutex::testUnlock() {
    TEST_CASE("testUnlock");
-   
+
    StdMutex mutex;
    require(mutex.lock(), "should be able to lock");
    require(mutex.isLocked(), "isLocked should return true");
@@ -69,7 +69,7 @@ void TestStdMutex::testUnlock() {
 
 void TestStdMutex::testHaveValidMutex() {
    TEST_CASE("testHaveValidMutex");
-   
+
    StdMutex mutex;
    require(mutex.haveValidMutex(), "constructor should result in valid mutex");
 }
@@ -78,7 +78,7 @@ void TestStdMutex::testHaveValidMutex() {
 
 void TestStdMutex::testGetPlatformPrimitive() {
    TEST_CASE("testGetPlatformPrimitive");
-   
+
    StdMutex mutex;
    require(mutex.haveValidMutex(), "constructor should result in valid mutex");
 }
@@ -87,7 +87,7 @@ void TestStdMutex::testGetPlatformPrimitive() {
 
 void TestStdMutex::testGetName() {
    TEST_CASE("testGetName");
-   
+
    const std::string name = "testMutex";
    StdMutex mutex(name);
    requireStringEquals(name, mutex.getName(), "name should match value given to ctor");
@@ -97,7 +97,7 @@ void TestStdMutex::testGetName() {
 
 void TestStdMutex::testIsLocked() {
    TEST_CASE("testIsLocked");
-   
+
    StdMutex mutex;
    if (mutex.lock()) {
       require(mutex.isLocked(), "isLock should return true when locked");

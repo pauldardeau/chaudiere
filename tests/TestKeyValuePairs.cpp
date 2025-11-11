@@ -32,7 +32,7 @@ void TestKeyValuePairs::runTests() {
 
 void TestKeyValuePairs::testConstructor() {
    TEST_CASE("testConstructor");
-   
+
    KeyValuePairs kvp;
    require(kvp.empty(), "empty should be empty");
    require(kvp.size() == 0, "empty should have count of 0");
@@ -43,12 +43,12 @@ void TestKeyValuePairs::testConstructor() {
 
 void TestKeyValuePairs::testCopyConstructor() {
    TEST_CASE("testCopyConstructor");
-   
+
    KeyValuePairs kvp;
    kvp.addPair("stooge1", "Moe");
    kvp.addPair("stooge2", "Larry");
    kvp.addPair("stooge3", "Curly");
-   
+
    KeyValuePairs kvpCopy(kvp);
    requireFalse(kvpCopy.empty(), "non-empty copy");
    require(3 == kvpCopy.size(), "3 pairs in copy");
@@ -63,7 +63,7 @@ void TestKeyValuePairs::testAssignmentCopy() {
    kvp.addPair("stooge1", "Moe");
    kvp.addPair("stooge2", "Larry");
    kvp.addPair("stooge3", "Curly");
-   
+
    KeyValuePairs kvpCopy;
    kvpCopy = kvp;
    requireFalse(kvpCopy.empty(), "non-empty copy");
@@ -74,12 +74,12 @@ void TestKeyValuePairs::testAssignmentCopy() {
 
 void TestKeyValuePairs::testGetKeys() {
    TEST_CASE("testGetKeys");
-   
+
    std::vector<std::string> keys;
    KeyValuePairs kvp;
    kvp.getKeys(keys);
    require(keys.empty(), "no keys");
-   
+
    kvp.addPair("stooge1", "Moe");
    kvp.addPair("stooge2", "Larry");
    kvp.addPair("stooge3", "Curly");
@@ -121,7 +121,7 @@ void TestKeyValuePairs::testAddPair() {
    kvp.addPair("stooge1", "Moe");
    kvp.addPair("stooge2", "Larry");
    kvp.addPair("stooge3", "Curly");
-   
+
    require(3 == kvp.size(), "3 pairs");
 }
 
@@ -143,7 +143,7 @@ void TestKeyValuePairs::testRemovePair() {
 
 void TestKeyValuePairs::testClear() {
    TEST_CASE("testClear");
-   
+
    KeyValuePairs kvp;
    kvp.addPair("stooge1", "Moe");
    kvp.addPair("stooge2", "Larry");
@@ -178,7 +178,7 @@ void TestKeyValuePairs::testEmpty() {
    kvp.addPair("stooge1", "Moe");
    kvp.addPair("stooge2", "Larry");
    kvp.addPair("stooge3", "Curly");
-   
+
    requireFalse(kvp.empty(), "non-empty should be non-empty");
 }
 

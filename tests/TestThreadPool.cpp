@@ -52,7 +52,7 @@ void TestThreadPool::testConstructor() {
       //printf("%d\n", numWorkers);
       ThreadPool tp(numWorkers);
    }
-   
+
    {
       const int numWorkers = 0;
       //printf("%d\n", numWorkers);
