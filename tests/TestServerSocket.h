@@ -13,14 +13,14 @@ class TestServerSocket : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testAccept();
    void testClose();
 
 public:
    TestServerSocket();
-   
+
 
 };
 

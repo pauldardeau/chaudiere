@@ -28,15 +28,15 @@ protected:
    // strip
    void testStrip();
    void testStripWithChar();
-   
+
    void testStartsWith();
    void testEndsWith();
    void testContainsString();
 
-   // upper/lower case   
+   // upper/lower case
    void testToUpperCase();
    void testToLowerCase();
-   
+
    void testReplaceAll();
 
    // strip
@@ -58,7 +58,7 @@ protected:
 
 public:
    TestStrUtils();
-   
+
 };
 
 }

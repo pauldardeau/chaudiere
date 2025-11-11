@@ -13,11 +13,11 @@ class TestSystemStats : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
 
 public:
    TestSystemStats();
-   
+
 
 };
 

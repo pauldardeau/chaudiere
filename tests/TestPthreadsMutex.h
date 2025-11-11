@@ -13,10 +13,10 @@ class TestPthreadsMutex : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testConstructorWithName();
-   
+
    void testLock();
    void testUnlock();
    void testHaveValidMutex();
@@ -26,7 +26,7 @@ protected:
 
 public:
    TestPthreadsMutex();
-   
+
 };
 
 }

@@ -13,14 +13,14 @@ class TestInvalidKeyException : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testCopyConstructor();
-   
+
    void testAssignmentCopy();
-   
+
    void testGetKey();
-   
+
 public:
    TestInvalidKeyException();
 };

@@ -25,7 +25,7 @@ protected:
    void testIsRunning();
 
 public:
-   TestThreadPool();   
+   TestThreadPool();
 
 };
 

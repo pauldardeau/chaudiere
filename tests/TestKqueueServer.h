@@ -13,7 +13,7 @@ class TestKqueueServer : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testInit();
    void testRun();
@@ -21,7 +21,7 @@ protected:
 
 public:
    TestKqueueServer();
-   
+
 
 };
 

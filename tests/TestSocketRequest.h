@@ -13,7 +13,7 @@ class TestSocketRequest : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testRun();
    void testGetSocketFD();
@@ -21,7 +21,7 @@ protected:
    void testRequestComplete();
 
 public:
-   TestSocketRequest();   
+   TestSocketRequest();
 
 };
 

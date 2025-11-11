@@ -13,7 +13,7 @@ class TestKeyValuePairs : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testCopyConstructor();
    void testAssignmentCopy();
@@ -25,9 +25,9 @@ protected:
    void testClear();
    void testSize();
    void testEmpty();
-   
+
 public:
-   TestKeyValuePairs();   
+   TestKeyValuePairs();
 
 };
 

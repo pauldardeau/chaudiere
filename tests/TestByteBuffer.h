@@ -14,11 +14,11 @@ class TestByteBuffer : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
 
 public:
    TestByteBuffer();
-   
+
    void testDefaultConstructor();
    void testSizeConstructor();
    void testCopyConstructor();

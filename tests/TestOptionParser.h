@@ -13,7 +13,7 @@ class TestOptionParser : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testCopyConstructor();
    void testAssignmentOperator();
@@ -23,7 +23,7 @@ protected:
    void testGetOptionValue();
    void testHasFlag();
    void testParseArgs();
-   
+
 public:
    TestOptionParser();
 

@@ -13,7 +13,7 @@ class TestThreadPoolQueue : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testAddRequest();
    void testTakeRequest();
@@ -22,7 +22,7 @@ protected:
    void testIsEmpty();
 
 public:
-   TestThreadPoolQueue();   
+   TestThreadPoolQueue();
 
 };
 

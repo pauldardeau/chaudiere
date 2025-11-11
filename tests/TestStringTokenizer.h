@@ -13,17 +13,17 @@ class TestStringTokenizer : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testConstructorWithDelimiter();
    void testHasMoreTokens();
    void testNextToken();
    void testCountTokens();
    void testRepeatingCharDelimiter();
-   
+
 public:
    TestStringTokenizer();
-   
+
 
 };
 

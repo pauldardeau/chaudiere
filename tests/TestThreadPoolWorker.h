@@ -13,12 +13,12 @@ class TestThreadPoolWorker : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testRun();
 
 public:
-   TestThreadPoolWorker();   
+   TestThreadPoolWorker();
 
 };
 

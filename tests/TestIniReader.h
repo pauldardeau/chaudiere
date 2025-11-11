@@ -18,12 +18,12 @@ protected:
    void runTests();
    void setupSuite();
    void tearDownSuite();
-   
+
    void testConstructor();
    void testReadSection();
    void testGetSectionKeyValue();
    void testHasSection();
-   
+
 public:
    TestIniReader();
 

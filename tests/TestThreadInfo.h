@@ -13,11 +13,11 @@ class TestThreadInfo : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
 
 public:
    TestThreadInfo();
-   
+
 
 };
 

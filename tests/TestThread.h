@@ -13,27 +13,27 @@ class TestThread : public poivre::TestSuite
 {
 protected:
    void runTests();
-   
+
    void testConstructor();
    void testConstructorWithRunnable();
-   
+
    void testSetPoolWorkerStatus();
    void testIsPoolWorker();
-   
+
    void testStart();
    void testRun();
-   
+
    void testIsAlive();
-   
+
    void testGetExitCode();
-   
+
    void testRegisterThreadCompletionObserver();
    void testClearThreadCompletionObserver();
-   
+
    void testGetRunnable();
-   
+
    void testGetHandle();
-   
+
    void testSetAttribute();
    void testHasAttribute();
    void testGetAttribute();
