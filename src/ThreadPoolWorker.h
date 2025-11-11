@@ -57,7 +57,7 @@ class ThreadPoolWorker : public Runnable
 
    private:
       ThreadingFactory* m_threadingFactory;
-      Thread* m_workerThread;
+      std::unique_ptr<Thread> m_workerThread;
       ThreadPoolQueue& m_poolQueue;
       int m_workerId;
       bool m_isRunning;
