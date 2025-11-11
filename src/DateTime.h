@@ -23,7 +23,7 @@ namespace chaudiere
       int m_hour;
       int m_minute;
       int m_second;
-      int m_microseconds;
+      long m_microseconds;
       int m_weekDay;
       mutable bool m_haveUnixTimeValue;
 

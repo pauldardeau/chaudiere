@@ -432,7 +432,7 @@ std::string DateTime::formattedString() const {
    if (m_haveUnixTimeValue) {
       memset(stringBuffer, 0, sizeof(stringBuffer));
    } else {
-      snprintf(stringBuffer, 30, "%04d-%02d-%02d %02d:%02d:%02d.%06d",
+      snprintf(stringBuffer, 30, "%04d-%02d-%02d %02d:%02d:%02d.%06ld",
                m_year, m_month, m_day, m_hour, m_minute, m_second,
                m_microseconds);
    }
@@ -444,7 +444,7 @@ std::string DateTime::formattedString() const {
 std::string DateTime::unformattedString() const {
    //TODO: what if we only have unix time populated?
    char stringBuffer[30];
-   snprintf(stringBuffer, 30, "%04d%02d%02d%02d%02d%02d%06d",
+   snprintf(stringBuffer, 30, "%04d%02d%02d%02d%02d%02d%06ld",
             m_year, m_month, m_day, m_hour, m_minute, m_second, m_microseconds);
    return std::string(stringBuffer);
 }
