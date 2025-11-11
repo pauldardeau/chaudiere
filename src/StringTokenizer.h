@@ -12,6 +12,7 @@ namespace chaudiere
 
 /**
  * StringTokenizer is very similar to Java's StringTokenizer.
+ * @see StrUtils::split for similar functionality.
  */
 class StringTokenizer
 {
