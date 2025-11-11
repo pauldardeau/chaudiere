@@ -150,7 +150,7 @@ protected:
 private:
    std::unique_ptr<SocketServiceHandler> m_socketServiceHandler;
    std::unordered_map<int,bool> m_busyFlags;
-   Mutex* m_busyFlagsMutex;
+   std::unique_ptr<Mutex> m_busyFlagsMutex;
    int m_serverPort;
    int m_maxConnections;
    int m_listenBacklog;

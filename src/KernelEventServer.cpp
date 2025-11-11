@@ -72,7 +72,7 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
    }
 
    ThreadingFactory* tf = ThreadingFactory::getThreadingFactory();
-   m_busyFlagsMutex = tf->createMutex("busyFlags");
+   m_busyFlagsMutex.reset(tf->createMutex("busyFlags"));
 
    m_listenerFD = Socket::createSocket();
    if (m_listenerFD == -1) {
