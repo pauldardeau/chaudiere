@@ -45,9 +45,9 @@
 static const std::string CFG_TRUE_SETTING_VALUES = "yes|true|1";
 
 static const std::string EMPTY = "";
-static const std::string SPACE = " ";
-static const std::string EOL   = "\n";
-static const std::string COLON = ":";
+//static const std::string SPACE = " ";
+//static const std::string EOL   = "\n";
+//static const std::string COLON = ":";
 
 
 // default settings
@@ -61,11 +61,11 @@ static const int CFG_DEFAULT_THREAD_POOL_SIZE     = 4;
 
 // configuration sections
 static const std::string CFG_SECTION_SERVER                 = "server";
-static const std::string CFG_SECTION_LOGGING                = "logging";
+//static const std::string CFG_SECTION_LOGGING                = "logging";
 
 // logging config values
-static const std::string CFG_LOGFILE_ACCESS                 = "access_log";
-static const std::string CFG_LOGFILE_ERROR                  = "error_log";
+//static const std::string CFG_LOGFILE_ACCESS                 = "access_log";
+//static const std::string CFG_LOGFILE_ERROR                  = "error_log";
 
 // server config values
 static const std::string CFG_SERVER_PORT                    = "port";
@@ -74,7 +74,7 @@ static const std::string CFG_SERVER_THREAD_POOL_SIZE        = "thread_pool_size"
 static const std::string CFG_SERVER_LOG_LEVEL               = "log_level";
 static const std::string CFG_SERVER_SEND_BUFFER_SIZE        = "socket_send_buffer_size";
 static const std::string CFG_SERVER_RECEIVE_BUFFER_SIZE     = "socket_receive_buffer_size";
-static const std::string CFG_SERVER_ALLOW_BUILTIN_HANDLERS  = "allow_builtin_handlers";
+//static const std::string CFG_SERVER_ALLOW_BUILTIN_HANDLERS  = "allow_builtin_handlers";
 static const std::string CFG_SERVER_STRING                  = "server_string";
 static const std::string CFG_SERVER_SOCKETS                 = "sockets";
 
@@ -98,16 +98,16 @@ static const std::string CFG_LOGGING_DEBUG                  = "debug";
 static const std::string CFG_LOGGING_VERBOSE                = "verbose";
 
 // mime types
-static const std::string MIME_APPLICATION_JSON  = "application/json";
-static const std::string MIME_APPLICATION_XML   = "application/xml";
-static const std::string MIME_TEXT_HTML         = "text/html";
-static const std::string MIME_TEXT_PLAIN        = "text/plain";
+//static const std::string MIME_APPLICATION_JSON  = "application/json";
+//static const std::string MIME_APPLICATION_XML   = "application/xml";
+//static const std::string MIME_TEXT_HTML         = "text/html";
+//static const std::string MIME_TEXT_PLAIN        = "text/plain";
 
 
 // module config values
-static const std::string APP_PREFIX = "app:";
+//static const std::string APP_PREFIX = "app:";
 
-static const std::size_t APP_PREFIX_LEN = APP_PREFIX.length();
+//static const std::size_t APP_PREFIX_LEN = APP_PREFIX.length();
 
 static const char* LOG_WEEKDAY_NAME[7] = {
    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"

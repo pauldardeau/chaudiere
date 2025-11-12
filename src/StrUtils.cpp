@@ -12,7 +12,11 @@
 
 static const std::string EMPTY = "";
 static const std::string SPACE = " ";
+
+#if __cplusplus < 201103L
 static const std::string ZERO = "0";
+#endif
+
 static const std::string_view ZERO_SV = "0";
 
 using namespace chaudiere;
