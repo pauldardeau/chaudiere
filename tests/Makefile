@@ -2,11 +2,11 @@
 # BSD License
 
 CC = c++
-CC_OPTS = -c -g -std=c++20 -pthread -I../src -I../../poivre
-#CC_OPTS = -c -std=c++20 -pthread -I../src -I../../poivre
+CC_OPTS = -c -g -std=c++20 -pthread -I../src -I../poivre
+#CC_OPTS = -c -std=c++20 -pthread -I../src -I../poivre
 
 EXE_NAME = test_chaudiere
-LIB_NAMES = ../src/libchaudiere.so ../../poivre/poivre.so
+LIB_NAMES = ../src/libchaudiere.so ../poivre/poivre.so
 
 OBJS = MockSocket.o \
 TestAutoPointer.o \
