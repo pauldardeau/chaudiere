@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Submodule init
-        run: git submodule init
+        with:
+          submodules: true
       - name: make library
         run: make
         working-directory: src
