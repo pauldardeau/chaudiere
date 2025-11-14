@@ -9,14 +9,23 @@
 namespace chaudiere
 {
 
-class TestSocket : public poivre::TestSuite
+class TestSocket : public TestSuite
 {
 protected:
    void runTests();
+   void setup();
+   void tearDown();
 
    void testConstructorWithAddress();
    void testConstructorWithFD();
    void testConstructorWithCompletionObserver();
+
+   void testCreateSocket();
+   void testIsDescriptorBorrowed();
+   void testOpen();
+   void testInit();
+   void testSetLineInputBuffer();
+   void testAppendLineInputBuffer();
 
    void testSend();
    void testWriteWithBuffer();
@@ -24,6 +33,9 @@ protected:
 
    void testReceive();
    void testRead();
+   void testReadSocket();
+   void testReadLine();
+   void testReadMsg();
 
    void testClose();
    void testIsOpen();
@@ -46,8 +58,6 @@ protected:
 
    void testSetKeepAlive();
    void testGetKeepAlive();
-
-   void testReadLine();
 
    void testGetPeerIPAddress();
 

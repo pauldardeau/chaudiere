@@ -25,7 +25,7 @@
 
 using namespace chaudiere;
 
-void run_test(poivre::TestSuite* test_suite) {
+void run_test(TestSuite* test_suite) {
    if (nullptr != test_suite) {
       test_suite->run();
       delete test_suite;

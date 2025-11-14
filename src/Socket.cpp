@@ -30,7 +30,7 @@ using namespace chaudiere;
 int Socket::createSocket() {
    const int socketFD = ::socket(AF_INET, SOCK_STREAM, 0);
    if (socketFD == -1) {
-      LOG_ERROR("unable to create socket")
+      LOG_ERROR("unable to create socket (file descriptor)")
    }
 
    return socketFD;
@@ -47,7 +47,9 @@ Socket::Socket(const std::string& address, int port) :
    m_isConnected(false),
    m_includeMessageSize(false),
    m_borrowedDescriptor(false),
-   m_inBufferSize(DEFAULT_BUFFER_SIZE) {
+   m_inBufferSize(DEFAULT_BUFFER_SIZE),
+   m_lastReadSize(0) {
+
    LOG_INSTANCE_CREATE("Socket")
 
    if (!open()) {
@@ -61,26 +63,31 @@ Socket::Socket(int socketFD) :
    m_completionObserver(nullptr),
    m_socketFD(socketFD),
    m_userIndex(-1),
-   m_isConnected(true),
+   m_port(-1),
+   m_isConnected(true),  // a guess (we have no way of knowing for sure)
    m_includeMessageSize(false),
    m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
-   m_inBufferSize(DEFAULT_BUFFER_SIZE) {
+   m_inBufferSize(DEFAULT_BUFFER_SIZE),
+   m_lastReadSize(0) {
+
    LOG_INSTANCE_CREATE("Socket")
 }
 
 //******************************************************************************
 
-Socket::Socket(SocketCompletionObserver* completionObserver,
-               int socketFD) :
+Socket::Socket(SocketCompletionObserver* completionObserver, int socketFD) :
    m_completionObserver(completionObserver),
    m_socketFD(socketFD),
    m_userIndex(-1),
-   m_isConnected(true),
+   m_port(-1),
+   m_isConnected(true),  // a guess (we have no way of knowing for sure)
    m_includeMessageSize(false),
    m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
-   m_inBufferSize(DEFAULT_BUFFER_SIZE) {
+   m_inBufferSize(DEFAULT_BUFFER_SIZE),
+   m_lastReadSize(0) {
+
    LOG_INSTANCE_CREATE("Socket")
 }
 
@@ -88,12 +95,17 @@ Socket::Socket(SocketCompletionObserver* completionObserver,
 
 Socket::~Socket() {
    LOG_INSTANCE_DESTROY("Socket")
+
+   if (m_socketFD > -1) {
+      ::close(m_socketFD);
+   }
 }
 
 //******************************************************************************
 
 void Socket::init() {
    setTcpNoDelay(true);
+   m_isConnected = true;
 }
 
 //******************************************************************************
@@ -102,11 +114,9 @@ bool Socket::open() {
    m_socketFD = Socket::createSocket();
 
    if (m_socketFD < 0) {
-      LOG_ERROR("unable to open socket connection")
+      LOG_ERROR("unable to create a socket file descriptor")
       return false;
    }
-
-   int rc = 0;
 
    ::memset((void *) &m_serverAddr, 0, sizeof(m_serverAddr));
 
@@ -114,9 +124,9 @@ bool Socket::open() {
    m_serverAddr.sin_port = htons(m_port);
    m_serverAddr.sin_addr.s_addr = inet_addr(m_serverAddress.c_str());
 
-   rc = ::connect(m_socketFD,
-                  (struct sockaddr *) &m_serverAddr,
-                  sizeof(m_serverAddr));
+   const int rc = ::connect(m_socketFD,
+                            (struct sockaddr *) &m_serverAddr,
+                            sizeof(m_serverAddr));
 
    if (rc < 0) {
       return false;
@@ -128,12 +138,8 @@ bool Socket::open() {
 
 //******************************************************************************
 
-ssize_t Socket::send(const void* sendBuffer,
-                     size_t bufferLength,
-                     int flags) {
-   if ((m_socketFD < 0) ||
-       (! m_isConnected) ||
-       (nullptr == sendBuffer)) {
+ssize_t Socket::send(const void* sendBuffer, size_t bufferLength, int flags) {
+   if ((m_socketFD < 0) || (! m_isConnected) || (nullptr == sendBuffer)) {
       return -1;
    }
 
@@ -142,12 +148,8 @@ ssize_t Socket::send(const void* sendBuffer,
 
 //******************************************************************************
 
-ssize_t Socket::receive(void* receiveBuffer,
-                        size_t bufferLength,
-                        int flags) {
-   if ((m_socketFD < 0) ||
-       (!m_isConnected) ||
-       (nullptr == receiveBuffer)) {
+ssize_t Socket::receive(void* receiveBuffer, size_t bufferLength, int flags) {
+   if ((m_socketFD < 0) || (!m_isConnected) || (nullptr == receiveBuffer)) {
       return -1;
    }
 
@@ -646,6 +648,12 @@ int Socket::getPort() const {
 
 void Socket::setIncludeMessageSize(bool isSizeIncluded) {
    m_includeMessageSize = isSizeIncluded;
+}
+
+//******************************************************************************
+
+bool Socket::getIncludeMessageSize() const {
+   return m_includeMessageSize;
 }
 
 //******************************************************************************

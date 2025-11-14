@@ -24,223 +24,251 @@ class Socket
 {
 public:
    /**
-    *
-    * @return
+    * Create a new socket and returns the file descriptor
+    * @return the file descriptor created or -1 on error
     */
    static int createSocket();
 
    /**
-    *
-    * @param address
-    * @param port
+    * Socket constructor with hostname/IP address and port number
+    * @param address hostname or IP address of peer
+    * @param port the port number to connect with
     * @throws BasicException
     */
    Socket(const std::string& address, int port);
 
    /**
-    *
-    * @param socketFD
+    * Socket constructor with existing socket file descriptor
+    * @param socketFD the file descriptor to use with the new Socket
     */
    explicit Socket(int socketFD);
 
    /**
-    *
-    * @param completionObserver
-    * @param socketFD
+    * Socket constructor with completion observer and existing socket file descriptor
+    * @param completionObserver the completion observer to call on 'requestComplete'
+    * @param socketFD the file descriptor to use with the new socket
     */
    Socket(SocketCompletionObserver* completionObserver, int socketFD);
 
    /**
-    *
+    * Socket destructor
     */
    ~Socket();
 
    /**
-    *
-    * @param sendBuffer
-    * @param bufferLength
-    * @param flags
-    * @return
+    * Low-level send of buffer, length, and flags to socket connection
+    * @param sendBuffer the buffer to send from
+    * @param bufferLength the size of the buffer
+    * @param flags the flags to use
+    * @return number of bytes sent or -1 on error
     */
    ssize_t send(const void* sendBuffer, size_t bufferLength, int flags);
 
    /**
-    *
-    * @param buffer
-    * @param bufsize
-    * @return
+    * Writes the specified buffer and it's size to the socket
+    * @param buffer the buffer to write from
+    * @param bufsize the size of the buffer
+    * @return boolean indicating whether the write succeeded
     */
    bool write(const char* buffer, unsigned long bufsize);
 
    /**
-    *
-    * @param payload
-    * @return
+    * Writes the specified string to the socket
+    * @param payload the string to write
+    * @return boolean indicating whether the write succeeded
     */
    bool write(const std::string& payload);
 
-
    /**
-    *
-    * @param receiveBuffer
-    * @param bufferLength
-    * @param flags
-    * @return
+    * Low-level receive of data from socket into specified buffer and with specified flags
+    * @param receiveBuffer the buffer to receive the data read
+    * @param bufferLength size of the buffer
+    * @param flags the flags to use for the read
+    * @return the number of bytes read or -1 on error
     */
    ssize_t receive(void* receiveBuffer, size_t bufferLength, int flags);
 
    /**
-    *
-    * @param buffer
-    * @param bufferLen
-    * @return
+    * Reads from the socket into the designated buffer up to the length of the buffer
+    * @param buffer the buffer to contain the read bytes
+    * @param bufferLen the size of the buffer
+    * @return boolean indicating whether the read was successful
     */
    bool read(char* buffer, int bufferLen);
 
    /**
-    *
-    * @param buffer
-    * @param bytesToRead
-    * @return
+    * Reads from the socket into the designated buffer up to the specified number of bytes
+    * @param buffer the buffer to contain the read bytes
+    * @param bytesToRead the maxinum number of bytes to read
+    * @return integer specifying number of bytes read (-1 on error)
     */
    int readSocket(char* buffer, int bytesToRead);
 
    /**
-    *
+    * Close the socket
     */
    void close();
 
    /**
-    *
-    * @return
+    * Tests whether the socket has an open connection
+    * @return boolean indicating whether there is an open connection
     */
    bool isOpen() const;
 
    /**
-    *
-    * @return
+    * Tests whether the socket has a connection
+    * @return boolean indicating whether there is a connection
     */
    bool isConnected() const;
 
    /**
-    *
+    * Closes the connection (if any)
     */
    void closeConnection();
 
    /**
-    *
-    * @return
+    * Returns the file descriptor for the socket
+    * @return the file descriptor or -1 if one has not been set or if the connection has been closed
     */
    int getFileDescriptor() const;
 
    /**
-    *
+    * A signalling method to indicate that the necessary processing is complete. Calling this
+    * method will trigger a call to the completion observer if one has been set.
     */
    void requestComplete();
 
    /**
-    *
-    * @param userIndex
+    * Sets the user index for the socket
+    * @param userIndex the user index to set
     */
    void setUserIndex(int userIndex);
 
    /**
-    *
-    * @return
+    * Retrieves the user index for the socket
+    * @return the user index or -1 if one has not been set
     */
    int getUserIndex() const;
 
    /**
-    *
-    * @param on
-    * @return
+    * Sets TCP no-delay flag on or off
+    * @param on whether the flag should be turned on
+    * @return boolean indicating whether the setting was made
     */
    bool setTcpNoDelay(bool on);
 
    /**
-    *
-    * @return
+    * Retrieves the current setting for TCP no-delay flag
+    * @return boolean indicating the current value for the flag
     */
    bool getTcpNoDelay() const;
 
    /**
-    *
-    * @param size
-    * @return
+    * Sets the send buffer size
+    * @param size the new size for the send buffer
+    * @return boolean indicating whether the setting was made successfully
     */
    bool setSendBufferSize(int size);
 
    /**
-    *
-    * @return
+    * Retrieves the current send buffer size
+    * @return the current size for the send buffer
     */
    int getSendBufferSize() const;
 
    /**
-    *
-    * @param size
-    * @return
+    * Sets the receive buffer size
+    * @param size the new size for the receive buffer
+    * @return boolean indicating whether the setting was made successfully
     */
    bool setReceiveBufferSize(int size);
 
    /**
-    *
-    * @return
+    * Retrieves the current receive buffer size
+    * @return the current size for the receive buffer
     */
    int getReceiveBufferSize() const;
 
    /**
-    *
-    * @param on
-    * @return
+    * Sets the keep-alive flag on or off
+    * @param on whether the flag should be turned on
+    * @return boolean indicating whether the flag was updated
     */
    bool setKeepAlive(bool on);
 
    /**
-    *
-    * @return
+    * Retrieves the current value for the keep-alive flag
+    * @return boolean indicating the current value
     */
    bool getKeepAlive() const;
 
    /**
-    *
-    * @param line
-    * @return
+    * Read a string up to (and including) a new-line (\n) character
+    * @param line variable to receive the string read
+    * @return boolean indicating whether the read succeeded
     */
    bool readLine(std::string& line);
 
    /**
-    *
-    * @param ipAddress
-    * @return
+    * Retrieves the IP address of the connected peer
+    * @param ipAddress variable to receive the IP address
+    * @return boolean indicating whether the peer IP address was retrieved
     */
    bool getPeerIPAddress(std::string& ipAddress);
 
    /**
-    *
-    * @return
+    * Retrieve the port number used by the socket
+    * @return port number
     */
    int getPort() const;
 
    /**
-    *
-    * @param isSizeIncluded
+    * Sets boolean flag to indicate whether the message size should be sent ahead of the message
+    * @param isSizeIncluded whether the size is sent or not
     */
    void setIncludeMessageSize(bool isSizeIncluded);
 
    /**
-    *
-    * @return
+    * Retrieves flag indicating whether message size is sent to peer along with each payload
+    * @return boolean indicating whether message size is also sent to peer
+    */
+   bool getIncludeMessageSize() const;
+
+   /**
+    * Determine whether the socket descriptor is borrowed
+    * @return boolean indicating if the descriptor is borrowed
     */
    bool isDescriptorBorrowed() const;
 
 protected:
+   /**
+    * Reads data of the specified length into internal buffer
+    * @param length the size of data (in bytes) to read
+    * @return boolean indicating whether the read succeeded
+    */
    bool readMsg(int length);
-   //bool readSocket(char* buffer, int bytesToRead);
+
+   /**
+    * Opens the socket connection with the designated peer
+    * @return boolean indicating whether the connection was successfully made
+    */
    bool open();
+
+   /**
+    * Sets default settings for new Socket instance
+    */
    void init();
 
+   /**
+    * Populate the line input buffer with the specified string
+    * @param s the string to populate line input buffer
+    */
    void setLineInputBuffer(const std::string& s);
+
+   /**
+    * Appends the specified string to the line input buffer
+    * @param s the string to append to the line input buffer
+    */
    void appendLineInputBuffer(const std::string& s);
 
 

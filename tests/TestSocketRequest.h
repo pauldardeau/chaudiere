@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestSocketRequest : public poivre::TestSuite
+class TestSocketRequest : public TestSuite
 {
 protected:
    void runTests();

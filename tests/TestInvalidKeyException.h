@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestInvalidKeyException : public poivre::TestSuite
+class TestInvalidKeyException : public TestSuite
 {
 protected:
    void runTests();

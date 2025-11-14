@@ -8,7 +8,6 @@
 #include "KeyValuePairs.h"
 
 using namespace chaudiere;
-using namespace poivre;
 
 //******************************************************************************
 

@@ -5,7 +5,6 @@
 #include "AutoPointer.h"
 
 using namespace chaudiere;
-using namespace poivre;
 
 //******************************************************************************
 

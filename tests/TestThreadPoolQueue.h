@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestThreadPoolQueue : public poivre::TestSuite
+class TestThreadPoolQueue : public TestSuite
 {
 protected:
    void runTests();

@@ -10,7 +10,7 @@
 namespace chaudiere
 {
 
-class TestByteBuffer : public poivre::TestSuite
+class TestByteBuffer : public TestSuite
 {
 protected:
    void runTests();
