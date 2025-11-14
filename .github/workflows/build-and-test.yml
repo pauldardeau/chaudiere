@@ -16,9 +16,6 @@ jobs:
       - name: make library
         run: make
         working-directory: src
-      - name: make poivre
-        run: make
-        working-directory: poivre
       - name: make tests
         run: make
         working-directory: tests
