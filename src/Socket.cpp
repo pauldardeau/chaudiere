@@ -138,29 +138,26 @@ bool Socket::open() {
 
 //******************************************************************************
 
-ssize_t Socket::send(const void* sendBuffer, size_t bufferLength, int flags) {
+ssize_t Socket::send(const char* sendBuffer, size_t bufferLength, int flags) {
    if ((m_socketFD < 0) || (! m_isConnected) || (nullptr == sendBuffer)) {
       return -1;
    }
 
-   return ::send(m_socketFD, sendBuffer, bufferLength, flags);
+   if (sendPayload((const char*)sendBuffer, bufferLength, flags)) {
+      return bufferLength;
+   } else {
+      return -1;
+   }
 }
 
 //******************************************************************************
 
-ssize_t Socket::receive(void* receiveBuffer, size_t bufferLength, int flags) {
+ssize_t Socket::receive(char* receiveBuffer, ssize_t bufferLength, int flags) {
    if ((m_socketFD < 0) || (!m_isConnected) || (nullptr == receiveBuffer)) {
       return -1;
    }
 
-   const ssize_t bytesReceived =
-      ::recv(m_socketFD, receiveBuffer, bufferLength, flags);
-
-   if (0 == bytesReceived) {
-      close();
-   }
-
-   return bytesReceived;
+   return recvPayload(receiveBuffer, bufferLength, flags);
 }
 
 //******************************************************************************
@@ -173,6 +170,7 @@ void Socket::closeConnection() {
 
 void Socket::close() {
    if (m_socketFD > -1) {
+      shutdown(m_socketFD, SHUT_RDWR);
       ::close(m_socketFD);
       if (!m_borrowedDescriptor) {
          m_socketFD = -1;
@@ -245,12 +243,17 @@ bool Socket::getTcpNoDelay() const {
 //******************************************************************************
 
 bool Socket::setSendBufferSize(int size) {
-   int sockopt_arg = size;
-   return (0 == ::setsockopt(m_socketFD,
-                             SOL_SOCKET,
-                             SO_SNDBUF,
-                             (char *) &sockopt_arg,
-                             sizeof(sockopt_arg)));
+   if ((size >= 0) && (m_socketFD > -1)) {
+      int sockopt_arg = size;
+      const int rc = ::setsockopt(m_socketFD,
+                                  SOL_SOCKET,
+                                  SO_SNDBUF,
+                                  (char *) &sockopt_arg,
+                                  sizeof(sockopt_arg));
+      return rc == 0;
+   } else {
+      return false;
+   }
 }
 
 //******************************************************************************
@@ -274,12 +277,17 @@ int Socket::getSendBufferSize() const {
 //******************************************************************************
 
 bool Socket::setReceiveBufferSize(int size) {
-   int sockopt_arg = size;
-   return (0 == ::setsockopt(m_socketFD,
-                             SOL_SOCKET,
-                             SO_RCVBUF,
-                             (char *) &sockopt_arg,
-                             sizeof(sockopt_arg)));
+   if ((size >= 0) && (m_socketFD > -1)) {
+      int sockopt_arg = size;
+      const int rc = ::setsockopt(m_socketFD,
+                                  SOL_SOCKET,
+                                  SO_RCVBUF,
+                                  (char *) &sockopt_arg,
+                                  sizeof(sockopt_arg));
+      return rc == 0;
+   } else {
+      return false;
+   }
 }
 
 //******************************************************************************
@@ -331,7 +339,141 @@ bool Socket::getKeepAlive() const {
 
 //******************************************************************************
 
+bool Socket::sendPayloadSize(uint16_t payloadSize) {
+   if (m_includeMessageSize) {
+      uint16_t nOrderSize = htons(payloadSize);
+
+      //printf("sending payload size\n");
+
+      ssize_t bytesSent = ::send(m_socketFD,
+                                 &nOrderSize,
+                                 sizeof(uint16_t),
+                                 0);
+
+      //printf("back from sending payload size\n");
+
+      if (bytesSent == sizeof(uint16_t)) {
+         return true;
+      } else {
+         return false;
+      }
+   } else {
+      return true;
+   }
+}
+
+//******************************************************************************
+
+bool Socket::recvPayloadSize(uint16_t& payloadSize) {
+   if (m_includeMessageSize) {
+      uint16_t nOrderSize;
+
+      //printf("reading payload size\n");
+
+      ssize_t bytes_received = ::recv(m_socketFD,
+                                      &nOrderSize,
+                                      sizeof(uint16_t),
+                                      0);
+      if (bytes_received == sizeof(uint16_t)) {
+         uint16_t hOrderSize = ntohs(nOrderSize);
+         payloadSize = hOrderSize;
+         return true;
+      } else {
+         return false;
+      }
+   } else {
+      return true;
+   }
+}
+
+//******************************************************************************
+
+ssize_t Socket::recvPayload(char* buffer, ssize_t bufferSize, int flags) {
+   ssize_t recvTotalBytes = bufferSize;
+
+   if (m_includeMessageSize) {
+      uint16_t payloadSize;
+      if (recvPayloadSize(payloadSize)) {
+         recvTotalBytes = payloadSize;
+      } else {
+         return false;
+      }
+   }
+
+   char* pRecvBuffer = buffer;
+   ssize_t totalBytesReceived = 0;
+   ssize_t remainingBytes = recvTotalBytes;
+   bool allIsGood = true;
+
+   while ((totalBytesReceived < recvTotalBytes)  && allIsGood) {
+      ssize_t bytesReceived = ::recv(m_socketFD,
+                                     pRecvBuffer,
+                                     remainingBytes,
+                                     0);
+      if (bytesReceived > 0) {
+         totalBytesReceived += bytesReceived;
+         pRecvBuffer += bytesReceived;
+         remainingBytes -= bytesReceived;
+      } else if (bytesReceived == 0) {
+      } else {
+         allIsGood = false;
+      }
+   }
+
+   return totalBytesReceived;
+}
+
+//******************************************************************************
+
 bool Socket::readLine(std::string& line) {
+   int bufferSizeNeeded = 0;
+
+   uint16_t payloadSize;
+
+   if (recvPayloadSize(payloadSize)) {
+      bufferSizeNeeded = payloadSize;
+   } else {
+      return false;
+   }
+
+   char buffer[65535];
+   memset(buffer, 0, sizeof(buffer));
+
+   char *pRecvBuffer = buffer;
+   ssize_t totalBytesReceived = 0;
+   ssize_t remainingBufferSize = sizeof(buffer);
+   bool allIsGood = true;
+
+   while ((totalBytesReceived < bufferSizeNeeded) && allIsGood) {
+      ssize_t bytesReceived = ::recv(m_socketFD,
+                                     pRecvBuffer,
+                                     remainingBufferSize,
+                                     0);
+      if (bytesReceived > 0) {
+         totalBytesReceived += bytesReceived;
+         remainingBufferSize -= bytesReceived;
+         pRecvBuffer += bytesReceived;
+      } else if (bytesReceived == 0) {
+      } else {
+         allIsGood = false;
+      }
+   }
+
+   if (!allIsGood) {
+      return false;
+   }
+
+   for (ssize_t i = 0; i < totalBytesReceived; ++i) {
+      if (buffer[i] == '\n') {
+         buffer[i] = '\0';
+         line = buffer;
+         return true;
+      }
+   }
+
+   return false;
+   
+   /*
    line.erase();
 
    int eolLength = 0;
@@ -466,11 +608,20 @@ bool Socket::readLine(std::string& line) {
    } while (nullptr == pszEOL);
 
    return true;
+   */
 }
 
 //******************************************************************************
 
 bool Socket::read(char* buffer, int bufsize) {
+   if ((m_socketFD < 0) || (!m_isConnected) || (nullptr == buffer)) {
+      return false;
+   }
+
+   ssize_t bytesReceived = recvPayload(buffer, bufsize, 0);
+   return bytesReceived > 0;
+
+   /*
    int length;
    int bytesAlreadyRead = 0;
 
@@ -512,12 +663,13 @@ bool Socket::read(char* buffer, int bufsize) {
    ::memcpy(buffer + bytesAlreadyRead, m_inputBuffer.data(), length);
 
    return true;
+   */
 }
 
 //******************************************************************************
 
 bool Socket::readMsg(int length) {
-   if (!isOpen()) {
+   if (!isConnected()) {
       LOG_WARNING("unable to read message size, socket is closed")
       return false;
    }
@@ -537,6 +689,13 @@ bool Socket::readMsg(int length) {
 //******************************************************************************
 
 int Socket::readSocket(char* buffer, int bytesToRead) {
+   if ((m_socketFD < 0) || (!m_isConnected) || (nullptr == buffer)) {
+      return -1;
+   }
+
+   return recvPayload(buffer, bytesToRead, 0);
+
+   /*
    int total_bytes_rcvd = 0;
    ssize_t bytes = 0;
    char* currentBufferDest = buffer;
@@ -586,12 +745,7 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
    } while (total_bytes_rcvd < bytesToRead);
 
    return total_bytes_rcvd;
-}
-
-//******************************************************************************
-
-bool Socket::isOpen() const {
-   return m_isConnected;
+   */
 }
 
 //******************************************************************************
@@ -616,20 +770,50 @@ bool Socket::getPeerIPAddress(std::string& ipAddress) {
 
 //******************************************************************************
 
+bool Socket::sendPayload(const char* buffer, ssize_t payloadSize, int flags) {
+   if (m_includeMessageSize) {
+      if (payloadSize <= 65535) {
+         uint16_t sendSize = (uint16_t) payloadSize;
+         if (!sendPayloadSize(sendSize)) {
+            return false;
+         }
+      } else {
+         return false;
+      }
+   }
+
+   ssize_t totalBytesSent = 0;
+   const char* pSendBuffer = buffer;
+   ssize_t remainingBytes = payloadSize;
+   bool allIsGood = true;
+
+   while ((totalBytesSent < payloadSize) && allIsGood) {
+      int bytesSent = ::send(m_socketFD,
+                             pSendBuffer,
+                             remainingBytes,
+                             flags);
+      if (bytesSent > 0) {
+         totalBytesSent += bytesSent;
+         pSendBuffer += bytesSent;
+         remainingBytes -= bytesSent;
+      } else if (bytesSent == 0) {
+      } else {
+         allIsGood = false;
+      }
+   }
+
+   return allIsGood;
+}
+
+//******************************************************************************
+
 bool Socket::write(const char* buffer, unsigned long bufsize) {
-   if (!isOpen()) {
+   if (!isConnected()) {
       LOG_WARNING("unable to write message, socket is closed")
       return false;
    }
 
-   const ssize_t rc = ::send(m_socketFD, buffer, bufsize, 0);
-   if (rc < 0) {
-      char msg[128];
-      ::snprintf(msg, 128, "socket send failed, rc = %zd", rc);
-      LOG_WARNING(msg)
-   }
-
-   return (rc < 0 ? false : true);
+   return sendPayload(buffer, bufsize, 0);
 }
 
 //******************************************************************************

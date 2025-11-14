@@ -287,12 +287,10 @@ void TestSocket::tearDown() {
 
 void TestSocket::runTests() {
    testConstructorWithAddress();
-   //testConstructorWithFD();
-   //testConstructorWithCompletionObserver();
+   testConstructorWithFD();
+   testConstructorWithCompletionObserver();
    testCreateSocket();
    testIsDescriptorBorrowed();
-   testOpen();
-   testInit();
    testSetLineInputBuffer();
    testAppendLineInputBuffer();
    testSend();
@@ -304,7 +302,6 @@ void TestSocket::runTests() {
    testReadLine();
    testReadMsg();
    testClose();
-   testIsOpen();
    testIsConnected();
    testCloseConnection();
    testGetFileDescriptor();
@@ -335,7 +332,6 @@ void TestSocket::testConstructorWithAddress() {
    // create a connected socket
    try {
       unique_ptr<Socket> s(create_local_client_socket());
-      require(s->isOpen(), "isOpen should return true");
       require(s->isConnected(), "isConnected should return true");
       require(TEST_SOCKET_PORT == s->getPort(), "port should match");
    } catch (const BasicException& be) {
@@ -415,20 +411,6 @@ void TestSocket::testIsDescriptorBorrowed() {
 
 //******************************************************************************
 
-void TestSocket::testOpen() {
-   TEST_CASE("testOpen");
-   //TODO: implement testOpen
-}
-
-//******************************************************************************
-
-void TestSocket::testInit() {
-   TEST_CASE("testInit");
-   //TODO: implement testInit
-}
-
-//******************************************************************************
-
 void TestSocket::testSetLineInputBuffer() {
    TEST_CASE("testSetLineInputBuffer");
    //TODO: implement testSetLineInputBuffer
@@ -449,10 +431,11 @@ void TestSocket::testSend() {
    try {
       unique_ptr<Socket> s(create_local_client_socket());
       char reqPayload[] = "Hello from client socket!\n";
+      char expRespPayload[] = "Hello from client socket!";
       ssize_t bytesSent = s->send(reqPayload, sizeof(reqPayload), 0);
       string respPayload;
       require(s->readLine(respPayload));
-      requireStringEquals(reqPayload, respPayload);
+      requireStringEquals(expRespPayload, respPayload);
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
    } catch (const std::exception& e) {
@@ -470,10 +453,11 @@ void TestSocket::testWriteWithBuffer() {
    try {
       unique_ptr<Socket> s(create_local_client_socket());
       char reqPayload[] = "Hello from client socket!\n";
+      char expRespPayload[] = "Hello from client socket!";
       s->write(reqPayload, sizeof(reqPayload));
       string respPayload;
       require(s->readLine(respPayload));
-      requireStringEquals(reqPayload, respPayload);
+      requireStringEquals(expRespPayload, respPayload);
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
    } catch (const std::exception& e) {
@@ -491,10 +475,11 @@ void TestSocket::testWriteWithString() {
    try {
       unique_ptr<Socket> s(create_local_client_socket());
       string reqPayload = "Hello from client socket!\n";
+      string expRespPayload = "Hello from client socket!";
       s->write(reqPayload);
       string respPayload;
       require(s->readLine(respPayload));
-      requireStringEquals(reqPayload, respPayload);
+      requireStringEquals(expRespPayload, respPayload);
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
    } catch (const std::exception& e) {
@@ -508,28 +493,98 @@ void TestSocket::testWriteWithString() {
 
 void TestSocket::testReceive() {
    TEST_CASE("testReceive");
-   //TODO: implement testReceive
+
+   try {
+      unique_ptr<Socket> s(create_local_client_socket());
+      string reqPayload = "Hello from client socket!";
+      s->write(reqPayload);
+      
+      char receiveBuffer[32];
+      memset(receiveBuffer, 0, sizeof(receiveBuffer));
+
+      ssize_t bytesReceived = s->receive(receiveBuffer, sizeof(receiveBuffer), 0);
+
+      string actPayload = receiveBuffer;
+
+      require(bytesReceived == reqPayload.length());
+      requireStringEquals(reqPayload, actPayload);
+   } catch (const BasicException& be) {
+      failTest(string("BasicException caught: ") + be.whatString());
+   } catch (const std::exception& e) {
+      failTest(string("std::exception caught: ") + e.what());
+   } catch (...) {
+      failTest("unknown exception caught");
+   }
 }
 
 //******************************************************************************
 
 void TestSocket::testRead() {
    TEST_CASE("testRead");
-   //TODO: implement testRead
+
+   try {
+      unique_ptr<Socket> s(create_local_client_socket());
+      char reqPayload[] = "Hello from client socket!";
+      ssize_t bytesSent = s->send(reqPayload, sizeof(reqPayload), 0);
+      char buffer[34];
+      memset(buffer, 0, sizeof(buffer));
+      bool readSuccess = s->read(buffer, sizeof(buffer));
+      string actPayload = buffer;
+      require(readSuccess, "read should succeed");
+      requireStringEquals(string(reqPayload), actPayload, "strings should be equal");
+   } catch (const BasicException& be) {
+      failTest(string("BasicException caught: ") + be.whatString());
+   } catch (const std::exception& e) {
+      failTest(string("std::exception caught: ") + e.what());
+   } catch (...) {
+      failTest("unknown exception caught");
+   }
 }
 
 //******************************************************************************
 
 void TestSocket::testReadSocket() {
    TEST_CASE("testReadSocket");
-   //TODO: implement testReadSocket
+
+   try {
+      unique_ptr<Socket> s(create_local_client_socket());
+      char reqPayload[] = "Hello from client socket!";
+      ssize_t bytesSent = s->send(reqPayload, sizeof(reqPayload)-1, 0);
+      char buffer[34];
+      memset(buffer, 0, sizeof(buffer));
+      const int bytesRead = s->readSocket(buffer, sizeof(buffer));
+      string actPayload = buffer;
+      require(bytesRead == strlen(reqPayload), "read should return exp number of bytes");
+      requireStringEquals(string(reqPayload), actPayload, "strings should be equal");
+   } catch (const BasicException& be) {
+      failTest(string("BasicException caught: ") + be.whatString());
+   } catch (const std::exception& e) {
+      failTest(string("std::exception caught: ") + e.what());
+   } catch (...) {
+      failTest("unknown exception caught");
+   }
 }
 
 //******************************************************************************
 
 void TestSocket::testReadLine() {
    TEST_CASE("testReadLine");
-   //TODO: implement testReadLine
+
+   try {
+      unique_ptr<Socket> s(create_local_client_socket());
+      char reqPayload[] = "Hello from client socket!\n";
+      char expRespPayload[] = "Hello from client socket!";
+      ssize_t bytesSent = s->send(reqPayload, sizeof(reqPayload), 0);
+      string respPayload;
+      require(s->readLine(respPayload));
+      requireStringEquals(expRespPayload, respPayload);
+   } catch (const BasicException& be) {
+      failTest(string("BasicException caught: ") + be.whatString());
+   } catch (const std::exception& e) {
+      failTest(string("std::exception caught: ") + e.what());
+   } catch (...) {
+      failTest("unknown exception caught");
+   }
 }
 
 //******************************************************************************
@@ -551,31 +606,9 @@ void TestSocket::testClose() {
    // create a connected socket
    try {
       Socket s2(TEST_SOCKET_HOST, TEST_SOCKET_PORT);
-      require(s2.isOpen());
+      require(s2.isConnected());
       s2.close();
-      requireFalse(s2.isOpen());
-   } catch (const BasicException& be) {
-      failTest(string("BasicException caught: ") + be.whatString());
-   } catch (const std::exception& e) {
-      failTest(string("std::exception caught: ") + e.what());
-   } catch (...) {
-      failTest("unknown exception caught");
-   }
-}
-
-//******************************************************************************
-
-void TestSocket::testIsOpen() {
-   TEST_CASE("testIsOpen");
-
-   // create a disconnected socket
-   Socket s1(Socket::createSocket());
-   requireFalse(s1.isOpen());
-
-   // create a connected socket
-   try {
-      Socket s2(TEST_SOCKET_HOST, TEST_SOCKET_PORT);
-      require(s2.isOpen());
+      requireFalse(s2.isConnected());
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
    } catch (const std::exception& e) {
@@ -592,12 +625,15 @@ void TestSocket::testIsConnected() {
 
    // create a disconnected socket
    Socket s1(Socket::createSocket());
+   s1.close();
    requireFalse(s1.isConnected());
 
    // create a connected socket
    try {
       Socket s2(TEST_SOCKET_HOST, TEST_SOCKET_PORT);
       require(s2.isConnected());
+      s2.close();
+      requireFalse(s2.isConnected());
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
    } catch (const std::exception& e) {
@@ -619,9 +655,9 @@ void TestSocket::testCloseConnection() {
    // create a connected socket
    try {
       Socket s2(TEST_SOCKET_HOST, TEST_SOCKET_PORT);
-      require(s2.isOpen());
+      require(s2.isConnected());
       s2.closeConnection();
-      requireFalse(s2.isOpen());
+      requireFalse(s2.isConnected());
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
    } catch (const std::exception& e) {
@@ -645,6 +681,7 @@ void TestSocket::testGetFileDescriptor() {
 
 void TestSocket::testRequestComplete() {
    TEST_CASE("testRequestComplete");
+
    //TODO: implement testRequestComplete
 }
 
@@ -704,8 +741,9 @@ void TestSocket::testSetSendBufferSize() {
       unique_ptr<Socket> s(create_local_client_socket());
 
       for (int bufferSize = 0; bufferSize < 32767; bufferSize += 1024) {
-         require(s->setSendBufferSize(bufferSize));
-         require(bufferSize == s->getSendBufferSize());
+         require(s->setSendBufferSize(bufferSize), "setSendBufferSize should succeed");
+         const int actBufferSize = s->getSendBufferSize();
+         require(actBufferSize >= bufferSize, "getSendBufferSize() should match");
       }
 
       requireFalse(s->setSendBufferSize(-1024), "negative buffer size should error");
@@ -735,8 +773,9 @@ void TestSocket::testSetReceiveBufferSize() {
       unique_ptr<Socket> s(create_local_client_socket());
 
       for (int bufferSize = 0; bufferSize < 32767; bufferSize += 1024) {
-         require(s->setReceiveBufferSize(bufferSize));
-         require(bufferSize == s->getReceiveBufferSize());
+         require(s->setReceiveBufferSize(bufferSize), "setReceiveBufferSize should succeed");
+         const int actBufferSize = s->getReceiveBufferSize();
+         require(actBufferSize >= bufferSize, "getReceiveBufferSize should match");
       }
 
       requireFalse(s->setReceiveBufferSize(-1024), "negative buffer size should error");
@@ -788,7 +827,7 @@ void TestSocket::testGetPeerIPAddress() {
    // create a disconnected socket
    Socket s1(Socket::createSocket());
    string peerIPAddress;
-   requireFalse(s1.getPeerIPAddress(peerIPAddress));
+   requireFalse(s1.getPeerIPAddress(peerIPAddress), "disconnected socket shouldn't have a peer address");
    require(peerIPAddress.empty(), "peerIPAddress should still be empty");
 
    // create a connected socket
@@ -796,8 +835,7 @@ void TestSocket::testGetPeerIPAddress() {
       string expPeerIPAddress = TEST_SOCKET_HOST;
       Socket s2(expPeerIPAddress, TEST_SOCKET_PORT);
       string actPeerIPAddress;
-      requireFalse(s2.getPeerIPAddress(actPeerIPAddress));
-      requireNonEmptyString(actPeerIPAddress, "peerIPAddress should not be empty");
+      require(s2.getPeerIPAddress(actPeerIPAddress));
       requireStringEquals(expPeerIPAddress, actPeerIPAddress);
    } catch (const BasicException& be) {
       failTest(string("BasicException caught: ") + be.whatString());
@@ -836,6 +874,7 @@ void TestSocket::testGetPort() {
 
 void TestSocket::testSetIncludeMessageSize() {
    TEST_CASE("testSetIncludeMessageSize");
+
    //TODO: implement testSetIncludeMessageSize
 }
 

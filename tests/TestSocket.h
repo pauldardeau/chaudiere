@@ -22,8 +22,6 @@ protected:
 
    void testCreateSocket();
    void testIsDescriptorBorrowed();
-   void testOpen();
-   void testInit();
    void testSetLineInputBuffer();
    void testAppendLineInputBuffer();
 
@@ -38,7 +36,6 @@ protected:
    void testReadMsg();
 
    void testClose();
-   void testIsOpen();
    void testIsConnected();
    void testCloseConnection();
    void testGetFileDescriptor();

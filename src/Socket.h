@@ -62,7 +62,7 @@ public:
     * @param flags the flags to use
     * @return number of bytes sent or -1 on error
     */
-   ssize_t send(const void* sendBuffer, size_t bufferLength, int flags);
+   ssize_t send(const char* sendBuffer, size_t bufferLength, int flags);
 
    /**
     * Writes the specified buffer and it's size to the socket
@@ -86,7 +86,7 @@ public:
     * @param flags the flags to use for the read
     * @return the number of bytes read or -1 on error
     */
-   ssize_t receive(void* receiveBuffer, size_t bufferLength, int flags);
+   ssize_t receive(char* receiveBuffer, ssize_t bufferLength, int flags);
 
    /**
     * Reads from the socket into the designated buffer up to the length of the buffer
@@ -105,15 +105,16 @@ public:
    int readSocket(char* buffer, int bytesToRead);
 
    /**
+    * Read a string up to (and including) a new-line (\n) character
+    * @param line variable to receive the string read
+    * @return boolean indicating whether the read succeeded
+    */
+   bool readLine(std::string& line);
+
+   /**
     * Close the socket
     */
    void close();
-
-   /**
-    * Tests whether the socket has an open connection
-    * @return boolean indicating whether there is an open connection
-    */
-   bool isOpen() const;
 
    /**
     * Tests whether the socket has a connection
@@ -203,13 +204,6 @@ public:
    bool getKeepAlive() const;
 
    /**
-    * Read a string up to (and including) a new-line (\n) character
-    * @param line variable to receive the string read
-    * @return boolean indicating whether the read succeeded
-    */
-   bool readLine(std::string& line);
-
-   /**
     * Retrieves the IP address of the connected peer
     * @param ipAddress variable to receive the IP address
     * @return boolean indicating whether the peer IP address was retrieved
@@ -271,6 +265,10 @@ protected:
     */
    void appendLineInputBuffer(const std::string& s);
 
+   bool sendPayloadSize(uint16_t payloadSize);
+   bool recvPayloadSize(uint16_t& payloadSize);
+   bool sendPayload(const char* buffer, ssize_t payloadSize, int flags);
+   ssize_t recvPayload(char* buffer, ssize_t bufferSize, int flags);
 
 private:
    // copying not allowed

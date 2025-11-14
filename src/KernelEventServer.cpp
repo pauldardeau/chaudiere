@@ -224,7 +224,7 @@ void KernelEventServer::notifySocketComplete(Socket* socket) {
       removeBusyFD(socketFD);
    } else {
       // add socket back to watch
-      if (socket->isOpen()) {
+      if (socket->isConnected()) {
          if (!addFileDescriptorForRead(socketFD)) {
             Logger::critical("kernel event add read filter failed");
          }
