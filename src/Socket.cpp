@@ -248,7 +248,7 @@ bool Socket::setSendBufferSize(int size) {
       const int rc = ::setsockopt(m_socketFD,
                                   SOL_SOCKET,
                                   SO_SNDBUF,
-                                  (char *) &sockopt_arg,
+                                  &sockopt_arg,
                                   sizeof(sockopt_arg));
       return rc == 0;
    } else {
@@ -282,7 +282,7 @@ bool Socket::setReceiveBufferSize(int size) {
       const int rc = ::setsockopt(m_socketFD,
                                   SOL_SOCKET,
                                   SO_RCVBUF,
-                                  (char *) &sockopt_arg,
+                                  &sockopt_arg,
                                   sizeof(sockopt_arg));
       return rc == 0;
    } else {
