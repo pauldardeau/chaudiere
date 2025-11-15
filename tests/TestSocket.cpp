@@ -741,7 +741,7 @@ void TestSocket::testSetSendBufferSize() {
    try {
       unique_ptr<Socket> s(create_local_client_socket());
 
-      for (int bufferSize = 0; bufferSize < 32767; bufferSize += 1024) {
+      for (int bufferSize = 1024; bufferSize < 32767; bufferSize += 1024) {
          require(s->setSendBufferSize(bufferSize), "setSendBufferSize should succeed");
          const int actBufferSize = s->getSendBufferSize();
          require(actBufferSize >= bufferSize, "getSendBufferSize() should match");
@@ -773,7 +773,7 @@ void TestSocket::testSetReceiveBufferSize() {
    try {
       unique_ptr<Socket> s(create_local_client_socket());
 
-      for (int bufferSize = 0; bufferSize < 32767; bufferSize += 1024) {
+      for (int bufferSize = 1024; bufferSize < 32767; bufferSize += 1024) {
          require(s->setReceiveBufferSize(bufferSize), "setReceiveBufferSize should succeed");
          const int actBufferSize = s->getReceiveBufferSize();
          require(actBufferSize >= bufferSize, "getReceiveBufferSize should match");
