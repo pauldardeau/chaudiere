@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <errno.h>
+#include <unistd.h>
 
 #include "TestSocket.h"
 #include "Socket.h"
