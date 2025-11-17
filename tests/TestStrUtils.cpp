@@ -31,6 +31,7 @@ void TestStrUtils::runTests() {
    testToStringWithInt();
    testToStringWithLong();
    testToStringWithULong();
+   testToStringWithLongLong();
 
    // strip
    testStrip();
@@ -277,6 +278,16 @@ void TestStrUtils::testToStringWithULong() {
 
    requireStringEquals(StrUtils::toString(2112UL), "2112", "non-zero value");
    requireStringEquals(StrUtils::toString(0UL), "0", "zero");
+}
+
+//******************************************************************************
+
+void TestStrUtils::testToStringWithLongLong() {
+   TEST_CASE("toStringWithLongLong");
+
+   requireStringEquals(StrUtils::toString(2112LL), "2112", "positive value");
+   requireStringEquals(StrUtils::toString(-57LL), "-57", "negative value");
+   requireStringEquals(StrUtils::toString(0LL), "0", "zero");
 }
 
 //******************************************************************************

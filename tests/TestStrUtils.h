@@ -24,6 +24,7 @@ protected:
    void testToStringWithInt();
    void testToStringWithLong();
    void testToStringWithULong();
+   void testToStringWithLongLong();
 
    // strip
    void testStrip();

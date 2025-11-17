@@ -215,6 +215,20 @@ std::string StrUtils::toString(unsigned long l) {
 
 //******************************************************************************
 
+std::string StrUtils::toString(long long ll) {
+#if __cplusplus >= 201103L
+   // C++11 or later
+   return std::to_string(ll);
+#else
+   char buffer[40];
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%lld", ll);
+   return std::string(buffer);
+#endif
+}
+
+//******************************************************************************
+
 std::string StrUtils::toString(float f) {
 #if __cplusplus >= 201103L
    // C++11 or later

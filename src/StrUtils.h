@@ -70,6 +70,13 @@ public:
    static std::string toString(unsigned long l);
 
    /**
+    * Construct a string from a long long
+    * @param l long long value to convert to string
+    * @return string version of long long value
+    */
+   static std::string toString(long long ll);
+
+   /**
     * Construct a string from a float
     * @param f float value to convert to string
     * @return string version of float value
