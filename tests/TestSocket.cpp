@@ -138,7 +138,7 @@ public:
       while (socketServer->m_isRunning && allIsGood) {
 
          //printf("server thread waiting on connection\n");
-         
+
          int connectionSocket = accept(socketServer->m_serverSocket,
                                        (struct sockaddr*) &clientAddr,
                                        &namelen);
@@ -215,7 +215,7 @@ public:
                            printf("error: %s\n", errorToString(err).c_str());
                            close(connectionSocket);
                            allIsGood = false;
-                        }            
+                        }
                      }
                   }
                }
@@ -362,7 +362,7 @@ void TestSocket::testConstructorWithAddress() {
    // use a bad ip address
    Runnable* runnable = new BadSocketCreator("12q.0.0.1", TEST_SOCKET_PORT);
    requireException("BasicException", runnable);
-   
+
    // use a bad hostname
    runnable = new BadSocketCreator("asdfklasdfl;kjasdf", TEST_SOCKET_PORT);
    requireException("BasicException", runnable);
@@ -376,12 +376,12 @@ void TestSocket::testConstructorWithAddress() {
 
 void TestSocket::testConstructorWithFD() {
    TEST_CASE("testConstructorWithFD");
-   
+
    int socket_fd = Socket::createSocket();
    {
       Socket s(socket_fd);
    }
-   ::close(socket_fd);   
+   ::close(socket_fd);
 }
 
 //******************************************************************************
@@ -395,7 +395,7 @@ void TestSocket::testConstructorWithCompletionObserver() {
 
 void TestSocket::testCreateSocket() {
    TEST_CASE("testCreateSocket");
-   
+
    const int fileDescriptor = Socket::createSocket();
    require(fileDescriptor > -1);
    if (fileDescriptor > -1) {
@@ -499,7 +499,7 @@ void TestSocket::testReceive() {
       unique_ptr<Socket> s(create_local_client_socket());
       string reqPayload = "Hello from client socket!";
       s->write(reqPayload);
-      
+
       char receiveBuffer[32];
       memset(receiveBuffer, 0, sizeof(receiveBuffer));
 
@@ -672,7 +672,7 @@ void TestSocket::testCloseConnection() {
 
 void TestSocket::testGetFileDescriptor() {
    TEST_CASE("testGetFileDescriptor");
-   
+
    const int fileDescriptor = Socket::createSocket();
    Socket s(fileDescriptor);
    require(fileDescriptor == s.getFileDescriptor());
@@ -851,7 +851,7 @@ void TestSocket::testGetPeerIPAddress() {
 
 void TestSocket::testGetPort() {
    TEST_CASE("testGetPort");
-   
+
    // create a disconnected socket
    Socket s1(Socket::createSocket());
    require(-1 == s1.getPort());

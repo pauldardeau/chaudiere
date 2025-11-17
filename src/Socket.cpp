@@ -472,7 +472,7 @@ bool Socket::readLine(std::string& line) {
    }
 
    return false;
-   
+
    /*
    line.erase();
 

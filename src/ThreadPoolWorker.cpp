@@ -39,7 +39,7 @@ void ThreadPoolWorker::start() {
    if (!m_workerThread) {
       m_workerThread.reset(
          m_threadingFactory->createThread(this, "threadpoolworker"));
-      
+
       if (m_workerThread) {
          m_workerThread->setPoolWorkerStatus(true);
          char workerIdAsString[20];

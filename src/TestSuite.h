@@ -87,7 +87,7 @@ public:
       printf("+++++++++++++ running suite: %s +++++++++++\n", m_suiteName.c_str());
       suiteSetup();
       runTests();
-      suiteTearDown();      
+      suiteTearDown();
    }
 
    const std::string& getName() const {
