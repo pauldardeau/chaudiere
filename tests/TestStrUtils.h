@@ -31,6 +31,7 @@ protected:
 
    void testStartsWith();
    void testEndsWith();
+   void testStartsAndEndsWith();
    void testContainsString();
 
    // upper/lower case

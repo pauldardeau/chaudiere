@@ -38,6 +38,7 @@ void TestStrUtils::runTests() {
 
    testStartsWith();
    testEndsWith();
+   testStartsAndEndsWith();
    testContainsString();
 
    // upper/lower case
@@ -376,6 +377,27 @@ void TestStrUtils::testEndsWith() {
                 "empty haystack doesn't end with needle");
    requireFalse(StrUtils::endsWith(haystack, upperNeedle),
                 "haystack doesn't end with upper needle");
+}
+
+//******************************************************************************
+
+void TestStrUtils::testStartsAndEndsWith() {
+   TEST_CASE("startsAndEndsWith");
+
+   const std::string surroundedBySpaces = "  in the beginning  ";
+   const std::string spaceAtBeginning = "  in the beginning";
+   const std::string spaceAtEnd = "in the beginning  ";
+   const std::string spaceAtNeitherEnd = "in the beginning";
+   const std::string space = " ";
+
+   require(StrUtils::startsAndEndsWith(surroundedBySpaces, space),
+           "haystack contains needle at start and end");
+   requireFalse(StrUtils::startsAndEndsWith(spaceAtBeginning, space),
+                "haystack contains needle at start only");
+   requireFalse(StrUtils::startsAndEndsWith(spaceAtEnd, space),
+                "haystack contains needle at end only");
+   requireFalse(StrUtils::startsAndEndsWith(spaceAtNeitherEnd, space),
+                "haystack doesn't contain needle at either end");
 }
 
 //******************************************************************************

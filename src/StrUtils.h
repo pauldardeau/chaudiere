@@ -124,6 +124,16 @@ public:
                         const std::string& needle);
 
    /**
+    * Determines whether 'haystack' starts with 'needle'
+    * and ends with 'needle'
+    * @param haystack the string to search
+    * @param needle the substring to search for
+    * @return boolean indicating whether test is true
+    */
+   static bool startsAndEndsWith(const std::string& haystack,
+                                 const std::string& needle);
+
+   /**
     * Determines whether 'haystack' contains substring 'needle'
     * @param haystack the string to search
     * @param needle the substring to search for

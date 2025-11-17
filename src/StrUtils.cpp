@@ -329,6 +329,14 @@ bool StrUtils::endsWith(const std::string& haystack,
 
 //******************************************************************************
 
+bool StrUtils::startsAndEndsWith(const std::string& haystack,
+                                 const std::string& needle) {
+   return startsWith(haystack, needle) &&
+          endsWith(haystack, needle);
+}
+
+//******************************************************************************
+
 bool StrUtils::containsString(const std::string& haystack,
                               const std::string& needle) {
 //#if __cplusplus >= 202302L
