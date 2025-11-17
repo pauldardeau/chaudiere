@@ -511,6 +511,7 @@ std::string SocketServer::getSystemDateGMT() const {
    time_t currentGMT;
    ::time(&currentGMT);
 
+   //TODO: make use of DateTime class
    struct tm* timeptr = ::gmtime(&currentGMT);
    char dateBuffer[128];
 
@@ -533,6 +534,7 @@ std::string SocketServer::getLocalDateTime() const {
    time_t currentTime;
    ::time(&currentTime);
 
+   //TODO: make use of DateTime class
    struct tm* timeptr = ::localtime(&currentTime);
    char dateBuffer[128];
 

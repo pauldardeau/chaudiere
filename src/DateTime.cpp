@@ -9,6 +9,7 @@
 #include "DateTime.h"
 #include "StrUtils.h"
 
+using namespace std;
 using namespace chaudiere;
 
 constexpr double NSEC_PER_SEC = 1000000000.0;
@@ -89,12 +90,12 @@ void DateTime::dateFromString(DateTime* date, const char* dateValue) {
                         if ((leadingZeros1 < 4) &&
                            (leadingZeros2 < 2) &&
                            (leadingZeros3 < 2)) {
-                           date->m_year = ::atoi(yearAsString+leadingZeros1);
-                           date->m_month = ::atoi(monthAsString+leadingZeros2);
-                           date->m_day = ::atoi(dayAsString+leadingZeros3);
-                           date->m_hour = ::atoi(hourAsString+leadingZeros4);
-                           date->m_minute = ::atoi(minuteAsString+leadingZeros5);
-                           date->m_second = ::atoi(secondAsString+leadingZeros6);
+                           date->m_year = StrUtils::parseInt(string(yearAsString+leadingZeros1));
+                           date->m_month = StrUtils::parseInt(string(monthAsString+leadingZeros2));
+                           date->m_day = StrUtils::parseInt(string(dayAsString+leadingZeros3));
+                           date->m_hour = StrUtils::parseInt(string(hourAsString+leadingZeros4));
+                           date->m_minute = StrUtils::parseInt(string(minuteAsString+leadingZeros5));
+                           date->m_second = StrUtils::parseInt(string(secondAsString+leadingZeros6));
                         }
                      }
                   }

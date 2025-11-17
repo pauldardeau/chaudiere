@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "ServiceInfo.h"
+#include "StrUtils.h"
 
 using namespace chaudiere;
 
@@ -96,13 +97,7 @@ void ServiceInfo::setPort(unsigned short port) {
 std::string ServiceInfo::getUniqueIdentifier() const {
    std::string uniqueIdentifier = m_host;
    uniqueIdentifier += std::string("|");
-
-   char portAsString[10];
-   memset(portAsString, 0, 10);
-   snprintf(portAsString, 10, "%d", m_port);
-
-   uniqueIdentifier += std::string(portAsString);
-
+   uniqueIdentifier += StrUtils::toString(m_port);
    return uniqueIdentifier;
 }
 

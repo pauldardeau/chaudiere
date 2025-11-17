@@ -11,6 +11,7 @@
 #include "Thread.h"
 #include "BasicException.h"
 #include "Logger.h"
+#include "StrUtils.h"
 
 using namespace chaudiere;
 
@@ -42,10 +43,7 @@ void ThreadPoolWorker::start() {
 
       if (m_workerThread) {
          m_workerThread->setPoolWorkerStatus(true);
-         char workerIdAsString[20];
-         memset(workerIdAsString, 0, 20);
-         snprintf(workerIdAsString, 20, "%d", m_workerId);
-         m_workerThread->setWorkerId(workerIdAsString);
+         m_workerThread->setWorkerId(StrUtils::toString(m_workerId));
          m_isRunning = true;
          m_workerThread->start();
       }
