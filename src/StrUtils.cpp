@@ -229,6 +229,19 @@ std::string StrUtils::toString(long long ll) {
 
 //******************************************************************************
 
+std::string StrUtils::size_tToString(std::size_t s) {
+#if __cplusplus >= 201103L
+   return std::to_string(s);
+#else
+   char buffer[40];
+   ::memset(buffer, 0, sizeof(buffer));
+   ::snprintf(buffer, sizeof(buffer), "%zu", s);
+   return std::string(buffer);
+#endif
+}
+
+//******************************************************************************
+
 std::string StrUtils::toString(float f) {
 #if __cplusplus >= 201103L
    // C++11 or later

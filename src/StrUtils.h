@@ -77,6 +77,13 @@ public:
    static std::string toString(long long ll);
 
    /**
+    * Construct a string from a std::size_t
+    * @param s std::size_t value to convert to string
+    * @return string version of std::size_t value
+    */
+   static std::string size_tToString(std::size_t s);
+
+   /**
     * Construct a string from a float
     * @param f float value to convert to string
     * @return string version of float value
