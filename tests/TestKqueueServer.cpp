@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestKqueueServer::TestKqueueServer() :
-   TestSuite("TestKqueueServer") {
+   poivre::TestSuite("TestKqueueServer") {
 }
 
 //******************************************************************************

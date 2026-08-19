@@ -225,7 +225,7 @@ bool SocketServer::init(int port)
 
    m_serverPort = port;
 
-   AutoPointer<SectionedConfigDataSource*> configDataSource(nullptr);
+   poivre::AutoPointer<SectionedConfigDataSource> configDataSource(nullptr);
 
    try {
       configDataSource.assign(getConfigDataSource());

@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestStringTokenizer : public TestSuite
+class TestStringTokenizer : public poivre::TestSuite
 {
 protected:
    void runTests();

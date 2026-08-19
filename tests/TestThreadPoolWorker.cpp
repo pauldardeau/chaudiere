@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestThreadPoolWorker::TestThreadPoolWorker() :
-   TestSuite("TestThreadPoolWorker") {
+   poivre::TestSuite("TestThreadPoolWorker") {
 }
 
 //******************************************************************************

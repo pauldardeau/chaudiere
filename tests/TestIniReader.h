@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestIniReader : public TestSuite
+class TestIniReader : public poivre::TestSuite
 {
 private:
    std::string m_filePath;

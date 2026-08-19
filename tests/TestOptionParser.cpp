@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestOptionParser::TestOptionParser() :
-   TestSuite("TestOptionParser") {
+   poivre::TestSuite("TestOptionParser") {
 }
 
 //******************************************************************************

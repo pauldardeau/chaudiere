@@ -23,7 +23,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestThreadPool::TestThreadPool() :
-   TestSuite("TestThreadPool") {
+   poivre::TestSuite("TestThreadPool") {
 }
 
 //******************************************************************************

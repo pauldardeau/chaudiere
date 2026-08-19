@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestAutoPointer::TestAutoPointer() :
-   TestSuite("TestAutoPointer") {
+   poivre::TestSuite("TestAutoPointer") {
 }
 
 //******************************************************************************

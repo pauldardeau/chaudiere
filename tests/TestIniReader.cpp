@@ -12,7 +12,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestIniReader::TestIniReader() :
-   TestSuite("TestIniReader") {
+   poivre::TestSuite("TestIniReader") {
 }
 
 //******************************************************************************
@@ -70,7 +70,7 @@ void TestIniReader::tearDownSuite() {
 
 //******************************************************************************
 
-class IniReaderCtorRunner : public Runnable {
+class IniReaderCtorRunner : public poivre::Runnable {
 public:
    explicit IniReaderCtorRunner(const std::string& arg) :
       m_arg(arg) {

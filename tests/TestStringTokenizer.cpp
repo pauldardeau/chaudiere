@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestStringTokenizer::TestStringTokenizer() :
-   TestSuite("TestStringTokenizer") {
+   poivre::TestSuite("TestStringTokenizer") {
 }
 
 //******************************************************************************

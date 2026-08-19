@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestSystemStats::TestSystemStats() :
-   TestSuite("TestSystemStats") {
+   poivre::TestSuite("TestSystemStats") {
 }
 
 //******************************************************************************

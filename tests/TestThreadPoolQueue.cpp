@@ -27,7 +27,7 @@ class DoNothingRunnable : public chaudiere::Runnable
 //******************************************************************************
 
 TestThreadPoolQueue::TestThreadPoolQueue() :
-   TestSuite("TestThreadPoolQueue") {
+   poivre::TestSuite("TestThreadPoolQueue") {
 }
 
 //******************************************************************************

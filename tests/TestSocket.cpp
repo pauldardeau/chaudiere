@@ -242,7 +242,7 @@ Socket* create_local_client_socket() {
 //******************************************************************************
 
 TestSocket::TestSocket() :
-   TestSuite("TestSocket") {
+   poivre::TestSuite("TestSocket") {
 }
 
 //******************************************************************************
@@ -343,7 +343,7 @@ void TestSocket::testConstructorWithAddress() {
       failTest("unknown exception caught");
    }
 
-   class BadSocketCreator : public Runnable {
+   class BadSocketCreator : public poivre::Runnable {
    private:
       string m_ipOrHost;
       int m_port;
@@ -360,7 +360,7 @@ void TestSocket::testConstructorWithAddress() {
    };
 
    // use a bad ip address
-   Runnable* runnable = new BadSocketCreator("12q.0.0.1", TEST_SOCKET_PORT);
+   poivre::Runnable* runnable = new BadSocketCreator("12q.0.0.1", TEST_SOCKET_PORT);
    requireException("BasicException", runnable);
 
    // use a bad hostname

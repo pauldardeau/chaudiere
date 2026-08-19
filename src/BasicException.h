@@ -5,17 +5,21 @@
 #define CHAUDIERE_BASICEXCEPTION_H
 
 #include <string>
-#include <exception>
+
+#include "../poivre/BasicException.h"
 
 
 namespace chaudiere
 {
 
 /**
- * The BasicException is a subclass of std::exception that contains
- * the reason for the exception as a std::string.
+ * BasicException is chaudiere's own exception type, kept under the
+ * chaudiere namespace (and as the base of NumberFormatException /
+ * InvalidKeyException) so existing production code is unaffected, but it
+ * derives from poivre::BasicException so it's still catchable as one -
+ * e.g. by poivre::TestSuite::requireException() in the test suite.
  */
-class BasicException : public std::exception
+class BasicException : public poivre::BasicException
 {
 public:
    /**
@@ -23,7 +27,7 @@ public:
     * @param what the reason for the exception
     */
    explicit BasicException(const char* what) :
-      m_what( what ) {
+      poivre::BasicException(what) {
    }
 
    /**
@@ -31,7 +35,7 @@ public:
     * @param what the reason for the exception
     */
    explicit BasicException(const std::string& what) :
-      m_what( what ) {
+      poivre::BasicException(what) {
    }
 
    /**
@@ -39,55 +43,13 @@ public:
     * @param copy the source of the copy
     */
    BasicException(const BasicException& copy) :
-      m_what( copy.m_what ) {
+      poivre::BasicException(copy) {
    }
 
    /**
     * Destructor
     */
-   virtual ~BasicException() throw () {}
-
-   /**
-    * Retrieve the type (class name) of exception
-    * @return class name (type) of exception
-    */
-   virtual const char* getType() const {
-      return "BasicException";
-   }
-
-   /**
-    * Copy operator
-    * @param copy the source of the copy
-    * @return reference to the updated instance
-    */
-   BasicException& operator=(const BasicException& copy) {
-      if (this == &copy) {
-         return *this;
-      }
-
-      m_what = copy.m_what;
-
-      return *this;
-   }
-
-   /**
-    * Retrieves the C string reason for the exception
-    * @return C string reason for exception
-    */
-   virtual const char* what() const throw () {
-      return m_what.c_str();
-   }
-
-   /**
-    * Retrieves the string reason for the exception
-    * @return string reason for the exception
-    */
-   virtual const std::string& whatString() const {
-      return m_what;
-   }
-
-private:
-   std::string m_what;
+   virtual ~BasicException() noexcept {}
 };
 
 }

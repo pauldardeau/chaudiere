@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestStdMutex::TestStdMutex() :
-   TestSuite("TestMutex") {
+   poivre::TestSuite("TestMutex") {
 }
 
 //******************************************************************************

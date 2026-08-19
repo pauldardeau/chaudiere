@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestOptionParser : public TestSuite
+class TestOptionParser : public poivre::TestSuite
 {
 protected:
    void runTests();

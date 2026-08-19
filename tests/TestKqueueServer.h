@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestKqueueServer : public TestSuite
+class TestKqueueServer : public poivre::TestSuite
 {
 protected:
    void runTests();

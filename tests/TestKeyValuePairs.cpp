@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestKeyValuePairs::TestKeyValuePairs() :
-   TestSuite("TestKeyValuePairs") {
+   poivre::TestSuite("TestKeyValuePairs") {
 }
 
 //******************************************************************************

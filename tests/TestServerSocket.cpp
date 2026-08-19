@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestServerSocket::TestServerSocket() :
-   TestSuite("TestServerSocket") {
+   poivre::TestSuite("TestServerSocket") {
 }
 
 //******************************************************************************

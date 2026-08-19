@@ -11,7 +11,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestByteBuffer::TestByteBuffer() :
-   TestSuite("TestByteBuffer") {
+   poivre::TestSuite("TestByteBuffer") {
 }
 
 //******************************************************************************

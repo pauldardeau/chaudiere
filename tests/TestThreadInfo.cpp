@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestThreadInfo::TestThreadInfo() :
-   TestSuite("TestThreadInfo") {
+   poivre::TestSuite("TestThreadInfo") {
 }
 
 //******************************************************************************

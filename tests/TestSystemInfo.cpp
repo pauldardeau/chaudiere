@@ -9,7 +9,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestSystemInfo::TestSystemInfo() :
-   TestSuite("TestSystemInfo") {
+   poivre::TestSuite("TestSystemInfo") {
 }
 
 //******************************************************************************

@@ -9,7 +9,7 @@
 namespace chaudiere
 {
 
-class TestSystemInfo : public TestSuite
+class TestSystemInfo : public poivre::TestSuite
 {
 protected:
    void runTests();

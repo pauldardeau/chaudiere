@@ -15,7 +15,7 @@ using namespace chaudiere;
 //******************************************************************************
 
 TestStrUtils::TestStrUtils() :
-   TestSuite("TestStrUtils") {
+   poivre::TestSuite("TestStrUtils") {
 }
 
 //******************************************************************************
@@ -69,7 +69,7 @@ void TestStrUtils::runTests() {
 
 //******************************************************************************
 
-class ParseRunner : public Runnable {
+class ParseRunner : public poivre::Runnable {
 public:
    explicit ParseRunner(const std::string& arg) :
       m_arg(arg) {
