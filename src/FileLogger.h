@@ -6,8 +6,10 @@
 
 #include <stdio.h>
 #include <string>
+#include <memory>
 
 #include "Logger.h"
+#include "Mutex.h"
 
 namespace chaudiere
 {
@@ -44,6 +46,7 @@ private:
    std::string m_filePath;
    FILE* f;
    LogLevel m_logLevel;
+   std::unique_ptr<Mutex> m_lock;
 
    static const std::string prefixCritical;
    static const std::string prefixError;

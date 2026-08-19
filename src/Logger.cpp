@@ -1,38 +1,44 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <memory>
+
 #include "Logger.h"
 
 using namespace chaudiere;
 
-Logger* Logger::loggerInstance = nullptr;
+std::shared_ptr<Logger> Logger::loggerInstance;
 
 //******************************************************************************
 
+// loggerInstance is accessed via std::atomic_load/atomic_store rather than
+// a plain pointer: every static method here first takes its own local
+// shared_ptr snapshot, so the Logger object it calls into stays alive for
+// the duration of that call even if another thread concurrently calls
+// setLogger()/shutdown() and drops the last other reference to it.
+
 void Logger::shutdown() {
-   if (nullptr != loggerInstance) {
-      delete loggerInstance;
-      loggerInstance = nullptr;
-   }
+   std::atomic_store(&loggerInstance, std::shared_ptr<Logger>());
 }
 
 //******************************************************************************
 
 void Logger::setLogger(Logger* logger) {
-   loggerInstance = logger;
+   std::atomic_store(&loggerInstance, std::shared_ptr<Logger>(logger));
 }
 
 //******************************************************************************
 
 Logger* Logger::getLogger() {
-   return loggerInstance;
+   return std::atomic_load(&loggerInstance).get();
 }
 
 //******************************************************************************
 
 void Logger::log(LogLevel logLevel, const std::string& logMessage) {
-   if (loggerInstance) {
-      loggerInstance->logMessage(logLevel, logMessage);
+   const std::shared_ptr<Logger> instance = std::atomic_load(&loggerInstance);
+   if (instance) {
+      instance->logMessage(logLevel, logMessage);
    }
 }
 
@@ -75,8 +81,9 @@ void Logger::verbose(const std::string& logMessage) {
 //******************************************************************************
 
 bool Logger::isLogging(LogLevel logLevel) {
-   if (loggerInstance) {
-      return loggerInstance->isLoggingLevel(logLevel);
+   const std::shared_ptr<Logger> instance = std::atomic_load(&loggerInstance);
+   if (instance) {
+      return instance->isLoggingLevel(logLevel);
    }
 
    return false;
@@ -85,9 +92,10 @@ bool Logger::isLogging(LogLevel logLevel) {
 //******************************************************************************
 
 void Logger::logInstanceCreate(const char* className) {
-   if (loggerInstance) {
-      if (loggerInstance->isLoggingInstanceLifecycles()) {
-         loggerInstance->logInstanceCreate(std::string(className));
+   const std::shared_ptr<Logger> instance = std::atomic_load(&loggerInstance);
+   if (instance) {
+      if (instance->isLoggingInstanceLifecycles()) {
+         instance->logInstanceCreate(std::string(className));
       }
    }
 }
@@ -95,9 +103,10 @@ void Logger::logInstanceCreate(const char* className) {
 //******************************************************************************
 
 void Logger::logInstanceDestroy(const char* className) {
-   if (loggerInstance) {
-      if (loggerInstance->isLoggingInstanceLifecycles()) {
-         loggerInstance->logInstanceDestroy(std::string(className));
+   const std::shared_ptr<Logger> instance = std::atomic_load(&loggerInstance);
+   if (instance) {
+      if (instance->isLoggingInstanceLifecycles()) {
+         instance->logInstanceDestroy(std::string(className));
       }
    }
 }
@@ -106,9 +115,10 @@ void Logger::logInstanceDestroy(const char* className) {
 
 void Logger::countOccurrence(const char* occurrenceType,
                              const char* occurrenceName) {
-   if (loggerInstance) {
-      loggerInstance->logOccurrence(std::string(occurrenceType),
-                                    std::string(occurrenceName));
+   const std::shared_ptr<Logger> instance = std::atomic_load(&loggerInstance);
+   if (instance) {
+      instance->logOccurrence(std::string(occurrenceType),
+                              std::string(occurrenceName));
    }
 }
 
@@ -116,8 +126,9 @@ void Logger::countOccurrence(const char* occurrenceType,
 
 void Logger::countOccurrence(const std::string& occurrenceType,
                              const std::string& occurrenceName) {
-   if (loggerInstance) {
-      loggerInstance->logOccurrence(occurrenceType, occurrenceName);
+   const std::shared_ptr<Logger> instance = std::atomic_load(&loggerInstance);
+   if (instance) {
+      instance->logOccurrence(occurrenceType, occurrenceName);
    }
 }
 

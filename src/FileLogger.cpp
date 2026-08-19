@@ -3,6 +3,8 @@
 // FileLogger.cpp
 
 #include "FileLogger.h"
+#include "PthreadsMutex.h"
+#include "MutexLock.h"
 
 using namespace chaudiere;
 
@@ -19,7 +21,8 @@ const std::string FileLogger::prefixVerbose  = "Verbose:";
 FileLogger::FileLogger(const std::string& filePath) :
    m_filePath(filePath),
    f(nullptr),
-   m_logLevel(Debug) {
+   m_logLevel(Debug),
+   m_lock(new PthreadsMutex("fileLoggerLock")) {
 }
 
 //******************************************************************************
@@ -27,7 +30,8 @@ FileLogger::FileLogger(const std::string& filePath) :
 FileLogger::FileLogger(const std::string& filePath, LogLevel logLevel) :
    m_filePath(filePath),
    f(nullptr),
-   m_logLevel(logLevel) {
+   m_logLevel(logLevel),
+   m_lock(new PthreadsMutex("fileLoggerLock")) {
 }
 
 //******************************************************************************
@@ -55,6 +59,8 @@ void FileLogger::setLogLevel(LogLevel logLevel) {
 void FileLogger::logMessage(LogLevel logLevel,
                             const std::string& logMessage) {
    if (isLogging(logLevel)) {
+      MutexLock lock(*m_lock);
+
       if (f == nullptr) {
          f = ::fopen(m_filePath.c_str(), "a+");
       }
@@ -63,6 +69,7 @@ void FileLogger::logMessage(LogLevel logLevel,
          ::fprintf(f, "%s %s\n",
                       logLevelPrefix(logLevel).c_str(),
                       logMessage.c_str());
+         ::fflush(f);
       }
    }
 }

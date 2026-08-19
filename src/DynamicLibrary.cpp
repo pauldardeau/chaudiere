@@ -38,6 +38,13 @@ DynamicLibrary::~DynamicLibrary() {
 //******************************************************************************
 
 void* DynamicLibrary::resolve(const std::string& functionName) {
+   if (m_hDll == nullptr) {
+      // avoid dlsym(nullptr, ...): on glibc this is RTLD_DEFAULT, which
+      // performs a global process-wide symbol search instead of failing,
+      // silently violating this method's "nullptr if not [open]" contract
+      return nullptr;
+   }
+
    return ::dlsym(m_hDll, functionName.c_str());
 }
 

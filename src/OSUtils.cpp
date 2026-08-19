@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <filesystem>
+#include <system_error>
 #include <ctime>
 #include <cstdint>
 #include <sys/param.h>
@@ -155,14 +156,19 @@ void OSUtils::programExit(int exitCode) {
 //******************************************************************************
 
 long OSUtils::getFileSize(const string& filePath) {
-   long fileSize = -1L;
+   // use the error_code overload (rather than exists()+file_size()) so
+   // this never throws -- callers rely on the -1 sentinel for failure,
+   // and a separate exists() check would also be a TOCTOU race against
+   // the file being removed before file_size() runs
+   std::error_code ec;
+   const path aFilePath{filePath};
+   const uintmax_t fileSize = file_size(aFilePath, ec);
 
-   path aFilePath{filePath};
-   if (exists(aFilePath)) {
-      fileSize = file_size(aFilePath);
+   if (ec) {
+      return -1L;
    }
 
-   return fileSize;
+   return (long) fileSize;
 }
 
 //******************************************************************************
@@ -286,7 +292,7 @@ unsigned long OSUtils::crc32ForBuffer(unsigned long inCrc32,
 //******************************************************************************
 
 bool OSUtils::crc32ForFile(const string& filePath, string& crc32) {
-   FILE* f = ::fopen(filePath.c_str(), "r");
+   FILE* f = ::fopen(filePath.c_str(), "rb");
    if (f != nullptr) {
       unsigned char buf[8192];
       size_t bufLen;
@@ -387,13 +393,18 @@ bool OSUtils::getHWCpuCount(int& count)
          count = cpuIndex;
          break;
       }
+
+      ::RegCloseKey(keyCPU);
    }
 
    rc = true;
 
 #elif defined(__sun__)
-   count = sysconf(_SC_NPROCESSORS_ONLN);
-   rc = true;
+   const long numProcessors = sysconf(_SC_NPROCESSORS_ONLN);
+   if (numProcessors > 0) {
+      count = (int) numProcessors;
+      rc = true;
+   }
 #elif defined(__linux__)
    count = get_nprocs_conf();
    rc = true;
