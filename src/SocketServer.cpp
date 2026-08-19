@@ -594,14 +594,26 @@ int SocketServer::runSocketServer() {
       //}
 
       try {
+         // handlerForSocket() constructs a RequestHandler that takes
+         // ownership of socket (it will close and delete it in its own
+         // destructor), so socket must not be separately deleted below.
          RequestHandler* handler = handlerForSocket(socket);
          if (m_isThreaded && (nullptr != m_threadPool)) {
             handler->setThreadPooling(true);
+            handler->setAutoDelete();
 
-            // give it to the thread pool
+            // give it to the thread pool -- the pool deletes handler
+            // (and, transitively, its owned socket) once it's done
+            // being processed on a worker thread
             m_threadPool->addRequest(handler);
          } else {
-            handler->run();
+            try {
+               handler->run();
+            } catch (...) {
+               delete handler;
+               throw;
+            }
+            delete handler;
          }
       } catch (const BasicException& be) {
          LOG_ERROR("SocketServer runServer exception caught: " +
@@ -612,8 +624,6 @@ int SocketServer::runSocketServer() {
       } catch (...) {
          LOG_ERROR("SocketServer runServer unknown exception caught")
       }
-
-      delete socket;
    }
 
    return 0;
