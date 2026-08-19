@@ -122,6 +122,10 @@ void TestThreadPoolQueue::testIsEmpty() {
    TakeRequestContext ctx;
    tpq.takeRequest(ctx);
    require(tpq.isEmpty(), "should be empty after taking last request");
+
+   // ThreadPoolQueue doesn't own the Runnable (isAutoDelete defaults
+   // to false), so it's this test's responsibility to delete it.
+   delete ctx.runnable;
 }
 
 //******************************************************************************

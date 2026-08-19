@@ -88,6 +88,7 @@ void TestByteBuffer::testRelease() {
    b.take(raw, buffSize);
    void* raw2 = b.release();
    require(raw == raw2, "release should match prior take");
+   ::free(raw2);
 }
 
 //******************************************************************************

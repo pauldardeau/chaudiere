@@ -1,6 +1,7 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <atomic>
 #include <memory>
 #include <errno.h>
 #include <unistd.h>
@@ -21,11 +22,12 @@ constexpr int TEST_SOCKET_PORT = 3339;
 class EchoSocketServer
 {
 private:
-   int m_serverSocket;
+   std::atomic<int> m_serverSocket;
    int m_port;
    bool m_bindAndListenSuccess;
-   bool m_isRunning;
+   std::atomic<bool> m_isRunning;
    pthread_t m_threadHandle;
+   bool m_threadStarted;
 
 public:
    EchoSocketServer() :
@@ -33,18 +35,31 @@ public:
       m_port(0),
       m_bindAndListenSuccess(false),
       m_isRunning(false),
-      m_threadHandle(0) {
+      m_threadHandle(0),
+      m_threadStarted(false) {
    }
 
    ~EchoSocketServer() {
-      if (m_serverSocket > -1) {
-         shutdown(m_serverSocket, SHUT_RDWR);
-         close(m_serverSocket);
+      stop();
+      join();
+   }
+
+   // signals the server thread to exit and closes the listening socket
+   // so a blocked accept() call unblocks immediately
+   void stop() {
+      m_isRunning = false;
+      const int sock = m_serverSocket.exchange(-1);
+      if (sock > -1) {
+         shutdown(sock, SHUT_RDWR);
+         close(sock);
       }
    }
 
-   void stop() {
-      m_isRunning = false;
+   void join() {
+      if (m_threadStarted) {
+         pthread_join(m_threadHandle, nullptr);
+         m_threadStarted = false;
+      }
    }
 
    bool init(int port) {
@@ -79,6 +94,7 @@ public:
          //printf("calling pthread_create\n");
 
          if (0 == pthread_create(&m_threadHandle, 0, runThreadFn, this)) {
+            m_threadStarted = true;
             return true;
          } else {
             m_isRunning = false;
@@ -272,15 +288,10 @@ void TestSocket::tearDown() {
    //printf("TestSocket::tearDown\n");
 
    if (echoSocketServer != nullptr) {
-      echoSocketServer->stop();
-      unique_ptr<Socket> s(create_local_client_socket());
-      // don't send any data, just close
-      int socketFD = s->getFileDescriptor();
-      shutdown(socketFD, SHUT_RDWR);
-      s->close();
+      // destructor calls stop() (shuts down/closes the listening socket so a
+      // blocked accept() unblocks) and joins the server thread before returning
       delete echoSocketServer;
       echoSocketServer = nullptr;
-      sleep(1);
    }
 }
 

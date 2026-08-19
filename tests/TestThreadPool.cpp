@@ -180,10 +180,19 @@ void TestThreadPool::testAddRequest() {
 
    ThreadPool tp(1);
    require(!tp.addRequest(nullptr), "add nullptr runnable should fail");
-   require(tp.addRequest(new DoNothingRunnable), "add runnable should succeed");
+
+   // ThreadPool doesn't own the Runnable (isAutoDelete defaults to
+   // false), so it's this test's responsibility to delete it once the
+   // worker has finished running it.
+   DoNothingRunnable* acceptedRunnable = new DoNothingRunnable;
+   require(tp.addRequest(acceptedRunnable), "add runnable should succeed");
    sleep(1);
    tp.stop();
-   require(!tp.addRequest(new DoNothingRunnable), "add request to stopped pool should fail");
+   delete acceptedRunnable;
+
+   DoNothingRunnable* rejectedRunnable = new DoNothingRunnable;
+   require(!tp.addRequest(rejectedRunnable), "add request to stopped pool should fail");
+   delete rejectedRunnable;
 }
 
 //******************************************************************************
