@@ -14,6 +14,9 @@ class TestSystemStats : public poivre::TestSuite
 protected:
    void runTests();
 
+   void testUptimeSeconds();
+   void testGetLoadAverages();
+   void testGetNumberProcesses();
 
 public:
    TestSystemStats();

@@ -22,6 +22,7 @@ TestOptionParser.o \
 TestPthreadsMutex.o \
 TestRequestHandler.o \
 TestServerSocket.o \
+TestServiceInfo.o \
 TestSocket.o \
 TestSocketRequest.o \
 TestSocketServer.o \

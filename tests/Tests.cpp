@@ -11,6 +11,7 @@
 #include "TestPthreadsMutex.h"
 #include "TestRequestHandler.h"
 #include "TestServerSocket.h"
+#include "TestServiceInfo.h"
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
 #include "TestSocketServer.h"
@@ -46,6 +47,7 @@ void run_tests() {
    //run_test(new TestStdMutex);
    run_test(new TestRequestHandler);
    run_test(new TestServerSocket);
+   run_test(new TestServiceInfo);
    run_test(new TestSocket);
    run_test(new TestSocketRequest);
    run_test(new TestSocketServer);

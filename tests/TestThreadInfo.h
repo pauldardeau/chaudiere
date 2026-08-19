@@ -14,6 +14,9 @@ class TestThreadInfo : public poivre::TestSuite
 protected:
    void runTests();
 
+   void testConstructor();
+   void testCopyConstructor();
+   void testAssignmentOperator();
 
 public:
    TestThreadInfo();
