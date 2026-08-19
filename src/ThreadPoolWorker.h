@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_THREADPOOLWORKER_H
 #define CHAUDIERE_THREADPOOLWORKER_H
 
+#include <atomic>
 #include <memory>
 
 #include "Runnable.h"
@@ -60,7 +61,7 @@ class ThreadPoolWorker : public Runnable
       std::unique_ptr<Thread> m_workerThread;
       ThreadPoolQueue& m_poolQueue;
       int m_workerId;
-      bool m_isRunning;
+      std::atomic<bool> m_isRunning;
 
       // disallow copies
       ThreadPoolWorker(const ThreadPoolWorker&);

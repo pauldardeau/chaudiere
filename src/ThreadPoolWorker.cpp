@@ -56,6 +56,13 @@ void ThreadPoolWorker::stop() {
    while (m_isRunning) {
       Thread::sleep(1);
    }
+
+   // join from the pool's controlling thread (not from within run(), which
+   // executes on m_workerThread itself -- pthread_join on your own thread
+   // fails immediately with EDEADLK and never reaps the thread's resources).
+   if (m_workerThread) {
+      m_workerThread->join();
+   }
 }
 
 //******************************************************************************
@@ -82,7 +89,6 @@ void ThreadPoolWorker::run() {
 #if defined(DEBUG)
          printf("ThreadPoolWorker::run - detected queue no longer running\n");
 #endif
-         m_workerThread->join();
          m_isRunning = false;
          break;
       }
@@ -92,9 +98,11 @@ void ThreadPoolWorker::run() {
       if (runnable != nullptr) {
          // has our thread been notified to shut down?
          if (!m_workerThread->isAlive()) {
-            // put the request back on the front of the queue
+            // put the request back on the queue for another worker to
+            // pick up, and stop this worker.
+            m_poolQueue.addRequest(runnable);
             m_isRunning = false;
-            continue;
+            break;
          } else {
             // mark it
             runnable->setRunByThreadId(m_workerId);
