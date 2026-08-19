@@ -101,12 +101,11 @@ bool KernelEventServer::init(SocketServiceHandler* socketServiceHandler,
 //******************************************************************************
 
 bool KernelEventServer::isValidDescriptor(int fd) const {
-#ifdef __linux__
-   return ::fcntl(fd, F_GETFD) != EBADF;
-#else
-   //TODO: put non-linux test of descriptor
-   return true;
-#endif
+   // fcntl(F_GETFD) returns the fd's flags (>= 0) if fd is open, or -1
+   // (with errno set to EBADF) if it isn't -- it never returns EBADF as
+   // its actual return value, so that can't be compared against directly.
+   // F_GETFD is POSIX and available on Linux, FreeBSD, and macOS alike.
+   return ::fcntl(fd, F_GETFD) != -1;
 }
 
 //******************************************************************************
@@ -154,17 +153,23 @@ void KernelEventServer::run() {
             }
 
             if (isEventReadClose(index)) {
-               removeBusyFD(client_fd);
-               if (!removeFileDescriptorFromRead(client_fd)) {
-                  Logger::warning("kernel event server failed to delete read filter");
+               // don't close out from under a worker thread that's still
+               // actively processing a dispatched request on this fd
+               if (!isBusyFD(client_fd)) {
+                  removeBusyFD(client_fd);
+                  if (!removeFileDescriptorFromRead(client_fd)) {
+                     Logger::warning("kernel event server failed to delete read filter");
+                  }
+                  ::close(client_fd);
                }
-               ::close(client_fd);
             } else if (isEventDisconnect(index)) {
-               removeBusyFD(client_fd);
-               if (!removeFileDescriptorFromRead(client_fd)) {
-                  Logger::warning("kernel event server failed to delete read filter");
+               if (!isBusyFD(client_fd)) {
+                  removeBusyFD(client_fd);
+                  if (!removeFileDescriptorFromRead(client_fd)) {
+                     Logger::warning("kernel event server failed to delete read filter");
+                  }
+                  ::close(client_fd);
                }
-               ::close(client_fd);
             } else if (isEventRead(index)) {
                if (removeFileDescriptorFromRead(client_fd)) {
                   // are we already busy with this socket?

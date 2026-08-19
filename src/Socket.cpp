@@ -172,9 +172,11 @@ void Socket::close() {
    if (m_socketFD > -1) {
       shutdown(m_socketFD, SHUT_RDWR);
       ::close(m_socketFD);
-      if (!m_borrowedDescriptor) {
-         m_socketFD = -1;
-      }
+      // always reset, regardless of m_borrowedDescriptor, so that close()
+      // is idempotent -- a later call (e.g. from the destructor) must not
+      // close(m_socketFD) again, since the fd number may already have
+      // been reused by an unrelated connection by then.
+      m_socketFD = -1;
       m_isConnected = false;
    }
 }
@@ -415,6 +417,8 @@ ssize_t Socket::recvPayload(char* buffer, ssize_t bufferSize, int flags) {
          pRecvBuffer += bytesReceived;
          remainingBytes -= bytesReceived;
       } else if (bytesReceived == 0) {
+         // peer performed an orderly shutdown -- no more data is coming
+         allIsGood = false;
       } else {
          allIsGood = false;
       }
@@ -454,6 +458,8 @@ bool Socket::readLine(std::string& line) {
          remainingBufferSize -= bytesReceived;
          pRecvBuffer += bytesReceived;
       } else if (bytesReceived == 0) {
+         // peer performed an orderly shutdown -- no more data is coming
+         allIsGood = false;
       } else {
          allIsGood = false;
       }

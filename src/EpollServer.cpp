@@ -191,7 +191,7 @@ bool EpollServer::isEventDisconnect(int eventIndex) {
 #ifdef EPOLL_SUPPORT
    struct epoll_event current_event;
    current_event = m_events[eventIndex];
-   return current_event.events & EPOLLHUP;
+   return current_event.events & (EPOLLHUP | EPOLLERR);
 #endif
 
    return false;

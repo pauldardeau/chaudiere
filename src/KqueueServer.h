@@ -108,7 +108,7 @@ public:
 
 private:
 #ifdef KQUEUE_SUPPORT
-   struct kevent m_event;
+   struct kevent* m_events;
 #endif
    int m_kqfd;
 

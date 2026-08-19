@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include <errno.h>
+#include <unistd.h>
 
 #include "ServerSocket.h"
 #include "Socket.h"
@@ -169,7 +170,10 @@ Socket* ServerSocket::accept() {
 //******************************************************************************
 
 void ServerSocket::close() {
-   m_serverSocket = -1;
+   if (m_serverSocket > -1) {
+      ::close(m_serverSocket);
+      m_serverSocket = -1;
+   }
 }
 
 //******************************************************************************

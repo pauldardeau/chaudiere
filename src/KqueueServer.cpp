@@ -27,6 +27,9 @@ bool KqueueServer::isSupportedPlatform() {
 
 KqueueServer::KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) :
    KernelEventServer(fdMutex, hwmConnectionsMutex, "KqueueServer"),
+#ifdef KQUEUE_SUPPORT
+   m_events(nullptr),
+#endif
    m_kqfd(-1) {
    LOG_INSTANCE_CREATE("KqueueServer")
 }
@@ -35,6 +38,13 @@ KqueueServer::KqueueServer(Mutex& fdMutex, Mutex& hwmConnectionsMutex) :
 
 KqueueServer::~KqueueServer() {
    LOG_INSTANCE_DESTROY("KqueueServer")
+
+#ifdef KQUEUE_SUPPORT
+   if (nullptr != m_events) {
+      ::free(m_events);
+      m_events = nullptr;
+   }
+#endif
 
    if (-1 != m_kqfd) {
       ::close(m_kqfd);
@@ -51,12 +61,19 @@ bool KqueueServer::init(SocketServiceHandler* socketServiceHandler,
 #endif
 
 #ifdef KQUEUE_SUPPORT
+   if (m_events) {
+      ::free(m_events);
+      m_events = nullptr;
+   }
+
    if (KernelEventServer::init(socketServiceHandler, serverPort, maxConnections)) {
       m_kqfd = ::kqueue();
       if (m_kqfd == -1) {
          LOG_CRITICAL("kqueue create failed")
          return false;
       }
+
+      m_events = (struct kevent*) ::calloc(maxConnections, sizeof(struct kevent));
 
       // add our listener socket (server socket) as one of the fd's that
       // we want watched
@@ -86,7 +103,7 @@ int KqueueServer::getKernelEvents(int maxConnections) {
    const int numberEventsReturned =
       ::kevent(m_kqfd,
                nullptr, 0,
-               &m_event, 1,
+               m_events, maxConnections,
                (struct timespec*) 0);
    if (-1 == numberEventsReturned) {
       LOG_CRITICAL("unable to retrieve events from kevent")
@@ -105,7 +122,7 @@ int KqueueServer::fileDescriptorForEventIndex(int eventIndex) {
    int client_fd = -1;
 
 #ifdef KQUEUE_SUPPORT
-   client_fd = (int) m_event.ident;
+   client_fd = (int) m_events[eventIndex].ident;
 #endif
 
    return client_fd;
@@ -150,7 +167,7 @@ bool KqueueServer::removeFileDescriptorFromRead(int fileDescriptor) {
 
 bool KqueueServer::isEventDisconnect(int eventIndex) {
 #ifdef KQUEUE_SUPPORT
-   return m_event.flags & EV_EOF;
+   return m_events[eventIndex].flags & EV_EOF;
 #endif
 
    return false;
@@ -160,7 +177,7 @@ bool KqueueServer::isEventDisconnect(int eventIndex) {
 
 bool KqueueServer::isEventReadClose(int eventIndex) {
 #ifdef KQUEUE_SUPPORT
-   return m_event.flags & EV_EOF;
+   return m_events[eventIndex].flags & EV_EOF;
 #endif
 
    return false;
@@ -170,7 +187,7 @@ bool KqueueServer::isEventReadClose(int eventIndex) {
 
 bool KqueueServer::isEventRead(int eventIndex) {
 #ifdef KQUEUE_SUPPORT
-   return m_event.filter == EVFILT_READ;
+   return m_events[eventIndex].filter == EVFILT_READ;
 #endif
 
    return false;

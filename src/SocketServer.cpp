@@ -644,6 +644,12 @@ int SocketServer::runKernelEventServer() {
          rc = 1;
       }
 
+      // KernelEventServer's constructor takes these by reference but does
+      // not retain them (it creates its own internal busy-flags mutex), so
+      // they're safe to free once construction has completed.
+      delete mutexFD;
+      delete mutexHWMConnections;
+
       if (m_kernelEventServer != nullptr) {
          try {
             SocketServiceHandler* serviceHandler = createSocketServiceHandler();
