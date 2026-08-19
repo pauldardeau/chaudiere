@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if __cplusplus >= 202002L
+   #include <charconv>
+   #include <system_error>
+#endif
 
 #include "StrUtils.h"
 #include "NumberFormatException.h"
@@ -16,8 +20,6 @@ static const std::string SPACE = " ";
 #if __cplusplus < 201103L
 static const std::string ZERO = "0";
 #endif
-
-static const std::string_view ZERO_SV = "0";
 
 using namespace chaudiere;
 
@@ -551,10 +553,20 @@ std::string StrUtils::makeStringOfChar(char ch, int length) {
 
 std::vector<std::string> StrUtils::split(const std::string& s,
                                          const std::string& delim) {
+   std::vector<std::string> tokens;
+
+   if (delim.empty()) {
+      // an empty delimiter can never be found as a non-zero-length match,
+      // so there's nothing meaningful to split on
+      if (!s.empty()) {
+         tokens.push_back(s);
+      }
+      return tokens;
+   }
+
    bool parsing = true;
    size_t pos_current = 0;
    size_t pos_delimiter;
-   std::vector<std::string> tokens;
    const size_t s_length = s.length();
    const size_t delim_length = delim.length();
 
@@ -618,11 +630,10 @@ int StrUtils::parseInt(std::string_view s) {
       throw NumberFormatException(std::string(s));
    }
 
-   const int intValue = ::atoi(s.data());
-   if (intValue == 0) {
-      if (s != ZERO_SV) {
-         throw NumberFormatException(std::string(s));
-      }
+   int intValue = 0;
+   const auto result = std::from_chars(s.data(), s.data() + s.size(), intValue);
+   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
+      throw NumberFormatException(std::string(s));
    }
 
    return intValue;
@@ -635,11 +646,10 @@ long StrUtils::parseLong(std::string_view s) {
       throw NumberFormatException(std::string(s));
    }
 
-   const long longValue = ::atol(s.data());
-   if (longValue == 0) {
-      if (s != ZERO_SV) {
-         throw NumberFormatException(std::string(s));
-      }
+   long longValue = 0;
+   const auto result = std::from_chars(s.data(), s.data() + s.size(), longValue);
+   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
+      throw NumberFormatException(std::string(s));
    }
 
    return longValue;
@@ -652,11 +662,10 @@ float StrUtils::parseFloat(std::string_view s) {
       throw NumberFormatException(std::string(s));
    }
 
-   const float floatValue = ::atof(s.data());
-   if (floatValue == 0) {
-      if (s != ZERO_SV) {
-         throw NumberFormatException(std::string(s));
-      }
+   float floatValue = 0;
+   const auto result = std::from_chars(s.data(), s.data() + s.size(), floatValue);
+   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
+      throw NumberFormatException(std::string(s));
    }
 
    return floatValue;
@@ -669,11 +678,10 @@ double StrUtils::parseDouble(std::string_view s) {
       throw NumberFormatException(std::string(s));
    }
 
-   const double doubleValue = ::atof(s.data());
-   if (doubleValue == 0) {
-      if (s != ZERO_SV) {
-         throw NumberFormatException(std::string(s));
-      }
+   double doubleValue = 0;
+   const auto result = std::from_chars(s.data(), s.data() + s.size(), doubleValue);
+   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
+      throw NumberFormatException(std::string(s));
    }
 
    return doubleValue;
@@ -708,10 +716,20 @@ bool StrUtils::containsString(std::string_view haystack,
 
 std::vector<std::string_view> StrUtils::split(std::string_view s,
                                               std::string_view delim) {
+   std::vector<std::string_view> tokens;
+
+   if (delim.empty()) {
+      // an empty delimiter can never be found as a non-zero-length match,
+      // so there's nothing meaningful to split on
+      if (!s.empty()) {
+         tokens.push_back(s);
+      }
+      return tokens;
+   }
+
    bool parsing = true;
    size_t pos_current = 0;
    size_t pos_delimiter;
-   std::vector<std::string_view> tokens;
    const size_t s_length = s.length();
    const size_t delim_length = delim.length();
 

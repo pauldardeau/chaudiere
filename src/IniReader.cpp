@@ -65,33 +65,42 @@ bool IniReader::readSection(const std::string& section,
       sectionContents = m_fileContents.substr(posEndSection);
    }
 
+   auto processLine = [&mapSectionValues](std::string line) {
+      if (line.empty()) {
+         return;
+      }
+
+      std::string::size_type posCR = line.find('\r');
+      if (posCR != std::string::npos) {
+         line = line.substr(0, posCR);
+      }
+
+      const std::string::size_type posEqual = line.find('=');
+
+      if ((posEqual != std::string::npos) && (posEqual < line.length())) {
+         const std::string key = StrUtils::strip(line.substr(0, posEqual));
+
+         // if the line is not a comment
+         if (!StrUtils::startsWith(key, COMMENT_IDENTIFIER)) {
+            mapSectionValues.addPair(key,
+                                     StrUtils::strip(line.substr(posEqual + 1)));
+         }
+      }
+   };
+
    std::string::size_type posEol;
    std::string::size_type index = 0;
 
-   // process each line of the section
+   // process each newline-terminated line of the section
    while ((posEol = sectionContents.find(EOL_LF, index)) != std::string::npos) {
-
-      std::string line = sectionContents.substr(index, posEol - index);
-      if (!line.empty()) {
-         std::string::size_type posCR = line.find('\r');
-         if (posCR != std::string::npos) {
-            line = line.substr(0, posCR);
-         }
-
-         const std::string::size_type posEqual = line.find('=');
-
-         if ((posEqual != std::string::npos) && (posEqual < line.length())) {
-            const std::string key = StrUtils::strip(line.substr(0, posEqual));
-
-            // if the line is not a comment
-            if (!StrUtils::startsWith(key, COMMENT_IDENTIFIER)) {
-               mapSectionValues.addPair(key,
-                                        StrUtils::strip(line.substr(posEqual + 1)));
-            }
-         }
-      }
-
+      processLine(sectionContents.substr(index, posEol - index));
       index = posEol + 1;
+   }
+
+   // process a final line that isn't newline-terminated (e.g. the file/
+   // section doesn't end with a trailing newline)
+   if (index < sectionContents.length()) {
+      processLine(sectionContents.substr(index));
    }
 
    return true;
@@ -120,7 +129,7 @@ bool IniReader::getSectionKeyValue(const std::string& section,
       return false;
    }
 
-   value = map.getValue(key);
+   value = map.getValue(strippedKey);
 
    return true;
 }
@@ -144,13 +153,22 @@ bool IniReader::readFile() {
    const long fileBytes = ::ftell(f);
    ::fseek(f, 0, SEEK_SET);
 
-   CharBuffer fileContents;
-   size_t numObjectsRead = 0;
-
-   if (fileBytes > 0L) {
-      fileContents.ensureCapacity(fileBytes + 1);
-      numObjectsRead = ::fread(fileContents.data(), fileBytes, 1, f);
+   if (fileBytes < 0L) {
+      LOG_ERROR("unable to determine size of ini file")
+      ::fclose(f);
+      return false;
    }
+
+   if (fileBytes == 0L) {
+      // a legitimately empty ini file is valid -- nothing to parse
+      ::fclose(f);
+      m_fileContents.clear();
+      return true;
+   }
+
+   CharBuffer fileContents;
+   fileContents.ensureCapacity(fileBytes + 1);
+   const size_t numObjectsRead = ::fread(fileContents.data(), fileBytes, 1, f);
 
    ::fclose(f);
 
@@ -162,55 +180,75 @@ bool IniReader::readFile() {
    fileContents.nullAt(fileBytes);
    m_fileContents = fileContents.data();
 
-   // strip out any comments
+   // strip out any comments -- a '#' only starts a comment when nothing
+   // but whitespace precedes it on its line; a '#' embedded within a
+   // value (e.g. a URL fragment) is left untouched
    bool strippingComments = true;
-   size_t posCommentStart;
+   size_t posCommentStart = 0;
    size_t posCR;
    size_t posLF;
    size_t posEOL;
-   size_t posCurrent = 0;
 
    while (strippingComments) {
-      posCommentStart = m_fileContents.find(COMMENT_IDENTIFIER, posCurrent);
+      posCommentStart = m_fileContents.find(COMMENT_IDENTIFIER, posCommentStart);
       if (std::string::npos == posCommentStart) {
          // not found
          strippingComments = false;
-      } else {
-         posCR = m_fileContents.find(EOL_CR, posCommentStart + 1);
-         posLF = m_fileContents.find(EOL_LF, posCommentStart + 1);
-         const bool haveCR = (std::string::npos != posCR);
-         const bool haveLF = (std::string::npos != posLF);
+         continue;
+      }
 
-         if (!haveCR && !haveLF) {
-            // no end-of-line marker remaining
-            // erase from start of comment to end of file
-            m_fileContents = m_fileContents.substr(0, posCommentStart);
-            strippingComments = false;
-         } else {
-            // at least one end-of-line marker was found
-
-            // were both types found
-            if (haveCR && haveLF) {
-               posEOL = posCR;
-
-               if (posLF < posEOL) {
-                  posEOL = posLF;
-               }
-            } else {
-               if (haveCR) {
-                  // CR found
-                  posEOL = posCR;
-               } else {
-                  // LF found
-                  posEOL = posLF;
-               }
-            }
-
-            const std::string beforeComment = m_fileContents.substr(0, posCommentStart);
-            const std::string afterComment = m_fileContents.substr(posEOL, std::string::npos);
-            m_fileContents = beforeComment + afterComment;
-            posCurrent = beforeComment.length();
+      size_t lineContentStart = 0;
+      if (posCommentStart > 0) {
+         const size_t posLineBreak = m_fileContents.find_last_of("\r\n", posCommentStart - 1);
+         if (posLineBreak != std::string::npos) {
+            lineContentStart = posLineBreak + 1;
          }
+      }
+
+      const std::string beforeHash =
+         m_fileContents.substr(lineContentStart, posCommentStart - lineContentStart);
+
+      if (beforeHash.find_first_not_of(" \t") != std::string::npos) {
+         // there's real content before the '#' on this line -- it's
+         // embedded within a value, not a comment marker
+         ++posCommentStart;
+         continue;
+      }
+
+      posCR = m_fileContents.find(EOL_CR, posCommentStart + 1);
+      posLF = m_fileContents.find(EOL_LF, posCommentStart + 1);
+      const bool haveCR = (std::string::npos != posCR);
+      const bool haveLF = (std::string::npos != posLF);
+
+      if (!haveCR && !haveLF) {
+         // no end-of-line marker remaining
+         // erase from start of comment to end of file
+         m_fileContents = m_fileContents.substr(0, posCommentStart);
+         strippingComments = false;
+      } else {
+         // at least one end-of-line marker was found
+
+         // were both types found
+         if (haveCR && haveLF) {
+            posEOL = posCR;
+
+            if (posLF < posEOL) {
+               posEOL = posLF;
+            }
+         } else {
+            if (haveCR) {
+               // CR found
+               posEOL = posCR;
+            } else {
+               // LF found
+               posEOL = posLF;
+            }
+         }
+
+         const std::string beforeComment = m_fileContents.substr(0, posCommentStart);
+         const std::string afterComment = m_fileContents.substr(posEOL, std::string::npos);
+         m_fileContents = beforeComment + afterComment;
+         posCommentStart = beforeComment.length();
       }
    }
 

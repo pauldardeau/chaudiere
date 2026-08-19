@@ -68,7 +68,7 @@ class StringTokenizer
 
 
    private:
-      const std::string& m_withTokens;
+      const std::string m_withTokens;
       const std::string m_delimiter;
       std::vector<std::string> m_tokens;
       std::size_t m_numberTokens;

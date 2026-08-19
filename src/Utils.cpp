@@ -36,13 +36,19 @@ ByteBuffer* Utils::ReadFile(const std::string& filePath) {
    FILE* f = fopen(filePath.c_str(), "rb");
    if (f != nullptr) {
       fseek(f, 0, SEEK_END);
-      unsigned long fileBytes = ftell(f);
+      const long fileSize = ftell(f);
       fseek(f, 0, SEEK_SET);
-      buffer = new ByteBuffer(fileBytes);
-      size_t bytesRead = fread(buffer->data(), fileBytes, 1, f);
-      if (bytesRead < fileBytes) {
-         delete buffer;
-         buffer = nullptr;
+      if (fileSize >= 0) {
+         const size_t fileBytes = (size_t) fileSize;
+         buffer = new ByteBuffer(fileBytes);
+         // size/nmemb swapped intentionally vs. a "read 1 object of
+         // fileBytes size" call: this way the return value is a byte
+         // count, comparable directly against fileBytes below.
+         size_t bytesRead = fread(buffer->data(), 1, fileBytes, f);
+         if (bytesRead < fileBytes) {
+            delete buffer;
+            buffer = nullptr;
+         }
       }
       fclose(f);
    }

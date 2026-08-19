@@ -148,7 +148,7 @@ public:
     * @return boolean indicating if buffer is empty
     */
    bool empty() const {
-      return m_bufferSize > 0;
+      return m_bufferSize == 0;
    }
 
    /**
