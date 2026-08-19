@@ -5,18 +5,46 @@
 #include <memory>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/socket.h>
 
 #include "TestSocket.h"
 #include "Socket.h"
 #include "ServerSocket.h"
 #include "BasicException.h"
 #include "Runnable.h"
+#include "SocketCompletionObserver.h"
 
 using namespace std;
 using namespace chaudiere;
 
 const string TEST_SOCKET_HOST = "127.0.0.1";
 constexpr int TEST_SOCKET_PORT = 3339;
+
+namespace {
+
+// setLineInputBuffer/appendLineInputBuffer/readMsg are protected on
+// Socket; expose them for direct testing.
+class TestableSocket : public chaudiere::Socket {
+public:
+   explicit TestableSocket(int socketFD) : chaudiere::Socket(socketFD) {}
+
+   using chaudiere::Socket::setLineInputBuffer;
+   using chaudiere::Socket::appendLineInputBuffer;
+   using chaudiere::Socket::readMsg;
+};
+
+class RecordingSocketCompletionObserver : public chaudiere::SocketCompletionObserver {
+public:
+   RecordingSocketCompletionObserver() : notifiedSocket(nullptr) {}
+
+   void notifySocketComplete(chaudiere::Socket* socket) override {
+      notifiedSocket = socket;
+   }
+
+   chaudiere::Socket* notifiedSocket;
+};
+
+}
 
 
 class EchoSocketServer
@@ -399,7 +427,15 @@ void TestSocket::testConstructorWithFD() {
 
 void TestSocket::testConstructorWithCompletionObserver() {
    TEST_CASE("testConstructorWithCompletionObserver");
-   //TODO: implement testConstructorWithCompletionObserver
+
+   RecordingSocketCompletionObserver observer;
+   const int socket_fd = Socket::createSocket();
+   {
+      Socket s(&observer, socket_fd);
+      require(s.isConnected(), "socket constructed with a completion observer should report connected");
+      require(socket_fd == s.getFileDescriptor(), "getFileDescriptor should return the fd passed to the constructor");
+      require(s.isDescriptorBorrowed(), "a socket constructed from an existing fd should report the descriptor as borrowed");
+   }
 }
 
 //******************************************************************************
@@ -418,21 +454,45 @@ void TestSocket::testCreateSocket() {
 
 void TestSocket::testIsDescriptorBorrowed() {
    TEST_CASE("testIsDescriptorBorrowed");
-   //TODO: implement testIsDescriptorBorrowed
+
+   const int socket_fd = Socket::createSocket();
+   {
+      Socket borrowedSocket(socket_fd);
+      require(borrowedSocket.isDescriptorBorrowed(), "a socket constructed from an existing fd should report the descriptor as borrowed");
+   }
+
+   try {
+      unique_ptr<Socket> ownedSocket(create_local_client_socket());
+      requireFalse(ownedSocket->isDescriptorBorrowed(), "a socket that opened its own connection should not report the descriptor as borrowed");
+   } catch (const BasicException& be) {
+      failTest(string("BasicException caught: ") + be.whatString());
+   }
 }
 
 //******************************************************************************
 
 void TestSocket::testSetLineInputBuffer() {
    TEST_CASE("testSetLineInputBuffer");
-   //TODO: implement testSetLineInputBuffer
+
+   // there's no public getter for the line input buffer (and the only
+   // code path that reads it back in readLine() is currently dead code),
+   // so this can only verify that setting it doesn't crash
+   const int socket_fd = Socket::createSocket();
+   TestableSocket s(socket_fd);
+   s.setLineInputBuffer("first line\n");
+   require(true, "setLineInputBuffer should not throw");
 }
 
 //******************************************************************************
 
 void TestSocket::testAppendLineInputBuffer() {
    TEST_CASE("testAppendLineInputBuffer");
-   //TODO: implement testAppendLineInputBuffer
+
+   const int socket_fd = Socket::createSocket();
+   TestableSocket s(socket_fd);
+   s.setLineInputBuffer("first line\n");
+   s.appendLineInputBuffer("second line\n");
+   require(true, "appendLineInputBuffer should not throw");
 }
 
 //******************************************************************************
@@ -603,7 +663,17 @@ void TestSocket::testReadLine() {
 
 void TestSocket::testReadMsg() {
    TEST_CASE("testReadMsg");
-   //TODO: implement testReadMsg
+
+   int fds[2];
+   require(0 == ::socketpair(AF_UNIX, SOCK_STREAM, 0, fds), "socketpair should succeed");
+
+   const char payload[] = "data";
+   require(::write(fds[1], payload, sizeof(payload) - 1) == (ssize_t)(sizeof(payload) - 1), "writing to the socketpair should succeed");
+
+   TestableSocket s(fds[0]);
+   require(s.readMsg(sizeof(payload) - 1), "readMsg should successfully read the requested number of bytes");
+
+   ::close(fds[1]);
 }
 
 //******************************************************************************
@@ -694,7 +764,13 @@ void TestSocket::testGetFileDescriptor() {
 void TestSocket::testRequestComplete() {
    TEST_CASE("testRequestComplete");
 
-   //TODO: implement testRequestComplete
+   RecordingSocketCompletionObserver observer;
+   const int socket_fd = Socket::createSocket();
+   Socket s(&observer, socket_fd);
+
+   require(nullptr == observer.notifiedSocket, "observer should not be notified before requestComplete is called");
+   s.requestComplete();
+   require(&s == observer.notifiedSocket, "requestComplete should notify the registered completion observer with this socket");
 }
 
 //******************************************************************************
@@ -887,7 +963,13 @@ void TestSocket::testGetPort() {
 void TestSocket::testSetIncludeMessageSize() {
    TEST_CASE("testSetIncludeMessageSize");
 
-   //TODO: implement testSetIncludeMessageSize
+   const int socket_fd = Socket::createSocket();
+   Socket s(socket_fd);
+   requireFalse(s.getIncludeMessageSize(), "include-message-size should default to false");
+   s.setIncludeMessageSize(true);
+   require(s.getIncludeMessageSize(), "getIncludeMessageSize should reflect setIncludeMessageSize(true)");
+   s.setIncludeMessageSize(false);
+   requireFalse(s.getIncludeMessageSize(), "getIncludeMessageSize should reflect setIncludeMessageSize(false)");
 }
 
 //******************************************************************************
