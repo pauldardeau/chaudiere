@@ -9,9 +9,11 @@
 #include "TestKqueueServer.h"
 #include "TestOptionParser.h"
 #include "TestPthreadsMutex.h"
+#include "TestRequestHandler.h"
 #include "TestServerSocket.h"
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
+#include "TestSocketServer.h"
 //#include "TestStdMutex.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
@@ -42,9 +44,11 @@ void run_tests() {
    //run_test(new TestOptionParser);
    run_test(new TestPthreadsMutex);
    //run_test(new TestStdMutex);
+   run_test(new TestRequestHandler);
    run_test(new TestServerSocket);
    run_test(new TestSocket);
    run_test(new TestSocketRequest);
+   run_test(new TestSocketServer);
    run_test(new TestStringTokenizer);
    run_test(new TestStrUtils);
    run_test(new TestSystemInfo);

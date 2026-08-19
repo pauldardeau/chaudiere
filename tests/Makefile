@@ -20,9 +20,11 @@ TestKeyValuePairs.o \
 TestKqueueServer.o \
 TestOptionParser.o \
 TestPthreadsMutex.o \
+TestRequestHandler.o \
 TestServerSocket.o \
 TestSocket.o \
 TestSocketRequest.o \
+TestSocketServer.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
 TestSystemInfo.o \
