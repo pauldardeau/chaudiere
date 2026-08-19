@@ -35,8 +35,17 @@ bool StdConditionVariable::wait(Mutex* mutex) {
          dynamic_cast<StdMutex*>(mutex);
 
       if (stdMutex) {
-         std::unique_lock<std::mutex> lock(stdMutex->getPlatformPrimitive());
+         // the caller already holds this mutex (per the Mutex-caller
+         // contract of wait()), so adopt the existing lock rather than
+         // attempting to lock it again (std::mutex is non-recursive and
+         // a second lock() from the same thread would deadlock).
+         std::unique_lock<std::mutex> lock(stdMutex->getPlatformPrimitive(), std::adopt_lock);
          m_cond.wait(lock);
+         // std::condition_variable::wait() re-locks the mutex before
+         // returning; release() hands that locked state back to the
+         // caller (who still owns it, matching StdMutex's own
+         // bookkeeping) instead of unlocking it when `lock` goes out of scope.
+         lock.release();
          return true;
       } else {
          LOG_ERROR("mutex must be an instance of StdMutex")

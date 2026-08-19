@@ -2,6 +2,7 @@
 // BSD License
 
 #include <sstream>
+#include <system_error>
 
 #include "StdThread.h"
 #include "BasicException.h"
@@ -60,14 +61,17 @@ StdThread::StdThread(const std::string& name) :
 //******************************************************************************
 
 StdThread::StdThread(Runnable* runnable) :
-   StdThread(nullptr, "") {
+   StdThread(runnable, "") {
    LOG_INSTANCE_CREATE("StdThread")
 }
 
 StdThread::StdThread(Runnable* runnable, const std::string& name) :
-   Thread(&m_mutexAlive, runnable),
+   Thread(runnable),
    m_name(name) {
    LOG_INSTANCE_CREATE("StdThread")
+   if (m_mutexAlive.haveValidMutex()) {
+      setAliveMutex(&m_mutexAlive);
+   }
 }
 
 //******************************************************************************
@@ -81,11 +85,12 @@ StdThread::~StdThread() {
 bool StdThread::start() {
    bool isSuccess = false;
 
-   //TODO: research and fix!
-   // when the following line is uncommented, the following compiler error
-   // is produced:
-   // "Attempt to use a deleted function".
-   //m_thread = std::thread(&StdThread::runThread, this);
+   try {
+      m_thread = std::thread(&StdThread::runThread, this);
+      isSuccess = true;
+   } catch (const std::system_error&) {
+      isSuccess = false;
+   }
 
    return isSuccess;
 }
@@ -119,8 +124,8 @@ const std::string& StdThread::getName() const {
 //******************************************************************************
 
 void StdThread::join() {
-   if (joinable()) {
-      join();
+   if (m_thread.joinable()) {
+      m_thread.join();
    }
 }
 

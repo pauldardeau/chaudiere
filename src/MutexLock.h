@@ -18,7 +18,8 @@ class MutexLock
 {
 public:
    explicit MutexLock(Mutex& mutex) :
-      m_mutex(mutex) {
+      m_mutex(mutex),
+      m_owns(true) {
       m_mutex.lock();
    }
 
@@ -29,24 +30,31 @@ public:
     */
    explicit MutexLock(Mutex& mutex, const std::string& name) :
       m_mutex(mutex),
-      m_name(name) {
+      m_name(name),
+      m_owns(true) {
       m_mutex.lock();
    }
 
    /**
-    * Destructor - unlocks the mutex
+    * Destructor - unlocks the mutex (if not already unlocked via unlock())
     */
    ~MutexLock() {
-      m_mutex.unlock();
+      if (m_owns) {
+         m_mutex.unlock();
+      }
    }
 
    void unlock() {
-      m_mutex.unlock();
+      if (m_owns) {
+         m_mutex.unlock();
+         m_owns = false;
+      }
    }
 
 private:
    Mutex& m_mutex;
    std::string m_name;
+   bool m_owns;
 
    MutexLock();
    MutexLock(const Mutex&);

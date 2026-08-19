@@ -33,13 +33,6 @@ public:
    Thread(Runnable* runnable);
 
    /**
-    *
-    * @param mutexAlive
-    * @param runnable
-    */
-   //Thread(Mutex* mutexAlive, Runnable* runnable);
-
-   /**
     * Destructor
     */
    virtual ~Thread();

@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_PTHREADSMUTEX_H
 #define CHAUDIERE_PTHREADSMUTEX_H
 
+#include <atomic>
 #include <string>
 #include <pthread.h>
 
@@ -86,7 +87,7 @@ private:
    pthread_mutex_t m_mutex;
    std::string m_mutexName;
    bool m_haveValidMutex;
-   bool m_isLocked;
+   std::atomic<bool> m_isLocked;
 
 };
 

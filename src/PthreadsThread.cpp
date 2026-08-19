@@ -21,9 +21,9 @@ PthreadsThread::PthreadsThread() :
    m_exitCode(1L),
    m_name("") {
    LOG_INSTANCE_CREATE("PthreadsThread")
-   //if (m_mutexAlive.haveValidMutex()) {
-   //   setAliveMutex(&m_mutexAlive);
-   //}
+   if (m_mutexAlive.haveValidMutex()) {
+      setAliveMutex(&m_mutexAlive);
+   }
 }
 
 //******************************************************************************
@@ -36,9 +36,9 @@ PthreadsThread::PthreadsThread(const std::string& name) :
    m_exitCode(1L),
    m_name(name) {
    LOG_INSTANCE_CREATE("PthreadsThread")
-   //if (m_mutexAlive.haveValidMutex()) {
-   //   setAliveMutex(&m_mutexAlive);
-   //}
+   if (m_mutexAlive.haveValidMutex()) {
+      setAliveMutex(&m_mutexAlive);
+   }
 }
 
 //******************************************************************************
@@ -51,9 +51,9 @@ PthreadsThread::PthreadsThread(Runnable* runnable) :
    m_exitCode(1L),
    m_name("") {
    LOG_INSTANCE_CREATE("PthreadsThread")
-   //if (m_mutexAlive.haveValidMutex()) {
-   //   setAliveMutex(&m_mutexAlive);
-   //}
+   if (m_mutexAlive.haveValidMutex()) {
+      setAliveMutex(&m_mutexAlive);
+   }
 }
 
 //******************************************************************************
@@ -66,9 +66,9 @@ PthreadsThread::PthreadsThread(Runnable* runnable, const std::string& name) :
    m_exitCode(1L),
    m_name(name) {
    LOG_INSTANCE_CREATE("PthreadsThread")
-   //if (m_mutexAlive.haveValidMutex()) {
-   //   setAliveMutex(&m_mutexAlive);
-   //}
+   if (m_mutexAlive.haveValidMutex()) {
+      setAliveMutex(&m_mutexAlive);
+   }
 }
 
 //******************************************************************************
@@ -110,6 +110,11 @@ void* PthreadsThread::runThread(void* pArgs) {
       LOG_ERROR("Thread::runThread exception caught running thread")
    }
 
+   {
+      MutexLock lockExitCode(pThread->m_mutexExitCode);
+      pThread->m_exitCode = rc;
+   }
+
    pThread->setAlive(false);
    pThread->notifyOnCompletion();
 
@@ -143,8 +148,8 @@ unsigned long PthreadsThread::getExitCode() const {
    unsigned long rc;
 
    {
-      //PthreadsThread* pThis = const_cast<PthreadsThread*>(this);
-      //MutexLock lockMutexExitCode(pThis->m_mutexExitCode);
+      PthreadsThread* pThis = const_cast<PthreadsThread*>(this);
+      MutexLock lockMutexExitCode(pThis->m_mutexExitCode);
       rc = m_exitCode;
    }
 

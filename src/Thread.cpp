@@ -38,19 +38,6 @@ Thread::Thread(Runnable* runnable) :
 }
 
 //******************************************************************************
-/*
-Thread::Thread(Mutex* mutexAlive, Runnable* runnable) :
-   m_runnable(runnable),
-   m_isAlive(false),
-   m_isPoolWorker(false),
-   m_mutexAlive(mutexAlive),
-   m_threadCompletionObserver(nullptr) {
-   if (Logger::isLogging(Debug)) {
-      //Logger::debug("new thread created");
-   }
-}
-*/
-//******************************************************************************
 
 Thread::~Thread() {
 }

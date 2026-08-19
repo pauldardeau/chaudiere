@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_STDMUTEX_H
 #define CHAUDIERE_STDMUTEX_H
 
+#include <atomic>
 #include <string>
 #include <mutex>
 
@@ -83,7 +84,7 @@ private:
 
    std::mutex  m_mutex;
    std::string m_mutexName;
-   bool m_isLocked;
+   std::atomic<bool> m_isLocked;
 
 };
 

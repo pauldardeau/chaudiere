@@ -35,25 +35,28 @@ StdMutex::~StdMutex() {
 //******************************************************************************
 
 bool StdMutex::unlock() {
-   if (m_isLocked) {
-      m_mutex.unlock();
-      m_isLocked = false;
-      return true;
-   } else {
-      return false;
-   }
+   // Deliberately not gated on m_isLocked: see the identical comment in
+   // PthreadsMutex::unlock(). This mutex can be shared across threads via
+   // a ConditionVariable, whose wait() adopts/releases the underlying
+   // std::mutex directly (bypassing m_isLocked), so the bookkeeping flag
+   // can be stale relative to which thread actually holds the real lock.
+   // Gating on it can skip the real unlock() call and deadlock permanently.
+   //
+   // m_isLocked is std::atomic<bool> specifically because it's read and
+   // written from whichever threads lock()/unlock() this object (and by
+   // isLocked() from any thread), which a plain bool cannot do safely
+   // (confirmed as a real data race with ThreadSanitizer).
+   m_mutex.unlock();
+   m_isLocked = false;
+   return true;
 }
 
 //******************************************************************************
 
 bool StdMutex::lock() {
-   if (!m_isLocked) {
-      m_mutex.lock();
-      m_isLocked = true;
-      return m_isLocked;
-   } else {
-      return false;
-   }
+   m_mutex.lock();
+   m_isLocked = true;
+   return true;
 }
 
 //******************************************************************************

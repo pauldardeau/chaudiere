@@ -31,7 +31,11 @@ ServiceInfo.o \
 Socket.o \
 SocketRequest.o \
 SocketServer.o \
+StdConditionVariable.o \
 StdLogger.o \
+StdMutex.o \
+StdThread.o \
+StdThreadingFactory.o \
 StrUtils.o \
 StringTokenizer.o \
 SystemInfo.o \

@@ -55,7 +55,7 @@ public:
     *
     * @param thread
     */
-   void runThread(StdThread* thread);
+   static void runThread(StdThread* thread);
 
    /**
     *
