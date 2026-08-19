@@ -564,11 +564,20 @@ void SocketServer::serviceSocket(SocketRequest* socketRequest) {
       RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
       requestHandler->setThreadPooling(true);
       requestHandler->setSocketOwned(socketRequest->isSocketOwned());
+      requestHandler->setAutoDelete();
+      // the pool deletes requestHandler once it's done being processed
+      // on a worker thread
       m_threadPool->addRequest(requestHandler);
    } else {
       // no thread pool available -- process it synchronously
       RequestHandler* requestHandler = handlerForSocketRequest(socketRequest);
-      requestHandler->run();
+      try {
+         requestHandler->run();
+      } catch (...) {
+         delete requestHandler;
+         throw;
+      }
+      delete requestHandler;
    }
 }
 
