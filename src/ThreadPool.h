@@ -14,8 +14,6 @@
 #include "ThreadPoolDispatcher.h"
 #include "ThreadingFactory.h"
 
-class Runnable;
-
 namespace chaudiere
 {
 
