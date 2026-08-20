@@ -695,11 +695,43 @@ bool Socket::readMsg(int length) {
 //******************************************************************************
 
 int Socket::readSocket(char* buffer, int bytesToRead) {
-   if ((m_socketFD < 0) || (!m_isConnected) || (nullptr == buffer)) {
+   if (nullptr == buffer) {
       return -1;
    }
 
-   return recvPayload(buffer, bytesToRead, 0);
+   int bytesAlreadyRead = 0;
+   int remainingBytesToRead = bytesToRead;
+
+   // serve as much as possible from a primed line-input buffer (used by
+   // tests to feed a socket without a real connected fd) before touching
+   // the real socket
+   if (!m_lineInputBuffer.empty()) {
+      const int nInputBufferLen = (int) m_lineInputBuffer.length();
+
+      if (nInputBufferLen >= bytesToRead) {
+         ::memcpy(buffer, m_lineInputBuffer.c_str(), bytesToRead);
+         m_lineInputBuffer.erase(0, bytesToRead);
+         return bytesToRead;
+      } else {
+         ::memcpy(buffer, m_lineInputBuffer.c_str(), nInputBufferLen);
+         m_lineInputBuffer.erase();
+         bytesAlreadyRead = nInputBufferLen;
+         remainingBytesToRead = bytesToRead - nInputBufferLen;
+      }
+   }
+
+   if ((m_socketFD < 0) || (!m_isConnected)) {
+      return (bytesAlreadyRead > 0) ? bytesAlreadyRead : -1;
+   }
+
+   const ssize_t bytesFromSocket =
+      recvPayload(buffer + bytesAlreadyRead, remainingBytesToRead, 0);
+
+   if (bytesFromSocket <= 0) {
+      return (bytesAlreadyRead > 0) ? bytesAlreadyRead : -1;
+   }
+
+   return bytesAlreadyRead + (int) bytesFromSocket;
 
    /*
    int total_bytes_rcvd = 0;
