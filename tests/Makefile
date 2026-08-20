@@ -23,6 +23,7 @@ TestKeyValuePairs.o \
 TestKqueueServer.o \
 TestOptionParser.o \
 TestOSUtils.o \
+TestPthreadsConditionVariable.o \
 TestPthreadsMutex.o \
 TestPthreadsThreadingFactory.o \
 TestRequestHandler.o \
@@ -31,7 +32,10 @@ TestServiceInfo.o \
 TestSocket.o \
 TestSocketRequest.o \
 TestSocketServer.o \
+TestStdConditionVariable.o \
+TestStdLogger.o \
 TestStdMutex.o \
+TestStdThread.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
 TestSystemInfo.o \

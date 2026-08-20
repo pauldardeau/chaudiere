@@ -12,6 +12,7 @@
 #include "TestKqueueServer.h"
 #include "TestOptionParser.h"
 #include "TestOSUtils.h"
+#include "TestPthreadsConditionVariable.h"
 #include "TestPthreadsMutex.h"
 #include "TestPthreadsThreadingFactory.h"
 #include "TestRequestHandler.h"
@@ -20,7 +21,10 @@
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
 #include "TestSocketServer.h"
+#include "TestStdConditionVariable.h"
+#include "TestStdLogger.h"
 #include "TestStdMutex.h"
+#include "TestStdThread.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
 #include "TestSystemInfo.h"
@@ -54,6 +58,7 @@ void run_tests() {
    run_test(new TestKqueueServer);
    run_test(new TestOptionParser);
    run_test(new TestOSUtils);
+   run_test(new TestPthreadsConditionVariable);
    run_test(new TestPthreadsMutex);
    run_test(new TestPthreadsThreadingFactory);
    run_test(new TestStdMutex);
@@ -63,6 +68,9 @@ void run_tests() {
    run_test(new TestSocket);
    run_test(new TestSocketRequest);
    run_test(new TestSocketServer);
+   run_test(new TestStdConditionVariable);
+   run_test(new TestStdLogger);
+   run_test(new TestStdThread);
    run_test(new TestStringTokenizer);
    run_test(new TestStrUtils);
    run_test(new TestSystemInfo);
