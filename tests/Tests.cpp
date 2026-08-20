@@ -3,6 +3,7 @@
 
 #include "TestAutoPointer.h"
 #include "TestByteBuffer.h"
+#include "TestCharBuffer.h"
 #include "TestDateTime.h"
 #include "TestDynamicLibrary.h"
 #include "TestEpollServer.h"
@@ -11,6 +12,7 @@
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
 #include "TestKqueueServer.h"
+#include "TestMutexLock.h"
 #include "TestNumberFormatException.h"
 #include "TestOptionParser.h"
 #include "TestOSUtils.h"
@@ -52,6 +54,7 @@ void run_test(poivre::TestSuite* test_suite) {
 void run_tests() {
    run_test(new TestAutoPointer);
    run_test(new TestByteBuffer);
+   run_test(new TestCharBuffer);
    run_test(new TestDateTime);
    run_test(new TestDynamicLibrary);
    run_test(new TestEpollServer);
@@ -60,6 +63,7 @@ void run_tests() {
    run_test(new TestInvalidKeyException);
    run_test(new TestKeyValuePairs);
    run_test(new TestKqueueServer);
+   run_test(new TestMutexLock);
    run_test(new TestNumberFormatException);
    run_test(new TestOptionParser);
    run_test(new TestOSUtils);

@@ -14,6 +14,7 @@ TestSuite.o
 OBJS = MockSocket.o \
 TestAutoPointer.o \
 TestByteBuffer.o \
+TestCharBuffer.o \
 TestDateTime.o \
 TestDynamicLibrary.o \
 TestEpollServer.o \
@@ -22,6 +23,7 @@ TestIniReader.o \
 TestInvalidKeyException.o \
 TestKeyValuePairs.o \
 TestKqueueServer.o \
+TestMutexLock.o \
 TestNumberFormatException.o \
 TestOptionParser.o \
 TestOSUtils.o \
