@@ -15,10 +15,14 @@ protected:
    void runTests();
 
    void testConstructor();
+   void testConstructorWithCompletionObserver();
    void testRun();
    void testGetSocketFD();
    void testGetSocket();
    void testRequestComplete();
+   void testIsSocketOwned();
+   void testSetSocketOwned();
+   void testNotifyOnCompletion();
 
 public:
    TestSocketRequest();
