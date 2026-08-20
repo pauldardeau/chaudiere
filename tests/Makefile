@@ -16,11 +16,13 @@ TestAutoPointer.o \
 TestByteBuffer.o \
 TestDateTime.o \
 TestDynamicLibrary.o \
+TestEpollServer.o \
 TestFileLogger.o \
 TestIniReader.o \
 TestInvalidKeyException.o \
 TestKeyValuePairs.o \
 TestKqueueServer.o \
+TestNumberFormatException.o \
 TestOptionParser.o \
 TestOSUtils.o \
 TestPthreadsConditionVariable.o \
@@ -36,6 +38,7 @@ TestStdConditionVariable.o \
 TestStdLogger.o \
 TestStdMutex.o \
 TestStdThread.o \
+TestStdThreadingFactory.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
 TestSystemInfo.o \

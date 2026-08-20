@@ -5,11 +5,13 @@
 #include "TestByteBuffer.h"
 #include "TestDateTime.h"
 #include "TestDynamicLibrary.h"
+#include "TestEpollServer.h"
 #include "TestFileLogger.h"
 #include "TestIniReader.h"
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
 #include "TestKqueueServer.h"
+#include "TestNumberFormatException.h"
 #include "TestOptionParser.h"
 #include "TestOSUtils.h"
 #include "TestPthreadsConditionVariable.h"
@@ -25,6 +27,7 @@
 #include "TestStdLogger.h"
 #include "TestStdMutex.h"
 #include "TestStdThread.h"
+#include "TestStdThreadingFactory.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
 #include "TestSystemInfo.h"
@@ -51,11 +54,13 @@ void run_tests() {
    run_test(new TestByteBuffer);
    run_test(new TestDateTime);
    run_test(new TestDynamicLibrary);
+   run_test(new TestEpollServer);
    run_test(new TestFileLogger);
    run_test(new TestIniReader);
    run_test(new TestInvalidKeyException);
    run_test(new TestKeyValuePairs);
    run_test(new TestKqueueServer);
+   run_test(new TestNumberFormatException);
    run_test(new TestOptionParser);
    run_test(new TestOSUtils);
    run_test(new TestPthreadsConditionVariable);
@@ -71,6 +76,7 @@ void run_tests() {
    run_test(new TestStdConditionVariable);
    run_test(new TestStdLogger);
    run_test(new TestStdThread);
+   run_test(new TestStdThreadingFactory);
    run_test(new TestStringTokenizer);
    run_test(new TestStrUtils);
    run_test(new TestSystemInfo);
