@@ -147,7 +147,12 @@ void TestOptionParser::testGetOptionValue() {
    op.addFlagOption(flag);
    require(op.acceptsFlag(flag), "test added flag option");
 
-   const char* argv2[] = {"debug", "", "", nullptr};
+   // parseArgs() treats argv[0] as the program name and skips it, so this
+   // needs a leading placeholder before the actual "debug logger MyLogger"
+   // tokens (parseArgs() populates hasOption()/getOptionValue() directly
+   // from any "key value" pair on the command line -- addOption() isn't
+   // required first, it's only for supplying defaults ahead of parsing)
+   const char* argv2[] = {"myprog", "debug", "logger", "MyLogger", nullptr};
    argc = sizeof(argv2) / sizeof(char*) - 1;
    op.parseArgs(argc, argv2);
    require(op.hasFlag(flag), "test added flag option");
@@ -155,7 +160,18 @@ void TestOptionParser::testGetOptionValue() {
    requireStringEquals(optionValue, op.getOptionValue(option),
                        "option value matches command line value");
 
-   //TODO: test non-existing option (InvalidKeyException)
+   // requesting the value of an option that was never added or parsed
+   // should throw InvalidKeyException rather than returning garbage
+   class GetMissingOptionValue : public poivre::Runnable {
+   public:
+      explicit GetMissingOptionValue(const OptionParser& op) : m_op(op) {}
+      void run() override {
+         m_op.getOptionValue("neverAdded");
+      }
+   private:
+      const OptionParser& m_op;
+   };
+   requireException("InvalidKeyException", new GetMissingOptionValue(op));
 }
 
 //******************************************************************************
@@ -166,8 +182,19 @@ void TestOptionParser::testHasFlag() {
    OptionParser op;
    requireFalse(op.hasFlag("foo"),
                 "test for non-existing option return false");
+
+   // hasFlag() reflects flags actually seen while parsing (m_flagsPresent),
+   // which is distinct from acceptsFlag() (registered via addFlagOption,
+   // tested separately) -- merely registering a flag shouldn't make
+   // hasFlag() true until parseArgs() has actually seen it
    std::string option_name = "debugging";
    op.addFlagOption(option_name);
+   requireFalse(op.hasFlag(option_name),
+                "registering a flag should not by itself make hasFlag true");
+
+   const char* argv[] = {"myprog", "debugging", nullptr};
+   const int argc = sizeof(argv) / sizeof(char*) - 1;
+   op.parseArgs(argc, argv);
    require(op.hasFlag(option_name),
            "test for existing option return true");
 }
@@ -177,10 +204,26 @@ void TestOptionParser::testHasFlag() {
 void TestOptionParser::testParseArgs() {
    TEST_CASE("testParseArgs");
 
-   int argc;
-   const char* argv_no_opts[] = {"", nullptr};
-   argc = sizeof(argv_no_opts) / sizeof(char*) - 1;
-   //TODO: implement testParseArgs
+   // no arguments beyond the program name: nothing should be present
+   OptionParser opNoArgs;
+   opNoArgs.addFlagOption("verbose");
+   const char* argvNoOpts[] = {"myprog", nullptr};
+   int argc = sizeof(argvNoOpts) / sizeof(char*) - 1;
+   opNoArgs.parseArgs(argc, argvNoOpts);
+   requireFalse(opNoArgs.hasFlag("verbose"), "a flag not present on the command line should not be flagged as present");
+
+   // a registered flag and a key/value pair together
+   OptionParser op;
+   op.addFlagOption("verbose");
+   op.addOption("config", "default.ini");
+
+   const char* argv[] = {"myprog", "verbose", "config", "custom.ini", nullptr};
+   argc = sizeof(argv) / sizeof(char*) - 1;
+   op.parseArgs(argc, argv);
+
+   require(op.hasFlag("verbose"), "flag present on the command line should be detected");
+   require(op.hasOption("config"), "option present on the command line should be detected");
+   requireStringEquals("custom.ini", op.getOptionValue("config"), "option value should reflect the command-line value, overriding the default");
 }
 
 //******************************************************************************
