@@ -14,12 +14,15 @@ TestSuite.o
 OBJS = MockSocket.o \
 TestAutoPointer.o \
 TestByteBuffer.o \
+TestDateTime.o \
+TestDynamicLibrary.o \
 TestFileLogger.o \
 TestIniReader.o \
 TestInvalidKeyException.o \
 TestKeyValuePairs.o \
 TestKqueueServer.o \
 TestOptionParser.o \
+TestOSUtils.o \
 TestPthreadsMutex.o \
 TestPthreadsThreadingFactory.o \
 TestRequestHandler.o \
@@ -39,6 +42,7 @@ TestThreadPool.o \
 TestThreadPoolQueue.o \
 TestThreadPoolWorker.o \
 TestThreadingFactory.o \
+TestUtils.o \
 Tests.o \
 $(POIVRE_OBJS)
 

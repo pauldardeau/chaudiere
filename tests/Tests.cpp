@@ -3,12 +3,15 @@
 
 #include "TestAutoPointer.h"
 #include "TestByteBuffer.h"
+#include "TestDateTime.h"
+#include "TestDynamicLibrary.h"
 #include "TestFileLogger.h"
 #include "TestIniReader.h"
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
 #include "TestKqueueServer.h"
 #include "TestOptionParser.h"
+#include "TestOSUtils.h"
 #include "TestPthreadsMutex.h"
 #include "TestPthreadsThreadingFactory.h"
 #include "TestRequestHandler.h"
@@ -28,6 +31,7 @@
 #include "TestThreadPoolQueue.h"
 #include "TestThreadPoolWorker.h"
 #include "TestThreadingFactory.h"
+#include "TestUtils.h"
 
 using namespace chaudiere;
 
@@ -41,12 +45,15 @@ void run_test(poivre::TestSuite* test_suite) {
 void run_tests() {
    run_test(new TestAutoPointer);
    run_test(new TestByteBuffer);
+   run_test(new TestDateTime);
+   run_test(new TestDynamicLibrary);
    run_test(new TestFileLogger);
    run_test(new TestIniReader);
    run_test(new TestInvalidKeyException);
    run_test(new TestKeyValuePairs);
    run_test(new TestKqueueServer);
    run_test(new TestOptionParser);
+   run_test(new TestOSUtils);
    run_test(new TestPthreadsMutex);
    run_test(new TestPthreadsThreadingFactory);
    run_test(new TestStdMutex);
@@ -66,6 +73,7 @@ void run_tests() {
    run_test(new TestThreadPoolQueue);
    run_test(new TestThreadPoolWorker);
    run_test(new TestThreadingFactory);
+   run_test(new TestUtils);
 }
 
 int main(int argc, char* argv[]) {
