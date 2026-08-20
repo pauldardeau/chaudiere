@@ -430,54 +430,56 @@ ssize_t Socket::recvPayload(char* buffer, ssize_t bufferSize, int flags) {
 //******************************************************************************
 
 bool Socket::readLine(std::string& line) {
-   int bufferSizeNeeded = 0;
+   line.erase();
 
-   uint16_t payloadSize;
+   if (m_includeMessageSize) {
+      // one length-prefixed message is the unit of framing here -- it has
+      // to be read in a single recvPayload() call (which itself consumes
+      // a fresh 2-byte length prefix per call), so a byte-at-a-time scan
+      // via readSocket() would desync after the first byte. Read the
+      // whole framed message at once and scan the result for a newline.
+      char buffer[65535];
+      const ssize_t bytesReceived = recvPayload(buffer, sizeof(buffer) - 1, 0);
 
-   if (recvPayloadSize(payloadSize)) {
-      bufferSizeNeeded = payloadSize;
-   } else {
-      return false;
+      if (bytesReceived <= 0) {
+         return false;
+      }
+
+      ssize_t lineLength = bytesReceived;
+
+      for (ssize_t i = 0; i < bytesReceived; ++i) {
+         if (buffer[i] == '\n') {
+            lineLength = i;
+            break;
+         }
+      }
+
+      if ((lineLength > 0) && (buffer[lineLength - 1] == '\r')) {
+         --lineLength;
+      }
+
+      line.assign(buffer, lineLength);
+      return true;
    }
 
-   char buffer[65535];
-   memset(buffer, 0, sizeof(buffer));
+   char c;
+   bool foundEOL = false;
 
-   char *pRecvBuffer = buffer;
-   ssize_t totalBytesReceived = 0;
-   ssize_t remainingBufferSize = sizeof(buffer);
-   bool allIsGood = true;
+   while (!foundEOL) {
+      const int bytesRead = readSocket(&c, 1);
 
-   while ((totalBytesReceived < bufferSizeNeeded) && allIsGood) {
-      ssize_t bytesReceived = ::recv(m_socketFD,
-                                     pRecvBuffer,
-                                     remainingBufferSize,
-                                     0);
-      if (bytesReceived > 0) {
-         totalBytesReceived += bytesReceived;
-         remainingBufferSize -= bytesReceived;
-         pRecvBuffer += bytesReceived;
-      } else if (bytesReceived == 0) {
-         // peer performed an orderly shutdown -- no more data is coming
-         allIsGood = false;
-      } else {
-         allIsGood = false;
+      if (bytesRead <= 0) {
+         return false;
+      }
+
+      if (c == '\n') {
+         foundEOL = true;
+      } else if (c != '\r') {
+         line += c;
       }
    }
 
-   if (!allIsGood) {
-      return false;
-   }
-
-   for (ssize_t i = 0; i < totalBytesReceived; ++i) {
-      if (buffer[i] == '\n') {
-         buffer[i] = '\0';
-         line = buffer;
-         return true;
-      }
-   }
-
-   return false;
+   return true;
 
    /*
    line.erase();
