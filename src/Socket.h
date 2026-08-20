@@ -105,6 +105,20 @@ public:
    int readSocket(char* buffer, int bytesToRead);
 
    /**
+    * Reads whatever is currently available on the socket into the
+    * designated buffer, up to the size of the buffer - unlike read()/
+    * readSocket() (and receive(), which shares their underlying
+    * recvPayload() loop), this issues a single recv() and returns as soon
+    * as any data arrives, rather than blocking until the buffer is full.
+    * Intended for speculative/chunked reads where the caller doesn't know
+    * in advance how many bytes are actually coming.
+    * @param buffer the buffer to contain the read bytes
+    * @param bufferSize the size of the buffer (the maximum to read)
+    * @return the number of bytes read, or -1 on error/no connection
+    */
+   int recvAvailable(char* buffer, int bufferSize);
+
+   /**
     * Read a string up to (and including) a new-line (\n) character
     * @param line variable to receive the string read
     * @return boolean indicating whether the read succeeded

@@ -790,6 +790,40 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
 
 //******************************************************************************
 
+int Socket::recvAvailable(char* buffer, int bufferSize) {
+   if (nullptr == buffer) {
+      return -1;
+   }
+
+   // serve from a primed line-input buffer first, same as readSocket()
+   if (!m_lineInputBuffer.empty()) {
+      const int nInputBufferLen = (int) m_lineInputBuffer.length();
+      const int bytesToServe =
+         (nInputBufferLen < bufferSize) ? nInputBufferLen : bufferSize;
+
+      ::memcpy(buffer, m_lineInputBuffer.c_str(), bytesToServe);
+      m_lineInputBuffer.erase(0, bytesToServe);
+      return bytesToServe;
+   }
+
+   if ((m_socketFD < 0) || (!m_isConnected)) {
+      return -1;
+   }
+
+   // a single recv() call -- returns as soon as any data is available,
+   // rather than looping (like recvPayload()) until bufferSize bytes
+   // have arrived
+   const ssize_t bytesReceived = ::recv(m_socketFD, buffer, bufferSize, 0);
+
+   if (bytesReceived <= 0) {
+      return -1;
+   }
+
+   return (int) bytesReceived;
+}
+
+//******************************************************************************
+
 bool Socket::getPeerIPAddress(std::string& ipAddress) {
    struct sockaddr_in addr;
    socklen_t x = sizeof(addr);
