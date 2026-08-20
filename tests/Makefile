@@ -14,18 +14,21 @@ TestSuite.o
 OBJS = MockSocket.o \
 TestAutoPointer.o \
 TestByteBuffer.o \
+TestFileLogger.o \
 TestIniReader.o \
 TestInvalidKeyException.o \
 TestKeyValuePairs.o \
 TestKqueueServer.o \
 TestOptionParser.o \
 TestPthreadsMutex.o \
+TestPthreadsThreadingFactory.o \
 TestRequestHandler.o \
 TestServerSocket.o \
 TestServiceInfo.o \
 TestSocket.o \
 TestSocketRequest.o \
 TestSocketServer.o \
+TestStdMutex.o \
 TestStrUtils.o \
 TestStringTokenizer.o \
 TestSystemInfo.o \
@@ -35,6 +38,7 @@ TestThreadInfo.o \
 TestThreadPool.o \
 TestThreadPoolQueue.o \
 TestThreadPoolWorker.o \
+TestThreadingFactory.o \
 Tests.o \
 $(POIVRE_OBJS)
 

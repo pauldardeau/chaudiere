@@ -3,19 +3,21 @@
 
 #include "TestAutoPointer.h"
 #include "TestByteBuffer.h"
+#include "TestFileLogger.h"
 #include "TestIniReader.h"
 #include "TestInvalidKeyException.h"
 #include "TestKeyValuePairs.h"
 #include "TestKqueueServer.h"
 #include "TestOptionParser.h"
 #include "TestPthreadsMutex.h"
+#include "TestPthreadsThreadingFactory.h"
 #include "TestRequestHandler.h"
 #include "TestServerSocket.h"
 #include "TestServiceInfo.h"
 #include "TestSocket.h"
 #include "TestSocketRequest.h"
 #include "TestSocketServer.h"
-//#include "TestStdMutex.h"
+#include "TestStdMutex.h"
 #include "TestStrUtils.h"
 #include "TestStringTokenizer.h"
 #include "TestSystemInfo.h"
@@ -25,6 +27,7 @@
 #include "TestThreadPool.h"
 #include "TestThreadPoolQueue.h"
 #include "TestThreadPoolWorker.h"
+#include "TestThreadingFactory.h"
 
 using namespace chaudiere;
 
@@ -38,13 +41,15 @@ void run_test(poivre::TestSuite* test_suite) {
 void run_tests() {
    run_test(new TestAutoPointer);
    run_test(new TestByteBuffer);
+   run_test(new TestFileLogger);
    run_test(new TestIniReader);
    run_test(new TestInvalidKeyException);
    run_test(new TestKeyValuePairs);
    run_test(new TestKqueueServer);
-   //run_test(new TestOptionParser);
+   run_test(new TestOptionParser);
    run_test(new TestPthreadsMutex);
-   //run_test(new TestStdMutex);
+   run_test(new TestPthreadsThreadingFactory);
+   run_test(new TestStdMutex);
    run_test(new TestRequestHandler);
    run_test(new TestServerSocket);
    run_test(new TestServiceInfo);
@@ -60,6 +65,7 @@ void run_tests() {
    run_test(new TestThreadPool);
    run_test(new TestThreadPoolQueue);
    run_test(new TestThreadPoolWorker);
+   run_test(new TestThreadingFactory);
 }
 
 int main(int argc, char* argv[]) {
