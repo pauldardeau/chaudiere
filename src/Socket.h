@@ -205,6 +205,15 @@ public:
    int getReceiveBufferSize() const;
 
    /**
+    * Sets the receive timeout (SO_RCVTIMEO) for the socket - a subsequent
+    * blocking read call will fail once this many seconds have elapsed
+    * without any data arriving, instead of blocking indefinitely.
+    * @param seconds the timeout in seconds (0 disables the timeout)
+    * @return boolean indicating whether the setting was made successfully
+    */
+   bool setReceiveTimeout(int seconds);
+
+   /**
     * Sets the keep-alive flag on or off
     * @param on whether the flag should be turned on
     * @return boolean indicating whether the flag was updated

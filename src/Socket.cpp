@@ -11,6 +11,7 @@
 #include <netinet/tcp.h>
 #include <netdb.h>
 #include <errno.h>
+#include <sys/time.h>
 
 #include "Socket.h"
 #include "SocketCompletionObserver.h"
@@ -308,6 +309,24 @@ int Socket::getReceiveBufferSize() const {
       // error
       return -1;
    }
+}
+
+//******************************************************************************
+
+bool Socket::setReceiveTimeout(int seconds) {
+   if (m_socketFD < 0) {
+      return false;
+   }
+
+   struct timeval tv;
+   tv.tv_sec = seconds;
+   tv.tv_usec = 0;
+
+   return (0 == ::setsockopt(m_socketFD,
+                             SOL_SOCKET,
+                             SO_RCVTIMEO,
+                             (char*) &tv,
+                             sizeof(tv)));
 }
 
 //******************************************************************************
