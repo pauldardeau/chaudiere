@@ -14,10 +14,12 @@ class TestKqueueServer : public poivre::TestSuite
 protected:
    void runTests();
 
+   void testIsSupportedPlatform();
    void testConstructor();
    void testInit();
    void testRun();
    void testNotifySocketComplete();
+   void testUnsupportedPlatformBehavior();
 
 public:
    TestKqueueServer();
