@@ -2,10 +2,13 @@
 // BSD License
 
 #include <stdio.h>
+#include <atomic>
 
 #include "TestThreadPoolQueue.h"
 #include "ThreadPoolQueue.h"
 #include "PthreadsThreadingFactory.h"
+#include "PthreadsThread.h"
+#include "Thread.h"
 #include "Runnable.h"
 
 using namespace chaudiere;
@@ -126,6 +129,153 @@ void TestThreadPoolQueue::testIsEmpty() {
    // ThreadPoolQueue doesn't own the Runnable (isAutoDelete defaults
    // to false), so it's this test's responsibility to delete it.
    delete ctx.runnable;
+}
+
+//******************************************************************************
+// backpressure (setMaxQueueSize()/QueueFullPolicy) - written as
+// self-registering POIVRE_TEST_CASE cases (see poivre's TestMacros.h)
+// rather than added to runTests() above, since two of them need to
+// spawn and synchronize with a real second thread.
+
+namespace {
+
+// runs queue.addRequest(toAdd) on its own thread, so a test can observe
+// whether that call is currently blocked (hasCompleted() still false)
+// or has returned (hasCompleted() true, getResult() has its outcome)
+class BlockingAddRunnable : public chaudiere::Runnable {
+public:
+   BlockingAddRunnable(ThreadPoolQueue& queue, Runnable* toAdd) :
+      m_queue(queue),
+      m_toAdd(toAdd),
+      m_completed(false),
+      m_result(false) {
+   }
+
+   void run() override {
+      m_result = m_queue.addRequest(m_toAdd);
+      m_completed = true;
+   }
+
+   bool hasCompleted() const {
+      return m_completed;
+   }
+
+   bool getResult() const {
+      return m_result;
+   }
+
+private:
+   ThreadPoolQueue& m_queue;
+   Runnable* m_toAdd;
+   std::atomic<bool> m_completed;
+   std::atomic<bool> m_result;
+};
+
+}
+
+POIVRE_TEST_CASE(TestThreadPoolQueue, testMaxQueueSizeDefaultUnbounded) {
+   ThreadPoolQueue tpq(&tf);
+
+   require(tpq.getMaxQueueSize() == 0, "max queue size should default to 0 (unbounded)");
+
+   Runnable* r1 = new DoNothingRunnable;
+   Runnable* r2 = new DoNothingRunnable;
+   Runnable* r3 = new DoNothingRunnable;
+
+   require(tpq.addRequest(r1), "unbounded queue should accept request 1");
+   require(tpq.addRequest(r2), "unbounded queue should accept request 2");
+   require(tpq.addRequest(r3), "unbounded queue should accept request 3");
+
+   delete r1;
+   delete r2;
+   delete r3;
+}
+
+POIVRE_TEST_CASE(TestThreadPoolQueue, testMaxQueueSizeRejectPolicy) {
+   ThreadPoolQueue tpq(&tf);
+   tpq.setMaxQueueSize(2, QueueFullPolicy::Reject);
+   require(tpq.getMaxQueueSize() == 2, "getMaxQueueSize should reflect what was set");
+
+   Runnable* r1 = new DoNothingRunnable;
+   Runnable* r2 = new DoNothingRunnable;
+   Runnable* r3 = new DoNothingRunnable;
+
+   require(tpq.addRequest(r1), "request 1 should be accepted (0 -> 1, max 2)");
+   require(tpq.addRequest(r2), "request 2 should be accepted (1 -> 2, max 2)");
+   require(!tpq.addRequest(r3), "request 3 should be rejected - queue already at max size 2");
+
+   // freeing a slot should allow a subsequent add to succeed
+   TakeRequestContext ctx;
+   ctx.waitIfNone = false;
+   tpq.takeRequest(ctx);
+   require(ctx.runnable == r1, "takeRequest should return the oldest request (FIFO)");
+
+   require(tpq.addRequest(r3), "request 3 should now be accepted after a slot freed up");
+
+   delete r1;
+   delete r2;
+   delete r3;
+}
+
+POIVRE_TEST_CASE(TestThreadPoolQueue, testMaxQueueSizeBlockPolicyBlocksThenUnblocks) {
+   ThreadPoolQueue tpq(&tf);
+   tpq.setMaxQueueSize(1, QueueFullPolicy::Block);
+
+   Runnable* r1 = new DoNothingRunnable;
+   Runnable* r2 = new DoNothingRunnable;
+
+   require(tpq.addRequest(r1), "request 1 should be accepted immediately (0 -> 1, max 1)");
+
+   BlockingAddRunnable blockingAdd(tpq, r2);
+   PthreadsThread blockingThread(&blockingAdd);
+   require(blockingThread.start(), "helper thread should start");
+
+   // generous margin for the helper thread to actually reach the wait
+   // inside addRequest() - not a hard guarantee, but more than enough
+   // in practice, and the test still holds even if it wins this race
+   // (it would just also pass sooner)
+   Thread::sleep(200);
+   require(!blockingAdd.hasCompleted(), "addRequest for request 2 should still be blocked - queue is full");
+
+   // free the one slot - should wake and complete the blocked add
+   TakeRequestContext ctx;
+   ctx.waitIfNone = false;
+   tpq.takeRequest(ctx);
+   require(ctx.runnable == r1, "takeRequest should return request 1");
+
+   blockingThread.join();
+
+   require(blockingAdd.hasCompleted(), "blocked addRequest should have completed after a slot freed up");
+   require(blockingAdd.getResult(), "blocked addRequest should have succeeded once space was available");
+
+   delete r1;
+   delete r2;
+}
+
+POIVRE_TEST_CASE(TestThreadPoolQueue, testMaxQueueSizeBlockPolicyWakesOnShutdown) {
+   ThreadPoolQueue tpq(&tf);
+   tpq.setMaxQueueSize(1, QueueFullPolicy::Block);
+
+   Runnable* r1 = new DoNothingRunnable;
+   Runnable* r2 = new DoNothingRunnable;
+
+   require(tpq.addRequest(r1), "request 1 should be accepted immediately");
+
+   BlockingAddRunnable blockingAdd(tpq, r2);
+   PthreadsThread blockingThread(&blockingAdd);
+   require(blockingThread.start(), "helper thread should start");
+
+   Thread::sleep(200);
+   require(!blockingAdd.hasCompleted(), "addRequest for request 2 should still be blocked - queue is full");
+
+   tpq.shutDown();
+   blockingThread.join();
+
+   require(blockingAdd.hasCompleted(), "blocked addRequest should have woken up once the queue shut down, not hung forever");
+   require(!blockingAdd.getResult(), "blocked addRequest should fail once the queue has shut down");
+
+   delete r1;
+   delete r2;
 }
 
 //******************************************************************************

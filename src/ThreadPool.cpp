@@ -235,3 +235,15 @@ bool ThreadPool::isRunning() const {
 
 //******************************************************************************
 
+void ThreadPool::setMaxQueueSize(std::size_t maxSize, QueueFullPolicy policy) {
+   m_queue.setMaxQueueSize(maxSize, policy);
+}
+
+//******************************************************************************
+
+std::size_t ThreadPool::getMaxQueueSize() const {
+   return m_queue.getMaxQueueSize();
+}
+
+//******************************************************************************
+

@@ -98,6 +98,25 @@ public:
 
    bool isRunning() const;
 
+   /**
+    * Sets a maximum number of pending (not-yet-taken) requests the pool's
+    * queue will hold, and how addRequest() behaves once that limit is
+    * reached. By default the queue is unbounded (maxSize == 0). An
+    * undersized pool with an unbounded queue can accept unlimited work
+    * it has no capacity to keep up with; a max size gives it a way to
+    * push back instead.
+    * @param maxSize maximum number of pending requests (0 == unbounded)
+    * @param policy what addRequest() does once the queue is at maxSize
+    * @see QueueFullPolicy
+    */
+   void setMaxQueueSize(std::size_t maxSize,
+                        QueueFullPolicy policy = QueueFullPolicy::Reject);
+
+   /**
+    * @return the configured maximum queue size (0 == unbounded)
+    */
+   std::size_t getMaxQueueSize() const;
+
 
 protected:
    /**

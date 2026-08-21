@@ -22,15 +22,18 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
    m_mutex(m_threadingFactory->createMutex("ThreadPoolQueue")),
    m_condQueueNotEmpty(m_threadingFactory->createConditionVariable("queue-not-empty")),
    m_condQueueEmpty(m_threadingFactory->createConditionVariable("queue-empty")),
+   m_condQueueNotFull(m_threadingFactory->createConditionVariable("queue-not-full")),
    m_isInitialized(false),
    m_isRunning(false),
    m_activeTakeRequests(0),
-   m_activeAddRequests(0) {
+   m_activeAddRequests(0),
+   m_maxQueueSize(0),
+   m_queueFullPolicy(QueueFullPolicy::Reject) {
 
    LOG_INSTANCE_CREATE("ThreadPoolQueue")
 
    try {
-      if (m_mutex && m_condQueueNotEmpty && m_condQueueEmpty) {
+      if (m_mutex && m_condQueueNotEmpty && m_condQueueEmpty && m_condQueueNotFull) {
          m_isInitialized = true;
          m_isRunning = true;
       } else {
@@ -43,6 +46,9 @@ ThreadPoolQueue::ThreadPoolQueue(ThreadingFactory* threadingFactory) :
          }
          if (!m_condQueueEmpty) {
             LOG_ERROR("unable to create queue empty condition variable")
+         }
+         if (!m_condQueueNotFull) {
+            LOG_ERROR("unable to create queue not full condition variable")
          }
          printf("error: unable to initialize thread pool queue, aborting\n");
          exit(1);
@@ -103,6 +109,28 @@ bool ThreadPoolQueue::addRequest(Runnable* runnableRequest) {
    if (!m_mutex->haveValidMutex()) {
       LOG_ERROR("don't have valid mutex in addRequest")
       ::exit(1);
+   }
+
+   if ((m_maxQueueSize > 0) && (m_queue.size() >= m_maxQueueSize)) {
+      if (m_queueFullPolicy == QueueFullPolicy::Reject) {
+         LOG_WARNING("ThreadPoolQueue::addRequest rejecting request, queue is full")
+         --m_activeAddRequests;
+         return false;
+      }
+
+      // Block policy: wait for a slot to free up. Re-checks m_maxQueueSize
+      // on every wakeup, since setMaxQueueSize() may have raised or
+      // removed the limit while we were waiting.
+      while ((m_maxQueueSize > 0) && (m_queue.size() >= m_maxQueueSize) && m_isRunning) {
+         LOG_DEBUG("ThreadPoolQueue::addRequest - waiting on queue-not-full")
+         m_condQueueNotFull->wait(m_mutex.get());
+      }
+
+      if (!m_isRunning) {
+         LOG_WARNING("ThreadPoolQueue::addRequest rejecting request, queue is shutting down")
+         --m_activeAddRequests;
+         return false;
+      }
    }
 
    LOG_DEBUG("ThreadPoolQueue::addRequest accepting request")
@@ -189,6 +217,11 @@ void ThreadPoolQueue::takeRequest(TakeRequestContext& ctx) {
 #endif
             m_condQueueEmpty->notifyOne();
          }
+
+         // a slot just freed up - wake one producer blocked under the
+         // Block policy, if any. Harmless no-op when the queue is
+         // unbounded or no one is waiting.
+         m_condQueueNotFull->notifyOne();
       } else {
 #if defined(DEBUG)
          printf("ThreadPoolQueue::takeRequest - no runnable found in queue - returning nullptr\n");
@@ -221,6 +254,11 @@ bool ThreadPoolQueue::shutDown() {
 
       // wake up workers so that they can exit
       m_condQueueNotEmpty->notifyAll();
+
+      // wake up any producer blocked in addRequest() under the Block
+      // policy, so it can see m_isRunning is now false and return
+      // rather than waiting forever
+      m_condQueueNotFull->notifyAll();
    }
 
    return wasShutDown;
@@ -239,6 +277,25 @@ bool ThreadPoolQueue::restart() {
    }
 
    return wasRestarted;
+}
+
+//******************************************************************************
+
+void ThreadPoolQueue::setMaxQueueSize(std::size_t maxSize, QueueFullPolicy policy) {
+   MutexLock lock(*m_mutex, "ThreadPoolQueue::setMaxQueueSize");
+
+   m_maxQueueSize = maxSize;
+   m_queueFullPolicy = policy;
+
+   // raising or removing the limit may unblock a producer waiting under
+   // the Block policy
+   m_condQueueNotFull->notifyAll();
+}
+
+//******************************************************************************
+
+std::size_t ThreadPoolQueue::getMaxQueueSize() const {
+   return m_maxQueueSize;
 }
 
 //******************************************************************************
