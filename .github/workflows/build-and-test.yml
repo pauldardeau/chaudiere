@@ -22,3 +22,52 @@ jobs:
       - name: run-tests
         run: ./test_chaudiere
         working-directory: tests
+
+  asan-ubsan:
+    runs-on: ubuntu-latest
+    env:
+      SAN_FLAGS: -fsanitize=address,undefined -fno-omit-frame-pointer
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: make library (ASan/UBSan)
+        run: make CC_OPTS="-c -Wall -std=c++20 -fPIC -g -O0 ${{ env.SAN_FLAGS }} -pthread -I/usr/local/include -I../poivre" SANFLAGS="${{ env.SAN_FLAGS }}"
+        working-directory: src
+      - name: make tests (ASan/UBSan)
+        run: make CC_OPTS="-c -g -std=c++20 -O0 ${{ env.SAN_FLAGS }} -pthread -I../src -I../poivre" SANFLAGS="${{ env.SAN_FLAGS }}"
+        working-directory: tests
+      - name: run-tests (ASan/UBSan)
+        # detect_leaks disabled: several tests deliberately hand off
+        # ownership of raw pointers without a matching delete (documented
+        # inline where that happens), which isn't what this job exists to
+        # catch - it's here for out-of-bounds access, use-after-free, and
+        # undefined behavior.
+        run: ASAN_OPTIONS=detect_leaks=0 ./test_chaudiere
+        working-directory: tests
+
+  tsan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: make library (TSan)
+        run: make CC_OPTS="-c -Wall -std=c++20 -fPIC -g -O0 -fsanitize=thread -fno-omit-frame-pointer -pthread -I/usr/local/include -I../poivre" SANFLAGS="-fsanitize=thread"
+        working-directory: src
+      - name: make tests (TSan)
+        run: make CC_OPTS="-c -g -std=c++20 -O0 -fsanitize=thread -fno-omit-frame-pointer -pthread -I../src -I../poivre" SANFLAGS="-fsanitize=thread"
+        working-directory: tests
+      - name: run-tests (TSan)
+        # halt_on_error=0 so the whole suite runs to completion and
+        # reports every race in one pass, rather than stopping at the
+        # first. TSan still exits non-zero (failing this step) if any
+        # race was found. setarch -R disables ASLR - not usually needed
+        # on a plain VM runner, but cheap insurance: TSan has been known
+        # to abort with "unexpected memory mapping" under some kernels/
+        # ASLR configurations (observed locally under WSL2 while
+        # developing this job).
+        run: TSAN_OPTIONS="halt_on_error=0 history_size=7" setarch $(uname -m) -R ./test_chaudiere
+        working-directory: tests

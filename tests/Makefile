@@ -5,6 +5,9 @@ CC = c++
 CC_OPTS = -c -g -std=c++20 -pthread -I../src -I../poivre
 #CC_OPTS = -c -std=c++20 -pthread -I../src -I../poivre
 
+# see src/Makefile - same SANFLAGS convention, needed at link time here too
+SANFLAGS =
+
 EXE_NAME = test_chaudiere
 LIB_NAMES = ../src/libchaudiere.so
 
@@ -63,7 +66,7 @@ clean :
 	rm -f $(EXE_NAME)
 
 $(EXE_NAME) : $(OBJS) $(ZLIB_OBJS)
-	$(CC) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl
+	$(CC) $(SANFLAGS) $(OBJS) -o $(EXE_NAME) $(LIB_NAMES) -lpthread -ldl
 
 $(POIVRE_OBJS) : %.o : ../poivre/%.cpp
 	$(CC) $(CC_OPTS) $< -o $@

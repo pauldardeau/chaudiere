@@ -7,6 +7,12 @@ CC_OPTS = -c -Wall -std=c++20 -fPIC -g -pthread -I/usr/local/include -I../poivre
 ARCHIVE_CMD = ar
 ARCHIVE_OPTS = rs
 
+# Empty by default; a sanitizer build overrides it on the command line
+# (e.g. `make SANFLAGS=-fsanitize=address,undefined CC_OPTS="... -fsanitize=address,undefined"`)
+# so the flag lands at both compile and link time - a sanitizer needs its
+# runtime linked in, not just the instrumentation compiled in.
+SANFLAGS =
+
 LIB_NAME = libchaudiere.so
 
 OBJS = DateTime.o \
@@ -56,7 +62,7 @@ clean :
 	rm -f $(LIB_NAME)
 	
 $(LIB_NAME) : $(OBJS)
-	$(CC) -shared -fPIC $(OBJS) -o $(LIB_NAME)
+	$(CC) -shared -fPIC $(SANFLAGS) $(OBJS) -o $(LIB_NAME)
 
 %.o : %.cpp
 	$(CC) $(CC_OPTS) $< -o $@
