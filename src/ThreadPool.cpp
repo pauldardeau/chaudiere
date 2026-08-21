@@ -84,6 +84,10 @@ bool ThreadPool::start() {
    int oldCreatedCount = m_workersCreated;
 
    if (!m_isRunning) {
+      if (!m_queue.isRunning()) {
+         m_queue.restart();
+      }
+
       if (m_workerCount > 0) {
          for (int i = 0; i < m_workerCount; ++i) {
             ++m_workersCreated;
@@ -115,7 +119,10 @@ bool ThreadPool::stop() {
 
       for (auto& worker : m_listWorkers) {
          worker->stop();
+         delete worker;
       }
+
+      m_listWorkers.clear();
 
       m_isRunning = false;
       didStop = true;

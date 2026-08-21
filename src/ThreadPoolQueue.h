@@ -70,6 +70,14 @@ public:
    virtual bool shutDown();
 
    /**
+    * Reverses a prior shutDown(), allowing the same queue instance to be
+    * reused by a freshly started set of workers.
+    * @return boolean indicating whether the queue was restarted (false if
+    *         it was never initialized, or was already running)
+    */
+   virtual bool restart();
+
+   /**
     *
     * @return
     */

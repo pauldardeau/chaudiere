@@ -228,6 +228,21 @@ bool ThreadPoolQueue::shutDown() {
 
 //******************************************************************************
 
+bool ThreadPoolQueue::restart() {
+   bool wasRestarted = false;
+
+   if (m_isInitialized && !m_isRunning) {
+      MutexLock lock(*m_mutex, "ThreadPoolQueue::restart");
+
+      m_isRunning = true;
+      wasRestarted = true;
+   }
+
+   return wasRestarted;
+}
+
+//******************************************************************************
+
 bool ThreadPoolQueue::isRunning() const {
    return m_isRunning;
 }
