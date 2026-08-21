@@ -71,3 +71,17 @@ jobs:
         # developing this job).
         run: TSAN_OPTIONS="halt_on_error=0 history_size=7" setarch $(uname -m) -R ./test_chaudiere
         working-directory: tests
+
+  cmake-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Configure
+        run: cmake -S . -B build
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        run: ctest --test-dir build --output-on-failure

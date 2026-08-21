@@ -1,3 +1,6 @@
 *.o
 *.so
 test_chaudiere
+
+# CMake out-of-source build directory
+/build/

@@ -15,8 +15,9 @@ BSD
 Dependencies
 ------------
 Poivre - C++ unit test framework, included as a git submodule
-(`poivre/`). Only needed to build and run `tests/`; the library
-itself (`src/`) has no dependency on it. Clone with
+(`poivre/`). `tests/` links the actual poivre library; `src/` itself
+only needs one poivre header at compile time (`AutoPointer.h`, used
+internally by `SocketServer.cpp`), not the library. Clone with
 `--recurse-submodules`, or after cloning:
 
 ```bash
@@ -32,6 +33,33 @@ make -C tests  # builds test_chaudiere (needs the poivre submodule)
 
 Your own programs need `-I` for `src/`, and link against
 `src/libchaudiere.so` (see `tests/Makefile` for the exact flags).
+
+### Building with CMake
+
+A `CMakeLists.txt` is also provided, mainly for consumers who want to pull chaudière in as
+a proper dependency rather than hand-writing `-I` flags:
+
+```bash
+cmake -S . -B build
+cmake --build build
+ctest --test-dir build --output-on-failure   # builds and runs test_chaudiere
+```
+
+To depend on chaudière from another CMake project - vendored as a git submodule, the same
+way misère/tonnerre/chapeau already vendor it:
+
+```cmake
+add_subdirectory(chaudiere)
+target_link_libraries(my_target PRIVATE chaudiere)
+```
+
+That's it - no `-I` needed; the include directory and C++20 requirement both propagate
+automatically. `add_subdirectory()` also skips building chaudière's own ~40-file test suite
+by default (only relevant when chaudière itself is the top-level project), so it doesn't pull
+poivre in or add an extra test binary to your build.
+
+The Makefile isn't going anywhere - both build systems compile the same sources and stay in
+sync with each other, so use whichever fits your project.
 
 Groups of Functionality
 ------------------------
