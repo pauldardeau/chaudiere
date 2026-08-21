@@ -45,6 +45,22 @@ cmake --build build
 ctest --test-dir build --output-on-failure   # builds and runs test_chaudiere
 ```
 
+For an ASan/UBSan or TSan build, set the standard CMake sanitizer flags globally (this
+also covers poivre, pulled in via `add_subdirectory()`, with no extra wiring needed):
+
+```bash
+cmake -S . -B build-asan \
+   -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -g -O0" \
+   -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined" \
+   -DCMAKE_SHARED_LINKER_FLAGS="-fsanitize=address,undefined"
+cmake --build build-asan
+ASAN_OPTIONS=detect_leaks=0 ctest --test-dir build-asan --output-on-failure
+```
+
+Swap `address,undefined` for `thread` for a TSan build (see `.github/workflows/build-and-test.yml`
+for the exact `cmake-asan-ubsan`/`cmake-tsan` CI jobs, including the `setarch -R` TSan needs
+under some kernels/ASLR configurations).
+
 To depend on chaudière from another CMake project - vendored as a git submodule, the same
 way misère/tonnerre/chapeau already vendor it:
 

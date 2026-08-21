@@ -85,3 +85,50 @@ jobs:
         run: cmake --build build
       - name: Test
         run: ctest --test-dir build --output-on-failure
+
+  cmake-asan-ubsan:
+    runs-on: ubuntu-latest
+    env:
+      SAN_FLAGS: -fsanitize=address,undefined
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Configure
+        # CMAKE_CXX_FLAGS/CMAKE_*_LINKER_FLAGS are global - unlike the
+        # Makefile's SANFLAGS, no per-target wiring is needed for this to
+        # also cover poivre (pulled in via add_subdirectory()). No
+        # CMAKE_STATIC_LINKER_FLAGS: that maps to `ar`, which doesn't
+        # take -fsanitize (or need it - the instrumentation lives in the
+        # .o files already; only the final executable link needs the
+        # runtime linked in).
+        run: >
+          cmake -S . -B build
+          -DCMAKE_CXX_FLAGS="${{ env.SAN_FLAGS }} -fno-omit-frame-pointer -g -O0"
+          -DCMAKE_EXE_LINKER_FLAGS="${{ env.SAN_FLAGS }}"
+          -DCMAKE_SHARED_LINKER_FLAGS="${{ env.SAN_FLAGS }}"
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        # see asan-ubsan above for why detect_leaks is disabled
+        run: ASAN_OPTIONS=detect_leaks=0 ctest --test-dir build --output-on-failure
+
+  cmake-tsan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Configure
+        run: >
+          cmake -S . -B build
+          -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer -g -O0"
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread"
+          -DCMAKE_SHARED_LINKER_FLAGS="-fsanitize=thread"
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        # see tsan above for halt_on_error/setarch
+        run: TSAN_OPTIONS="halt_on_error=0 history_size=7" setarch $(uname -m) -R ctest --test-dir build --output-on-failure
