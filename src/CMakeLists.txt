@@ -65,7 +65,17 @@ target_include_directories(chaudiere
 # library don't need poivre at all. A plain include path rather than
 # linking the poivre target, since the actual dependency is one header,
 # not any of poivre's compiled code.
-target_include_directories(chaudiere PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../poivre)
+#
+# SYSTEM (not plain PRIVATE): poivre ships its own BasicException.h/
+# Runnable.h, same names as chaudiere's. Quote-includes always check the
+# including file's own directory first, so today nothing in chaudiere/src
+# can actually pick up poivre's copies by accident - but SYSTEM (-isystem,
+# searched strictly after all -I dirs) makes that safe-by-construction
+# rather than safe-by-coincidence-of-file-layout. See misere's
+# src/CMakeLists.txt for a case (HttpException.cpp etc., living outside
+# chaudiere's own directory) where the coincidence doesn't hold and this
+# ordering is load-bearing, not just defensive.
+target_include_directories(chaudiere SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../poivre)
 
 find_package(Threads REQUIRED)
 # CMAKE_DL_LIBS is chaudiere's own requirement (DynamicLibrary.cpp calls
