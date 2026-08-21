@@ -28,46 +28,25 @@ TestThreadPool::TestThreadPool() :
 
 //******************************************************************************
 
-void TestThreadPool::runTests() {
-   testConstructor();
-
-   testStart();
-   testStop();
-   testAddRequest();
-   testGetNumberWorkers();
-   testAddWorkers();
-   //testRemoveWorkers();
-   testGetName();
-   //testIsRunning();
-}
-
-//******************************************************************************
-
-void TestThreadPool::testConstructor() {
-   TEST_CASE("testConstructor");
-
+POIVRE_TEST_CASE(TestThreadPool, testConstructor) {
    // number workers only
    {
       const int numWorkers = 5;
-      //printf("%d\n", numWorkers);
       ThreadPool tp(numWorkers);
    }
 
    {
       const int numWorkers = 0;
-      //printf("%d\n", numWorkers);
       ThreadPool tpZero(numWorkers);
    }
 
    {
       const int numWorkers = -3;
-      //printf("%d\n", numWorkers);
       ThreadPool tpNeg(numWorkers);
    }
 
    {
       const int numWorkers = 10;
-      //printf("%d\n", numWorkers);
       ThreadPool tpLarge(numWorkers);
    }
 
@@ -77,25 +56,21 @@ void TestThreadPool::testConstructor() {
    // number workers and name
    {
       const int numWorkers = 5;
-      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tp(numWorkers, name);
    }
 
    {
       const int numWorkers = 0;
-      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpZero(numWorkers, name);
    }
 
    {
       const int numWorkers = -3;
-      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpNeg(numWorkers, name);
    }
 
    {
       const int numWorkers = 50;
-      //printf("%d, %s\n", numWorkers, name.c_str());
       ThreadPool tpLarge(numWorkers, name);
    }
 
@@ -104,19 +79,15 @@ void TestThreadPool::testConstructor() {
       ThreadingFactory* tf = new PthreadsThreadingFactory;
 
       int numWorkers = 5;
-      //printf("TF %d\n", numWorkers);
       ThreadPool tp(tf, numWorkers);
 
       numWorkers = 0;
-      //printf("TF %d\n", numWorkers);
       ThreadPool tpZero(tf, numWorkers);
 
       numWorkers = -3;
-      //printf("TF %d\n", numWorkers);
       ThreadPool tpNeg(tf, numWorkers);
 
       numWorkers = 50;
-      //printf("TF %d\n", numWorkers);
       ThreadPool tpLarge(tf, numWorkers);
 
       delete tf;
@@ -128,19 +99,15 @@ void TestThreadPool::testConstructor() {
       const std::string pool_name = "test_factory_pool";
 
       int numWorkers = 5;
-      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tp(tf, numWorkers, pool_name);
 
       numWorkers = 0;
-      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpZero(tf, numWorkers, pool_name);
 
       numWorkers = -3;
-      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpNeg(tf, numWorkers, pool_name);
 
       numWorkers = 50;
-      //printf("TF %d, %s\n", numWorkers, pool_name.c_str());
       ThreadPool tpLarge(tf, numWorkers, pool_name);
 
       delete tf;
@@ -149,9 +116,7 @@ void TestThreadPool::testConstructor() {
 
 //******************************************************************************
 
-void TestThreadPool::testStart() {
-   TEST_CASE("testStart");
-
+POIVRE_TEST_CASE(TestThreadPool, testStart) {
    ThreadPool tp(4);
    require(tp.stop(), "stop should succeed");
    require(tp.start(), "start should succeed");
@@ -162,9 +127,7 @@ void TestThreadPool::testStart() {
 
 //******************************************************************************
 
-void TestThreadPool::testStop() {
-   TEST_CASE("testStop");
-
+POIVRE_TEST_CASE(TestThreadPool, testStop) {
    ThreadPool tp(4);
    require(tp.stop(), "stop should succeed on new pool");
    require(tp.start(), "start should succeed");
@@ -175,9 +138,7 @@ void TestThreadPool::testStop() {
 
 //******************************************************************************
 
-void TestThreadPool::testAddRequest() {
-   TEST_CASE("testAddRequest");
-
+POIVRE_TEST_CASE(TestThreadPool, testAddRequest) {
    ThreadPool tp(1);
    require(!tp.addRequest(nullptr), "add nullptr runnable should fail");
 
@@ -197,8 +158,7 @@ void TestThreadPool::testAddRequest() {
 
 //******************************************************************************
 
-void TestThreadPool::testGetNumberWorkers() {
-   TEST_CASE("testGetNumberWorkers");
+POIVRE_TEST_CASE(TestThreadPool, testGetNumberWorkers) {
    const int numWorkers = 5;
    ThreadPool tp(numWorkers);
    require(tp.getNumberWorkers() == numWorkers, "getNumberWorkers match init value");
@@ -207,9 +167,7 @@ void TestThreadPool::testGetNumberWorkers() {
 
 //******************************************************************************
 
-void TestThreadPool::testAddWorkers() {
-   TEST_CASE("testAddWorkers");
-
+POIVRE_TEST_CASE(TestThreadPool, testAddWorkers) {
    int numWorkers = 2;
    const int numToAdd = 3;
    ThreadPool tp(numWorkers);
@@ -223,46 +181,54 @@ void TestThreadPool::testAddWorkers() {
 
 //******************************************************************************
 
-void TestThreadPool::testRemoveWorkers() {
-   TEST_CASE("testRemoveWorkers");
-
-   int numWorkers = 6;
-   const int numToRemove = 2;
-   ThreadPool tp(numWorkers);
-   require(tp.removeWorkers(numToRemove), "remove workers should succeed");
-   numWorkers -= numToRemove;
-   require(tp.getNumberWorkers() == numWorkers, "number workers should match expected after removing");
-   require(!tp.removeWorkers(0), "remove 0 workers should fail");
-   require(!tp.removeWorkers(-2), "remove negative workers should fail");
-   tp.stop();
-}
+// TEMPORARILY DISABLED: removeWorkers() deadlocks here. The workers it
+// tries to remove are idle (blocked in ThreadPoolQueue::takeRequest()'s
+// condition-variable wait, since nothing was ever added to the queue),
+// and adjustNumberWorkers()'s removal path only shuts down the specific
+// ThreadPoolWorker objects being removed - it never signals
+// m_condQueueNotEmpty, which is the only thing that would wake them.
+// ThreadPoolWorker::stop() then busy-waits forever for a worker that can
+// never wake up on its own. Root-caused during the POIVRE_TEST_CASE
+// retrofit; reported upstream rather than silently fixed here.
+//
+// POIVRE_TEST_CASE(TestThreadPool, testRemoveWorkers) {
+//    int numWorkers = 6;
+//    const int numToRemove = 2;
+//    ThreadPool tp(numWorkers);
+//    require(tp.removeWorkers(numToRemove), "remove workers should succeed");
+//    numWorkers -= numToRemove;
+//    require(tp.getNumberWorkers() == numWorkers, "number workers should match expected after removing");
+//    require(!tp.removeWorkers(0), "remove 0 workers should fail");
+//    require(!tp.removeWorkers(-2), "remove negative workers should fail");
+//    tp.stop();
+// }
 
 //******************************************************************************
 
-void TestThreadPool::testGetName() {
-   TEST_CASE("testGetName");
-
+POIVRE_TEST_CASE(TestThreadPool, testGetName) {
    const std::string name = "test_pool";
    const int numWorkers = 5;
-   //printf("%d, %s\n", numWorkers, name.c_str());
    ThreadPool tp(numWorkers, name);
    require(name == tp.getName(), "getName matches init value");
 }
 
 //******************************************************************************
 
-void TestThreadPool::testIsRunning() {
-   TEST_CASE("testIsRunning");
-
+POIVRE_TEST_CASE(TestThreadPool, testIsRunning) {
+   // ThreadPool's constructor calls start() itself, so the pool is
+   // already running as soon as it's constructed - this test previously
+   // assumed otherwise (asserting isRunning() == false right after
+   // construction), which is why it was disabled rather than fixed.
    ThreadPool tp(4);
-   require(!tp.isRunning(), "isRunning false before starting");
-
-   tp.start();
-   require(tp.isRunning(), "isRunning true after starting");
+   require(tp.isRunning(), "isRunning true immediately after construction, since the constructor starts the pool");
 
    tp.stop();
    require(!tp.isRunning(), "isRunning false after stopping");
+
+   require(tp.start(), "start should succeed after stopping");
+   require(tp.isRunning(), "isRunning true after restarting");
+
+   tp.stop();
 }
 
 //******************************************************************************
-

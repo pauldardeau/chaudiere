@@ -36,11 +36,12 @@
 #include "TestSystemStats.h"
 #include "TestThread.h"
 #include "TestThreadInfo.h"
-#include "TestThreadPool.h"
 #include "TestThreadPoolQueue.h"
 #include "TestThreadPoolWorker.h"
 #include "TestThreadingFactory.h"
 #include "TestUtils.h"
+
+#include "TestRegistry.h"
 
 using namespace chaudiere;
 
@@ -87,7 +88,6 @@ void run_tests() {
    run_test(new TestSystemStats);
    run_test(new TestThread);
    run_test(new TestThreadInfo);
-   run_test(new TestThreadPool);
    run_test(new TestThreadPoolQueue);
    run_test(new TestThreadPoolWorker);
    run_test(new TestThreadingFactory);
@@ -96,4 +96,11 @@ void run_tests() {
 
 int main(int argc, char* argv[]) {
    run_tests();
+
+   // runs every POIVRE_TEST_CASE self-registered test case (e.g.
+   // TestThreadPool's - see its .cpp) that isn't hand-listed above in
+   // run_tests(). Its return value is a real failure count, unlike
+   // run_tests() above, which doesn't currently check any suite's
+   // getNumFailures() at all.
+   return poivre::TestRegistry::instance().runAll();
 }

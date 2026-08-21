@@ -9,7 +9,8 @@ EXE_NAME = test_chaudiere
 LIB_NAMES = ../src/libchaudiere.so
 
 POIVRE_OBJS = TestCase.o \
-TestSuite.o
+TestSuite.o \
+TestRegistry.o
 
 OBJS = MockSocket.o \
 TestAutoPointer.o \

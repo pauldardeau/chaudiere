@@ -9,24 +9,17 @@
 namespace chaudiere
 {
 
+// Base fixture for TestThreadPool's test cases (see TestThreadPool.cpp),
+// which are POIVRE_TEST_CASE self-registering test cases rather than
+// hand-listed in a runTests() override - see POIVRE_TEST_CASE in
+// poivre's TestMacros.h. Each test case gets its own freshly constructed
+// TestThreadPool instance, so this class carries no state of its own; it
+// exists only to provide the "TestThreadPool" suite name and the
+// inherited require()/requireFalse()/etc. assertions.
 class TestThreadPool : public poivre::TestSuite
 {
-protected:
-   void runTests();
-
-   void testConstructor();
-   void testStart();
-   void testStop();
-   void testAddRequest();
-   void testGetNumberWorkers();
-   void testAddWorkers();
-   void testRemoveWorkers();
-   void testGetName();
-   void testIsRunning();
-
 public:
    TestThreadPool();
-
 };
 
 }
