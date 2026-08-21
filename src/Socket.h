@@ -19,6 +19,46 @@ namespace chaudiere
 /**
  * Socket is very similar to Java's Socket class. It provides a wrapper class
  * for working with sockets.
+ *
+ * ----------------------------------------------------------------------
+ * Reading from a socket: which method to use
+ * ----------------------------------------------------------------------
+ * These all read incoming bytes, but differ in whether they block until a
+ * specific number of bytes have arrived or return as soon as any data at
+ * all is available. Picking the "fill the buffer" kind for a chunked or
+ * speculative read - where the caller doesn't actually know how many
+ * bytes are coming - blocks forever waiting for bytes that were never
+ * going to arrive. That exact mistake caused a real hang bug (fixed by
+ * adding recvAvailable() as the correct alternative), which is the
+ * reason this table exists.
+ *
+ * Method                     Blocks until...                           Drains primed line buffer?
+ * -------------------------- ----------------------------------------- ---------------------------
+ * read()                     bufsize bytes received                    No
+ * readSocket()               bytesToRead bytes received                Yes
+ * receive()                  bufferLength bytes received               No
+ * recvPayload() (protected)  bufferSize bytes (or the framed           No
+ *                            message size, if size-prefixed mode is on)
+ * recvAvailable()            nothing - returns as soon as ANY data     Yes
+ *                            arrives, even a single byte
+ *
+ * recvPayload() is the shared loop underneath read(), readSocket(),
+ * receive(), and (when setIncludeMessageSize() is on) readLine() - it
+ * issues repeated recv() calls until the requested byte count has been
+ * filled (or the connection closes/errors). recvAvailable() is the only
+ * one that does a single recv() and returns whatever came back, however
+ * little - use it whenever the exact byte count isn't known up front.
+ *
+ * readLine() itself has two different behaviors depending on
+ * setIncludeMessageSize(): with it off (the common case), it reads
+ * byte-at-a-time via readSocket() until a newline, so it also drains a
+ * primed line-input buffer; with it on, it reads one whole
+ * length-prefixed message via recvPayload() and scans that for a
+ * newline, so it does not.
+ *
+ * receive()'s `flags` parameter is currently a no-op: it's threaded
+ * through to recvPayload(), but the actual recv() call there hardcodes
+ * 0 rather than using it.
  */
 class Socket
 {
