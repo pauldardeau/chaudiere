@@ -26,10 +26,6 @@
 #include <sys/sysctl.h>
 #elif defined(__FreeBSD__)
 #include <sys/sysctl.h>
-#elif defined(__sun__)
-#include <sys/loadavg.h>
-#include <sys/processor.h>
-#include <sys/systeminfo.h>
 #endif
 
 #include "OSUtils.h"
@@ -201,8 +197,6 @@ string OSUtils::sysPlatform() {
    name = "openbsd";
 #elif defined(_WIN32) || defined(WIN32)
    name = "windows";
-#elif defined(__sun__)
-   name = "solaris";
 #else
    name = "unknown";
 #endif
@@ -343,13 +337,8 @@ bool OSUtils::isUserInGroup(const string& groupName)
             return true;
          } else {
             // check secondary groups
-#if defined(__sun__)
-            const int nMaxGroups = NGROUPS_UMAX;
-            gid_t mygidset[NGROUPS_UMAX];
-#else
             const int nMaxGroups = NGROUPS_MAX;
             gid_t mygidset[NGROUPS_MAX];
-#endif
             const int nGroups = getgroups(nMaxGroups, mygidset);
 
             if (nGroups > -1) {
@@ -399,12 +388,6 @@ bool OSUtils::getHWCpuCount(int& count)
 
    rc = true;
 
-#elif defined(__sun__)
-   const long numProcessors = sysconf(_SC_NPROCESSORS_ONLN);
-   if (numProcessors > 0) {
-      count = (int) numProcessors;
-      rc = true;
-   }
 #elif defined(__linux__)
    count = get_nprocs_conf();
    rc = true;
@@ -439,12 +422,6 @@ bool OSUtils::getHWCpuType(string& cpuType)
       }
       ::RegCloseKey(keyCPU);
    }
-#elif defined(__sun__)
-   processor_info_t pi;
-   if (0 == processor_info(0, &pi)) {
-      cpuType = pi.pi_processor_type;
-      rc = true;
-   }
 #elif defined(__FreeBSD__)
    char szCpuType[128];
    size_t size = 127;
@@ -473,14 +450,6 @@ bool OSUtils::getHardwareType(string& hardwareType)
    bool rc = false;
    hardwareType = "** unknown **";
 
-#ifdef __sun__
-   char szPlatform[128];
-   if (sysinfo(SI_PLATFORM, szPlatform, 127) > -1) {
-      hardwareType = szPlatform;
-      rc = true;
-   }
-#endif
-
    return rc;
 }
 
@@ -497,11 +466,6 @@ int OSUtils::getHWPhysicalMemoryMB()
    ::GlobalMemoryStatus(&memStat);
    const SIZE_T dwTotalBytes = memStat.dwTotalPhys;
    physicalMemoryMB = dwTotalBytes / ONE_MB;
-#elif defined(__sun__)
-   const long numPages = sysconf(_SC_PHYS_PAGES);
-   const long pageSize = sysconf(_SC_PAGE_SIZE);
-   const longlong_t mem = (longlong_t) ((longlong_t) numPages * (longlong_t) pageSize);
-   physicalMemoryMB = mem / ONE_MB;
 #elif defined(__linux__)
    const long int numPages = get_phys_pages();
    const int pageSize = getpagesize();
@@ -552,11 +516,6 @@ int OSUtils::getHWCpuSpeedMHz()
       }
 
       ::RegCloseKey(keyCPU);
-   }
-#elif defined(__sun__)
-   processor_info_t pi;
-   if (0 == processor_info(0, &pi)) {
-      cpuSpeedMHz = pi.pi_clock;
    }
 #elif defined(__FreeBSD__)
    int cpuSpeed = 0;
@@ -717,12 +676,6 @@ bool OSUtils::getOSRevision(string& osRevision)
       rc = true;
       osRevision = osVersionInfo.szCSDVersion;
    }
-#elif defined(__sun__)
-   struct utsname data;
-   if (uname(&data) > -1) {
-      osRevision = data.version;
-      rc = true;
-   }
 #endif
 
    return rc;
@@ -734,12 +687,7 @@ int OSUtils::getFreeMemoryMB()
 {
    int freeMemoryMB = -1;
 
-#ifdef __sun__
-   long freePages = sysconf(_SC_AVPHYS_PAGES);
-   long pageSize = sysconf(_SC_PAGE_SIZE);
-   longlong_t freeMem = (longlong_t) freePages * (longlong_t) pageSize;
-   freeMemoryMB = freeMem / ONE_MB;
-#elif defined(__linux__)
+#ifdef __linux__
    uint64_t freePages = get_avphys_pages();
    const int pageSize = getpagesize();
    uint64_t mem = (uint64_t) ((uint64_t) freePages * (uint64_t) pageSize);

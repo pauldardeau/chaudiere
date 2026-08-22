@@ -74,7 +74,6 @@ bool SystemStats::getLoadAverages(double& oneMinute,
                                   double& fiveMinute,
                                   double& fifteenMinute) {
    bool retrievedLoadAverages = false;
-#ifndef __sun
    double load[3];
    const int numSamples = ::getloadavg(load, 3);
 
@@ -84,7 +83,6 @@ bool SystemStats::getLoadAverages(double& oneMinute,
       fifteenMinute = load[2];
       retrievedLoadAverages = true;
    }
-#endif
    return retrievedLoadAverages;
 }
 
@@ -100,7 +98,6 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
 
 #ifndef __linux__
 #ifndef __NetBSD__
-#ifndef __sun
    int rc;
    size_t length = 0;
    static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
@@ -134,7 +131,6 @@ bool SystemStats::getNumberProcesses(int& numberProcesses) {
          ::free(proc_list);
       }
    }
-#endif
 #endif
 #endif
 
