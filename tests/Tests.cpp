@@ -43,11 +43,41 @@
 
 #include "TestRegistry.h"
 
+#include <stdio.h>
+#include <string>
+#include <vector>
+
 using namespace chaudiere;
+
+namespace {
+
+// totals over every hand-listed (classic) suite run by run_tests(). The
+// POIVRE_TEST_CASE cases are counted separately by the TestRegistry, so
+// nothing is added to both.
+struct ClassicTotals {
+   int suitesRun = 0;
+   int testCasesRun = 0;
+   int assertions = 0;
+   int failures = 0;
+   std::vector<std::string> failedSuites;
+};
+
+ClassicTotals g_classicTotals;
+
+}
 
 void run_test(poivre::TestSuite* test_suite) {
    if (nullptr != test_suite) {
       test_suite->run();
+
+      ++g_classicTotals.suitesRun;
+      g_classicTotals.testCasesRun += test_suite->getNumTestCasesRun();
+      g_classicTotals.assertions += test_suite->getNumTestsExecuted();
+      g_classicTotals.failures += test_suite->getNumFailures();
+      if (test_suite->getNumFailures() > 0) {
+         g_classicTotals.failedSuites.push_back(test_suite->getName());
+      }
+
       delete test_suite;
    }
 }
@@ -99,8 +129,32 @@ int main(int argc, char* argv[]) {
 
    // runs every POIVRE_TEST_CASE self-registered test case (e.g.
    // TestThreadPool's - see its .cpp) that isn't hand-listed above in
-   // run_tests(). Its return value is a real failure count, unlike
-   // run_tests() above, which doesn't currently check any suite's
-   // getNumFailures() at all.
-   return poivre::TestRegistry::instance().runAll();
+   // run_tests(). Prints its own summary (registered cases only).
+   poivre::TestRegistry& registry = poivre::TestRegistry::instance();
+   registry.runAll();
+
+   const int testCases =
+      g_classicTotals.testCasesRun + registry.getNumTestCasesRun();
+   const int assertions =
+      g_classicTotals.assertions + registry.getNumAssertions();
+   const int failures =
+      g_classicTotals.failures + registry.getNumFailures();
+
+   printf("\n=============================================\n");
+   printf("test_chaudiere overall: %d classic suite(s), %d test case(s), "
+          "%d assertion(s) executed, %d failed\n",
+          g_classicTotals.suitesRun, testCases, assertions, failures);
+   for (const std::string& name : g_classicTotals.failedSuites) {
+      printf("*** failed suite: %s\n", name.c_str());
+   }
+   if (registry.getNumFailures() > 0) {
+      printf("*** %d failure(s) in registered POIVRE_TEST_CASE cases\n",
+             registry.getNumFailures());
+   }
+   printf("=============================================\n");
+   fflush(stdout);
+
+   // 0 only if at least one assertion ran and nothing failed. Never the raw
+   // failure count: exit statuses are truncated (256 failures would be 0).
+   return poivre::TestRegistry::exitCodeFor(testCases, assertions, failures);
 }
