@@ -4,6 +4,8 @@
 #ifndef CHAUDIERE_MUTEX_H
 #define CHAUDIERE_MUTEX_H
 
+#include <string>
+
 namespace chaudiere
 {
 

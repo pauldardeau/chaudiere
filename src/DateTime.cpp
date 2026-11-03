@@ -16,6 +16,32 @@ constexpr double NSEC_PER_SEC = 1000000000.0;
 
 //******************************************************************************
 
+// The two POSIX calls below that the Windows C runtime doesn't provide under
+// the same name. On POSIX each helper is the original call, unchanged; on
+// Windows it is the nearest standard or CRT equivalent.
+
+// thread-safe localtime(): null if the time can't be converted. On Windows
+// that includes times before 1970-01-01 00:00:00 UTC, which localtime_s
+// rejects.
+static struct tm* localTimeReentrant(const time_t* t, struct tm* result) {
+#ifdef _WIN32
+   return (0 == ::localtime_s(result, t)) ? result : nullptr;
+#else
+   return ::localtime_r(t, result);
+#endif
+}
+
+// current wall-clock time; 0 on success, non-zero on failure
+static int currentRealtime(struct timespec* ts) {
+#ifdef _WIN32
+   return (TIME_UTC == ::timespec_get(ts, TIME_UTC)) ? 0 : -1;
+#else
+   return ::clock_gettime(CLOCK_REALTIME, ts);
+#endif
+}
+
+//******************************************************************************
+
 static int numberLeadingZeros(const char* value, int length) {
    int leadingZeros = 0;
    for (int i=0; i < length; ++i) {
@@ -152,7 +178,7 @@ bool DateTime::populateFromUnixTime(DateTime& date, double unixTime) {
    struct tm timeComponents;
    ::memset(&timeComponents, 0, sizeof(timeComponents));
 
-   if (::localtime_r(&epochTime, &timeComponents)) {
+   if (localTimeReentrant(&epochTime, &timeComponents)) {
       date.m_year = timeComponents.tm_year + 1900;
       date.m_month = timeComponents.tm_mon + 1;
       date.m_day = timeComponents.tm_mday;
@@ -210,7 +236,7 @@ DateTime::DateTime() :
    m_haveUnixTimeValue(false) {
 
    struct timespec ts;
-   int rc = clock_gettime(CLOCK_REALTIME, &ts);
+   int rc = currentRealtime(&ts);
    if (rc == 0) {
       double unixTime = ts.tv_sec;
       double fractionalSeconds = (ts.tv_nsec / NSEC_PER_SEC);

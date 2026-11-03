@@ -4,6 +4,17 @@
 #ifndef CHAUDIERE_STRUTILS_H
 #define CHAUDIERE_STRUTILS_H
 
+#if defined(_MSC_VER) && (__cplusplus < 201103L)
+   // MSVC reports __cplusplus as 199711L whatever /std: says, unless
+   // /Zc:__cplusplus is given. Both this header and StrUtils.cpp choose their
+   // code from __cplusplus, so without it parseLong() and friends silently
+   // fall back to pre-C++11 atol() (clamping or returning 0 instead of
+   // throwing NumberFormatException). The CMake target adds the flag to
+   // everything that links it; a consumer that compiles against the installed
+   // headers has to pass it itself.
+   #error "chaudiere requires /Zc:__cplusplus when compiled with MSVC"
+#endif
+
 #include <string>
 #if __cplusplus >= 202002L
    // C++20 or later

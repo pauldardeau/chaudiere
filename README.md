@@ -77,6 +77,56 @@ poivre in or add an extra test binary to your build.
 The Makefile isn't going anywhere - both build systems compile the same sources and stay in
 sync with each other, so use whichever fits your project.
 
+### Windows (limited support)
+
+Chaudière builds natively with MSVC (x64, static library, CMake only - there is no Makefile
+build on Windows), but only a small part of it: `DateTime`, `Logger` (the static facade),
+`NumberFormatException` (with `BasicException`), `OSUtils` and `StrUtils`. That is what
+[chapeau](https://github.com/pauldardeau/chapeau) needs. Everything else (sockets, threads,
+thread pools, the pthreads and `Std*` classes, `FileLogger`, `DynamicLibrary`, `SystemInfo`,
+`SystemStats`, `IniReader`, ...) is POSIX-only or not yet ported, is not compiled on Windows
+and is not installed there.
+
+```bat
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Release
+ctest --test-dir build -C Release --output-on-failure
+```
+
+- The `chaudiere` target adds `/Zc:__cplusplus` for you and for everything that links it.
+  MSVC otherwise reports `__cplusplus` as 199711L, which would silently switch `StrUtils` to
+  its pre-C++11 code (`parseLong()` clamping instead of throwing), so `StrUtils.h` refuses to
+  compile without it. If you compile against the *installed* headers instead, pass the flag
+  yourself.
+- Installed chaudière is not self-contained, on any platform: `BasicException.h` (and so
+  `NumberFormatException.h`) includes `../poivre/BasicException.h`. A usable install needs all
+  of these under one prefix: chaudière's headers in `<prefix>/include/chaudiere/`, the
+  library `chaudiere.lib` (`libchaudiere.a` elsewhere) in the install library directory
+  (`<prefix>/lib` or whatever `CMAKE_INSTALL_LIBDIR` is), and poivre's headers in
+  `<prefix>/include/poivre/`. Installing chaudière alone leaves those two headers
+  uncompilable. poivre installs itself only when it is the top-level project, so install it
+  separately into the same prefix; `tests/installed_consumer/run.cmake` shows the sequence.
+- `OSUtils` has three kinds of function on Windows (the full lists are in `OSUtils.h`):
+  - *Implemented*: directories, paths, files, CRC-32 and the timestamp.
+    `createPrivateDirectory()` is the exception: it returns `false` and creates nothing - a
+    private directory needs an ACL, which is not implemented.
+  - *Unsupported on Windows*: CPU count and type, physical and free memory, host name, user,
+    group membership, OS name and release, and the load averages. They do not report success
+    (`false`, `0`, `-1` or `0.0`, depending on the function) and leave their output arguments
+    alone, so check the return value.
+  - *Stubs on every platform* (Windows included): `currentTimeMillis()` is not implemented
+    and always returns 0; `getOSRevision()` always returns `false`; `getHardwareType()`
+    always returns `false` (it does set its argument to `"** unknown **"`).
+- Narrow `std::string` paths are interpreted in the active ANSI code page on Windows; names
+  that code page cannot represent are not supported, and there are no UTF-8 or
+  wide-character overloads.
+- `long` is 32 bits on Windows: `StrUtils::parseLong()` throws `NumberFormatException` for
+  anything beyond 2147483647, and `OSUtils::getFileSize()` returns -1 whenever the size does
+  not fit in a `long` (a file of 2 GiB or more there; the check applies on every platform).
+- `DateTime::populateFromUnixTime()` returns `false` for times before 1970 on Windows.
+- `ctest` runs a Windows-sized `test_chaudiere` (see `tests/CMakeLists.txt` for which suites
+  are left out and why) and the installed-consumer test.
+
 Groups of Functionality
 ------------------------
 Chaudière is organized around a handful of areas. Each group below

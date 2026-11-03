@@ -4,18 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <filesystem>
+#include <limits>
 #include <system_error>
 #include <ctime>
 #include <cstdint>
-#include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#else
+#include <unistd.h>
+#include <sys/param.h>
 #include <dirent.h>
 #include <sys/utsname.h>
-
-#ifndef _WIN32
 #include <pwd.h>
 #include <grp.h>
 #endif
@@ -77,7 +81,22 @@ using namespace std;
 using namespace std::filesystem;
 using namespace chaudiere;
 
-static const std::string DIR_PATH_SEPARATOR = std::string("") + std::filesystem::path::preferred_separator;
+// preferred_separator is a char on POSIX but a wchar_t on Windows, so it can't
+// be appended to a std::string directly; it is '/' or '\\' either way
+static const std::string DIR_PATH_SEPARATOR(1, static_cast<char>(std::filesystem::path::preferred_separator));
+
+// Windows accepts '/' as well as '\\', so a directory ending in either
+// already ends with a separator
+static bool endsWithPathSeparator(const std::string& directory) {
+   if (StrUtils::endsWith(directory, DIR_PATH_SEPARATOR)) {
+      return true;
+   }
+#ifdef _WIN32
+   return StrUtils::endsWith(directory, std::string("/"));
+#else
+   return false;
+#endif
+}
 
 
 //******************************************************************************
@@ -88,7 +107,11 @@ string OSUtils::getCurrentDirectory() {
    memset(currentDir, 0, sizeof(currentDir));
 
    // this call to getcwd will allocate memory buffer
+#ifdef _WIN32
+   char* buffCurrentDir = ::_getcwd(currentDir, sizeof(currentDir));
+#else
    char* buffCurrentDir = ::getcwd(currentDir, sizeof(currentDir));
+#endif
 
    if (buffCurrentDir != nullptr) {
       currentDirectory = buffCurrentDir;
@@ -103,7 +126,7 @@ string OSUtils::pathJoin(const string& directory,
                          const string& fileName) {
    string joinedPath(directory);
 
-   if (!StrUtils::endsWith(directory, DIR_PATH_SEPARATOR)) {
+   if (!endsWithPathSeparator(directory)) {
       joinedPath += DIR_PATH_SEPARATOR;
    }
 
@@ -127,20 +150,35 @@ bool OSUtils::pathExists(const string& filePath) {
 //******************************************************************************
 
 bool OSUtils::createDirectory(const string& directory) {
+#ifdef _WIN32
+   // Windows directories have no permission bits; access comes from the ACL
+   // inherited from the parent directory
+   const int rc = ::_mkdir(directory.c_str());
+#else
    const mode_t mode = S_IRWXU |  // user read/write/execute
                        S_IRGRP |  // group read
                        S_IXGRP |  // group execute
                        S_IROTH |  // other read
                        S_IXOTH;   // other execute
    const int rc = ::mkdir(directory.c_str(), mode);
+#endif
    return (0 == rc);
 }
 
 //******************************************************************************
 
 bool OSUtils::createPrivateDirectory(const string& directory) {
+#ifdef _WIN32
+   // Not supported: a directory only the current user can reach needs an
+   // explicit ACL (protected, no inherited entries), which is not implemented.
+   // Creating an ordinary directory and reporting success would hand the
+   // caller a directory that is not private, so nothing is created.
+   (void) directory;
+   return false;
+#else
    const int rc = ::mkdir(directory.c_str(), S_IRWXU);
    return (0 == rc);
+#endif
 }
 
 //******************************************************************************
@@ -164,20 +202,40 @@ long OSUtils::getFileSize(const string& filePath) {
       return -1L;
    }
 
+   // long is only 32 bits on Windows (LLP64): a size it can't hold is
+   // reported as the failure sentinel rather than wrapping around into a
+   // wrong, possibly negative, size. Never true where long is 64 bits.
+   if (fileSize > static_cast<uintmax_t>(std::numeric_limits<long>::max())) {
+      return -1L;
+   }
+
    return (long) fileSize;
 }
 
 //******************************************************************************
 
 bool OSUtils::deleteFile(const string& filePath) {
+#ifdef _WIN32
+   return (0 == ::_unlink(filePath.c_str()));
+#else
    return (0 == unlink(filePath.c_str()));
+#endif
 }
 
 //******************************************************************************
 
 bool OSUtils::renameFile(const string& oldFilePath,
                          const string& newFilePath) {
+#ifdef _WIN32
+   // the C runtime's rename() fails when the destination already exists,
+   // where POSIX rename() replaces it; std::filesystem::rename() replaces it
+   // on Windows too, which keeps the two platforms the same
+   std::error_code ec;
+   std::filesystem::rename(path{oldFilePath}, path{newFilePath}, ec);
+   return !ec;
+#else
    return (0 == rename(oldFilePath.c_str(), newFilePath.c_str()));
+#endif
 }
 
 //******************************************************************************
@@ -325,6 +383,9 @@ bool OSUtils::crc32ForFile(const string& filePath, string& crc32) {
 
 bool OSUtils::isUserInGroup(const string& groupName)
 {
+#ifdef _WIN32
+   (void) groupName;   // not supported on Windows
+#endif
 #ifdef __unix__
    const gid_t userPrimaryGroup = getgid();
 
@@ -364,31 +425,11 @@ bool OSUtils::getHWCpuCount(int& count)
 {
    bool rc = false;
 
-#if defined(_WIN32) || defined(WIN32)
-   char szRegistryKey[256];
-   HKEY keyCPU;
-
-   for (int cpuIndex = 0; ; cpuIndex++) {
-      snprintf(szRegistryKey,
-               255,
-               "Hardware\\Description\\System\\CentralProcessor\\%d",
-               cpuIndex);
-
-      if (ERROR_SUCCESS != ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                                          szRegistryKey,
-                                          0,
-                                          KEY_READ,
-                                          &keyCPU)) {
-         count = cpuIndex;
-         break;
-      }
-
-      ::RegCloseKey(keyCPU);
-   }
-
-   rc = true;
-
-#elif defined(__linux__)
+   // not supported on Windows: returns false and leaves count untouched
+#ifdef _WIN32
+   (void) count;
+#endif
+#if defined(__linux__)
    count = get_nprocs_conf();
    rc = true;
 #elif defined(__APPLE__) || defined(__FreeBSD__)
@@ -409,20 +450,11 @@ bool OSUtils::getHWCpuType(string& cpuType)
 {
    bool rc = false;
 
-#if defined(_WIN32) || defined(WIN32)
-   HKEY keyCPU;
-
-   if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                                       "Hardware\\Description\\System\\CentralProcessor\\0",
-                                       0,
-                                       KEY_READ,
-                                       &keyCPU)) {
-      if (readRegistryValue(keyCPU, "ProcessorNameString\0", cpuType)) {
-         rc = true;
-      }
-      ::RegCloseKey(keyCPU);
-   }
-#elif defined(__FreeBSD__)
+   // not supported on Windows: returns false and leaves cpuType untouched
+#ifdef _WIN32
+   (void) cpuType;
+#endif
+#if defined(__FreeBSD__)
    char szCpuType[128];
    size_t size = 127;
    if (0 == sysctlbyname("hw.model", &szCpuType, &size, nullptr, 0)) {
@@ -459,14 +491,9 @@ int OSUtils::getHWPhysicalMemoryMB()
 {
    int physicalMemoryMB = 0;
 
-#if defined(_WIN32) || defined(WIN32)
-   MEMORYSTATUS memStat;
-   memset(&memStat, 0, sizeof(MEMORYSTATUS));
-
-   ::GlobalMemoryStatus(&memStat);
-   const SIZE_T dwTotalBytes = memStat.dwTotalPhys;
-   physicalMemoryMB = dwTotalBytes / ONE_MB;
-#elif defined(__linux__)
+   // not supported on Windows: returns 0, as on any other platform without
+   // an implementation here
+#if defined(__linux__)
    const long int numPages = get_phys_pages();
    const int pageSize = getpagesize();
    uint64_t mem = (uint64_t) ((uint64_t) numPages * (uint64_t) pageSize);
@@ -494,30 +521,8 @@ int OSUtils::getHWCpuSpeedMHz()
 {
    int cpuSpeedMHz = 0;
 
-#if defined(_WIN32) || defined(WIN32)
-   HKEY keyCPU;
-
-   const auto rc = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                                  "Hardware\\Description\\System\\CentralProcessor\\0",
-                                  0,
-                                  KEY_READ,
-                                  &keyCPU);
-   if (ERROR_SUCCESS == rc) {
-      DWORD dwCpuSpeed = 0;
-      DWORD dwSize = sizeof(DWORD);
-
-      if (ERROR_SUCCESS == ::RegQueryValueEx(keyCPU,
-                                             "~MHz\0",
-                                             nullptr,
-                                             nullptr,
-                                             (LPBYTE) &dwCpuSpeed,
-                                             &dwSize)) {
-         cpuSpeedMHz = dwCpuSpeed;
-      }
-
-      ::RegCloseKey(keyCPU);
-   }
-#elif defined(__FreeBSD__)
+   // not supported on Windows: returns 0, as on Linux
+#if defined(__FreeBSD__)
    int cpuSpeed = 0;
    size_t size = sizeof(cpuSpeed);
    if (0 == sysctlbyname("hw.clockrate", &cpuSpeed, &size, nullptr, 0)) {
@@ -542,16 +547,11 @@ bool OSUtils::getOSHostName(string& hostName)
 {
    bool rc = false;
 
-#if defined(_WIN32) || defined(WIN32)
-   char computerName[255];
-   unsigned long nChars = 254;
-   memset(computerName, 0, sizeof(computerName));
-
-   if (::GetComputerName(computerName, &nChars)) {
-      hostName = computerName;
-      rc = true;
-   }
-#elif defined(__unix__)
+   // not supported on Windows: returns false and leaves hostName untouched
+#ifdef _WIN32
+   (void) hostName;
+#endif
+#if defined(__unix__)
    struct utsname data;
    if (uname(&data) > -1) {
       hostName = data.nodename;
@@ -568,16 +568,11 @@ bool OSUtils::getOSUser(string& user)
 {
    bool rc = false;
 
-#if defined(_WIN32) || defined(WIN32)
-   unsigned long nUserChars = 254;
-   char userName[255];
-   memset(userName, 0, sizeof(userName));
-
-   if (::GetUserName(userName, &nUserChars)) {
-      user = userName;
-      rc = true;
-   }
-#elif defined(__unix__)
+   // not supported on Windows: returns false and leaves user untouched
+#ifdef _WIN32
+   (void) user;
+#endif
+#if defined(__unix__)
    struct passwd* passwordData = getpwuid(getuid());
    if ((passwordData != nullptr) &&
        (passwordData->pw_name != nullptr)) {
@@ -634,6 +629,9 @@ bool OSUtils::getOSName(string& osName)
 {
    bool rc = false;
 
+#ifdef _WIN32
+   (void) osName;   // not supported on Windows
+#endif
 #ifdef __unix__
    struct utsname data;
    if (uname(&data) > -1) {
@@ -651,6 +649,9 @@ bool OSUtils::getOSRelease(string& osRelease)
 {
    bool rc = false;
 
+#ifdef _WIN32
+   (void) osRelease;   // not supported on Windows
+#endif
 #ifdef __unix__
    struct utsname data;
    if (uname(&data) > -1) {
@@ -666,19 +667,11 @@ bool OSUtils::getOSRelease(string& osRelease)
 
 bool OSUtils::getOSRevision(string& osRevision)
 {
-   bool rc = false;
-
-#if defined(_WIN32) || defined(WIN32)
-   OSVERSIONINFO osVersionInfo;
-   osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-   if (::GetVersionEx(&osVersionInfo)) {
-      rc = true;
-      osRevision = osVersionInfo.szCSDVersion;
-   }
-#endif
-
-   return rc;
+   // not implemented on any platform: the only code for it was a Windows
+   // branch (GetVersionEx, which is deprecated) that had never been compiled,
+   // now removed. Always returns false and leaves osRevision untouched.
+   (void) osRevision;
+   return false;
 }
 
 //******************************************************************************
@@ -716,7 +709,12 @@ bool OSUtils::getOSCurrentTimestamp(string& timestamp)
    time_t current_time;
    time(&current_time);
 
+#ifdef _WIN32
+   struct tm timeBuffer;
+   struct tm* pTM = (0 == ::localtime_s(&timeBuffer, &current_time)) ? &timeBuffer : nullptr;
+#else
    struct tm* pTM = localtime(&current_time);
+#endif
 
    if (pTM != nullptr) {
       char buffer[128];

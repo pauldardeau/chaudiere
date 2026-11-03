@@ -13,6 +13,43 @@ namespace chaudiere
 
    /**
     * OSUtils is a collection of OS related utilities that are frequently used
+    *
+    * Windows (MSVC) support is deliberately limited. Everything declared here
+    * links on Windows, but the functions fall into three groups there.
+    *
+    * 1. Implemented on Windows: getCurrentDirectory, directoryExists,
+    *    pathExists, pathJoin, createDirectory, getFileSize, deleteFile,
+    *    renameFile, sysPlatform (returns "windows"), splitExt,
+    *    listFilesInDirectory, listDirsInDirectory, crc32ForBuffer,
+    *    crc32ForFile, programExit and getOSCurrentTimestamp.
+    *    - createPrivateDirectory is the exception among the directory
+    *      functions: it returns false and creates nothing (a private directory
+    *      needs an ACL, which is not implemented).
+    *    - getFileSize returns -1 for a file whose size does not fit in a long
+    *      (2 GiB or more where long is 32 bits, as on Windows). That check
+    *      applies on every platform.
+    *    - Narrow (std::string) paths are interpreted in the process's active
+    *      ANSI code page on Windows. Names that code page cannot represent
+    *      are not supported, and there are no UTF-8 or wide-character
+    *      overloads.
+    *
+    * 2. Not supported on Windows (no implementation; they report
+    *    "unavailable" and leave their output arguments untouched):
+    *    isUserInGroup, getHWCpuCount, getHWCpuType, getOSHostName, getOSUser,
+    *    getOSName and getOSRelease return false; getHWPhysicalMemoryMB returns
+    *    0; getFreeMemoryMB returns -1; the load averages return 0.0. Callers
+    *    must check the return value, as none of these reports success.
+    *    osName returns "unknown" there (it returns "posix" where POSIX is
+    *    available).
+    *
+    * 3. Existing stubs on every platform, Windows included (not a Windows
+    *    limitation; unchanged by the Windows port):
+    *    - currentTimeMillis is NOT implemented: it always returns 0.
+    *    - getOSRevision always returns false and leaves its argument alone.
+    *    - getHardwareType always returns false, but does set its argument to
+    *      "** unknown **".
+    *    - getHWCpuSpeedMHz returns 0 on Linux and Windows (it is implemented
+    *      only on FreeBSD and macOS).
     */
    class OSUtils
    {
