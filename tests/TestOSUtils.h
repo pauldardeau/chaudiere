@@ -21,6 +21,7 @@ protected:
    void testCreateDirectory();
    void testCreatePrivateDirectory();
    void testGetFileSize();
+   void testGetFileSizeBeyondLong();
    void testDeleteFile();
    void testRenameFile();
    void testSysPlatform();
@@ -38,6 +39,7 @@ protected:
    void testGetOSRelease();
    void testGetHWCpuCount();
    void testGetOSCurrentTimestamp();
+   void testUnsupportedOperations();
 
 public:
    TestOSUtils();

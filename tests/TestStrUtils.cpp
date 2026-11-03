@@ -24,6 +24,8 @@ void TestStrUtils::runTests() {
    // parsing
    testParseInt();
    testParseLong();
+   testParseLongRange();
+   testLanguageLevel();
    testParseFloat();
    testParseDouble();
 
@@ -195,6 +197,54 @@ void TestStrUtils::testParseLong() {
                     "leading char");
    requireException("NumberFormatException", new ParseLongRunner("456t"),
                     "trailing char");
+}
+
+//******************************************************************************
+
+void TestStrUtils::testParseLongRange() {
+   TEST_CASE("parseLongRange");
+
+   // parseLong() returns a long, which is 32 bits on Windows (LLP64) and 64
+   // bits on Linux/macOS. Out of range is always an error, never a clamped
+   // value: the pre-C++11 atol() path this must not take would have returned
+   // LONG_MAX (2147483647) here on Windows.
+   if constexpr (sizeof(long) == 4) {
+      requireException("NumberFormatException", new ParseLongRunner("4294967296"),
+                       "2^32 does not fit in a 32-bit long");
+      requireException("NumberFormatException", new ParseLongRunner("2147483648"),
+                       "one past the largest 32-bit long");
+      requireException("NumberFormatException", new ParseLongRunner("-2147483649"),
+                       "one below the smallest 32-bit long");
+   } else {
+      require(4294967296L == StrUtils::parseLong(string("4294967296")),
+              "2^32 fits in a 64-bit long");
+      require(2147483648L == StrUtils::parseLong(string("2147483648")),
+              "one past the largest 32-bit long fits in a 64-bit long");
+   }
+
+   requireException("NumberFormatException",
+                    new ParseLongRunner("99999999999999999999999"),
+                    "far beyond any long");
+}
+
+//******************************************************************************
+
+void TestStrUtils::testLanguageLevel() {
+   TEST_CASE("languageLevel");
+
+   // StrUtils.h/.cpp choose their code from __cplusplus, and MSVC reports
+   // 199711L whatever /std: says unless /Zc:__cplusplus is passed (the
+   // chaudiere target adds it for everything that links it)
+   require(__cplusplus >= 202002L,
+           "__cplusplus should report C++20 or later");
+
+   // the string_view overloads are declared only when __cplusplus >= 202002L,
+   // so this call compiling and working shows that the header, as seen by
+   // this test, took the C++20 branch
+   require(7 == StrUtils::parseInt(std::string_view("7")),
+           "string_view overload of parseInt");
+   require(StrUtils::startsWith(std::string_view("abc"), std::string_view("ab")),
+           "string_view overload of startsWith");
 }
 
 //******************************************************************************

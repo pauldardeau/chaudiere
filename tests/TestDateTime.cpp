@@ -42,6 +42,8 @@ void TestDateTime::runTests() {
    testDateFromString();
    testUnixTimeValue();
    testPopulateFromUnixTime();
+   testPopulateFromUnixTimeMatchesLocalTime();
+   testPopulateFromUnixTimeBefore1970();
    testGmtDateTime();
 }
 
@@ -344,6 +346,64 @@ void TestDateTime::testPopulateFromUnixTime() {
    DateTime dt(0);
    require(DateTime::populateFromUnixTime(dt, 1700000000.0), "populateFromUnixTime should succeed for a valid unix time");
    require(dt.getYear() >= 2023, "populated year should be plausible for the given unix time");
+}
+
+//******************************************************************************
+
+void TestDateTime::testPopulateFromUnixTimeMatchesLocalTime() {
+   TEST_CASE("testPopulateFromUnixTimeMatchesLocalTime");
+
+   // populateFromUnixTime() converts to local time; compare every field with
+   // the platform's own thread-safe conversion for several instants, so the
+   // result doesn't depend on the time zone the test happens to run in
+   const time_t instants[] = {
+      1234567890,   // 2009-02-13 (UTC)
+      1700000000,   // 2023-11-14 (UTC)
+      2000000000    // 2033-05-18 (UTC)
+   };
+
+   for (const time_t instant : instants) {
+      struct tm expected;
+#ifdef _WIN32
+      const bool haveExpected = (0 == ::localtime_s(&expected, &instant));
+#else
+      const bool haveExpected = (nullptr != ::localtime_r(&instant, &expected));
+#endif
+      require(haveExpected, "sanity check: the platform converts the instant");
+      if (!haveExpected) {
+         continue;
+      }
+
+      DateTime dt(0);
+      require(DateTime::populateFromUnixTime(dt, (double) instant), "populateFromUnixTime should succeed");
+      require(expected.tm_year + 1900 == dt.getYear(), "year should match the platform conversion");
+      require(expected.tm_mon + 1 == dt.getMonth(), "month should match the platform conversion");
+      require(expected.tm_mday == dt.getDay(), "day should match the platform conversion");
+      require(expected.tm_hour == dt.getHour(), "hour should match the platform conversion");
+      require(expected.tm_min == dt.getMinute(), "minute should match the platform conversion");
+      require(expected.tm_sec == dt.getSecond(), "second should match the platform conversion");
+      require((double) instant == dt.timeIntervalSince1970(), "the unix time should be kept as given");
+   }
+}
+
+//******************************************************************************
+
+void TestDateTime::testPopulateFromUnixTimeBefore1970() {
+   TEST_CASE("testPopulateFromUnixTimeBefore1970");
+
+   DateTime dt(0);
+   const bool populated = DateTime::populateFromUnixTime(dt, -86400.0 * 365);
+
+#ifdef _WIN32
+   // documented platform difference: the Windows C runtime's localtime_s
+   // rejects times before 1970-01-01 00:00:00 UTC, so this reports failure
+   // (and leaves the DateTime untouched) instead of converting
+   requireFalse(populated, "populateFromUnixTime should report failure for a time before 1970 on Windows");
+   require(0 == dt.getYear(), "a failed conversion should leave the DateTime untouched");
+#else
+   require(populated, "populateFromUnixTime should convert a time before 1970");
+   require(dt.getYear() <= 1970, "the converted year should be 1969 or 1970");
+#endif
 }
 
 //******************************************************************************

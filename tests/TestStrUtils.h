@@ -17,6 +17,8 @@ protected:
    // parsing
    void testParseInt();
    void testParseLong();
+   void testParseLongRange();
+   void testLanguageLevel();
    void testParseFloat();
    void testParseDouble();
 

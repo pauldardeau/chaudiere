@@ -38,6 +38,8 @@ protected:
    void testDateFromString();
    void testUnixTimeValue();
    void testPopulateFromUnixTime();
+   void testPopulateFromUnixTimeMatchesLocalTime();
+   void testPopulateFromUnixTimeBefore1970();
    void testGmtDateTime();
 
 public:
