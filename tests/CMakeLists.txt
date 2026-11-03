@@ -119,3 +119,32 @@ add_test(
    COMMAND test_chaudiere
    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+# Installs chaudiere and poivre into one scratch prefix (installed chaudiere
+# is not self-contained: its BasicException.h includes ../poivre/...), then
+# builds and runs a consumer against only that prefix: every installed header
+# must compile on its own, the supported APIs
+# must link and work, and the set of installed headers must be exactly the
+# expected one (everything on Linux/macOS, only the Windows subset on
+# Windows). See installed_consumer/run.cmake.
+# Only when chaudiere is the top-level project: it installs the build tree it is
+# configured in, which as a subdirectory of a consumer would be the consumer's.
+if(CHAUDIERE_IS_TOP_LEVEL)
+   add_test(
+      NAME chaudiere_installed_consumer
+      COMMAND ${CMAKE_COMMAND}
+         -DCHAUDIERE_BINARY_DIR=${PROJECT_BINARY_DIR}
+         -DCHAUDIERE_SOURCE_DIR=${PROJECT_SOURCE_DIR}
+         -DPOIVRE_SOURCE_DIR=${PROJECT_SOURCE_DIR}/poivre
+         -DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/installed_consumer
+         -DCONFIG=$<CONFIG>
+         -DGENERATOR=${CMAKE_GENERATOR}
+         -DGENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+         -DCXX_COMPILER=${CMAKE_CXX_COMPILER}
+         -DCXX_FLAGS=${CMAKE_CXX_FLAGS}
+         -DEXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
+         -DPLATFORM_IS_WINDOWS=${WIN32}
+         -DPLATFORM_IS_MSVC=${MSVC}
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/installed_consumer/run.cmake
+   )
+endif()
