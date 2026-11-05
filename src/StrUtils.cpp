@@ -9,6 +9,29 @@
 #if __cplusplus >= 202002L
    #include <charconv>
    #include <system_error>
+   #include <version>   // __cpp_lib_to_chars
+
+   // std::from_chars for float and double is optional even in C++20 mode: the
+   // libc++ of Apple's Xcode 13 (and the upstream libc++ 13 it is based on)
+   // declares only the integer overloads, plus a deleted one for bool that a
+   // float converts to.
+   // The standard feature-test macro says whether the floating-point ones exist.
+   // CHAUDIERE_FORCE_FP_FALLBACK (a compiler flag, for testing only) selects the
+   // fallback below even where they do.
+   #if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L) && \
+       !defined(CHAUDIERE_FORCE_FP_FALLBACK)
+      #define CHAUDIERE_FP_FROM_CHARS 1
+   #else
+      #ifdef _WIN32
+         #error "CHAUDIERE_FORCE_FP_FALLBACK needs the POSIX locale functions (strtod_l); MSVC has floating-point std::from_chars"
+      #endif
+      #include <cerrno>
+      #include <cmath>
+      #include <locale.h>
+      #ifdef __APPLE__
+         #include <xlocale.h>
+      #endif
+   #endif
 #endif
 
 #include "StrUtils.h"
@@ -657,18 +680,107 @@ long StrUtils::parseLong(std::string_view s) {
 
 //******************************************************************************
 
+namespace {
+
+#ifdef CHAUDIERE_FP_FROM_CHARS
+
+// s has already passed OnlyIntegerDigits(). Whatever std::from_chars rejects
+// (nothing to convert, out of range, characters left over) is a
+// NumberFormatException; a subnormal result is representable and accepted.
+template <typename T>
+T parseFloating(std::string_view s) {
+   T value = 0;
+   const auto result = std::from_chars(s.data(), s.data() + s.size(), value);
+   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
+      throw NumberFormatException(std::string(s));
+   }
+
+   return value;
+}
+
+#else
+
+// Owns a "C" locale object, which strtof_l()/strtod_l() take as an argument,
+// so the conversion never depends on (or changes) the process-wide locale.
+class CNumericLocale {
+public:
+   CNumericLocale() :
+      m_locale(::newlocale(LC_ALL_MASK, "C", static_cast<locale_t>(nullptr))) {
+   }
+
+   ~CNumericLocale() {
+      if (m_locale != static_cast<locale_t>(nullptr)) {
+         ::freelocale(m_locale);
+      }
+   }
+
+   CNumericLocale(const CNumericLocale&) = delete;
+   CNumericLocale& operator=(const CNumericLocale&) = delete;
+
+   locale_t get() const {
+      return m_locale;
+   }
+
+private:
+   locale_t m_locale;
+};
+
+// created on first use (thread-safe), freed at exit; get() is null if the
+// locale could not be created
+const CNumericLocale& cNumericLocale() {
+   static const CNumericLocale instance;
+   return instance;
+}
+
+// Same contract as the std::from_chars version above: s has passed
+// OnlyIntegerDigits(), the whole view must convert, overflow and underflow to
+// zero are errors, a non-zero subnormal result is accepted. The view is copied
+// because strtod_l() needs a NUL terminator and must not read past the view.
+template <typename T>
+T parseFloating(std::string_view s) {
+   const locale_t cLocale = cNumericLocale().get();
+   if (cLocale == static_cast<locale_t>(nullptr)) {
+      throw std::runtime_error("StrUtils: cannot create the \"C\" locale");
+   }
+
+   const std::string text(s);
+   char* end = nullptr;
+   errno = 0;
+   T value;
+   if constexpr (sizeof(T) == sizeof(float)) {
+      value = ::strtof_l(text.c_str(), &end, cLocale);
+   } else {
+      value = ::strtod_l(text.c_str(), &end, cLocale);
+   }
+   const int conversionError = errno;
+
+   if ((end == text.c_str()) || (end != text.c_str() + text.size())) {
+      throw NumberFormatException(text);
+   }
+
+   // ERANGE is set both for overflow (the result is an infinity) and for a
+   // result that is zero or subnormal. An infinity, and a zero produced from
+   // non-zero digits, are errors; a finite non-zero subnormal value is
+   // representable, and is what std::from_chars returns.
+   if ((conversionError == ERANGE) && ((value == 0) || !std::isfinite(value))) {
+      throw NumberFormatException(text);
+   }
+
+   return value;
+}
+
+#endif
+
+}  // namespace
+
+//******************************************************************************
+
 float StrUtils::parseFloat(std::string_view s) {
    if (!OnlyIntegerDigits(s, true)) {
       throw NumberFormatException(std::string(s));
    }
 
-   float floatValue = 0;
-   const auto result = std::from_chars(s.data(), s.data() + s.size(), floatValue);
-   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
-      throw NumberFormatException(std::string(s));
-   }
-
-   return floatValue;
+   return parseFloating<float>(s);
 }
 
 //******************************************************************************
@@ -678,13 +790,7 @@ double StrUtils::parseDouble(std::string_view s) {
       throw NumberFormatException(std::string(s));
    }
 
-   double doubleValue = 0;
-   const auto result = std::from_chars(s.data(), s.data() + s.size(), doubleValue);
-   if ((result.ec != std::errc()) || (result.ptr != s.data() + s.size())) {
-      throw NumberFormatException(std::string(s));
-   }
-
-   return doubleValue;
+   return parseFloating<double>(s);
 }
 
 //******************************************************************************

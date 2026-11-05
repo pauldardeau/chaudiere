@@ -2,10 +2,21 @@
 // BSD License
 
 #include <string.h>
+#include <cmath>
+#include <cstdio>
+#include <clocale>
+#include <limits>
 #include <string>
+#include <string_view>
+#include <locale.h>
+#ifdef __APPLE__
+#include <xlocale.h>
+#endif
 
 #include "TestStrUtils.h"
+#include "TestMacros.h"
 #include "StrUtils.h"
+#include "NumberFormatException.h"
 
 static const std::string emptyString = "";
 
@@ -793,3 +804,260 @@ void TestStrUtils::testSplit() {
 
 //******************************************************************************
 
+
+//******************************************************************************
+//******************************************************************************
+
+// The std::string_view overloads of parseFloat() and parseDouble() are a
+// separate implementation from the std::string ones tested above (they use
+// std::from_chars, or a strtod_l fallback where the standard library lacks the
+// floating-point overloads). Every call below passes a std::string_view, so
+// none of it can silently run the std::string overloads.
+
+namespace {
+
+// a closeness check for results of decimal-to-binary conversion: exact equality
+// is only claimed where the value is exactly representable
+template <typename T>
+bool closeTo(T actual, double expected) {
+   const double a = static_cast<double>(actual);
+   if (a == expected) {
+      return true;
+   }
+   const double tolerance = std::fabs(expected) *
+                            static_cast<double>(std::numeric_limits<T>::epsilon()) * 2.0;
+   return std::fabs(a - expected) <= tolerance;
+}
+
+template <typename T>
+T parseView(std::string_view s);
+
+template <>
+float parseView<float>(std::string_view s) {
+   return StrUtils::parseFloat(s);
+}
+
+template <>
+double parseView<double>(std::string_view s) {
+   return StrUtils::parseDouble(s);
+}
+
+template <typename T>
+bool rejects(std::string_view s) {
+   try {
+      parseView<T>(s);
+   } catch (const NumberFormatException&) {
+      return true;
+   } catch (...) {
+      return false;
+   }
+   return false;
+}
+
+template <typename T>
+bool accepts(std::string_view s) {
+   try {
+      parseView<T>(s);
+   } catch (...) {
+      return false;
+   }
+   return true;
+}
+
+const char* const INVALID_INPUTS[] = {
+   "", "-", ".", "-.", "..", "1.2.3", "--1", "1-", "-1-",
+   " 1", "1 ", " 1 ", "\t1", "1\n", "1 2",
+   "+1", "+.5",
+   "1e5", "1E5", "1e-3", "1E-3", "2.5e10", ".5e1",
+   "nan", "NaN", "-nan", "inf", "-inf", "Inf", "infinity", "-infinity",
+   "0x10", "0X1F", "0x1.8p3",
+   "1,5", "3,1415", ",5", "5,",
+   "456t", "y123", "12abc", "abc", "x", "1.5f", "1.5d", "--", "-+1"
+};
+
+template <typename T>
+void checkFloatingParsing(poivre::TestSuite& t, const char* type) {
+   const std::string name(type);
+
+   // valid inputs
+   struct Valid { const char* text; double value; };
+   const Valid valid[] = {
+      {"3", 3.0}, {"-5", -5.0}, {"0", 0.0}, {"35", 35.0}, {"65535", 65535.0},
+      {"3.1415", 3.1415}, {"-1492.524", -1492.524}, {"1.", 1.0}, {".5", 0.5},
+      {"-.5", -0.5}, {"00012", 12.0}, {"0.1", 0.1}, {"123456789", 123456789.0}
+   };
+   for (const Valid& v : valid) {
+      t.require(closeTo<T>(parseView<T>(std::string_view(v.text)), v.value),
+                name + " accepts \"" + v.text + "\"");
+   }
+
+   const T negativeZero = parseView<T>(std::string_view("-0"));
+   t.require((negativeZero == 0) && std::signbit(negativeZero),
+             name + " \"-0\" keeps its sign bit");
+   const T negativeZeroDecimal = parseView<T>(std::string_view("-0.0"));
+   t.require((negativeZeroDecimal == 0) && std::signbit(negativeZeroDecimal),
+             name + " \"-0.0\" keeps its sign bit");
+   const T positiveZero = parseView<T>(std::string_view("0"));
+   t.require((positiveZero == 0) && !std::signbit(positiveZero),
+             name + " \"0\" is positive zero");
+
+   // the view's length is respected, wherever the view sits in its string
+   t.require(closeTo<T>(parseView<T>(std::string_view("12345").substr(0, 3)), 123.0),
+             name + " view \"123\" of \"12345\"");
+   t.require(closeTo<T>(parseView<T>(std::string_view("1.5abc").substr(0, 3)), 1.5),
+             name + " valid prefix followed by invalid characters outside the view");
+   t.require(closeTo<T>(parseView<T>(std::string_view("x-7.25y").substr(1, 5)), -7.25),
+             name + " view in the middle of a string");
+   const std::string backing("42xyz");
+   t.require(closeTo<T>(parseView<T>(std::string_view(backing.data(), 2)), 42.0),
+             name + " view shorter than its std::string");
+   // no terminator inside the view, and a digit right behind it: a parser that
+   // ignored the length would return 123457
+   const char unterminated[] = {'1', '2', '3', '4', '5', '7', '\0'};
+   t.require(closeTo<T>(parseView<T>(std::string_view(unterminated, 5)), 12345.0),
+             name + " view ends before the next digit");
+   t.require(rejects<T>(std::string_view("12x").substr(0, 3)),
+             name + " an invalid character inside the view is rejected");
+   t.require(rejects<T>(std::string_view("123").substr(0, 0)),
+             name + " empty view of a numeric string");
+
+   // invalid inputs
+   for (const char* text : INVALID_INPUTS) {
+      t.require(rejects<T>(std::string_view(text)),
+                name + " rejects \"" + text + "\"");
+   }
+   // an embedded NUL is not a digit
+   t.require(rejects<T>(std::string_view("1\0" "2", 3)),
+             name + " rejects an embedded NUL");
+
+   // range, written without exponents because the pre-filter does not accept them
+   const std::string manyNines(400, '9');
+   const std::string underflow = "0." + std::string(400, '0') + "1";
+   t.require(rejects<T>(std::string_view(manyNines)), name + " overflow (400 digits)");
+   t.require(rejects<T>(std::string_view("-" + manyNines)), name + " negative overflow");
+   t.require(rejects<T>(std::string_view(underflow)), name + " underflow to zero");
+   t.require(rejects<T>(std::string_view("-" + underflow)), name + " negative underflow to zero");
+}
+
+}  // namespace
+
+//******************************************************************************
+
+POIVRE_TEST_CASE(TestStrUtils, testParseFloatStringView) {
+   checkFloatingParsing<float>(*this, "float");
+
+   // float limits
+   const std::string fifty(50, '9');
+   require(rejects<float>(std::string_view(fifty)),
+           "float: 50 digits is beyond the float range");
+   require(accepts<double>(std::string_view(fifty)),
+           "the same 50 digits fit a double");
+
+   // FLT_MAX is 340282346638528859811704183484516925440 exactly
+   const float maxFloat =
+      StrUtils::parseFloat(std::string_view("340282346638528859811704183484516925440"));
+   require(maxFloat == std::numeric_limits<float>::max(), "float: FLT_MAX");
+   require(closeTo<float>(StrUtils::parseFloat(std::string_view("3000000000000000000000000000000000000")),
+                          3.0e36),
+           "float: a value of the order of 1e36");
+
+   // representable subnormal float: 1e-40 < FLT_MIN (about 1.17e-38)
+   const float subnormal =
+      StrUtils::parseFloat(std::string_view("0." + std::string(39, '0') + "1"));
+   require((subnormal > 0) && std::isfinite(subnormal) &&
+           (subnormal < std::numeric_limits<float>::min()),
+           "float: a representable subnormal value is accepted");
+}
+
+//******************************************************************************
+
+POIVRE_TEST_CASE(TestStrUtils, testParseDoubleStringView) {
+   checkFloatingParsing<double>(*this, "double");
+
+   // a value near the top of the double range, written out in full
+   const std::string nearMax = "1" + std::string(300, '0');
+   require(closeTo<double>(StrUtils::parseDouble(std::string_view(nearMax)), 1.0e300),
+           "double: 1 followed by 300 zeros");
+
+   // representable subnormal double: 1e-311 < DBL_MIN (about 2.2e-308)
+   const double subnormal =
+      StrUtils::parseDouble(std::string_view("0." + std::string(310, '0') + "1"));
+   require((subnormal > 0) && std::isfinite(subnormal) &&
+           (subnormal < std::numeric_limits<double>::min()),
+           "double: a representable subnormal value is accepted");
+}
+
+//******************************************************************************
+
+// The conversion must not depend on the locale's decimal separator. Where a
+// locale whose decimal separator is a comma can be selected, parse under it;
+// the selection is limited to the calling thread (uselocale() on POSIX,
+// _configthreadlocale() on Windows), so other threads and tests are not
+// affected. If there is no such locale, the check is skipped and says so.
+POIVRE_TEST_CASE(TestStrUtils, testParseFloatingLocaleIndependent) {
+   require(closeTo<double>(StrUtils::parseDouble(std::string_view("3.1415")), 3.1415),
+           "baseline: \"3.1415\" in the unchanged locale");
+
+   bool commaLocaleActive = false;
+
+#ifdef _WIN32
+   const int previousThreadMode = _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
+   const char* const names[] = {"de-DE", "fr-FR", "de_DE", "fr_FR"};
+   for (const char* name : names) {
+      if (std::setlocale(LC_NUMERIC, name) != nullptr) {
+         const struct lconv* conv = std::localeconv();
+         if ((conv != nullptr) && (std::string(conv->decimal_point) == ",")) {
+            commaLocaleActive = true;
+            break;
+         }
+      }
+   }
+   if (commaLocaleActive) {
+      require(closeTo<double>(StrUtils::parseDouble(std::string_view("3.1415")), 3.1415),
+              "double \"3.1415\" under a comma-decimal locale");
+      require(closeTo<float>(StrUtils::parseFloat(std::string_view("-1492.524")), -1492.524),
+              "float \"-1492.524\" under a comma-decimal locale");
+      require(rejects<double>(std::string_view("3,1415")),
+              "double \"3,1415\" is still rejected under a comma-decimal locale");
+      require(rejects<float>(std::string_view("3,1415")),
+              "float \"3,1415\" is still rejected under a comma-decimal locale");
+   }
+   std::setlocale(LC_NUMERIC, "C");
+   if (previousThreadMode != -1) {
+      _configthreadlocale(previousThreadMode);
+   }
+#else
+   const char* const names[] = {"de_DE.UTF-8", "de_DE.utf8", "fr_FR.UTF-8", "fr_FR.utf8",
+                                "de_DE", "fr_FR", "it_IT.UTF-8", "nl_NL.UTF-8"};
+   for (const char* name : names) {
+      locale_t commaLocale = newlocale(LC_ALL_MASK, name, static_cast<locale_t>(nullptr));
+      if (commaLocale == static_cast<locale_t>(nullptr)) {
+         continue;
+      }
+      const locale_t previous = uselocale(commaLocale);
+      const struct lconv* conv = std::localeconv();
+      const bool isComma = (conv != nullptr) && (std::string(conv->decimal_point) == ",");
+      if (isComma) {
+         commaLocaleActive = true;
+         require(closeTo<double>(StrUtils::parseDouble(std::string_view("3.1415")), 3.1415),
+                 std::string("double \"3.1415\" under the thread-local locale ") + name);
+         require(closeTo<float>(StrUtils::parseFloat(std::string_view("-1492.524")), -1492.524),
+                 std::string("float \"-1492.524\" under the thread-local locale ") + name);
+         require(rejects<double>(std::string_view("3,1415")),
+                 std::string("double \"3,1415\" is still rejected under ") + name);
+         require(rejects<float>(std::string_view("3,1415")),
+                 std::string("float \"3,1415\" is still rejected under ") + name);
+      }
+      uselocale(previous);
+      freelocale(commaLocale);
+      if (isComma) {
+         break;
+      }
+   }
+#endif
+
+   if (!commaLocaleActive) {
+      std::printf("NOTE: testParseFloatingLocaleIndependent: no comma-decimal locale "
+                  "is installed; the locale-independence check was SKIPPED\n");
+   }
+}

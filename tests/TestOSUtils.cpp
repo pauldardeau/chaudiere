@@ -1,12 +1,24 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <cmath>
 #include <cstdio>
 #include <filesystem>
 #include <limits>
+#include <string>
 #include <system_error>
 
+#ifndef _WIN32
+#include <grp.h>
+#include <pwd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/utsname.h>
+#include <unistd.h>
+#endif
+
 #include "TestOSUtils.h"
+#include "TestMacros.h"
 #include "OSUtils.h"
 
 using namespace chaudiere;
@@ -240,6 +252,8 @@ void TestOSUtils::testSysPlatform() {
    requireStringEquals("linux", OSUtils::sysPlatform(), "sysPlatform should report 'linux' on this platform");
 #elif defined(_WIN32)
    requireStringEquals("windows", OSUtils::sysPlatform(), "sysPlatform should report 'windows' on this platform");
+#elif defined(__APPLE__)
+   requireStringEquals("mac", OSUtils::sysPlatform(), "sysPlatform should report 'mac' on this platform");
 #else
    requireNonEmptyString(OSUtils::sysPlatform(), "sysPlatform should return a non-empty platform name");
 #endif
@@ -509,3 +523,109 @@ void TestOSUtils::testUnsupportedOperations() {
 }
 
 //******************************************************************************
+
+//******************************************************************************
+//******************************************************************************
+
+// The tests below compare OSUtils with the operating system's own answers
+// (uname, getpwuid, getgroups, getloadavg). They run wherever those calls
+// exist, i.e. everywhere except Windows, and are the ones that notice a
+// platform check that wrongly compiles the "not supported" fallbacks (as
+// __unix__ alone did on macOS, whose compilers define __APPLE__ instead).
+
+#ifndef _WIN32
+
+POIVRE_TEST_CASE(TestOSUtils, testOSNameHostAndReleaseMatchUname) {
+   struct utsname data;
+   require(0 == uname(&data), "uname() itself should succeed");
+
+   std::string osName = "untouched";
+   require(OSUtils::getOSName(osName), "getOSName should succeed");
+   requireStringEquals(data.sysname, osName, "getOSName is uname's sysname");
+
+   std::string osRelease = "untouched";
+   require(OSUtils::getOSRelease(osRelease), "getOSRelease should succeed");
+   requireStringEquals(data.release, osRelease, "getOSRelease is uname's release");
+
+   std::string hostName = "untouched";
+   require(OSUtils::getOSHostName(hostName), "getOSHostName should succeed");
+   requireStringEquals(data.nodename, hostName, "getOSHostName is uname's nodename");
+}
+
+//******************************************************************************
+
+POIVRE_TEST_CASE(TestOSUtils, testOSUserMatchesPasswordDatabase) {
+   const struct passwd* entry = getpwuid(getuid());
+   require(entry != nullptr, "the current user should have a password database entry");
+   if (entry != nullptr) {
+      std::string user = "untouched";
+      require(OSUtils::getOSUser(user), "getOSUser should succeed");
+      requireStringEquals(entry->pw_name, user, "getOSUser is getpwuid(getuid())'s name");
+   }
+}
+
+//******************************************************************************
+
+POIVRE_TEST_CASE(TestOSUtils, testIsUserInGroup) {
+   // a group that does not exist is never one the user is in
+   const std::string missing = "chaudiere-no-such-group-" + std::to_string(static_cast<long>(getpid()));
+   require(nullptr == getgrnam(missing.c_str()), "precondition: the made-up group name should not exist");
+   requireFalse(OSUtils::isUserInGroup(missing), "a group that does not exist");
+   requireFalse(OSUtils::isUserInGroup(""), "an empty group name");
+
+   // isUserInGroup() reports false for a primary group whose id is 0 (root's),
+   // so the positive checks apply to a user with a non-zero primary group id
+   const gid_t primary = getgid();
+   if (primary > 0) {
+      const struct group* primaryGroup = getgrgid(primary);
+      if (primaryGroup != nullptr) {
+         require(OSUtils::isUserInGroup(primaryGroup->gr_name),
+                 "the user's primary group");
+      } else {
+         std::printf("NOTE: testIsUserInGroup: the primary group has no name here; its check was SKIPPED\n");
+      }
+
+      // a supplementary group, if the user has one
+      gid_t groups[256];
+      const int count = getgroups(256, groups);
+      for (int i = 0; i < count; ++i) {
+         if (groups[i] == primary) {
+            continue;
+         }
+         const struct group* other = getgrgid(groups[i]);
+         if (other != nullptr) {
+            require(OSUtils::isUserInGroup(other->gr_name),
+                    std::string("a supplementary group: ") + other->gr_name);
+            break;
+         }
+      }
+   } else {
+      std::printf("NOTE: testIsUserInGroup: running with primary group id 0; "
+                  "the positive group checks were SKIPPED\n");
+   }
+}
+
+//******************************************************************************
+
+POIVRE_TEST_CASE(TestOSUtils, testLoadAveragesMatchGetloadavg) {
+   const double one = OSUtils::getOneMinuteLoadAvg();
+   const double five = OSUtils::getFiveMinuteLoadAvg();
+   const double fifteen = OSUtils::getFifteenMinuteLoadAvg();
+   require(one >= 0.0, "one-minute load average is not negative");
+   require(five >= 0.0, "five-minute load average is not negative");
+   require(fifteen >= 0.0, "fifteen-minute load average is not negative");
+
+   double system[3] = {0.0, 0.0, 0.0};
+   if (3 == getloadavg(system, 3)) {
+      // the averages move slowly, but the two reads are not simultaneous
+      const double tolerance = 2.0;
+      require(std::fabs(one - system[0]) <= tolerance, "one-minute average agrees with getloadavg()");
+      require(std::fabs(five - system[1]) <= tolerance, "five-minute average agrees with getloadavg()");
+      require(std::fabs(fifteen - system[2]) <= tolerance, "fifteen-minute average agrees with getloadavg()");
+   } else {
+      std::printf("NOTE: testLoadAveragesMatchGetloadavg: getloadavg() is not available "
+                  "here; the comparison was SKIPPED\n");
+   }
+}
+
+#endif

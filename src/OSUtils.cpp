@@ -35,6 +35,14 @@
 #include "OSUtils.h"
 #include "StrUtils.h"
 
+// The platforms that have the POSIX/BSD calls used below (uname, getpwuid,
+// getgroups, getloadavg). Apple's compilers define __APPLE__ and __MACH__ but
+// not __unix__, so __unix__ alone would compile the "not supported" fallbacks
+// on macOS.
+#if defined(__unix__) || defined(__APPLE__)
+   #define CHAUDIERE_OSUTILS_POSIX 1
+#endif
+
 static const long ONE_MB = 1024 * 1024;
 
 
@@ -386,7 +394,7 @@ bool OSUtils::isUserInGroup(const string& groupName)
 #ifdef _WIN32
    (void) groupName;   // not supported on Windows
 #endif
-#ifdef __unix__
+#ifdef CHAUDIERE_OSUTILS_POSIX
    const gid_t userPrimaryGroup = getgid();
 
    if (userPrimaryGroup > 0) {
@@ -551,7 +559,7 @@ bool OSUtils::getOSHostName(string& hostName)
 #ifdef _WIN32
    (void) hostName;
 #endif
-#if defined(__unix__)
+#if defined(CHAUDIERE_OSUTILS_POSIX)
    struct utsname data;
    if (uname(&data) > -1) {
       hostName = data.nodename;
@@ -572,7 +580,7 @@ bool OSUtils::getOSUser(string& user)
 #ifdef _WIN32
    (void) user;
 #endif
-#if defined(__unix__)
+#if defined(CHAUDIERE_OSUTILS_POSIX)
    struct passwd* passwordData = getpwuid(getuid());
    if ((passwordData != nullptr) &&
        (passwordData->pw_name != nullptr)) {
@@ -588,7 +596,7 @@ bool OSUtils::getOSUser(string& user)
 
 double OSUtils::getOneMinuteLoadAvg()
 {
-#ifdef __unix__
+#ifdef CHAUDIERE_OSUTILS_POSIX
    double load_avg[3];
    if (getloadavg(load_avg, 3) > -1) {
       return load_avg[0];
@@ -601,7 +609,7 @@ double OSUtils::getOneMinuteLoadAvg()
 
 double OSUtils::getFiveMinuteLoadAvg()
 {
-#ifdef __unix__
+#ifdef CHAUDIERE_OSUTILS_POSIX
    double load_avg[3];
    if (getloadavg(load_avg, 3) > -1) {
       return load_avg[1];
@@ -614,7 +622,7 @@ double OSUtils::getFiveMinuteLoadAvg()
 
 double OSUtils::getFifteenMinuteLoadAvg()
 {
-#ifdef __unix__
+#ifdef CHAUDIERE_OSUTILS_POSIX
    double load_avg[3];
    if (getloadavg(load_avg, 3) > -1) {
       return load_avg[2];
@@ -632,7 +640,7 @@ bool OSUtils::getOSName(string& osName)
 #ifdef _WIN32
    (void) osName;   // not supported on Windows
 #endif
-#ifdef __unix__
+#ifdef CHAUDIERE_OSUTILS_POSIX
    struct utsname data;
    if (uname(&data) > -1) {
       osName = data.sysname;
@@ -652,7 +660,7 @@ bool OSUtils::getOSRelease(string& osRelease)
 #ifdef _WIN32
    (void) osRelease;   // not supported on Windows
 #endif
-#ifdef __unix__
+#ifdef CHAUDIERE_OSUTILS_POSIX
    struct utsname data;
    if (uname(&data) > -1) {
       osRelease = data.release;
