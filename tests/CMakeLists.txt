@@ -111,6 +111,35 @@ endif()
 # here for either.
 target_link_libraries(test_chaudiere PRIVATE chaudiere poivre)
 
+if(NOT WIN32)
+   # TestDynamicLibrary loads this shared library, so that the test no longer
+   # depends on a particular system library (it used to open "libc.so.6", which
+   # only exists on Linux). The library is built with whatever suffix the platform
+   # uses (.so, .dylib) and is test-only: it has no install rule, so it is not
+   # installed and is not part of the installed package.
+   # Not built on Windows: DynamicLibrary is POSIX-only (dlopen).
+   add_library(chaudiere_dynamic_library_fixture SHARED
+      fixtures/DynamicLibraryFixture.cpp
+   )
+   # symbols are exported only where the source marks them
+   set_target_properties(chaudiere_dynamic_library_fixture PROPERTIES
+      CXX_VISIBILITY_PRESET hidden
+   )
+   target_compile_options(chaudiere_dynamic_library_fixture PRIVATE
+      $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:-Wall -Wextra>
+   )
+
+   # the test executable must not be built (or run) without the fixture
+   add_dependencies(test_chaudiere chaudiere_dynamic_library_fixture)
+
+   # the fixture's absolute path in the build tree, for this one test source
+   # only; resolved per configuration, so it is right for multi-config
+   # generators too
+   set_property(SOURCE TestDynamicLibrary.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+      "CHAUDIERE_DYNAMIC_LIBRARY_FIXTURE_PATH=\"$<TARGET_FILE:chaudiere_dynamic_library_fixture>\""
+   )
+endif()
+
 # matches how the Makefile-based build always runs it - some tests
 # (e.g. FileLogger) touch relative-path files expecting tests/ as the
 # working directory.

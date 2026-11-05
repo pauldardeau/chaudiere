@@ -14,6 +14,7 @@ class TestDynamicLibrary : public poivre::TestSuite
 protected:
    void runTests();
 
+   void testFixtureIsAvailable();
    void testDefaultConstructor();
    void testConstructorWithLibraryName();
    void testConstructorWithInvalidLibraryName();
