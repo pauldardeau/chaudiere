@@ -48,7 +48,7 @@ bool SystemStats::uptimeSeconds(long long& uptimeSeconds) {
       success = true;
    }
 #else
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(__APPLE__)
    struct timeval boottime;
    size_t len = sizeof(boottime);
    int mib[2] = { CTL_KERN, KERN_BOOTTIME };
