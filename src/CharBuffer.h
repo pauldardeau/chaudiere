@@ -4,6 +4,7 @@
 #ifndef CHAUDIERE_CHARBUFFER_H
 #define CHAUDIERE_CHARBUFFER_H
 
+#include <cstddef>
 #include <stdlib.h>
 #include <string.h>
 
