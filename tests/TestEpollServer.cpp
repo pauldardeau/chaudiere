@@ -63,12 +63,22 @@ TestEpollServer::TestEpollServer() :
 void TestEpollServer::runTests() {
    testIsSupportedPlatform();
    testConstructor();
-   testInitWithNullHandler();
-   testInitWithInvalidPort();
-   testInit();
-   testAddFileDescriptorForRead();
-   testRemoveFileDescriptorFromRead();
-   testGetKernelEventsAndEventAccessors();
+
+   if (EpollServer::isSupportedPlatform()) {
+      testInitWithNullHandler();
+      testInitWithInvalidPort();
+      testInit();
+      testAddFileDescriptorForRead();
+      testRemoveFileDescriptorFromRead();
+      testGetKernelEventsAndEventAccessors();
+   } else {
+      // none of the functional tests can work without epoll: they need a
+      // successful init(), which opens a listener socket
+      testUnsupportedInit();
+      testUnsupportedFileDescriptorRegistration();
+      testUnsupportedKernelEvents();
+      testUnsupportedEventClassification();
+   }
 }
 
 //******************************************************************************
@@ -76,8 +86,14 @@ void TestEpollServer::runTests() {
 void TestEpollServer::testIsSupportedPlatform() {
    TEST_CASE("testIsSupportedPlatform");
 
-   // epoll is Linux-specific; this test suite runs on Linux
+   // epoll is Linux-specific. runTests() chooses its path from this same
+   // answer, so it is also checked against the platform itself: a Linux
+   // build that lost epoll must fail here, not silently skip the epoll tests.
+#ifdef __linux__
    require(EpollServer::isSupportedPlatform(), "epoll should be reported as supported on this platform");
+#else
+   requireFalse(EpollServer::isSupportedPlatform(), "epoll should be reported as unsupported on this platform");
+#endif
 }
 
 //******************************************************************************
@@ -196,6 +212,70 @@ void TestEpollServer::testGetKernelEventsAndEventAccessors() {
       requireFalse(server.isEventDisconnect(0), "a normal read-ready event should not be reported as a disconnect");
       requireFalse(server.isEventReadClose(0), "a normal read-ready event should not be reported as a read-close");
    }
+}
+
+//******************************************************************************
+
+// The tests below are for platforms without epoll, where every EpollServer
+// call other than the constructor returns a fixed value. They must only run
+// there: on a platform with epoll the event accessors would dereference an
+// event array that init() has not allocated.
+
+void TestEpollServer::testUnsupportedInit() {
+   TEST_CASE("testUnsupportedInit");
+
+   PthreadsMutex fdMutex("fdMutex");
+   PthreadsMutex hwmMutex("hwmMutex");
+   EpollServer server(fdMutex, hwmMutex);
+
+   // a valid handler, port and connection limit, so that false can only mean
+   // "unsupported". Without epoll init() returns before taking ownership of
+   // the handler (and before opening any socket), so it is not heap-allocated.
+   NoOpSocketServiceHandler handler;
+   requireFalse(server.init(&handler, 44750, 10), "init should fail on a platform without epoll");
+}
+
+//******************************************************************************
+
+void TestEpollServer::testUnsupportedFileDescriptorRegistration() {
+   TEST_CASE("testUnsupportedFileDescriptorRegistration");
+
+   PthreadsMutex fdMutex("fdMutex");
+   PthreadsMutex hwmMutex("hwmMutex");
+   EpollServer server(fdMutex, hwmMutex);
+
+   // stdin is only a valid descriptor number: without epoll the descriptor is
+   // never looked at, and nothing is opened or closed here
+   requireFalse(server.addFileDescriptorForRead(STDIN_FILENO), "addFileDescriptorForRead should fail on a platform without epoll");
+   requireFalse(server.removeFileDescriptorFromRead(STDIN_FILENO), "removeFileDescriptorFromRead should fail on a platform without epoll");
+}
+
+//******************************************************************************
+
+void TestEpollServer::testUnsupportedKernelEvents() {
+   TEST_CASE("testUnsupportedKernelEvents");
+
+   PthreadsMutex fdMutex("fdMutex");
+   PthreadsMutex hwmMutex("hwmMutex");
+   EpollServer server(fdMutex, hwmMutex);
+
+   // returns immediately: nothing is waited for
+   require(server.getKernelEvents(10) == 0, "getKernelEvents should report no events on a platform without epoll");
+   require(server.fileDescriptorForEventIndex(0) == -1, "fileDescriptorForEventIndex should return -1 on a platform without epoll");
+}
+
+//******************************************************************************
+
+void TestEpollServer::testUnsupportedEventClassification() {
+   TEST_CASE("testUnsupportedEventClassification");
+
+   PthreadsMutex fdMutex("fdMutex");
+   PthreadsMutex hwmMutex("hwmMutex");
+   EpollServer server(fdMutex, hwmMutex);
+
+   requireFalse(server.isEventRead(0), "isEventRead should be false on a platform without epoll");
+   requireFalse(server.isEventDisconnect(0), "isEventDisconnect should be false on a platform without epoll");
+   requireFalse(server.isEventReadClose(0), "isEventReadClose should be false on a platform without epoll");
 }
 
 //******************************************************************************

@@ -23,6 +23,13 @@ protected:
    void testRemoveFileDescriptorFromRead();
    void testGetKernelEventsAndEventAccessors();
 
+   // run instead of the functional tests above (from testInitWithNullHandler
+   // on) where epoll is not supported
+   void testUnsupportedInit();
+   void testUnsupportedFileDescriptorRegistration();
+   void testUnsupportedKernelEvents();
+   void testUnsupportedEventClassification();
+
 public:
    TestEpollServer();
 
