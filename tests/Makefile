@@ -52,6 +52,7 @@ TestServerSocket.o \
 TestServiceInfo.o \
 TestSocket.o \
 TestSocketBoundedRead.o \
+TestSocketDescriptors.o \
 TestSocketRequest.o \
 TestSocketServer.o \
 TestStdConditionVariable.o \

@@ -114,6 +114,9 @@ ServerSocket::ServerSocket(int port) :
    LOG_INSTANCE_CREATE("ServerSocket")
 
    if (!create()) {
+      // create() may have obtained the descriptor before bind() failed, and the destructor
+      // does not run for an object whose constructor throws
+      close();
       throw BasicException("unable to create server socket");
    }
 

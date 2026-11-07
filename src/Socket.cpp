@@ -133,6 +133,14 @@ bool Socket::open() {
                             sizeof(m_serverAddr));
 
    if (rc < 0) {
+      // The constructor throws when this returns false, and the destructor of an object
+      // whose constructor threw does not run, so this is the only place that can release
+      // the descriptor that createSocket() returned. close() may change errno, which the
+      // caller may want to inspect, so it is kept.
+      const int connectError = errno;
+      ::close(m_socketFD);
+      m_socketFD = -1;
+      errno = connectError;
       return false;
    } else {
       init();
