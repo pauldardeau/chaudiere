@@ -26,7 +26,9 @@
 #include <poll.h>
 #include <signal.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 #include <chrono>
@@ -323,39 +325,154 @@ int childWritesToClosedPeerOfAcceptedSocket(FILE* note, int port) {
    return (o.failed >= 1 && !o.succeededAfterFailure) ? CHILD_OK : CHILD_CHECK_FAILED;
 }
 
-// a caller's own flags must still reach send(): MSG_DONTWAIT on a connection whose peer is
-// not reading must fail with "would block" instead of blocking the writer for ever
+// ---------------------------------------------------------------- urgent data (MSG_OOB)
+//
+// How a test can tell that a flag of the caller's reached the send() system call: send a
+// byte with MSG_OOB. If the flag arrives, the byte is urgent data: select() reports an
+// exceptional condition on the peer's descriptor and recv(MSG_OOB) returns the byte. If it
+// is dropped, the byte is ordinary data and neither happens. MSG_DONTWAIT cannot serve here:
+// macOS does not make a send on a blocking socket fail when the buffer is full because of
+// it, so a send with that flag to a peer that never reads blocks there.
+
+const int URGENT_WAIT_MILLIS = 5000;
+
+// A Socket connected to a loopback listener, and the raw descriptor of the accepted end, which
+// the checks read from directly.
+struct ConnectedPair {
+   Listener listener;
+   std::unique_ptr<Socket> socket;
+   int peer;
+
+   ConnectedPair() : peer(-1) {
+      if (!listener.ok()) {
+         return;
+      }
+      try {
+         socket.reset(new Socket("127.0.0.1", listener.port));
+      } catch (const BasicException&) {
+         return;
+      }
+      peer = ::accept(listener.fd, nullptr, nullptr);
+   }
+
+   ~ConnectedPair() {
+      if (peer >= 0) {
+         ::close(peer);
+      }
+   }
+
+   ConnectedPair(const ConnectedPair&) = delete;
+   ConnectedPair& operator=(const ConnectedPair&) = delete;
+
+   bool ok() const { return (socket != nullptr) && (peer >= 0); }
+};
+
+// Whether select() reports fd readable (forUrgent false) or in an exceptional condition, which
+// for a TCP socket is urgent data (forUrgent true), waiting at most timeoutMillis in all.
+bool selectReports(int fd, bool forUrgent, int timeoutMillis) {
+   if ((fd < 0) || (fd >= FD_SETSIZE)) {
+      return false;
+   }
+   const Clock::time_point start = Clock::now();
+   for (;;) {
+      const long long elapsed =
+         std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - start).count();
+      long long remaining = timeoutMillis - elapsed;
+      if (remaining < 0) {
+         remaining = 0;
+      }
+      fd_set set;
+      FD_ZERO(&set);
+      FD_SET(fd, &set);
+      timeval timeout;
+      timeout.tv_sec = static_cast<time_t>(remaining / 1000);
+      timeout.tv_usec = static_cast<suseconds_t>((remaining % 1000) * 1000);
+      const int n = ::select(fd + 1,
+                             forUrgent ? nullptr : &set,
+                             nullptr,
+                             forUrgent ? &set : nullptr,
+                             &timeout);
+      if (n > 0) {
+         return FD_ISSET(fd, &set) != 0;
+      }
+      if ((n == 0) || (errno != EINTR)) {
+         return false;
+      }
+   }
+}
+
+// a caller's own flags must still reach send(): a byte sent with MSG_OOB must arrive as urgent
+// data, and a byte sent without it must not
 int childCallerFlagsAreHonoured(FILE* note) {
    ::signal(SIGPIPE, SIG_DFL);
 
-   Listener listener;
-   if (!listener.ok()) {
-      fprintf(note, "could not listen");
-      return CHILD_SETUP_FAILED;
-   }
-   std::unique_ptr<Socket> socket;
-   try {
-      socket.reset(new Socket("127.0.0.1", listener.port));
-   } catch (const BasicException&) {
-      fprintf(note, "could not connect");
-      return CHILD_SETUP_FAILED;
-   }
-   const int accepted = ::accept(listener.fd, nullptr, nullptr);   // and never reads
-   if (accepted < 0) {
-      fprintf(note, "could not accept");
-      return CHILD_SETUP_FAILED;
+   const char URGENT_BYTE = 'U';
+   const char ORDINARY_BYTE = 'n';
+
+   {
+      ConnectedPair pair;
+      if (!pair.ok()) {
+         fprintf(note, "could not set up the connection for the urgent byte");
+         return CHILD_SETUP_FAILED;
+      }
+      const ssize_t sent = pair.socket->send(&URGENT_BYTE, 1, MSG_OOB);
+      if (sent != 1) {
+         fprintf(note, "Socket::send of one byte with MSG_OOB returned %zd", sent);
+         return CHILD_CHECK_FAILED;
+      }
+      if (!selectReports(pair.peer, true, URGENT_WAIT_MILLIS)) {
+         const bool arrivedAsOrdinaryData = selectReports(pair.peer, false, 0);
+         fprintf(note, "no urgent data reached the peer within %d ms%s", URGENT_WAIT_MILLIS,
+                 arrivedAsOrdinaryData ? " (the byte arrived as ordinary data: MSG_OOB did not reach send())" : "");
+         return CHILD_CHECK_FAILED;
+      }
+      char received = 0;
+      const ssize_t n = ::recv(pair.peer, &received, 1, MSG_OOB);
+      if (n != 1) {
+         fprintf(note, "recv(MSG_OOB) on the peer returned %zd (errno %d)", n, errno);
+         return CHILD_CHECK_FAILED;
+      }
+      if (received != URGENT_BYTE) {
+         fprintf(note, "the urgent byte was 0x%02x, expected 0x%02x",
+                 static_cast<unsigned>(static_cast<unsigned char>(received)),
+                 static_cast<unsigned>(static_cast<unsigned char>(URGENT_BYTE)));
+         return CHILD_CHECK_FAILED;
+      }
    }
 
-   // far more than the loopback buffers can hold
-   const std::string big(64u * 1024u * 1024u, 'z');
-   const ssize_t sent = socket->send(big.data(), big.size(), MSG_DONTWAIT);
-   ::close(accepted);
-
-   if (sent > 0) {
-      fprintf(note, "a 64 MiB send with MSG_DONTWAIT to a peer that never reads reported success");
-      return CHILD_CHECK_FAILED;
+   // the control: without MSG_OOB the byte is ordinary data and nothing is urgent
+   {
+      ConnectedPair pair;
+      if (!pair.ok()) {
+         fprintf(note, "could not set up the connection for the ordinary byte");
+         return CHILD_SETUP_FAILED;
+      }
+      const ssize_t sent = pair.socket->send(&ORDINARY_BYTE, 1, 0);
+      if (sent != 1) {
+         fprintf(note, "Socket::send of one byte with no flags returned %zd", sent);
+         return CHILD_CHECK_FAILED;
+      }
+      if (!selectReports(pair.peer, false, URGENT_WAIT_MILLIS)) {
+         fprintf(note, "the ordinary byte did not reach the peer within %d ms", URGENT_WAIT_MILLIS);
+         return CHILD_CHECK_FAILED;
+      }
+      if (selectReports(pair.peer, true, 0)) {
+         fprintf(note, "an ordinary send was reported as urgent data");
+         return CHILD_CHECK_FAILED;
+      }
+      char received = 0;
+      if (::recv(pair.peer, &received, 1, MSG_OOB) >= 0) {
+         fprintf(note, "recv(MSG_OOB) returned data after an ordinary send");
+         return CHILD_CHECK_FAILED;
+      }
+      received = 0;
+      if ((::recv(pair.peer, &received, 1, 0) != 1) || (received != ORDINARY_BYTE)) {
+         fprintf(note, "the ordinary byte could not be read back intact");
+         return CHILD_CHECK_FAILED;
+      }
    }
-   fprintf(note, "the send returned %zd at once instead of blocking", sent);
+
+   fprintf(note, "an MSG_OOB byte arrived as urgent data, an ordinary byte did not");
    return CHILD_OK;
 }
 
@@ -415,7 +532,9 @@ POIVRE_TEST_CASE(TestSocketSigpipe, testSendWithCallerFlagsToDisconnectedPeerRai
 }
 
 POIVRE_TEST_CASE(TestSocketSigpipe, testCallerFlagsAreStillHonouredByTheSend) {
-   // MSG_DONTWAIT must still reach send(): the send fails at once instead of blocking
+   // Socket::send ORs its own flag (MSG_NOSIGNAL where there is one) into the caller's; the
+   // caller's must still reach send(). MSG_OOB proves it on every platform: the peer sees the
+   // byte as urgent data only if the flag arrived (see childCallerFlagsAreHonoured).
    const ChildResult r = runInChild([](FILE* note) { return childCallerFlagsAreHonoured(note); }, TIME_LIMIT_MILLIS);
    require(r.exited && (r.exitCode == CHILD_OK), describe("caller-supplied flags", r));
 }
