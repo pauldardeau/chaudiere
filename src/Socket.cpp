@@ -12,11 +12,14 @@
 #include <netdb.h>
 #include <errno.h>
 #include <sys/time.h>
+#include <chrono>
+#include <thread>
 
 #include "Socket.h"
 #include "SocketCompletionObserver.h"
 #include "BasicException.h"
 #include "Logger.h"
+#include "internal/SocketIo.h"
 
 static const std::string EMPTY_STRING = "";
 static const std::string CRLF = "\r\n";
@@ -809,6 +812,67 @@ int Socket::readSocket(char* buffer, int bytesToRead) {
 
 //******************************************************************************
 
+int Socket::readSocket(char* buffer, int bytesToRead, int timeoutMillis) {
+   // the budget starts here
+   const std::chrono::steady_clock::time_point start =
+      std::chrono::steady_clock::now();
+
+   if (nullptr == buffer) {
+      return -1;
+   }
+
+   if (m_includeMessageSize) {
+      // see the header: size-prefixed mode cannot be cut short safely
+      LOG_ERROR("bounded readSocket is not supported with message size included")
+      return -1;
+   }
+
+   if (bytesToRead < 0) {
+      return -1;
+   }
+
+   if (bytesToRead == 0) {
+      return 0;
+   }
+
+   int bytesAlreadyRead = 0;
+   int remainingBytesToRead = bytesToRead;
+
+   // same as readSocket(buffer, bytesToRead): serve a primed line-input
+   // buffer first
+   if (!m_lineInputBuffer.empty()) {
+      const int nInputBufferLen = (int) m_lineInputBuffer.length();
+
+      if (nInputBufferLen >= bytesToRead) {
+         ::memcpy(buffer, m_lineInputBuffer.c_str(), bytesToRead);
+         m_lineInputBuffer.erase(0, bytesToRead);
+         return bytesToRead;
+      } else {
+         ::memcpy(buffer, m_lineInputBuffer.c_str(), nInputBufferLen);
+         m_lineInputBuffer.erase();
+         bytesAlreadyRead = nInputBufferLen;
+         remainingBytesToRead = bytesToRead - nInputBufferLen;
+      }
+   }
+
+   if ((m_socketFD < 0) || (!m_isConnected)) {
+      return (bytesAlreadyRead > 0) ? bytesAlreadyRead : -1;
+   }
+
+   const int bytesFromSocket =
+      detail::boundedReadFromDescriptor(m_socketFD,
+                                        buffer + bytesAlreadyRead,
+                                        remainingBytesToRead,
+                                        timeoutMillis,
+                                        start,
+                                        detail::systemSocketIoOps());
+
+   const int totalBytesRead = bytesAlreadyRead + bytesFromSocket;
+   return (totalBytesRead > 0) ? totalBytesRead : -1;
+}
+
+//******************************************************************************
+
 int Socket::recvAvailable(char* buffer, int bufferSize) {
    if (nullptr == buffer) {
       return -1;
@@ -953,3 +1017,137 @@ bool Socket::isDescriptorBorrowed() const {
 
 //******************************************************************************
 
+
+//******************************************************************************
+
+namespace {
+
+int systemPoll(struct pollfd* fds, nfds_t nfds, int timeoutMillis) {
+   return ::poll(fds, nfds, timeoutMillis);
+}
+
+ssize_t systemRecv(int fd, void* buffer, size_t length, int flags) {
+   return ::recv(fd, buffer, length, flags);
+}
+
+const detail::SocketIoOps SYSTEM_SOCKET_IO_OPS = { systemPoll, systemRecv };
+
+}
+
+//******************************************************************************
+
+const chaudiere::detail::SocketIoOps& chaudiere::detail::systemSocketIoOps() {
+   return SYSTEM_SOCKET_IO_OPS;
+}
+
+//******************************************************************************
+
+int chaudiere::detail::boundedReadFromDescriptor(int fd,
+                                                 char* buffer,
+                                                 int bytesToRead,
+                                                 int timeoutMillis,
+                                                 std::chrono::steady_clock::time_point start,
+                                                 const SocketIoOps& ops) {
+   typedef std::chrono::steady_clock Clock;
+
+   // only meaningful when timeoutMillis > 0. At most INT_MAX milliseconds, so
+   // the addition cannot overflow the clock's representation.
+   const Clock::time_point deadline =
+      start + std::chrono::milliseconds((timeoutMillis > 0) ? timeoutMillis : 0);
+
+   // true once a pass that made no progress must not be repeated: with no
+   // limit the read goes on, with 0 there is nothing more to wait for, and
+   // otherwise it depends on whether the budget is used up
+   auto mustStop = [&]() -> bool {
+      return (timeoutMillis == 0) ||
+             ((timeoutMillis > 0) && (Clock::now() >= deadline));
+   };
+
+   int totalBytesRead = 0;
+
+   while (totalBytesRead < bytesToRead) {
+      // how long poll() may wait this time: the remaining budget, recomputed
+      // on every pass so that neither progress nor an interrupted call
+      // extends the total
+      int waitMillis;
+      if (timeoutMillis < 0) {
+         waitMillis = -1;
+      } else if (timeoutMillis == 0) {
+         waitMillis = 0;
+      } else {
+         const Clock::time_point now = Clock::now();
+         if (now >= deadline) {
+            waitMillis = 0;
+         } else {
+            // rounded up: poll() takes whole milliseconds, and rounding down
+            // would turn the last fraction of a millisecond into a busy loop
+            const std::chrono::milliseconds remaining =
+               std::chrono::ceil<std::chrono::milliseconds>(deadline - now);
+            waitMillis = (remaining.count() < (long long) timeoutMillis) ?
+                         (int) remaining.count() :
+                         timeoutMillis;
+         }
+      }
+
+      struct pollfd pfd;
+      pfd.fd = fd;
+      pfd.events = POLLIN;
+      pfd.revents = 0;
+
+      const int pollResult = ops.poll(&pfd, 1, waitMillis);
+
+      if (pollResult < 0) {
+         if ((EINTR == errno) && !mustStop()) {
+            // a signal, not a failure: wait again for what remains
+            continue;
+         }
+         break;
+      }
+
+      if (pollResult == 0) {
+         // nothing became readable within the wait
+         if (timeoutMillis < 0) {
+            continue;
+         }
+         if (mustStop()) {
+            break;
+         }
+         // woke slightly early: wait out the rest
+         continue;
+      }
+
+      // Readable, or an error/hang-up condition. Always go through recv() so
+      // that the cause is reported by it: data still queued behind a hang-up
+      // is delivered first, then end-of-stream (0) or the error (-1).
+      // MSG_DONTWAIT: this recv() cannot block, whatever poll() said.
+      const ssize_t bytesReceived = ops.recv(fd,
+                                             buffer + totalBytesRead,
+                                             (size_t) (bytesToRead - totalBytesRead),
+                                             MSG_DONTWAIT);
+      const int recvErrno = errno;
+
+      if (bytesReceived > 0) {
+         totalBytesRead += (int) bytesReceived;
+      } else if (bytesReceived == 0) {
+         // orderly shutdown by the peer: no more data is coming
+         break;
+      } else if ((EINTR == recvErrno) || (EAGAIN == recvErrno) || (EWOULDBLOCK == recvErrno)) {
+         // Nothing to take after all (a signal, or readiness that was gone by
+         // the time of the call). The budget is checked even though nothing
+         // was waited for, so that readiness that keeps being reported
+         // without any data cannot run past it.
+         if (mustStop()) {
+            break;
+         }
+         if (EINTR != recvErrno) {
+            // and a pause, so that such readiness cannot become a busy loop
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+         }
+         continue;
+      } else {
+         break;
+      }
+   }
+
+   return totalBytesRead;
+}

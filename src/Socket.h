@@ -36,6 +36,8 @@ namespace chaudiere
  * -------------------------- ----------------------------------------- ---------------------------
  * read()                     bufsize bytes received                    No
  * readSocket()               bytesToRead bytes received                Yes
+ * readSocket(.., timeout)    bytesToRead bytes received, or the        Yes
+ *                            time budget is used up
  * receive()                  bufferLength bytes received               No
  * recvPayload() (protected)  bufferSize bytes (or the framed           No
  *                            message size, if size-prefixed mode is on)
@@ -143,6 +145,44 @@ public:
     * @return integer specifying number of bytes read (-1 on error)
     */
    int readSocket(char* buffer, int bytesToRead);
+
+   /**
+    * Like readSocket(buffer, bytesToRead), but gives up once timeoutMillis
+    * milliseconds have elapsed in total (steady_clock), however much data keeps
+    * arriving: unlike setReceiveTimeout(), which restarts for every recv() and
+    * so is an inactivity timeout, the budget starts when this function is
+    * entered and progress does not restart it.
+    *
+    * Any bytes primed in the line-input buffer are served first, as in
+    * readSocket(). The rest is read with poll() for readiness (using the time
+    * that remains) and recv(MSG_DONTWAIT), so the receive itself can never
+    * block. A signal that interrupts either call (EINTR) is not an error: the
+    * wait resumes with the remaining time. The socket's own settings are not
+    * touched: the descriptor stays in blocking mode and SO_RCVTIMEO is not
+    * changed. A timeout does not close the socket and does not discard
+    * anything: bytes that arrive later are still there for the next read.
+    * Reading from the descriptor is POSIX-only (this class is not built on
+    * Windows).
+    *
+    * Not supported with setIncludeMessageSize(true): that mode consumes a
+    * 2-byte size prefix on every underlying read, so a read that can be cut
+    * short would lose the framing. The call returns -1 and consumes nothing.
+    *
+    * @param buffer the buffer to contain the read bytes
+    * @param bytesToRead the number of bytes wanted
+    * @param timeoutMillis the total time allowed. Less than 0: no limit (the
+    * same wait as readSocket(), except that EINTR is resumed). 0: only bytes
+    * that are available without waiting. Greater than 0: the limit in
+    * milliseconds, which includes the time spent serving the line-input buffer.
+    * @return the number of bytes read: bytesToRead only when the whole read
+    * succeeded, fewer if the time ran out, the peer closed the connection or
+    * a socket error occurred after some bytes were read, and -1 if no bytes were
+    * read because of one of those, or because buffer is null, bytesToRead is
+    * negative, there is no connection or size-prefixed mode is on. Reading
+    * zero bytes (bytesToRead == 0) returns 0 without touching the socket; the
+    * two-argument readSocket() returns -1 for that on a connected socket.
+    */
+   int readSocket(char* buffer, int bytesToRead, int timeoutMillis);
 
    /**
     * Reads whatever is currently available on the socket into the
