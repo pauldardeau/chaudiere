@@ -27,6 +27,43 @@ static const std::string LF = "\n";
 
 static const int DEFAULT_BUFFER_SIZE = 1024;
 
+// Writing to a connection the peer has closed must make the write fail with EPIPE, not
+// terminate the process with SIGPIPE, and the process-wide SIGPIPE handling must stay
+// as the application set it. Two socket-local mechanisms exist (see the class comment
+// in Socket.h): MSG_NOSIGNAL, a flag of each send, and SO_NOSIGPIPE, an option of the
+// socket. Every send below carries the flag where it exists, and the option is set on
+// every descriptor a Socket manages where that exists.
+#if !defined(MSG_NOSIGNAL) && !defined(SO_NOSIGPIPE) && !defined(CHAUDIERE_NO_SIGPIPE_PROTECTION)
+#error "Socket.cpp needs MSG_NOSIGNAL or SO_NOSIGPIPE to keep a write to a closed connection from raising SIGPIPE; this platform has neither. Define CHAUDIERE_NO_SIGPIPE_PROTECTION to build without that protection (the application must then ignore SIGPIPE itself)."
+#endif
+
+#ifdef MSG_NOSIGNAL
+static const int SEND_FLAGS_NO_SIGPIPE = MSG_NOSIGNAL;
+#else
+static const int SEND_FLAGS_NO_SIGPIPE = 0;
+#endif
+
+// Sets SO_NOSIGPIPE on the descriptor, where the platform has that option. Returns false
+// only if the sends of a socket on this descriptor are NOT protected as a result: the
+// option exists and could not be set, and the sends do not carry MSG_NOSIGNAL either
+// (where they do, the option is a second layer and its failure is only logged).
+static bool protectDescriptorFromSigpipe(int socketFD) {
+#ifdef SO_NOSIGPIPE
+   const int on = 1;
+   if (0 != ::setsockopt(socketFD, SOL_SOCKET, SO_NOSIGPIPE, &on, sizeof(on))) {
+#ifdef MSG_NOSIGNAL
+      LOG_WARNING("unable to set SO_NOSIGPIPE (sends use MSG_NOSIGNAL)")
+#else
+      LOG_ERROR("unable to set SO_NOSIGPIPE")
+      return false;
+#endif
+   }
+#else
+   (void) socketFD;
+#endif
+   return true;
+}
+
 using namespace chaudiere;
 
 //******************************************************************************
@@ -52,7 +89,8 @@ Socket::Socket(const std::string& address, int port) :
    m_includeMessageSize(false),
    m_borrowedDescriptor(false),
    m_inBufferSize(DEFAULT_BUFFER_SIZE),
-   m_lastReadSize(0) {
+   m_lastReadSize(0),
+   m_sigpipeUnprotected(false) {
 
    LOG_INSTANCE_CREATE("Socket")
 
@@ -73,9 +111,15 @@ Socket::Socket(int socketFD) :
    m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE),
-   m_lastReadSize(0) {
+   m_lastReadSize(0),
+   m_sigpipeUnprotected(false) {
 
    LOG_INSTANCE_CREATE("Socket")
+
+   // a handed-over descriptor is not assumed to have been set up for this Socket
+   if ((m_socketFD > -1) && !protectDescriptorFromSigpipe(m_socketFD)) {
+      m_sigpipeUnprotected = true;
+   }
 }
 
 //******************************************************************************
@@ -90,9 +134,15 @@ Socket::Socket(SocketCompletionObserver* completionObserver, int socketFD) :
    m_borrowedDescriptor(true),
    m_inputBuffer(DEFAULT_BUFFER_SIZE),
    m_inBufferSize(DEFAULT_BUFFER_SIZE),
-   m_lastReadSize(0) {
+   m_lastReadSize(0),
+   m_sigpipeUnprotected(false) {
 
    LOG_INSTANCE_CREATE("Socket")
+
+   // a handed-over descriptor is not assumed to have been set up for this Socket
+   if ((m_socketFD > -1) && !protectDescriptorFromSigpipe(m_socketFD)) {
+      m_sigpipeUnprotected = true;
+   }
 }
 
 //******************************************************************************
@@ -119,6 +169,17 @@ bool Socket::open() {
 
    if (m_socketFD < 0) {
       LOG_ERROR("unable to create a socket file descriptor")
+      return false;
+   }
+
+   // Before connecting: the peer cannot have gone yet, so a failure here is a real error and
+   // the construction fails, releasing the descriptor like a failed connect does (the
+   // constructor throws, and the destructor of an object whose constructor threw never runs).
+   if (!protectDescriptorFromSigpipe(m_socketFD)) {
+      const int optionError = errno;
+      ::close(m_socketFD);
+      m_socketFD = -1;
+      errno = optionError;
       return false;
    }
 
@@ -380,7 +441,7 @@ bool Socket::sendPayloadSize(uint16_t payloadSize) {
       ssize_t bytesSent = ::send(m_socketFD,
                                  &nOrderSize,
                                  sizeof(uint16_t),
-                                 0);
+                                 SEND_FLAGS_NO_SIGPIPE);
 
       //printf("back from sending payload size\n");
 
@@ -936,6 +997,12 @@ bool Socket::getPeerIPAddress(std::string& ipAddress) {
 //******************************************************************************
 
 bool Socket::sendPayload(const char* buffer, ssize_t payloadSize, int flags) {
+   if (m_sigpipeUnprotected) {
+      // a write that the peer's absence could answer with SIGPIPE is refused, not risked
+      LOG_ERROR("write refused: SIGPIPE could not be suppressed for this socket")
+      return false;
+   }
+
    if (m_includeMessageSize) {
       if (payloadSize <= 65535) {
          uint16_t sendSize = (uint16_t) payloadSize;
@@ -956,7 +1023,7 @@ bool Socket::sendPayload(const char* buffer, ssize_t payloadSize, int flags) {
       int bytesSent = ::send(m_socketFD,
                              pSendBuffer,
                              remainingBytes,
-                             flags);
+                             flags | SEND_FLAGS_NO_SIGPIPE);
       if (bytesSent > 0) {
          totalBytesSent += bytesSent;
          pSendBuffer += bytesSent;

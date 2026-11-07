@@ -61,6 +61,34 @@ namespace chaudiere
  * receive()'s `flags` parameter is currently a no-op: it's threaded
  * through to recvPayload(), but the actual recv() call there hardcodes
  * 0 rather than using it.
+ *
+ * ----------------------------------------------------------------------
+ * Writing to a connection the peer has closed: SIGPIPE
+ * ----------------------------------------------------------------------
+ * Such a write fails (write() returns false, send() returns -1, with errno
+ * set to EPIPE); it never terminates the process with SIGPIPE, and the
+ * process's SIGPIPE disposition is never changed. The suppression is local
+ * to each send and to each socket:
+ *
+ *    MSG_NOSIGNAL   added to every send (the 2-byte size prefix included),
+ *                   on platforms that have it (Linux, FreeBSD). The caller's
+ *                   own flags are kept.
+ *    SO_NOSIGPIPE   set on the descriptor of every Socket, whether it made
+ *                   the descriptor or was handed it (an accepted connection,
+ *                   for one), on platforms that have it (macOS, FreeBSD).
+ *                   A Socket does not rely on the descriptor having been set
+ *                   up for it, or on inheriting the option from a listener.
+ *                   If the option cannot be set on a handed-over descriptor
+ *                   and the platform has no MSG_NOSIGNAL, the Socket refuses
+ *                   to write (write() and send() fail) rather than risk the
+ *                   signal; reading still works. If it cannot be set when the
+ *                   Socket connects by itself, the constructor fails like a
+ *                   failed connection (and releases the descriptor).
+ *
+ * A platform with neither mechanism is not supported: Socket.cpp does not
+ * compile there, so that protection is never silently missing. Defining
+ * CHAUDIERE_NO_SIGPIPE_PROTECTION when building Socket.cpp opts out
+ * explicitly; callers must then ignore SIGPIPE themselves.
  */
 class Socket
 {
@@ -391,6 +419,9 @@ private:
    CharBuffer m_inputBuffer;
    int m_inBufferSize;
    int m_lastReadSize;
+
+   // true if SIGPIPE could not be suppressed for this socket (see the class comment): writes fail
+   bool m_sigpipeUnprotected;
 };
 
 }
