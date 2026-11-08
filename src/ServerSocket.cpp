@@ -1,6 +1,7 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
+#include <atomic>
 #include <cstdio>
 #include <cstring>
 
@@ -11,6 +12,7 @@
 #include "Socket.h"
 #include "BasicException.h"
 #include "Logger.h"
+#include "internal/SocketIo.h"
 
 
 static const int BACKLOG = 50;
@@ -18,6 +20,38 @@ static const int BACKLOG = 50;
 typedef socklen_t SOCKLEN_T;
 
 using namespace chaudiere;
+
+namespace {
+
+int systemAccept(int fd, struct sockaddr* address, socklen_t* addressLength) {
+   return ::accept(fd, address, addressLength);
+}
+
+const detail::AcceptIoOps SYSTEM_ACCEPT_IO_OPS = { systemAccept };
+
+// what ServerSocket::accept() takes a connection with; the tests replace it (see SocketIo.h)
+std::atomic<const detail::AcceptIoOps*> g_acceptIoOps(&SYSTEM_ACCEPT_IO_OPS);
+
+}
+
+//******************************************************************************
+
+const chaudiere::detail::AcceptIoOps& chaudiere::detail::systemAcceptIoOps() {
+   return SYSTEM_ACCEPT_IO_OPS;
+}
+
+//******************************************************************************
+
+const chaudiere::detail::AcceptIoOps& chaudiere::detail::acceptIoOps() {
+   return *g_acceptIoOps.load();
+}
+
+//******************************************************************************
+
+const chaudiere::detail::AcceptIoOps*
+chaudiere::detail::setAcceptIoOps(const AcceptIoOps* ops) {
+   return g_acceptIoOps.exchange((ops != nullptr) ? ops : &SYSTEM_ACCEPT_IO_OPS);
+}
 
 //******************************************************************************
 
@@ -159,9 +193,11 @@ Socket* ServerSocket::accept() {
    struct sockaddr_in clientAddr;
    SOCKLEN_T namelen = sizeof(clientAddr);
 
-   const int connectionSocket = ::accept(m_serverSocket,
-                                         (struct sockaddr*) &clientAddr,
-                                         &namelen);
+   // errno must still be the error of this call when nullptr is returned: the accept
+   // loop classifies the failure by it
+   const int connectionSocket = detail::acceptIoOps().accept(m_serverSocket,
+                                                             (struct sockaddr*) &clientAddr,
+                                                             &namelen);
 
    if (connectionSocket < 0) {
       return nullptr;

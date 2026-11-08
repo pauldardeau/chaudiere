@@ -58,6 +58,7 @@ TestSocketSendInterrupt.o \
 TestSocketSigpipe.o \
 TestSocketRequest.o \
 TestSocketServer.o \
+TestSocketServerAcceptErrors.o \
 TestStdConditionVariable.o \
 TestStdLogger.o \
 TestStdMutex.o \

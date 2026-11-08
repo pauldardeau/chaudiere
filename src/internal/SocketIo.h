@@ -132,6 +132,33 @@ const SendIoOps& sendIoOps();
  */
 const SendIoOps* setSendIoOps(const SendIoOps* ops);
 
+/**
+ * The system call ServerSocket::accept() takes a connection with. A separate structure, for the
+ * same reason as SendIoOps. Tests replace it to make accept() fail on demand with an error the
+ * kernel will not produce when asked (see AcceptPolicy.h for what the accept loop does with them).
+ */
+struct AcceptIoOps
+{
+   int (*accept)(int fd, struct sockaddr* address, socklen_t* addressLength);
+};
+
+/**
+ * @return the real ::accept()
+ */
+const AcceptIoOps& systemAcceptIoOps();
+
+/**
+ * The accept ServerSocket::accept() uses: systemAcceptIoOps() unless a test has replaced it.
+ */
+const AcceptIoOps& acceptIoOps();
+
+/**
+ * Test hook: makes ServerSocket::accept() use ops from now on. nullptr restores the real call.
+ * The ops must outlive their use.
+ * @return the ops that were in use before
+ */
+const AcceptIoOps* setAcceptIoOps(const AcceptIoOps* ops);
+
 }
 }
 

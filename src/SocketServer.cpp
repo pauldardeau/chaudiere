@@ -1,9 +1,14 @@
 // Copyright Paul Dardeau, SwampBits LLC 2014
 // BSD License
 
-#include <string>
+#include <atomic>
+#include <chrono>
 #include <exception>
+#include <string>
+#include <system_error>
+#include <thread>
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +45,8 @@
 #include "KqueueServer.h"
 
 #include "AutoPointer.h"
+
+#include "internal/AcceptPolicy.h"
 
 
 static const std::string CFG_TRUE_SETTING_VALUES = "yes|true|1";
@@ -119,6 +126,81 @@ static const char* LOG_MONTH_NAME[12] = {
 };
 
 using namespace chaudiere;
+
+namespace {
+
+std::chrono::steady_clock::time_point steadyNow() {
+   return std::chrono::steady_clock::now();
+}
+
+void sleepForMillis(int millis) {
+   std::this_thread::sleep_for(std::chrono::milliseconds(millis));
+}
+
+const detail::AcceptLoopOps SYSTEM_ACCEPT_LOOP_OPS = { steadyNow, sleepForMillis };
+
+// the clock and the pause of the accept loop; the tests replace them (see AcceptPolicy.h)
+std::atomic<const detail::AcceptLoopOps*> g_acceptLoopOps(&SYSTEM_ACCEPT_LOOP_OPS);
+
+std::string describeAcceptError(int error) {
+   return "errno " + std::to_string(error) + " (" +
+          std::system_category().message(error) + ")";
+}
+
+// The diagnostics of a failing accept loop. Logger::critical() and friends are
+// called directly because the LOG_* macros compile to nothing unless
+// LOGGING_ENABLED is defined, which nothing in this tree defines.
+void reportAcceptFailure(const detail::AcceptDecision& decision, int error) {
+   switch (decision.log) {
+      case detail::AcceptLog::StreakStarted:
+         Logger::warning("accept() failed: " + describeAcceptError(error) +
+                         "; the server keeps trying, pausing between attempts (" +
+                         std::to_string(decision.pauseMillis) + " ms now, at most " +
+                         std::to_string(detail::MAX_BACKOFF_MILLIS) + " ms)");
+         break;
+      case detail::AcceptLog::StreakContinues:
+         Logger::warning("accept() is still failing: " + describeAcceptError(error) +
+                         "; " + std::to_string(decision.failuresInStreak) +
+                         " failed attempts since it last succeeded (" +
+                         std::to_string(decision.suppressed) +
+                         " not reported individually)");
+         break;
+      case detail::AcceptLog::Terminal:
+         Logger::critical("accept() failed with " + describeAcceptError(error) +
+                          ": the listening socket cannot be used, the accept loop ends");
+         break;
+      case detail::AcceptLog::Nothing:
+         break;
+   }
+}
+
+void reportAcceptRecovery(const detail::AcceptRecovery& recovery) {
+   if (recovery.wasReported) {
+      Logger::info("accept() succeeded again after " +
+                   std::to_string(recovery.failuresInStreak) + " failed attempts");
+   }
+}
+
+}
+
+//******************************************************************************
+
+const chaudiere::detail::AcceptLoopOps& chaudiere::detail::systemAcceptLoopOps() {
+   return SYSTEM_ACCEPT_LOOP_OPS;
+}
+
+//******************************************************************************
+
+const chaudiere::detail::AcceptLoopOps& chaudiere::detail::acceptLoopOps() {
+   return *g_acceptLoopOps.load();
+}
+
+//******************************************************************************
+
+const chaudiere::detail::AcceptLoopOps*
+chaudiere::detail::setAcceptLoopOps(const AcceptLoopOps* ops) {
+   return g_acceptLoopOps.exchange((ops != nullptr) ? ops : &SYSTEM_ACCEPT_LOOP_OPS);
+}
 
 //******************************************************************************
 //******************************************************************************
@@ -589,13 +671,36 @@ int SocketServer::runSocketServer() {
       return 1;
    }
 
+   // what to do about failed accept() calls: see internal/AcceptPolicy.h
+   detail::AcceptFailureTracker acceptFailures;
+
    while (!m_isDone) {
 
       Socket* socket = m_serverSocket->accept();
 
       if (nullptr == socket) {
+         // errno is the error of the failed accept() until something else is
+         // called: take it before anything that could change it (the clock, the
+         // logger, the sleep)
+         const int acceptError = errno;
+         const detail::AcceptLoopOps& loopOps = detail::acceptLoopOps();
+         const detail::AcceptDecision decision =
+            acceptFailures.onFailure(acceptError, loopOps.now());
+
+         reportAcceptFailure(decision, acceptError);
+
+         if (decision.action == detail::AcceptAction::Stop) {
+            return 1;
+         }
+
+         if (decision.action == detail::AcceptAction::PauseThenRetry) {
+            loopOps.sleepMillis(decision.pauseMillis);
+         }
+
          continue;
       }
+
+      reportAcceptRecovery(acceptFailures.onSuccess());
 
       //if (Logger::isLogging(LogLevel::Debug)) {
       //   LOG_DEBUG("*****************************************")

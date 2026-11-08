@@ -91,6 +91,7 @@ else()
       TestSocketSigpipe.cpp
       TestSocketRequest.cpp
       TestSocketServer.cpp
+      TestSocketServerAcceptErrors.cpp
       TestStdConditionVariable.cpp
       TestStdLogger.cpp
       TestStdMutex.cpp
