@@ -52,6 +52,7 @@ TestServerSocket.o \
 TestServiceInfo.o \
 TestSocket.o \
 TestSocketBoundedRead.o \
+TestSocketConnectInterrupt.o \
 TestSocketDescriptors.o \
 TestSocketSigpipe.o \
 TestSocketRequest.o \

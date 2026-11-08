@@ -12,6 +12,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <sys/time.h>
+#include <atomic>
 #include <chrono>
 #include <thread>
 
@@ -193,12 +194,29 @@ bool Socket::open() {
                             (struct sockaddr *) &m_serverAddr,
                             sizeof(m_serverAddr));
 
+   bool connectFailed = false;
+   int connectError = 0;
+
    if (rc < 0) {
+      connectFailed = true;
+      connectError = errno;
+
+      if (connectError == EINTR) {
+         // A signal handler ran while connect() was waiting. The connection attempt is not
+         // over: it goes on in the kernel (on Linux and on macOS, with or without SA_RESTART),
+         // so this is neither a failure nor a reason to call connect() again (a second call
+         // does not mean the same on every platform). Wait for the attempt to end on the same
+         // descriptor and read its outcome. Like connect() itself, the wait has no time limit.
+         connectError = detail::awaitConnectCompletion(m_socketFD, detail::connectIoOps());
+         connectFailed = (connectError != 0);
+      }
+   }
+
+   if (connectFailed) {
       // The constructor throws when this returns false, and the destructor of an object
       // whose constructor threw does not run, so this is the only place that can release
       // the descriptor that createSocket() returned. close() may change errno, which the
       // caller may want to inspect, so it is kept.
-      const int connectError = errno;
       ::close(m_socketFD);
       m_socketFD = -1;
       errno = connectError;
@@ -1225,4 +1243,79 @@ int chaudiere::detail::boundedReadFromDescriptor(int fd,
    }
 
    return totalBytesRead;
+}
+
+//******************************************************************************
+
+namespace {
+
+// what Socket::open() waits with; the tests replace it (see SocketIo.h)
+std::atomic<const detail::SocketIoOps*> g_connectIoOps(&SYSTEM_SOCKET_IO_OPS);
+
+}
+
+//******************************************************************************
+
+const chaudiere::detail::SocketIoOps& chaudiere::detail::connectIoOps() {
+   return *g_connectIoOps.load();
+}
+
+//******************************************************************************
+
+const chaudiere::detail::SocketIoOps*
+chaudiere::detail::setConnectIoOps(const SocketIoOps* ops) {
+   return g_connectIoOps.exchange((ops != nullptr) ? ops : &SYSTEM_SOCKET_IO_OPS);
+}
+
+//******************************************************************************
+
+int chaudiere::detail::awaitConnectCompletion(int fd, const SocketIoOps& ops) {
+   // POSIX allows poll() with an infinite timeout to return only for an event or an error. A
+   // result that is neither is not expected; it is tolerated a few times, never looped on.
+   const int MAX_MEANINGLESS_RESULTS = 8;
+   int meaninglessResults = 0;
+
+   for (;;) {
+      struct pollfd pfd;
+      pfd.fd = fd;
+      pfd.events = POLLOUT;
+      pfd.revents = 0;
+
+      const int pollResult = ops.poll(&pfd, 1, -1);
+
+      if (pollResult < 0) {
+         const int pollError = errno;
+         if (EINTR == pollError) {
+            // a signal again, not a failure: go on waiting
+            continue;
+         }
+         // the wait itself failed: this is the failure of the connection
+         return (pollError != 0) ? pollError : EIO;
+      }
+
+      if (pollResult > 0) {
+         if (pfd.revents & POLLNVAL) {
+            // the descriptor is not open: nothing can be learned from it
+            return EBADF;
+         }
+
+         // Writable, or an error / hang-up condition. POLLOUT alone does not say that the
+         // connection succeeded (a refused attempt is reported as POLLOUT | POLLERR | POLLHUP
+         // on Linux), and POLLERR / POLLHUP alone do not say that it failed; only SO_ERROR does.
+         // Reading it clears it, so it is read once and the value is returned as it is.
+         if (pfd.revents & (POLLOUT | POLLERR | POLLHUP)) {
+            int socketError = 0;
+            socklen_t length = sizeof(socketError);
+            if (0 != ::getsockopt(fd, SOL_SOCKET, SO_ERROR, &socketError, &length)) {
+               const int optionError = errno;
+               return (optionError != 0) ? optionError : EIO;
+            }
+            return socketError;
+         }
+      }
+
+      if (++meaninglessResults > MAX_MEANINGLESS_RESULTS) {
+         return ETIMEDOUT;
+      }
+   }
 }

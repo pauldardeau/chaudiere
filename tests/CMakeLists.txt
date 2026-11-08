@@ -85,6 +85,7 @@ else()
       TestServiceInfo.cpp
       TestSocket.cpp
       TestSocketBoundedRead.cpp
+      TestSocketConnectInterrupt.cpp
       TestSocketDescriptors.cpp
       TestSocketSigpipe.cpp
       TestSocketRequest.cpp

@@ -71,6 +71,40 @@ int boundedReadFromDescriptor(int fd,
                               std::chrono::steady_clock::time_point start,
                               const SocketIoOps& ops);
 
+/**
+ * Waits for a connection attempt that connect() reported as interrupted (EINTR)
+ * to end, and says how it ended. The attempt is not over when connect() fails
+ * with EINTR: it goes on in the kernel, so the caller keeps the descriptor and
+ * waits for it here instead of treating EINTR as a failure or calling connect()
+ * again.
+ *
+ * Waits with poll(POLLOUT) and no time limit (like the blocking connect() it
+ * stands in for), resuming after every EINTR. When poll() reports an event
+ * the outcome is read with getsockopt(SO_ERROR): writability alone is not
+ * success and POLLERR / POLLHUP alone are not failure.
+ *
+ * @param fd the descriptor on which connect() returned EINTR
+ * @param ops the system calls to use (poll() is the one used)
+ * @return 0 if the connection is established, otherwise the error number of the
+ * failure: the SO_ERROR value of the attempt, EBADF if poll() reports the
+ * descriptor invalid, the errno of a failed poll() or getsockopt(), or ETIMEDOUT
+ * after repeated poll() results that report nothing at all
+ */
+int awaitConnectCompletion(int fd, const SocketIoOps& ops);
+
+/**
+ * The system calls Socket::open() waits for an interrupted connection with:
+ * systemSocketIoOps() unless a test has replaced them.
+ */
+const SocketIoOps& connectIoOps();
+
+/**
+ * Test hook: makes Socket::open() use ops (only poll() is used) from now on.
+ * nullptr restores the real calls. The ops must outlive their use.
+ * @return the ops that were in use before
+ */
+const SocketIoOps* setConnectIoOps(const SocketIoOps* ops);
+
 }
 }
 
