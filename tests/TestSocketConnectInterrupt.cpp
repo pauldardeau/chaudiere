@@ -416,15 +416,15 @@ int runInterruptedConnect(FILE* note, Ending ending, const detail::SocketIoOps* 
    struct sigaction previousAction;
    ::memset(&action, 0, sizeof(action));
    action.sa_handler = onSignal;
-   ::sigemptyset(&action.sa_mask);
+   sigemptyset(&action.sa_mask);
    action.sa_flags = 0;                   // deliberately no SA_RESTART
    ::sigaction(SIGUSR1, &action, &previousAction);
 
    // only the connecting thread may run the handler
    sigset_t usr1;
    sigset_t previousMask;
-   ::sigemptyset(&usr1);
-   ::sigaddset(&usr1, SIGUSR1);
+   sigemptyset(&usr1);
+   sigaddset(&usr1, SIGUSR1);
    ::pthread_sigmask(SIG_BLOCK, &usr1, &previousMask);
 
    if (ops != nullptr) {
@@ -438,8 +438,8 @@ int runInterruptedConnect(FILE* note, Ending ending, const detail::SocketIoOps* 
 
    std::thread worker([&]() {
       sigset_t unblock;
-      ::sigemptyset(&unblock);
-      ::sigaddset(&unblock, SIGUSR1);
+      sigemptyset(&unblock);
+      sigaddset(&unblock, SIGUSR1);
       ::pthread_sigmask(SIG_UNBLOCK, &unblock, nullptr);
 
       startedAt = nowMs();
