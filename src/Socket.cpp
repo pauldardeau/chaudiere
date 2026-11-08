@@ -456,10 +456,17 @@ bool Socket::sendPayloadSize(uint16_t payloadSize) {
 
       //printf("sending payload size\n");
 
-      ssize_t bytesSent = ::send(m_socketFD,
-                                 &nOrderSize,
-                                 sizeof(uint16_t),
-                                 SEND_FLAGS_NO_SIGPIPE);
+      ssize_t bytesSent;
+
+      // A signal handler that ran while send() waited makes it fail with EINTR when it had
+      // transferred nothing; the same two bytes are sent again. Any other result is judged as
+      // before.
+      do {
+         bytesSent = detail::sendIoOps().send(m_socketFD,
+                                              &nOrderSize,
+                                              sizeof(uint16_t),
+                                              SEND_FLAGS_NO_SIGPIPE);
+      } while ((bytesSent < 0) && (EINTR == errno));
 
       //printf("back from sending payload size\n");
 
@@ -1038,15 +1045,19 @@ bool Socket::sendPayload(const char* buffer, ssize_t payloadSize, int flags) {
    bool allIsGood = true;
 
    while ((totalBytesSent < payloadSize) && allIsGood) {
-      int bytesSent = ::send(m_socketFD,
-                             pSendBuffer,
-                             remainingBytes,
-                             flags | SEND_FLAGS_NO_SIGPIPE);
+      int bytesSent = detail::sendIoOps().send(m_socketFD,
+                                               pSendBuffer,
+                                               remainingBytes,
+                                               flags | SEND_FLAGS_NO_SIGPIPE);
       if (bytesSent > 0) {
          totalBytesSent += bytesSent;
          pSendBuffer += bytesSent;
          remainingBytes -= bytesSent;
       } else if (bytesSent == 0) {
+      } else if (EINTR == errno) {
+         // A signal handler ran while send() waited and it had transferred nothing in this call
+         // (bytes sent by earlier calls are already counted above): go on from the same
+         // position with the same remaining length. Not a failure, and nothing is sent twice.
       } else {
          allIsGood = false;
       }
@@ -1252,6 +1263,40 @@ namespace {
 // what Socket::open() waits with; the tests replace it (see SocketIo.h)
 std::atomic<const detail::SocketIoOps*> g_connectIoOps(&SYSTEM_SOCKET_IO_OPS);
 
+}
+
+//******************************************************************************
+
+namespace {
+
+ssize_t systemSend(int fd, const void* buffer, size_t length, int flags) {
+   return ::send(fd, buffer, length, flags);
+}
+
+const detail::SendIoOps SYSTEM_SEND_IO_OPS = { systemSend };
+
+// what the send paths transmit with; the tests replace it (see SocketIo.h)
+std::atomic<const detail::SendIoOps*> g_sendIoOps(&SYSTEM_SEND_IO_OPS);
+
+}
+
+//******************************************************************************
+
+const chaudiere::detail::SendIoOps& chaudiere::detail::systemSendIoOps() {
+   return SYSTEM_SEND_IO_OPS;
+}
+
+//******************************************************************************
+
+const chaudiere::detail::SendIoOps& chaudiere::detail::sendIoOps() {
+   return *g_sendIoOps.load();
+}
+
+//******************************************************************************
+
+const chaudiere::detail::SendIoOps*
+chaudiere::detail::setSendIoOps(const SendIoOps* ops) {
+   return g_sendIoOps.exchange((ops != nullptr) ? ops : &SYSTEM_SEND_IO_OPS);
 }
 
 //******************************************************************************

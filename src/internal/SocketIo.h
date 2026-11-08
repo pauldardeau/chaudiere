@@ -105,6 +105,33 @@ const SocketIoOps& connectIoOps();
  */
 const SocketIoOps* setConnectIoOps(const SocketIoOps* ops);
 
+/**
+ * The system call Socket::sendPayload() and Socket::sendPayloadSize() transmit with. A
+ * separate structure from SocketIoOps (which stays as it is) so that the tests that
+ * build a SocketIoOps are not affected.
+ */
+struct SendIoOps
+{
+   ssize_t (*send)(int fd, const void* buffer, size_t length, int flags);
+};
+
+/**
+ * @return the real ::send()
+ */
+const SendIoOps& systemSendIoOps();
+
+/**
+ * The send the Socket send paths use: systemSendIoOps() unless a test has replaced it.
+ */
+const SendIoOps& sendIoOps();
+
+/**
+ * Test hook: makes the Socket send paths use ops from now on. nullptr restores the real
+ * call. The ops must outlive their use.
+ * @return the ops that were in use before
+ */
+const SendIoOps* setSendIoOps(const SendIoOps* ops);
+
 }
 }
 
